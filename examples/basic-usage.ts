@@ -1,6 +1,6 @@
 /**
  * Basic Usage Examples for the Automation Ecosystem
- * This file demonstrates how to use the various services and utilities
+ * This file demonstrates how to use the various services and utilities with Bun
  * @module examples/basic-usage
  */
 
@@ -74,16 +74,16 @@ function exampleConfigValidation(): void {
 }
 
 /**
- * Example 3: CLI Command Execution
- * Demonstrates how to execute shell commands programmatically
+ * Example 3: CLI Command Execution with Bun
+ * Demonstrates how to execute shell commands programmatically using Bun
  */
 function exampleCLIExecution(): void {
-  console.log("🖥️ Example 3: CLI Command Execution");
+  console.log("🖥️ Example 3: CLI Command Execution with Bun");
   console.log("=" .repeat(50));
 
   // Example 1: Simple command execution
   try {
-    const result = executeCommand('echo "Hello from CLI!"');
+    const result = executeCommand('echo "Hello from Bun CLI!"');
     console.log("📤 Simple command result:");
     console.log("- Success:", result.success);
     console.log("- Output:", result.stdout.trim());
@@ -91,16 +91,26 @@ function exampleCLIExecution(): void {
     console.log("❌ Command failed:", error instanceof Error ? error.message : error);
   }
 
-  // Example 2: JSON command execution
+  // Example 2: Bun version command execution
   try {
-    const result = executeCommandJSON<{ version: string }>('node --version --json');
-    console.log("\n📤 JSON command result:");
-    console.log("- Node version:", result.version);
+    const result = executeCommandJSON<{ version: string }>('bun --version');
+    console.log("\n📤 Bun version command result:");
+    console.log("- Bun version:", result);
   } catch (error) {
-    console.log("❌ JSON command failed:", error instanceof Error ? error.message : error);
+    console.log("❌ Bun version command failed:", error instanceof Error ? error.message : error);
   }
 
-  // Example 3: Command with error handling
+  // Example 3: Bun-specific commands
+  try {
+    const result = executeCommand('bun install --dry-run');
+    console.log("\n📤 Bun install dry-run result:");
+    console.log("- Success:", result.success);
+    console.log("- Output length:", result.stdout.length, "characters");
+  } catch (error) {
+    console.log("❌ Bun install command failed:", error instanceof Error ? error.message : error);
+  }
+
+  // Example 4: Command with error handling
   try {
     const result = executeCommand('nonexistent-command', { throwOnError: false });
     console.log("\n📤 Command with error handling:");
@@ -132,22 +142,28 @@ async function exampleCreateIssue(): Promise<void> {
   }
 
   // Create a test issue
-  const title = "Test Issue from Automation Ecosystem";
-  const body = `This is a test issue created by the automation ecosystem.
+  const title = "Test Issue from Automation Ecosystem (Bun)";
+  const body = `This is a test issue created by the automation ecosystem running on Bun.
 
 ## Details
 - Created: ${new Date().toISOString()}
+- Runtime: Bun ${Bun.version}
 - Purpose: Testing the GitHub service integration
 - Status: Testing
 
 ## Next Steps
 - [ ] Verify issue creation
 - [ ] Test issue management
-- [ ] Clean up test issues`;
+- [ ] Clean up test issues
+
+## Bun Features Used
+- Fast TypeScript execution
+- Built-in package manager
+- Native performance`;
 
   console.log("📝 Creating test issue...");
   const response = await github.createIssue(title, body, {
-    labels: ['automation', 'test']
+    labels: ['test']
   });
 
   if (response.success && response.data) {
@@ -160,7 +176,7 @@ async function exampleCreateIssue(): Promise<void> {
     console.log("\n💬 Adding a comment...");
     const commentResponse = await github.addComment(
       response.data.number,
-      "This comment was added automatically by the automation ecosystem! 🤖"
+      "This comment was added automatically by the automation ecosystem running on Bun! 🚀\n\nBun version: " + Bun.version
     );
     
     if (commentResponse.success) {
@@ -200,8 +216,7 @@ async function exampleRepoInfo(): Promise<void> {
     console.log("- URL:", response.data.url);
     console.log("- Created:", new Date(response.data.createdAt).toLocaleDateString());
     console.log("- Updated:", new Date(response.data.updatedAt).toLocaleDateString());
-    console.log("- Open Issues:", response.data.openIssuesCount);
-    console.log("- Closed Issues:", response.data.closedIssuesCount);
+    console.log("- Issues:", response.data.issues ? "Available" : "Not available");
   } else {
     console.log("❌ Failed to fetch repository info:", response.error);
   }
@@ -258,11 +273,42 @@ function exampleErrorHandling(): void {
 }
 
 /**
+ * Example 7: Bun-Specific Features
+ * Demonstrates Bun-specific capabilities
+ */
+function exampleBunFeatures(): void {
+  console.log("⚡ Example 7: Bun-Specific Features");
+  console.log("=" .repeat(50));
+
+  // Bun version information
+  console.log("📋 Bun Runtime Information:");
+  console.log("- Version:", Bun.version);
+  console.log("- Platform:", process.platform);
+  console.log("- Architecture:", process.arch);
+
+  // Bun environment variables
+  console.log("\n🔧 Bun Environment:");
+  console.log("- BUN_VERSION:", process.env.BUN_VERSION || "Not set");
+  console.log("- Current working directory:", process.cwd());
+
+  // Bun performance example
+  console.log("\n⚡ Bun Performance Test:");
+  const startTime = performance.now();
+  for (let i = 0; i < 1000000; i++) {
+    // Simple operation to demonstrate speed
+  }
+  const endTime = performance.now();
+  console.log(`- Loop execution time: ${(endTime - startTime).toFixed(2)}ms`);
+
+  console.log("\n");
+}
+
+/**
  * Main function to run all examples
  */
 async function runAllExamples(): Promise<void> {
-  console.log("🚀 Automation Ecosystem - Basic Usage Examples");
-  console.log("=" .repeat(60));
+  console.log("🚀 Automation Ecosystem - Basic Usage Examples (Bun Edition)");
+  console.log("=" .repeat(70));
   console.log();
 
   // Run examples
@@ -272,11 +318,14 @@ async function runAllExamples(): Promise<void> {
   await exampleCreateIssue();
   await exampleRepoInfo();
   exampleErrorHandling();
+  exampleBunFeatures();
 
   console.log("🎉 All examples completed!");
-  console.log("\n💡 Tips:");
-  console.log("- Use --verbose flag for detailed output");
-  console.log("- Check the documentation for more examples");
+  console.log("\n💡 Bun Tips:");
+  console.log("- Use 'bun run' instead of 'npm run' or 'node'");
+  console.log("- Bun has built-in TypeScript support");
+  console.log("- Use 'bun install' for faster package installation");
+  console.log("- Check the documentation for more Bun-specific examples");
   console.log("- Customize the examples for your use case");
 }
 
@@ -292,5 +341,6 @@ export {
   exampleCreateIssue,
   exampleRepoInfo,
   exampleErrorHandling,
+  exampleBunFeatures,
   runAllExamples
 }; 

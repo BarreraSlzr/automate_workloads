@@ -89,7 +89,7 @@ export class GitHubService {
     try {
       const { state = 'open', labels, assignee } = options;
       
-      let command = `gh issue list --repo ${this.owner}/${this.repo} --state ${state} --json number,title,state,body,labels,assignees,created_at,updated_at`;
+      let command = `gh issue list --repo ${this.owner}/${this.repo} --state ${state} --json number,title,state,body,labels,assignees,createdAt,updatedAt`;
       
       if (labels && labels.length > 0) {
         command += ` --label "${labels.join(',')}"`;
@@ -171,7 +171,7 @@ export class GitHubService {
       const issueNumber = parseInt(match[1]);
       
       // Fetch the created issue details
-      const issueCommand = `gh issue view ${issueNumber} --repo ${this.owner}/${this.repo} --json number,title,state,body,labels,assignees,created_at,updated_at`;
+      const issueCommand = `gh issue view ${issueNumber} --repo ${this.owner}/${this.repo} --json number,title,state,body,labels,assignees,createdAt,updatedAt`;
       const issue = executeCommandJSON<GitHubIssue>(issueCommand);
       
       return {
@@ -270,7 +270,7 @@ export class GitHubService {
    */
   async getRepoInfo(): Promise<ServiceResponse<any>> {
     try {
-      const command = `gh repo view ${this.owner}/${this.repo} --json name,description,url,createdAt,updatedAt,openIssuesCount,closedIssuesCount`;
+      const command = `gh repo view ${this.owner}/${this.repo} --json name,description,url,createdAt,updatedAt,issues`;
       const repoInfo = executeCommandJSON(command);
       
       return {
