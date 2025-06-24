@@ -1,0 +1,33 @@
+{
+  "repository": {
+    "name": "automate_workloads",
+    "owner": "emmanuelbarrera",
+    "description": "Repository information unavailable",
+    "language": "Unknown",
+    "stars": 0,
+    "forks": 0,
+    "openIssues": 0,
+    "openPRs": 0,
+    "lastCommit": "2025-06-24T23:18:16.882Z"
+  },
+  "health": {
+    "score": 70,
+    "issues": [
+      "Could not perform complete health analysis"
+    ],
+    "recommendations": []
+  },
+  "workflows": [],
+  "automation": {
+    "opportunities": [
+      {
+        "type": "documentation",
+        "description": "Improve repository documentation",
+        "impact": "medium",
+        "effort": "low",
+        "priority": 3
+      }
+    ],
+    "currentAutomation": []
+  }
+}
