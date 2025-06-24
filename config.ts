@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { getPreferenceValues } from "@raycast/api";
 
 export const envSchema = z.object({
   githubToken: z.string().min(1),
@@ -9,6 +8,20 @@ export const envSchema = z.object({
 });
 
 export function getEnv() {
-  const prefs = getPreferenceValues();
-  return envSchema.parse(prefs);
+  let raw: any = {};
+  try {
+    // Try Raycast environment
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { getPreferenceValues } = require("@raycast/api");
+    raw = getPreferenceValues();
+  } catch (e) {
+    // Fallback to process.env for CLI
+    raw = {
+      githubToken: process.env.GITHUB_TOKEN,
+      gmailToken: process.env.GMAIL_TOKEN,
+      bufferToken: process.env.BUFFER_TOKEN,
+      twitterToken: process.env.TWITTER_BEARER_TOKEN,
+    };
+  }
+  return envSchema.parse(raw);
 }
