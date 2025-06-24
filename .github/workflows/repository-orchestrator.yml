@@ -1,0 +1,304 @@
+name: Repository Workflow Orchestrator
+
+on:
+  schedule:
+    # Run every Monday at 9 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+    # Allow manual triggering
+  push:
+    branches: [ master, main ]
+    paths:
+      - 'src/cli/repo-orchestrator.ts'
+      - 'scripts/repo-orchestrator.sh'
+      - '.github/workflows/repository-orchestrator.yml'
+  pull_request:
+    branches: [ master, main ]
+
+env:
+  NODE_VERSION: '18'
+  BUN_VERSION: 'latest'
+
+jobs:
+  orchestrate:
+    name: 🎯 Repository Orchestration
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🟡 Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: 📦 Install dependencies
+        run: |
+          bun install
+          echo "✅ Dependencies installed"
+
+      - name: 🔍 Analyze repository health
+        id: analyze
+        run: |
+          echo "🔍 Starting repository analysis..."
+          
+          # Run repository analysis
+          bun run repo:analyze ${{ github.repository_owner }} ${{ github.event.repository.name }} --output analysis.json
+          
+          # Extract health score
+          HEALTH_SCORE=$(bun run --bun node -e "
+            const analysis = JSON.parse(require('fs').readFileSync('analysis.json', 'utf8'));
+            console.log(analysis.health.score);
+          ")
+          
+          echo "📊 Repository health score: $HEALTH_SCORE"
+          echo "health_score=$HEALTH_SCORE" >> $GITHUB_OUTPUT
+          
+          # Check if health score is below threshold
+          if [ "$HEALTH_SCORE" -lt 80 ]; then
+            echo "⚠️  Health score below threshold (80), triggering full orchestration"
+            echo "needs_orchestration=true" >> $GITHUB_OUTPUT
+          else
+            echo "✅ Health score is good, skipping full orchestration"
+            echo "needs_orchestration=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Save analysis for later steps
+          echo "analysis_json<<EOF" >> $GITHUB_OUTPUT
+          cat analysis.json >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: 🤖 LLM-Powered Planning
+        if: steps.analyze.outputs.needs_orchestration == 'true'
+        id: plan
+        run: |
+          echo "🤖 Generating LLM-powered improvement plan..."
+          
+          # Run planning workflow
+          bun run repo:orchestrate ${{ github.repository_owner }} ${{ github.event.repository.name }} --workflow plan --output plan.json
+          
+          # Extract plan summary
+          PLAN_SUMMARY=$(bun run --bun node -e "
+            const plan = JSON.parse(require('fs').readFileSync('plan.json', 'utf8'));
+            const planningStep = plan.steps.find(s => s.step === 'planning');
+            if (planningStep && planningStep.data) {
+              const data = planningStep.data;
+              console.log(\`Immediate actions: \${data.immediateActions?.length || 0}\`);
+              console.log(\`Short-term improvements: \${data.shortTermImprovements?.length || 0}\`);
+              console.log(\`Long-term strategy: \${data.longTermStrategy?.length || 0}\`);
+            }
+          ")
+          
+          echo "📋 Plan summary:"
+          echo "$PLAN_SUMMARY"
+          
+          # Save plan for later steps
+          echo "plan_json<<EOF" >> $GITHUB_OUTPUT
+          cat plan.json >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: 🚀 Execute automation workflows
+        if: steps.analyze.outputs.needs_orchestration == 'true'
+        id: execute
+        run: |
+          echo "🚀 Executing automation workflows..."
+          
+          # Run execution workflow
+          bun run repo:orchestrate ${{ github.repository_owner }} ${{ github.event.repository.name }} --workflow execute --create-issues --output execution.json
+          
+          # Extract execution results
+          EXECUTION_SUMMARY=$(bun run --bun node -e "
+            const execution = JSON.parse(require('fs').readFileSync('execution.json', 'utf8'));
+            const executionStep = execution.steps.find(s => s.step === 'execution');
+            if (executionStep && executionStep.data) {
+              const data = executionStep.data;
+              console.log(\`Issues created: \${data.createdIssues?.length || 0}\`);
+              console.log(\`PRs created: \${data.createdPRs?.length || 0}\`);
+              console.log(\`Files updated: \${data.updatedFiles?.length || 0}\`);
+              console.log(\`Errors: \${data.errors?.length || 0}\`);
+            }
+          ")
+          
+          echo "📊 Execution summary:"
+          echo "$EXECUTION_SUMMARY"
+          
+          # Save execution results
+          echo "execution_json<<EOF" >> $GITHUB_OUTPUT
+          cat execution.json >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: 📈 Monitor and optimize
+        if: steps.analyze.outputs.needs_orchestration == 'true'
+        id: monitor
+        run: |
+          echo "📈 Monitoring and optimizing workflows..."
+          
+          # Run monitoring workflow
+          bun run repo:orchestrate ${{ github.repository_owner }} ${{ github.event.repository.name }} --workflow monitor --output monitoring.json
+          
+          # Extract monitoring results
+          MONITORING_SUMMARY=$(bun run --bun node -e "
+            const monitoring = JSON.parse(require('fs').readFileSync('monitoring.json', 'utf8'));
+            const monitoringStep = monitoring.steps.find(s => s.step === 'monitoring');
+            if (monitoringStep && monitoringStep.data) {
+              const data = monitoringStep.data;
+              console.log(\`Alerts: \${data.alerts?.length || 0}\`);
+              console.log(\`Optimizations: \${data.optimizations?.length || 0}\`);
+            }
+          ")
+          
+          echo "📊 Monitoring summary:"
+          echo "$MONITORING_SUMMARY"
+          
+          # Save monitoring results
+          echo "monitoring_json<<EOF" >> $GITHUB_OUTPUT
+          cat monitoring.json >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: 📋 Create orchestration summary issue
+        if: steps.analyze.outputs.needs_orchestration == 'true'
+        run: |
+          echo "📋 Creating orchestration summary issue..."
+          
+          # Generate issue body
+          cat > issue_body.md << EOF
+          # 🤖 Repository Orchestration Summary
+          
+          ## 📊 Analysis Results
+          
+          **Repository Health Score:** ${{ steps.analyze.outputs.health_score }}/100
+          
+          **Analysis Date:** $(date -u +"%Y-%m-%d %H:%M UTC")
+          
+          ## 🎯 Orchestration Steps Completed
+          
+          ### 1. Repository Analysis ✅
+          - Health assessment completed
+          - Automation opportunities identified
+          - Workflow status analyzed
+          
+          ### 2. LLM-Powered Planning ✅
+          - Improvement strategies generated
+          - Priority recommendations created
+          - Risk assessment completed
+          
+          ### 3. Automation Execution ✅
+          - Automation issues created
+          - Workflow improvements implemented
+          - Repository enhancements applied
+          
+          ### 4. Monitoring & Optimization ✅
+          - Performance metrics tracked
+          - Optimization opportunities identified
+          - Continuous improvement plan established
+          
+          ## 📈 Key Metrics
+          
+          - **Health Score:** ${{ steps.analyze.outputs.health_score }}/100
+          - **Issues Created:** $(echo "${{ steps.execute.outputs.execution_json }}" | bun run --bun node -e "const data = JSON.parse(process.argv[1]); const step = data.steps.find(s => s.step === 'execution'); console.log(step?.data?.createdIssues?.length || 0);")
+          - **PRs Created:** $(echo "${{ steps.execute.outputs.execution_json }}" | bun run --bun node -e "const data = JSON.parse(process.argv[1]); const step = data.steps.find(s => s.step === 'execution'); console.log(step?.data?.createdPRs?.length || 0);")
+          - **Alerts Generated:** $(echo "${{ steps.monitor.outputs.monitoring_json }}" | bun run --bun node -e "const data = JSON.parse(process.argv[1]); const step = data.steps.find(s => s.step === 'monitoring'); console.log(step?.data?.alerts?.length || 0);")
+          
+          ## 🎯 Next Steps
+          
+          1. **Review Automation Issues** - Check the created issues for implementation
+          2. **Monitor Health Score** - Track improvements over time
+          3. **Implement Recommendations** - Apply suggested optimizations
+          4. **Schedule Follow-up** - Plan next orchestration cycle
+          
+          ## 📁 Generated Files
+          
+          - \`analysis.json\` - Detailed repository analysis
+          - \`plan.json\` - LLM-generated improvement plan
+          - \`execution.json\` - Automation execution results
+          - \`monitoring.json\` - Monitoring and optimization data
+          
+          ---
+          *Generated by Repository Workflow Orchestrator on $(date -u +"%Y-%m-%d %H:%M UTC")*
+          EOF
+          
+          # Create issue using GitHub CLI
+          gh issue create \
+            --title "🤖 Repository Orchestration Summary - $(date -u +"%Y-%m-%d")" \
+            --body-file issue_body.md \
+            --label "automation,orchestration,summary" \
+            --assignee ${{ github.actor }}
+
+      - name: 📊 Create orchestration report
+        if: always()
+        run: |
+          echo "📊 Creating orchestration report..."
+          
+          # Create report directory
+          mkdir -p .orchestration-reports
+          
+          # Generate timestamp
+          TIMESTAMP=$(date -u +"%Y%m%d-%H%M%S")
+          
+          # Copy all generated files
+          if [ -f "analysis.json" ]; then
+            cp analysis.json ".orchestration-reports/analysis-${TIMESTAMP}.json"
+          fi
+          
+          if [ -f "plan.json" ]; then
+            cp plan.json ".orchestration-reports/plan-${TIMESTAMP}.json"
+          fi
+          
+          if [ -f "execution.json" ]; then
+            cp execution.json ".orchestration-reports/execution-${TIMESTAMP}.json"
+          fi
+          
+          if [ -f "monitoring.json" ]; then
+            cp monitoring.json ".orchestration-reports/monitoring-${TIMESTAMP}.json"
+          fi
+          
+          # Create summary report
+          cat > ".orchestration-reports/summary-${TIMESTAMP}.md" << EOF
+          # Repository Orchestration Report
+          
+          **Date:** $(date -u +"%Y-%m-%d %H:%M UTC")
+          **Repository:** ${{ github.repository }}
+          **Trigger:** ${{ github.event_name }}
+          
+          ## Results
+          
+          - **Health Score:** ${{ steps.analyze.outputs.health_score }}/100
+          - **Orchestration Needed:** ${{ steps.analyze.outputs.needs_orchestration }}
+          - **Status:** ${{ job.status }}
+          
+          ## Files Generated
+          
+          - \`analysis-${TIMESTAMP}.json\`
+          - \`plan-${TIMESTAMP}.json\`
+          - \`execution-${TIMESTAMP}.json\`
+          - \`monitoring-${TIMESTAMP}.json\`
+          
+          EOF
+          
+          echo "✅ Report created: .orchestration-reports/summary-${TIMESTAMP}.md"
+
+      - name: 📤 Upload orchestration artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orchestration-reports-${{ github.run_number }}
+          path: |
+            .orchestration-reports/
+            *.json
+          retention-days: 30
+
+      - name: 🎉 Orchestration complete
+        if: always()
+        run: |
+          if [ "${{ steps.analyze.outputs.needs_orchestration }}" = "true" ]; then
+            echo "🎉 Repository orchestration completed successfully!"
+            echo "📊 Health score: ${{ steps.analyze.outputs.health_score }}/100"
+            echo "📋 Check the created issue for detailed results"
+          else
+            echo "✅ Repository is healthy! No orchestration needed."
+            echo "📊 Health score: ${{ steps.analyze.outputs.health_score }}/100"
+          fi 

@@ -1,0 +1,429 @@
+name: Generate Action Plan
+
+on:
+  workflow_dispatch:
+    inputs:
+      plan_type:
+        description: 'Type of action plan to generate'
+        required: true
+        default: 'comprehensive'
+        type: choice
+        options:
+          - comprehensive
+          - automation
+          - documentation
+          - testing
+          - deployment
+      priority:
+        description: 'Priority level for the plan'
+        required: true
+        default: 'medium'
+        type: choice
+        options:
+          - high
+          - medium
+          - low
+      context:
+        description: 'Additional context for the plan (JSON)'
+        required: false
+        default: '{}'
+        type: string
+  schedule:
+    # Run every Sunday at 8 PM UTC to prepare for the week
+    - cron: '0 20 * * 0'
+
+env:
+  NODE_VERSION: '18'
+  BUN_VERSION: 'latest'
+
+jobs:
+  generate-plan:
+    name: 📋 Generate Action Plan
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🟡 Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: 📦 Install dependencies
+        run: |
+          bun install
+          echo "✅ Dependencies installed"
+
+      - name: 🔍 Analyze current state
+        id: analyze
+        run: |
+          echo "🔍 Analyzing current repository state..."
+          
+          # Run comprehensive analysis
+          bun run repo:analyze ${{ github.repository_owner }} ${{ github.event.repository.name }} --output current-analysis.json
+          
+          # Extract key metrics
+          HEALTH_SCORE=$(bun run --bun node -e "
+            const analysis = JSON.parse(require('fs').readFileSync('current-analysis.json', 'utf8'));
+            console.log(analysis.health.score);
+          ")
+          
+          OPPORTUNITIES=$(bun run --bun node -e "
+            const analysis = JSON.parse(require('fs').readFileSync('current-analysis.json', 'utf8'));
+            console.log(analysis.automation.opportunities.length);
+          ")
+          
+          echo "📊 Current health score: $HEALTH_SCORE"
+          echo "🎯 Automation opportunities: $OPPORTUNITIES"
+          
+          echo "health_score=$HEALTH_SCORE" >> $GITHUB_OUTPUT
+          echo "opportunities=$OPPORTUNITIES" >> $GITHUB_OUTPUT
+
+      - name: 🤖 Generate LLM-powered plan
+        id: plan
+        run: |
+          echo "🤖 Generating LLM-powered action plan..."
+          
+          # Prepare context based on plan type
+          PLAN_TYPE="${{ github.event.inputs.plan_type || 'comprehensive' }}"
+          PRIORITY="${{ github.event.inputs.priority || 'medium' }}"
+          CONTEXT="${{ github.event.inputs.context || '{}' }}"
+          
+          # Create enhanced context
+          ENHANCED_CONTEXT=$(bun run --bun node -e "
+            const baseContext = JSON.parse('$CONTEXT');
+            const analysis = JSON.parse(require('fs').readFileSync('current-analysis.json', 'utf8'));
+            
+            const enhancedContext = {
+              ...baseContext,
+              planType: '$PLAN_TYPE',
+              priority: '$PRIORITY',
+              currentHealth: analysis.health.score,
+              opportunities: analysis.automation.opportunities,
+              repository: analysis.repository,
+              timestamp: new Date().toISOString(),
+              trigger: '${{ github.event_name }}',
+              actor: '${{ github.actor }}'
+            };
+            
+            console.log(JSON.stringify(enhancedContext));
+          ")
+          
+          # Run planning workflow with enhanced context
+          bun run repo:orchestrate ${{ github.repository_owner }} ${{ github.event.repository.name }} \
+            --workflow plan \
+            --context "$ENHANCED_CONTEXT" \
+            --output action-plan.json
+          
+          echo "✅ Action plan generated"
+
+      - name: 📋 Create action plan issues
+        id: create-issues
+        run: |
+          echo "📋 Creating action plan issues..."
+          
+          # Extract plan data
+          PLAN_DATA=$(bun run --bun node -e "
+            const plan = JSON.parse(require('fs').readFileSync('action-plan.json', 'utf8'));
+            const planningStep = plan.steps.find(s => s.step === 'planning');
+            console.log(JSON.stringify(planningStep?.data || {}));
+          ")
+          
+          # Create immediate actions issue
+          if echo "$PLAN_DATA" | bun run --bun node -e "
+            const data = JSON.parse(process.argv[1]);
+            if (data.immediateActions && data.immediateActions.length > 0) {
+              console.log('true');
+            } else {
+              console.log('false');
+            }
+          " | grep -q "true"; then
+            echo "📝 Creating immediate actions issue..."
+            
+            cat > immediate-actions.md << 'EOF'
+            # 🚀 Immediate Actions (Next 24 Hours)
+            
+            **Plan Type:** ${{ github.event.inputs.plan_type || 'comprehensive' }}
+            **Priority:** ${{ github.event.inputs.priority || 'medium' }}
+            **Generated:** $(date -u +"%Y-%m-%d %H:%M UTC")
+            
+            ## 🎯 Actions to Complete
+            
+            $(echo "$PLAN_DATA" | bun run --bun node -e "
+              const data = JSON.parse(process.argv[1]);
+              if (data.immediateActions) {
+                data.immediateActions.forEach((action, index) => {
+                  console.log(\`\${index + 1}. [ ] \${action}\`);
+                });
+              }
+            ")
+            
+            ## 📊 Context
+            
+            - **Current Health Score:** ${{ steps.analyze.outputs.health_score }}/100
+            - **Automation Opportunities:** ${{ steps.analyze.outputs.opportunities }}
+            - **Plan Priority:** ${{ github.event.inputs.priority || 'medium' }}
+            
+            ## ✅ Completion Checklist
+            
+            - [ ] Review all immediate actions
+            - [ ] Assign tasks to team members
+            - [ ] Set deadlines for each action
+            - [ ] Track progress and update status
+            - [ ] Document any blockers or dependencies
+            
+            ---
+            *Generated by Repository Workflow Orchestrator*
+            EOF
+            
+            gh issue create \
+              --title "🚀 Immediate Actions - $(date -u +"%Y-%m-%d")" \
+              --body-file immediate-actions.md \
+              --label "automation,immediate,action-plan" \
+              --assignee ${{ github.actor }}
+            
+            echo "✅ Immediate actions issue created"
+          fi
+          
+          # Create short-term improvements issue
+          if echo "$PLAN_DATA" | bun run --bun node -e "
+            const data = JSON.parse(process.argv[1]);
+            if (data.shortTermImprovements && data.shortTermImprovements.length > 0) {
+              console.log('true');
+            } else {
+              console.log('false');
+            }
+          " | grep -q "true"; then
+            echo "📝 Creating short-term improvements issue..."
+            
+            cat > short-term-improvements.md << 'EOF'
+            # 📈 Short-Term Improvements (Next Week)
+            
+            **Plan Type:** ${{ github.event.inputs.plan_type || 'comprehensive' }}
+            **Priority:** ${{ github.event.inputs.priority || 'medium' }}
+            **Generated:** $(date -u +"%Y-%m-%d %H:%M UTC")
+            
+            ## 🎯 Improvements to Implement
+            
+            $(echo "$PLAN_DATA" | bun run --bun node -e "
+              const data = JSON.parse(process.argv[1]);
+              if (data.shortTermImprovements) {
+                data.shortTermImprovements.forEach((improvement, index) => {
+                  console.log(\`\${index + 1}. [ ] \${improvement}\`);
+                });
+              }
+            ")
+            
+            ## 📊 Expected Impact
+            
+            - **Timeline:** 1 week
+            - **Effort:** Medium
+            - **Priority:** ${{ github.event.inputs.priority || 'medium' }}
+            
+            ## 📋 Implementation Plan
+            
+            - [ ] Break down each improvement into tasks
+            - [ ] Estimate effort and resources needed
+            - [ ] Create implementation timeline
+            - [ ] Assign ownership for each improvement
+            - [ ] Set up progress tracking
+            
+            ---
+            *Generated by Repository Workflow Orchestrator*
+            EOF
+            
+            gh issue create \
+              --title "📈 Short-Term Improvements - $(date -u +"%Y-%m-%d")" \
+              --body-file short-term-improvements.md \
+              --label "automation,improvements,action-plan" \
+              --assignee ${{ github.actor }}
+            
+            echo "✅ Short-term improvements issue created"
+          fi
+          
+          # Create long-term strategy issue
+          if echo "$PLAN_DATA" | bun run --bun node -e "
+            const data = JSON.parse(process.argv[1]);
+            if (data.longTermStrategy && data.longTermStrategy.length > 0) {
+              console.log('true');
+            } else {
+              console.log('false');
+            }
+          " | grep -q "true"; then
+            echo "📝 Creating long-term strategy issue..."
+            
+            cat > long-term-strategy.md << 'EOF'
+            # 🎯 Long-Term Strategy (Next Month)
+            
+            **Plan Type:** ${{ github.event.inputs.plan_type || 'comprehensive' }}
+            **Priority:** ${{ github.event.inputs.priority || 'medium' }}
+            **Generated:** $(date -u +"%Y-%m-%d %H:%M UTC")
+            
+            ## 🎯 Strategic Initiatives
+            
+            $(echo "$PLAN_DATA" | bun run --bun node -e "
+              const data = JSON.parse(process.argv[1]);
+              if (data.longTermStrategy) {
+                data.longTermStrategy.forEach((strategy, index) => {
+                  console.log(\`\${index + 1}. [ ] \${strategy}\`);
+                });
+              }
+            ")
+            
+            ## 📊 Strategic Context
+            
+            - **Timeline:** 1 month
+            - **Effort:** High
+            - **Impact:** Long-term transformation
+            - **Dependencies:** Short-term improvements completion
+            
+            ## 🎯 Success Metrics
+            
+            $(echo "$PLAN_DATA" | bun run --bun node -e "
+              const data = JSON.parse(process.argv[1]);
+              if (data.successMetrics) {
+                console.log('### Key Performance Indicators');
+                Object.entries(data.successMetrics).forEach(([metric, target]) => {
+                  console.log(\`- **\${metric}:** \${target}\`);
+                });
+              }
+            ")
+            
+            ## 📋 Strategic Planning
+            
+            - [ ] Define success criteria for each initiative
+            - [ ] Create detailed project plans
+            - [ ] Identify resource requirements
+            - [ ] Set up milestone tracking
+            - [ ] Plan regular strategy reviews
+            
+            ---
+            *Generated by Repository Workflow Orchestrator*
+            EOF
+            
+            gh issue create \
+              --title "🎯 Long-Term Strategy - $(date -u +"%Y-%m-%d")" \
+              --body-file long-term-strategy.md \
+              --label "automation,strategy,action-plan" \
+              --assignee ${{ github.actor }}
+            
+            echo "✅ Long-term strategy issue created"
+          fi
+
+      - name: 📊 Create action plan summary
+        id: summary
+        run: |
+          echo "📊 Creating action plan summary..."
+          
+          # Count created issues
+          ISSUES_CREATED=$(gh issue list --label "action-plan" --limit 100 | wc -l)
+          
+          # Generate summary
+          cat > action-plan-summary.md << 'EOF'
+          # 📋 Action Plan Summary
+          
+          **Generated:** $(date -u +"%Y-%m-%d %H:%M UTC")
+          **Plan Type:** ${{ github.event.inputs.plan_type || 'comprehensive' }}
+          **Priority:** ${{ github.event.inputs.priority || 'medium' }}
+          **Trigger:** ${{ github.event_name }}
+          
+          ## 📊 Plan Overview
+          
+          - **Current Health Score:** ${{ steps.analyze.outputs.health_score }}/100
+          - **Automation Opportunities:** ${{ steps.analyze.outputs.opportunities }}
+          - **Issues Created:** $ISSUES_CREATED
+          - **Plan Scope:** ${{ github.event.inputs.plan_type || 'comprehensive' }}
+          
+          ## 🎯 Plan Components
+          
+          ### Immediate Actions
+          - **Timeline:** Next 24 hours
+          - **Focus:** Quick wins and urgent improvements
+          - **Status:** Ready for implementation
+          
+          ### Short-Term Improvements
+          - **Timeline:** Next week
+          - **Focus:** Medium-effort enhancements
+          - **Status:** Planning phase
+          
+          ### Long-Term Strategy
+          - **Timeline:** Next month
+          - **Focus:** Strategic transformation
+          - **Status:** Strategic planning
+          
+          ## 📈 Success Metrics
+          
+          $(cat action-plan.json | bun run --bun node -e "
+            const plan = JSON.parse(require('fs').readFileSync('action-plan.json', 'utf8'));
+            const planningStep = plan.steps.find(s => s.step === 'planning');
+            if (planningStep?.data?.successMetrics) {
+              console.log('### Key Performance Indicators');
+              Object.entries(planningStep.data.successMetrics).forEach(([metric, target]) => {
+                console.log(\`- **\${metric}:** \${target}\`);
+              });
+            }
+          ")
+          
+          ## 🎯 Next Steps
+          
+          1. **Review Action Plan Issues** - Check all created issues for details
+          2. **Prioritize Implementation** - Focus on immediate actions first
+          3. **Assign Ownership** - Ensure each action has a responsible person
+          4. **Track Progress** - Monitor implementation and update status
+          5. **Schedule Reviews** - Plan regular check-ins on progress
+          
+          ## 📁 Generated Files
+          
+          - \`current-analysis.json\` - Current repository analysis
+          - \`action-plan.json\` - Complete action plan data
+          - Action plan issues (see GitHub issues)
+          
+          ---
+          *Generated by Repository Workflow Orchestrator*
+          EOF
+          
+          # Create summary issue
+          gh issue create \
+            --title "📋 Action Plan Summary - $(date -u +"%Y-%m-%d")" \
+            --body-file action-plan-summary.md \
+            --label "orchestration,summary,action-plan" \
+            --assignee ${{ github.actor }}
+          
+          echo "✅ Action plan summary created"
+
+      - name: 📤 Upload action plan artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: action-plan-${{ github.run_number }}
+          path: |
+            current-analysis.json
+            action-plan.json
+            action-plan-summary.md
+          retention-days: 30
+
+      - name: 🎉 Action plan generation complete
+        run: |
+          echo "🎉 Action plan generation completed successfully!"
+          echo ""
+          echo "📊 Summary:"
+          echo "   - Health score: ${{ steps.analyze.outputs.health_score }}/100"
+          echo "   - Opportunities: ${{ steps.analyze.outputs.opportunities }}"
+          echo "   - Plan type: ${{ github.event.inputs.plan_type || 'comprehensive' }}"
+          echo "   - Priority: ${{ github.event.inputs.priority || 'medium' }}"
+          echo ""
+          echo "📋 Created issues:"
+          echo "   - Action plan summary"
+          echo "   - Immediate actions (if applicable)"
+          echo "   - Short-term improvements (if applicable)"
+          echo "   - Long-term strategy (if applicable)"
+          echo ""
+          echo "📁 Artifacts uploaded:"
+          echo "   - current-analysis.json"
+          echo "   - action-plan.json"
+          echo "   - action-plan-summary.md"
+          echo ""
+          echo "🚀 Ready for implementation!" 
