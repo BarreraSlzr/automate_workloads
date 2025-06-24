@@ -1,8 +1,15 @@
 {
   "name": "automate_workloads",
-  "module": "index.ts",
+  "module": "src/cli/github-issues.ts",
   "type": "module",
   "private": true,
+  "scripts": {
+    "start": "bun run src/cli/github-issues.ts",
+    "issues": "bun run src/cli/github-issues.ts",
+    "examples": "bun run examples/basic-usage.ts",
+    "test": "bun test",
+    "docs": "bun run docs/README.md"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
@@ -14,5 +21,20 @@
     "commander": "^14.0.0",
     "octokit": "^5.0.3",
     "zod": "^3.25.67"
-  }
+  },
+  "engines": {
+    "bun": ">=1.0.0"
+  },
+  "keywords": [
+    "automation",
+    "github",
+    "twitter",
+    "gmail",
+    "buffer",
+    "obsidian",
+    "raycast",
+    "bun",
+    "typescript"
+  ],
+  "description": "A comprehensive automation ecosystem integrating GitHub, Twitter, Gmail, Buffer, and Obsidian with Bun and TypeScript"
 }
