@@ -80,19 +80,19 @@ tar -xzf context-backup-20250624.tar.gz
 ### Backup and Restore
 ```bash
 # Backup context data
-./scripts/backup-context.sh
+./scripts/automation/backup-context.sh
 
 # Restore context data
-./scripts/restore-context.sh backup-file.tar.gz
+./scripts/automation/restore-context.sh backup-file.tar.gz
 ```
 
 ### Cleanup and Maintenance
 ```bash
 # Clean old reports (keep last 30 days)
-./scripts/cleanup-reports.sh --days 30
+./scripts/automation/cleanup-reports.sh --days 30
 
 # Archive old fossil entries
-./scripts/archive-fossils.sh --older-than 90d
+./scripts/automation/archive-fossils.sh --older-than 90d
 ```
 
 ### Export for Sharing

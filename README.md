@@ -227,9 +227,9 @@ bun run llm:monitor "execution-id"                # Monitor execution
 bun run llm:analyze --code-quality                # Analyze code quality
 
 # Automation Scripts
-./scripts/llm-workflow.sh "workflow-type"         # Run LLM-powered workflow
-./scripts/llm-issue-manager.sh analyze "data"     # Manage issues with LLM
-./scripts/llm-content-automation.sh "type" "topic" "platforms"  # Automate content
+./scripts/automation/llm-workflow.sh "workflow-type"         # Run LLM-powered workflow
+./scripts/automation/llm-issue-manager.sh analyze "data"     # Manage issues with LLM
+./scripts/automation/llm-content-automation.sh "type" "topic" "platforms"  # Automate content
 ```
 
 ### 🗿 Context Fossil Storage Tool
@@ -376,13 +376,13 @@ The tools continuously improve themselves through:
 
 ### Scripts
 
-- **`scripts/llm-workflow.sh`**: LLM-powered workflow automation
-- **`scripts/llm-issue-manager.sh`**: Intelligent issue management
-- **`scripts/llm-content-automation.sh`**: Content generation and distribution
-- **`scripts/qa-workflow.sh`**: Quality assurance automation
-- **`scripts/review-workflow.sh`**: Code review automation
-- **`scripts/monitor-progress.sh`**: Progress monitoring and tracking
-- **`scripts/quick-status.sh`**: Quick status checks
+- **`scripts/automation/llm-workflow.sh`**: LLM-powered workflow automation
+- **`scripts/automation/llm-issue-manager.sh`**: Intelligent issue management
+- **`scripts/automation/llm-content-automation.sh`**: Content generation and distribution
+- **`scripts/automation/qa-workflow.sh`**: Quality assurance automation
+- **`scripts/automation/review-workflow.sh`**: Code review automation
+- **`scripts/automation/monitor-progress.sh`**: Progress monitoring and tracking
+- **`scripts/monitoring/quick-status.sh`**: Quick status checks
 
 ## 🎯 LLM-Friendly Goals
 
@@ -515,7 +515,7 @@ Below are the main scripts you can run with Bun. Use `bun run <script-name>` to 
 
 ### Issues
 - `issues:ci` — List issues labeled 'ci'
-- `issues:check` — Run the check-issues shell script
+- `issues:check` — Run the check-issues shell script (`scripts/monitoring/check-issues.sh`)
 - `issues:ensure-demo` — Ensure demo issue via TypeScript script
 - `issues:list` — List all issues
 - `issues:manager` — Run the LLM issue manager shell script
@@ -573,32 +573,61 @@ Below are the main scripts you can run with Bun. Use `bun run <script-name>` to 
 - `content:automation` — Run content automation shell script
 
 ### Other
-- `build` — Build the orchestrator for Node
-- `demo:ecosystem` — Run the complete automation ecosystem demo
-- `demo:tool-centric` — Run the tool-centric demo
-- `dev` — Watch and run the repo orchestrator
-- `dev:start` — Start the GitHub issues CLI
-- `dev:setup` — Install dependencies and copy .env.example
-- `dev:test` — Watch and run tests
-- `docs` — Open documentation
-- `format` — Format code with Prettier
-- `gmail:sync` — Sync Gmail
-- `lint` — Lint the codebase
-- `obsidian:sync` — Sync Obsidian
-- `plan:create` — Create a plan
-- `plan:execute` — Execute a plan
-- `plan:monitor` — Monitor a plan
-- `release:execute` — Execute a release
-- `release:monitor` — Monitor a release
-- `release:plan` — Plan a release
-- `social:sync` — Sync social accounts
-- `start` — Start the GitHub issues CLI
-- `test` — Run tests
-- `type-check` — Type-check the codebase
-- `examples` — Run basic usage example
-- `llm:analyze` — Analyze with LLM
-- `llm:execute` — Execute with LLM
-- `llm:monitor` — Monitor with LLM
-- `llm:plan` — Plan with LLM
-- `issues` — Run the GitHub issues CLI
-- `github:sync` — Sync GitHub
+- `build` — Build the orchestrator for Node  
+  _(bun: `bun build src/cli/repo-orchestrator.ts --outdir dist --target node`)_
+- `demo:ecosystem` — Run the complete automation ecosystem demo  
+  _(ts: `examples/complete-automation-ecosystem.ts`)_
+- `demo:tool-centric` — Run the tool-centric demo  
+  _(ts: `examples/tool-centric-demo.ts`)_
+- `dev` — Watch and run the repo orchestrator  
+  _(bun: `bun run --watch src/cli/repo-orchestrator.ts`)_
+- `dev:start` — Start the GitHub issues CLI  
+  _(ts: `src/cli/github-issues.ts`)_
+- `dev:setup` — Install dependencies and copy .env.example  
+  _(shell: `bun install && cp .env.example .env`)_
+- `dev:test` — Watch and run tests  
+  _(bun: `bun test --watch`)_
+- `docs` — Open documentation  
+  _(md: `docs/README.md`)_
+- `format` — Format code with Prettier  
+  _(shell: `prettier --write src/**/*.ts`)_
+- `gmail:sync` — Sync Gmail  
+  _(ts: `src/cli/gmail-sync.ts`)_
+- `lint` — Lint the codebase  
+  _(bun: `bun run --bun eslint src/**/*.ts`)_
+- `obsidian:sync` — Sync Obsidian  
+  _(ts: `src/cli/obsidian-sync.ts`)_
+- `plan:create` — Create a plan  
+  _(ts: `src/cli/create-plan.ts`)_
+- `plan:execute` — Execute a plan  
+  _(ts: `src/cli/execute-plan.ts`)_
+- `plan:monitor` — Monitor a plan  
+  _(ts: `src/cli/monitor-plan.ts`)_
+- `release:execute` — Execute a release  
+  _(ts: `src/cli/release-execute.ts`)_
+- `release:monitor` — Monitor a release  
+  _(ts: `src/cli/release-monitor.ts`)_
+- `release:plan` — Plan a release  
+  _(ts: `src/cli/release-plan.ts`)_
+- `social:sync` — Sync social accounts  
+  _(ts: `src/cli/social-sync.ts`)_
+- `start` — Start the GitHub issues CLI  
+  _(ts: `src/cli/github-issues.ts`)_
+- `test` — Run tests  
+  _(bun: `bun test`)_
+- `type-check` — Type-check the codebase  
+  _(bun: `bun run --bun tsc --noEmit`)_
+- `examples` — Run basic usage example  
+  _(ts: `examples/basic-usage.ts`)_
+- `llm:analyze` — Analyze with LLM  
+  _(ts: `src/cli/llm-analyze.ts`)_
+- `llm:execute` — Execute with LLM  
+  _(ts: `src/cli/llm-execute.ts`)_
+- `llm:monitor` — Monitor with LLM  
+  _(ts: `src/cli/llm-monitor.ts`)_
+- `llm:plan` — Plan with LLM  
+  _(ts: `src/cli/llm-plan.ts`)_
+- `issues` — Run the GitHub issues CLI  
+  _(ts: `src/cli/github-issues.ts`)_
+- `github:sync` — Sync GitHub  
+  _(ts: `src/cli/github-sync.ts`)_

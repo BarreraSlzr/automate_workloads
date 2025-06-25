@@ -2,6 +2,8 @@
 
 ## Project Structure
 
+See [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md) for the up-to-date project structure, directory tree, and explanations.
+
 - `config.ts` — Loads and validates environment variables using Zod and Raycast API.
 - `obsidianService.ts` — Utilities for reading/writing Obsidian vault files.
 - `githubService.ts` — GitHub API helpers using Octokit.

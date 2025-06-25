@@ -595,7 +595,7 @@ interface RealTimeMonitoring {
 #### 1. **Intelligent Workflow Automation**
 ```bash
 #!/bin/bash
-# scripts/llm-workflow.sh
+# scripts/automation/llm-workflow.sh
 
 # LLM-powered workflow automation
 WORKFLOW_TYPE="$1"
@@ -638,7 +638,7 @@ done
 #### 2. **Smart Issue Management**
 ```bash
 #!/bin/bash
-# scripts/llm-issue-manager.sh
+# scripts/automation/llm-issue-manager.sh
 
 # LLM-powered issue management
 ISSUE_ACTION="$1"
@@ -671,7 +671,7 @@ esac
 #### 3. **Intelligent Content Automation**
 ```bash
 #!/bin/bash
-# scripts/llm-content-automation.sh
+# scripts/automation/llm-content-automation.sh
 
 # LLM-powered content automation
 CONTENT_TYPE="$1"
@@ -704,9 +704,9 @@ bun run llm:generate-summary "$CONTENT" "$PLATFORMS"
     "llm:execute": "bun run src/cli/llm-execute.ts",
     "llm:monitor": "bun run src/cli/llm-monitor.ts",
     "llm:analyze": "bun run src/cli/llm-analyze.ts",
-    "workflow:automate": "./scripts/llm-workflow.sh",
-    "issues:manage": "./scripts/llm-issue-manager.sh",
-    "content:automate": "./scripts/llm-content-automation.sh",
+    "workflow:automate": "./scripts/automation/llm-workflow.sh",
+    "issues:manage": "./scripts/automation/llm-issue-manager.sh",
+    "content:automate": "./scripts/automation/llm-content-automation.sh",
     "context:gather": "bun run src/cli/gather-context.ts",
     "plan:create": "bun run src/cli/create-plan.ts",
     "plan:execute": "bun run src/cli/execute-plan.ts",
@@ -780,7 +780,7 @@ interface TestAnalysis {
 
 ```bash
 #!/bin/bash
-# scripts/qa-workflow.sh
+# scripts/automation/qa-workflow.sh
 
 # LLM-enhanced QA workflow
 echo "🧪 Starting LLM-enhanced QA workflow..."
@@ -1065,7 +1065,7 @@ interface AutomatedReview {
 #### 2. **Review Workflow**
 ```bash
 #!/bin/bash
-# scripts/review-workflow.sh
+# scripts/automation/review-workflow.sh
 
 # LLM-enhanced review workflow
 PR_NUMBER="$1"

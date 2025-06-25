@@ -1,0 +1,9 @@
+{
+  "migrations": [
+    {
+      "id": "001",
+      "name": "improve-project-structure",
+      "applied_at": "2025-06-25T05:28:55Z"
+    }
+  ]
+}

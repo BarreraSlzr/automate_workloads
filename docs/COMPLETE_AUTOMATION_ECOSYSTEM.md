@@ -67,14 +67,14 @@ gh auth login
 bun run demo:ecosystem
 
 # Or with custom parameters
-bun run demo:ecosystem emmanuelbarrera automate_workloads [project-id]
+bun run demo:ecosystem barreraslzr automate_workloads [project-id]
 ```
 
 ### Step-by-Step Execution
 
 ```bash
 # 1. Analyze repository
-bun run repo:analyze emmanuelbarrera automate_workloads
+bun run repo:analyze barreraslzr automate_workloads
 
 # 2. Plan goals with LLM
 bun run llm:plan decompose "Improve repository documentation"
@@ -83,11 +83,11 @@ bun run llm:plan decompose "Improve repository documentation"
 bun run context:add --type decision --title "Use Bun" --content "..." --tags "technology,performance"
 
 # 4. Track progress
-bun run repo:monitor emmanuelbarrera automate_workloads
+bun run repo:monitor barreraslzr automate_workloads
 
 # 5. Integrate with GitHub Projects (if project ID available)
-bun run projects:setup -p PROJECT_ID emmanuelbarrera automate_workloads
-bun run projects:sync -p PROJECT_ID emmanuelbarrera automate_workloads
+bun run projects:setup -p PROJECT_ID barreraslzr automate_workloads
+bun run projects:sync -p PROJECT_ID barreraslzr automate_workloads
 
 # 6. Learn from interactions
 bun run context:query --search "automation success patterns"
@@ -379,7 +379,7 @@ Here's how all components work together in a complete automation workflow:
 ### 1. Initial Analysis
 ```bash
 # Analyze repository and identify opportunities
-bun run repo:analyze emmanuelbarrera automate_workloads
+bun run repo:analyze barreraslzr automate_workloads
 ```
 
 ### 2. Goal Planning
@@ -397,13 +397,13 @@ bun run context:add --type decision --title "Automation Strategy" --content "Foc
 ### 4. Progress Monitoring
 ```bash
 # Track implementation progress
-bun run repo:monitor emmanuelbarrera automate_workloads
+bun run repo:monitor barreraslzr automate_workloads
 ```
 
 ### 5. GitHub Projects Integration
 ```bash
 # Visualize progress in GitHub Projects
-bun run projects:sync -p PROJECT_ID emmanuelbarrera automate_workloads
+bun run projects:sync -p PROJECT_ID barreraslzr automate_workloads
 ```
 
 ### 6. Learning and Improvement

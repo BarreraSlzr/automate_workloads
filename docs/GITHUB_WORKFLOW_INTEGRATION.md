@@ -184,13 +184,13 @@ The workflows run automatically on schedule:
 
 ```bash
 # Analyze repository locally
-bun run repo:analyze emmanuelbarrera automate_workloads
+bun run repo:analyze barreraslzr automate_workloads
 
 # Generate action plan locally
-bun run repo:orchestrate emmanuelbarrera automate_workloads --workflow plan
+bun run repo:orchestrate barreraslzr automate_workloads --workflow plan
 
 # Use wrapper script
-./scripts/repo-orchestrator.sh emmanuelbarrera automate_workloads
+./scripts/automation/repo-orchestrator.sh barreraslzr automate_workloads
 ```
 
 ## Generated Artifacts

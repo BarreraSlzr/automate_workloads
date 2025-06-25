@@ -1,3 +1,6 @@
+// This file is being renamed to base-tester.ts to avoid being picked up as a test file by Bun.
+// Please update all imports to use './base-tester' instead of './base.test'.
+
 import { test, expect } from "bun:test";
 
 /**

@@ -34,7 +34,7 @@
 ```typescript
 import { ScriptTester } from "./base.test.js";
 
-const tester = new ScriptTester("./scripts/my-script.sh", "Custom test message");
+const tester = new ScriptTester("./scripts/automation/my-script.sh", "Custom test message");
 
 // Test mode validation
 await tester.testMode();
@@ -85,7 +85,7 @@ await tester.isExecutable();
 // scripts/my-script.test.ts
 import { ScriptTester } from "./base.test.js";
 
-const tester = new ScriptTester("./scripts/my-script.sh", "Custom test message");
+const tester = new ScriptTester("./scripts/automation/my-script.sh", "Custom test message");
 
 // Script-specific test cases
 const testCases = [
@@ -112,7 +112,7 @@ All shell scripts should support test mode:
 ```bash
 #!/bin/bash
 if [[ "$CHECK_ISSUES_TEST" == "1" ]]; then
-  echo "[TEST MODE] script-name.sh ran successfully."
+  echo "[TEST MODE] my-script.sh ran successfully."
   exit 0
 fi
 # ... rest of script

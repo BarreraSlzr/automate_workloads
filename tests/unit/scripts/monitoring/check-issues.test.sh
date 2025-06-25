@@ -1,5 +1,5 @@
 #!/bin/bash
-# Comprehensive test suite for scripts/check-issues.sh
+# Comprehensive test suite for scripts/monitoring/check-issues.sh
 
 set -e  # Exit on any error
 
@@ -7,7 +7,7 @@ echo "🧪 Running check-issues.sh test suite..."
 
 # Test 1: Test mode
 echo "Test 1: Test mode"
-output=$(CHECK_ISSUES_TEST=1 ./scripts/check-issues.sh)
+output=$(CHECK_ISSUES_TEST=1 ./scripts/monitoring/check-issues.sh)
 if [[ "$output" == "[TEST MODE] check-issues.sh ran successfully." ]]; then
   echo "✅ Test mode PASSED"
 else
@@ -19,7 +19,7 @@ fi
 
 # Test 2: Test mode with label argument
 echo "Test 2: Test mode with label argument"
-output=$(CHECK_ISSUES_TEST=1 ./scripts/check-issues.sh "bug")
+output=$(CHECK_ISSUES_TEST=1 ./scripts/monitoring/check-issues.sh "bug")
 if [[ "$output" == "[TEST MODE] check-issues.sh ran successfully." ]]; then
   echo "✅ Test mode with label PASSED"
 else
@@ -31,7 +31,7 @@ fi
 
 # Test 3: Test mode with milestone argument
 echo "Test 3: Test mode with milestone argument"
-output=$(CHECK_ISSUES_TEST=1 ./scripts/check-issues.sh "" "Test Milestone")
+output=$(CHECK_ISSUES_TEST=1 ./scripts/monitoring/check-issues.sh "" "Test Milestone")
 if [[ "$output" == "[TEST MODE] check-issues.sh ran successfully." ]]; then
   echo "✅ Test mode with milestone PASSED"
 else
@@ -43,7 +43,7 @@ fi
 
 # Test 4: Script is executable
 echo "Test 4: Script is executable"
-if [[ -x "./scripts/check-issues.sh" ]]; then
+if [[ -x "./scripts/monitoring/check-issues.sh" ]]; then
   echo "✅ Script is executable PASSED"
 else
   echo "❌ Script is executable FAILED"

@@ -110,7 +110,7 @@ This report demonstrates the integration between the context fossil storage syst
 ### In Monitoring Workflows
 ```bash
 # Monitor progress and store in fossil storage
-bun run repo:monitor emmanuelbarrera automate_workloads |   bun run context:add --type observation --source automated
+bun run repo:monitor barreraslzr automate_workloads |   bun run context:add --type observation --source automated
 ```
 
 ### In Action Planning

@@ -43,7 +43,7 @@ bun run repo:analyze microsoft vscode
 bun run repo:orchestrate facebook react --workflow full
 
 # Use the convenient wrapper script
-./scripts/repo-orchestrator.sh microsoft vscode
+./scripts/automation/repo-orchestrator.sh microsoft vscode
 ```
 
 ### Workflow Types
@@ -91,13 +91,13 @@ bun run repo:orchestrate openai openai-cookbook --workflow execute --create-prs
 
 ```bash
 # Convenient wrapper with interactive prompts
-./scripts/repo-orchestrator.sh <owner> <repo> [workflow] [branch] [options]
+./scripts/automation/repo-orchestrator.sh <owner> <repo> [workflow] [branch] [options]
 
 # Examples
-./scripts/repo-orchestrator.sh microsoft vscode
-./scripts/repo-orchestrator.sh facebook react analyze
-./scripts/repo-orchestrator.sh google tensorflow plan main --create-issues
-./scripts/repo-orchestrator.sh openai openai-cookbook full main --output results.json
+./scripts/automation/repo-orchestrator.sh microsoft vscode
+./scripts/automation/repo-orchestrator.sh facebook react analyze
+./scripts/automation/repo-orchestrator.sh google tensorflow plan main --create-issues
+./scripts/automation/repo-orchestrator.sh openai openai-cookbook full main --output results.json
 ```
 
 ## Options
@@ -211,7 +211,7 @@ bun run repo:orchestrate microsoft vscode --workflow execute --context plan-resu
 bun run repo:analyze facebook react --output react-analysis.json
 
 # 2. Generate content about the analysis
-./scripts/llm-content-automation.sh "blog-post" "React Repository Analysis" "medium,twitter"
+./scripts/automation/llm-content-automation.sh "blog-post" "React Repository Analysis" "medium,twitter"
 
 # 3. Create automation issues
 bun run repo:orchestrate facebook react --workflow execute --create-issues

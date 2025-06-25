@@ -17,7 +17,7 @@ The progress tracking system provides:
 
 ### Core Components
 
-1. **Progress Monitoring Script** (`scripts/monitor-progress.sh`)
+1. **Progress Monitoring Script** (`scripts/automation/monitor-progress.sh`)
    - Shell-based monitoring tool for immediate use
    - Collects current state, tracks progress, analyzes trends
    - Generates comprehensive reports and recommendations
@@ -44,30 +44,30 @@ Repository State → Analysis → Progress Tracking → Trend Analysis → Recom
 
 ```bash
 # Monitor current repository
-bun run repo:monitor emmanuelbarrera automate_workloads
+bun run repo:monitor barreraslzr automate_workloads
 
 # Quick status check
-bun run repo:status emmanuelbarrera automate_workloads
+bun run repo:status barreraslzr automate_workloads
 
 # Track with custom mode
-bun run repo:track -m health-only emmanuelbarrera automate_workloads
+bun run repo:track -m health-only barreraslzr automate_workloads
 ```
 
 ### Advanced Monitoring
 
 ```bash
 # Comprehensive tracking with custom output
-./scripts/monitor-progress.sh \
+./scripts/automation/monitor-progress.sh \
   -m comprehensive \
   -r weekly \
   -o results.json \
-  emmanuelbarrera automate_workloads
+  barreraslzr automate_workloads
 
 # Health-only monitoring without triggering next steps
-./scripts/monitor-progress.sh \
+./scripts/automation/monitor-progress.sh \
   -m health-only \
   --no-trigger \
-  emmanuelbarrera automate_workloads
+  barreraslzr automate_workloads
 ```
 
 ## 📊 Tracking Modes
@@ -78,7 +78,7 @@ bun run repo:track -m health-only emmanuelbarrera automate_workloads
 - **Use Case**: Daily monitoring, full assessments
 
 ```bash
-bun run repo:monitor -m comprehensive emmanuelbarrera automate_workloads
+bun run repo:monitor -m comprehensive barreraslzr automate_workloads
 ```
 
 ### 2. Action Plan Mode
@@ -87,7 +87,7 @@ bun run repo:monitor -m comprehensive emmanuelbarrera automate_workloads
 - **Use Case**: Weekly progress reviews, plan management
 
 ```bash
-bun run repo:monitor -m action-plan emmanuelbarrera automate_workloads
+bun run repo:monitor -m action-plan barreraslzr automate_workloads
 ```
 
 ### 3. Health-Only Mode
@@ -96,7 +96,7 @@ bun run repo:monitor -m action-plan emmanuelbarrera automate_workloads
 - **Use Case**: Quick health checks, trend analysis
 
 ```bash
-bun run repo:monitor -m health-only emmanuelbarrera automate_workloads
+bun run repo:monitor -m health-only barreraslzr automate_workloads
 ```
 
 ### 4. Automation Progress Mode
@@ -105,7 +105,7 @@ bun run repo:monitor -m health-only emmanuelbarrera automate_workloads
 - **Use Case**: DevOps monitoring, automation reviews
 
 ```bash
-bun run repo:monitor -m automation-progress emmanuelbarrera automate_workloads
+bun run repo:monitor -m automation-progress barreraslzr automate_workloads
 ```
 
 ## 📈 Metrics Tracked
@@ -326,7 +326,7 @@ brew install gh bun jq
 #### Permission Issues
 ```bash
 # Error: Permission denied
-chmod +x scripts/monitor-progress.sh
+chmod +x scripts/automation/monitor-progress.sh
 
 # Error: GitHub token not found
 export GITHUB_TOKEN=your_token
@@ -338,16 +338,16 @@ gh auth login
 # Error: Could not analyze current state
 # Solution: Check repository access and dependencies
 gh repo view emmanuelbarrera/automate_workloads
-bun run repo:analyze emmanuelbarrera automate_workloads
+bun run repo:analyze barreraslzr automate_workloads
 ```
 
 ### Debug Mode
 ```bash
 # Enable debug output
-DEBUG=true ./scripts/monitor-progress.sh emmanuelbarrera automate_workloads
+DEBUG=true ./scripts/automation/monitor-progress.sh barreraslzr automate_workloads
 
 # Verbose logging
-./scripts/monitor-progress.sh -v emmanuelbarrera automate_workloads
+./scripts/automation/monitor-progress.sh -v barreraslzr automate_workloads
 ```
 
 ## 🎯 Best Practices

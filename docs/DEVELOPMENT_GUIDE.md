@@ -174,18 +174,8 @@ bun run issues
 ### Test Organization
 
 **Directory Structure:**
-```
-src/
-├── services/
-│   ├── github.ts
-│   ├── github.test.ts
-│   └── __tests__/
-│       ├── github.integration.test.ts
-│       └── github.unit.test.ts
-├── utils/
-│   ├── cli.ts
-│   └── cli.test.ts
-```
+
+See [PROJECT_STRUCTURE.md](../../PROJECT_STRUCTURE.md) for the current directory structure and explanations.
 
 **Test File Naming:**
 - `*.test.ts` - Unit tests
@@ -316,6 +306,8 @@ export function getEnv() {
 ---
 
 ## 📁 Project Structure
+
+See [PROJECT_STRUCTURE.md](../../PROJECT_STRUCTURE.md) for the canonical, up-to-date project structure, directory tree, and explanations.
 
 ### Recommended Structure
 
