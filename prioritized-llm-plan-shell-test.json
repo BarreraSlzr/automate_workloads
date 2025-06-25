@@ -1,0 +1,59 @@
+[
+  {
+    "id": "task-2",
+    "title": "Create .test.ts Files Using ScriptTester",
+    "description": "For each shell script, create a corresponding .test.ts file using the ScriptTester utility.",
+    "acceptanceCriteria": [
+      "Each shell script has a .test.ts file",
+      "Tests cover normal, edge, and error cases",
+      "Test files are located in the correct directory"
+    ],
+    "dependencies": [
+      "task-1"
+    ],
+    "estimatedEffort": "2 days",
+    "priority": "critical"
+  },
+  {
+    "id": "task-1",
+    "title": "Audit Shell Scripts",
+    "description": "Identify all shell scripts in the repository that require test coverage.",
+    "acceptanceCriteria": [
+      "All shell scripts in scripts/ and subdirectories are listed",
+      "Scripts without corresponding .test.ts files are flagged"
+    ],
+    "dependencies": [],
+    "estimatedEffort": "1 day",
+    "priority": "high"
+  },
+  {
+    "id": "task-3",
+    "title": "Automate Test Execution",
+    "description": "Ensure all shell script tests are run automatically with the existing test suite.",
+    "acceptanceCriteria": [
+      "bun test runs all .test.ts files for shell scripts",
+      "Test failures are reported in CI"
+    ],
+    "dependencies": [
+      "task-2"
+    ],
+    "estimatedEffort": "0.5 day",
+    "priority": "high"
+  },
+  {
+    "id": "task-4",
+    "title": "Update CI to Enforce Test Plan",
+    "description": "Update CI configuration to require passing shell script tests and coverage for PR merges.",
+    "acceptanceCriteria": [
+      "CI fails if any shell script test fails",
+      "Coverage reports include shell script tests",
+      "CI documentation updated"
+    ],
+    "dependencies": [
+      "task-3"
+    ],
+    "estimatedEffort": "0.5 day",
+    "priority": "high"
+  }
+]
+✅ Issue management completed

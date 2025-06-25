@@ -86,7 +86,8 @@
     "migrate:up": "./scripts/migrate.sh up",
     "migrate:down": "./scripts/migrate.sh down",
     "migrate:status": "./scripts/migrate.sh status",
-    "migrate:list": "./scripts/migrate.sh list"
+    "migrate:list": "./scripts/migrate.sh list",
+    "audit:shell-scripts": "find scripts -type f -name '*.sh' | while read script; do test_file=\"tests/unit/${script%.sh}.test.ts\"; if [ ! -f \"$test_file\" ]; then echo \"$script has no test file!\"; fi; done"
   },
   "devDependencies": {
     "@types/bun": "latest"
