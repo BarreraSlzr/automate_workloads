@@ -1,0 +1,9 @@
+name: "Ensure tool-centric-demo.ts is up to date"
+description: "Reminder to keep the demo in sync with core features."
+title: "Ensure tool-centric-demo.ts is up to date"
+labels: [maintenance, demo]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please review and update `examples/tool-centric-demo.ts` to ensure it reflects the latest features and integration patterns. 
