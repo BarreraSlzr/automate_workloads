@@ -66,7 +66,13 @@
     "projects:sync": "./scripts/github-projects-integration.sh -m sync",
     "projects:report": "./scripts/github-projects-integration.sh -m report",
     "demo:ecosystem": "bun run examples/complete-automation-ecosystem.ts",
-    "milestone:create": "scripts/create-milestone.sh"
+    "milestone:create": "scripts/create-milestone.sh",
+    "issues:list": "gh issue list",
+    "issues:testing": "gh issue list --label testing",
+    "issues:ci": "gh issue list --label ci",
+    "issues:quality": "gh issue list --label quality",
+    "issues:milestone:research": "gh issue list --milestone 'Research and Design Complete'",
+    "issues:milestone:implementation": "gh issue list --milestone 'Implementation Complete'"
   },
   "devDependencies": {
     "@types/bun": "latest"
