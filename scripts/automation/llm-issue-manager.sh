@@ -13,7 +13,7 @@ case "$ISSUE_ACTION" in
     "prioritize")
         # LLM-powered issue prioritization
         echo "📊 Prioritizing issues..."
-        bun run llm:plan --prioritize "$ISSUE_DATA"
+        bun run llm:plan prioritize "$ISSUE_DATA"
         ;;
     "assign")
         # LLM-powered issue assignment

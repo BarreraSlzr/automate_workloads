@@ -323,7 +323,15 @@ program
       // Read tasks from file
       const fs = await import('fs/promises');
       const tasksData = await fs.readFile(tasksFile, 'utf-8');
-      const tasks = JSON.parse(tasksData);
+      let tasks = JSON.parse(tasksData);
+      // Support both array of tasks and { tasks: [...] }
+      if (Array.isArray(tasks)) {
+        // already correct
+      } else if (tasks && Array.isArray(tasks.tasks)) {
+        tasks = tasks.tasks;
+      } else {
+        throw new Error('Input file must be an array of tasks or an object with a "tasks" array');
+      }
       
       let context: Record<string, unknown> = {};
       if (options.context) {
