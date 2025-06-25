@@ -808,6 +808,32 @@ bun run llm:quality-report
 echo "✅ QA workflow completed"
 ```
 
+## 🧪 Testing & Coverage Workflow
+
+- **Tests are required for all new and changed code.**
+- **Coverage must meet or exceed 90% for statements, functions, and lines.**
+- **All tests and coverage checks run automatically in CI (see `.github/workflows/test-and-coverage.yml`).**
+- **PRs must include or update tests and documentation.**
+- **Use the [Pull Request Template](.github/pull_request_template.md) checklist.**
+- **See [TEST_PLAN.md](./TEST_PLAN.md) for detailed strategy and goals.**
+
+### How to Run Tests Locally
+
+```bash
+bun test --coverage
+```
+
+### CI Enforcement
+- All PRs and pushes are checked by GitHub Actions.
+- PRs cannot be merged unless all tests pass and coverage is above target.
+- Coverage reports are uploaded as artifacts for review.
+
+### Best Practices
+- Write tests as you code, not after.
+- Mock external dependencies for reliable tests.
+- Use snapshot tests for CLI outputs where appropriate.
+- Keep tests and documentation up to date with code changes.
+
 ---
 
 ## 📚 Documentation Standards

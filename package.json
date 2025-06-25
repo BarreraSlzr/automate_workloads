@@ -65,7 +65,8 @@
     "projects:setup": "./scripts/github-projects-integration.sh -m setup",
     "projects:sync": "./scripts/github-projects-integration.sh -m sync",
     "projects:report": "./scripts/github-projects-integration.sh -m report",
-    "demo:ecosystem": "bun run examples/complete-automation-ecosystem.ts"
+    "demo:ecosystem": "bun run examples/complete-automation-ecosystem.ts",
+    "milestone:create": "scripts/create-milestone.sh"
   },
   "devDependencies": {
     "@types/bun": "latest"
