@@ -76,8 +76,17 @@
     "llm:execute": "bun run src/cli/llm-execute.ts",
     "llm:monitor": "bun run src/cli/llm-monitor.ts",
     "llm:plan": "bun run src/cli/llm-plan.ts",
+    "validate:plan": "bun run src/cli/validate-plan.ts",
+    "validate:plan:batch": "bun run src/cli/validate-plan.ts batch",
+    "validate:plan:create-expected": "bun run src/cli/validate-plan.ts create-expected",
     "issues": "bun run src/cli/github-issues.ts",
-    "github:sync": "bun run src/cli/github-sync.ts"
+    "github:sync": "bun run src/cli/github-sync.ts",
+    "scripts:setup": "./scripts/setup/",
+    "migrate": "./scripts/migrate.sh",
+    "migrate:up": "./scripts/migrate.sh up",
+    "migrate:down": "./scripts/migrate.sh down",
+    "migrate:status": "./scripts/migrate.sh status",
+    "migrate:list": "./scripts/migrate.sh list"
   },
   "devDependencies": {
     "@types/bun": "latest"
