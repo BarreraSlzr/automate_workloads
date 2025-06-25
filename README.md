@@ -508,3 +508,97 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 **Key Takeaway**: This automation ecosystem demonstrates how LLMs can be integrated with existing productivity tools to create intelligent, context-aware workflows that significantly improve efficiency and reduce manual effort, while featuring **self-improving tools** that learn, adapt, and preserve knowledge over time! 🤖✨🗿
+
+## Available Scripts
+
+Below are the main scripts you can run with Bun. Use `bun run <script-name>` to execute any of them.
+
+### Issues
+- `issues:ci` — List issues labeled 'ci'
+- `issues:check` — Run the check-issues shell script
+- `issues:ensure-demo` — Ensure demo issue via TypeScript script
+- `issues:list` — List all issues
+- `issues:manager` — Run the LLM issue manager shell script
+- `issues:milestone:implementation` — List issues for the 'Implementation Complete' milestone
+- `issues:milestone:research` — List issues for the 'Research and Design Complete' milestone
+- `issues:quality` — List issues labeled 'quality'
+- `issues:testing` — List issues labeled 'testing'
+
+### Context
+- `context:add` — Add context fossil
+- `context:backup` — Backup context using shell script
+- `context:export` — Export context fossil
+- `context:get` — Get context fossil
+- `context:init` — Initialize context fossil
+- `context:query` — Query context fossil
+- `context:stats` — Show context fossil stats
+- `context:summary` — Generate context summary
+- `context:update` — Update context fossil
+
+### Projects
+- `projects:integration` — Run GitHub projects integration shell script
+- `projects:report` — Generate a projects report
+- `projects:setup` — Setup GitHub projects
+- `projects:sync` — Sync GitHub projects
+
+### Repo
+- `repo:analyze` — Analyze repository with orchestrator
+- `repo:context` — Gather repository context
+- `repo:examples` — Run repository orchestration example
+- `repo:monitor-progress` — Monitor repository progress
+- `repo:orchestrate` — Orchestrate repository with orchestrator
+- `repo:orchestrator` — Run the repo orchestrator shell script
+- `repo:plan` — Run LLM plan for repository
+- `repo:quick-status` — Show quick repository status
+- `repo:simple-monitor` — Run simple monitor shell script
+- `repo:status` — Show repository status
+- `repo:target` — Run repo orchestrator shell script
+- `repo:track` — Track repository progress
+
+### QA
+- `qa:review` — Run review workflow shell script
+- `qa:test` — Run tests, lint, and type-check
+- `qa:workflow` — Run QA workflow shell script
+
+### Workflow
+- `workflow:automate` — Run LLM workflow shell script
+- `workflow:content` — Run content automation shell script
+- `workflow:issues` — Run LLM issue manager shell script
+- `workflow:llm` — Run LLM workflow shell script
+- `workflow:qa` — Run QA workflow shell script
+- `workflow:review` — Run review workflow shell script
+- `workflow:sync` — Run LLM workflow shell script
+
+### Content
+- `content:automation` — Run content automation shell script
+
+### Other
+- `build` — Build the orchestrator for Node
+- `demo:ecosystem` — Run the complete automation ecosystem demo
+- `demo:tool-centric` — Run the tool-centric demo
+- `dev` — Watch and run the repo orchestrator
+- `dev:start` — Start the GitHub issues CLI
+- `dev:setup` — Install dependencies and copy .env.example
+- `dev:test` — Watch and run tests
+- `docs` — Open documentation
+- `format` — Format code with Prettier
+- `gmail:sync` — Sync Gmail
+- `lint` — Lint the codebase
+- `obsidian:sync` — Sync Obsidian
+- `plan:create` — Create a plan
+- `plan:execute` — Execute a plan
+- `plan:monitor` — Monitor a plan
+- `release:execute` — Execute a release
+- `release:monitor` — Monitor a release
+- `release:plan` — Plan a release
+- `social:sync` — Sync social accounts
+- `start` — Start the GitHub issues CLI
+- `test` — Run tests
+- `type-check` — Type-check the codebase
+- `examples` — Run basic usage example
+- `llm:analyze` — Analyze with LLM
+- `llm:execute` — Execute with LLM
+- `llm:monitor` — Monitor with LLM
+- `llm:plan` — Plan with LLM
+- `issues` — Run the GitHub issues CLI
+- `github:sync` — Sync GitHub

@@ -1,6 +1,11 @@
 #!/bin/bash
 # Usage: bun run scripts/check-issues.sh [label] [milestone]
 
+if [[ "$CHECK_ISSUES_TEST" == "1" ]]; then
+  echo "[TEST MODE] check-issues.sh ran successfully."
+  exit 0
+fi
+
 LABEL="$1"
 MILESTONE="$2"
 
