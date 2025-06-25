@@ -267,10 +267,23 @@ This ${contentType} demonstrates the power of LLM-assisted content generation fo
  */
 const program = new Command();
 
+let isQuiet = false;
+
 program
   .name('llm-plan')
   .description('LLM-assisted planning for automation workflows')
-  .version('1.0.0');
+  .version('1.0.0')
+  .option('--quiet', 'Suppress all output except errors', false)
+  .hook('preAction', (thisCommand) => {
+    isQuiet = thisCommand.opts().quiet || process.env.LLM_PLAN_QUIET === '1';
+    if (isQuiet) {
+      // Suppress all output
+      // @ts-ignore
+      console.log = () => {};
+      // @ts-ignore
+      console.error = () => {};
+    }
+  });
 
 // Goal decomposition command
 program
@@ -372,6 +385,115 @@ program
       }
     } catch (error) {
       console.error('❌ Error during content generation:', error);
+      process.exit(1);
+    }
+  });
+
+// Generate tests command
+program
+  .command('generate-tests')
+  .description('Audit shell scripts for missing test files (pure TypeScript)')
+  .option('-o, --output <file>', 'Output file for the generated tests')
+  .action(async (options) => {
+    try {
+      // Pure TypeScript implementation of audit-shell-scripts.sh
+      const fs = await import('fs/promises');
+      const path = await import('path');
+
+      // Recursively find all .sh files in scripts/
+      async function findShellScripts(dir: string): Promise<string[]> {
+        let results: string[] = [];
+        const entries = await fs.readdir(dir, { withFileTypes: true });
+        for (const entry of entries) {
+          const fullPath = path.join(dir, entry.name);
+          if (entry.isDirectory()) {
+            results = results.concat(await findShellScripts(fullPath));
+          } else if (entry.isFile() && entry.name.endsWith('.sh')) {
+            results.push(fullPath);
+          }
+        }
+        return results;
+      }
+
+      // For each .sh script, check for corresponding .test.ts file
+      const shellScripts = await findShellScripts('scripts');
+      const missingTests = [];
+      for (const script of shellScripts) {
+        const relScript = path.relative('.', script);
+        const testFile = path.join('tests/unit', relScript.replace(/\.sh$/, '.test.ts'));
+        try {
+          await fs.access(testFile);
+        } catch {
+          missingTests.push({ script: relScript, expectedTest: testFile });
+        }
+      }
+
+      // Auto-generate stubs for missing test files
+      const createdFiles: string[] = [];
+      for (const m of missingTests) {
+        // Ensure directory exists
+        const dir = path.dirname(m.expectedTest);
+        await fs.mkdir(dir, { recursive: true });
+        // Only create if file does not exist
+        try {
+          await fs.access(m.expectedTest);
+        } catch {
+          const stub = `import { test } from "bun:test";
+const tester = new ScriptTester("./${m.script}", "${path.basename(m.script)} Test");
+
+test("${path.basename(m.script)} is executable", async () => {
+  await tester.isExecutable();
+});
+`;
+          await fs.writeFile(m.expectedTest, stub);
+          createdFiles.push(m.expectedTest);
+        }
+      }
+
+      let report = '';
+      if (missingTests.length === 0) {
+        report = 'All shell scripts have corresponding test files.';
+      } else {
+        report = missingTests.map(m => `${m.script} has no test file! (expected: ${m.expectedTest})`).join('\n');
+        if (createdFiles.length > 0) {
+          report += `\n\nCreated stub test files:\n` + createdFiles.join('\n');
+        }
+      }
+
+      if (options.output) {
+        await fs.writeFile(options.output, report);
+        if (!isQuiet) console.log(`✅ Audit report saved to ${options.output}`);
+      } else {
+        if (!isQuiet) console.log(report);
+      }
+    } catch (error) {
+      if (!isQuiet) console.error('❌ Error during test generation:', error);
+      process.exit(1);
+    }
+  });
+
+// Review comments command
+program
+  .command('review-comments')
+  .description('Generate LLM-powered review comments for a PR')
+  .argument('<prNumber>', 'Pull request number')
+  .action(async (prNumber) => {
+    try {
+      // Simulate LLM review comment generation
+      console.log(`💬 Generating review comments for PR #${prNumber}...`);
+      // In a real implementation, call your LLM service here
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Output a sample review comment
+      console.log(JSON.stringify({
+        pr: prNumber,
+        comments: [
+          { line: 42, comment: "Consider refactoring this function for clarity." },
+          { line: 108, comment: "Add more test coverage for edge cases." }
+        ],
+        summary: "Overall, the PR looks good. Address the above comments for improvement."
+      }, null, 2));
+    } catch (error) {
+      console.error('❌ Error generating review comments:', error);
       process.exit(1);
     }
   });

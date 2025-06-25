@@ -1,5 +1,5 @@
 import { test } from "bun:test";
-import { ScriptTester } from "../base-tester";
+import { ScriptTester } from "../../../base-tester";
 
 // Use the correct path to your script
 const tester = new ScriptTester("./scripts/monitoring/check-issues.sh", "[TEST MODE] check-issues.sh ran successfully.");
@@ -19,7 +19,10 @@ test("check-issues.sh: script is executable", async () => {
 
 test("check-issues.sh: real mode minimal output", async () => {
   // This should not timeout, but skip if you have no network or GitHub CLI
-  await tester.realMode([], ["Listing issues for repo:"]);
+  await tester.realMode({
+    args: [],
+    expectedOutput: ["Listing issues for repo:"]
+  });
 });
 
 // --- Comprehensive/slow tests (each case is a separate test) ---
@@ -48,7 +51,11 @@ const checkIssuesTestCases = [
 
 checkIssuesTestCases.forEach(({ args, expectedOutput, notExpectedOutput = [] }, i) => {
   test(`check-issues.sh: comprehensive case #${i + 1} args=${JSON.stringify(args)}`, async () => {
-    await tester.realMode(args, expectedOutput, notExpectedOutput);
+    await tester.realMode({
+      args,
+      expectedOutput,
+      notExpectedOutput
+    });
   });
 });
 
@@ -61,6 +68,9 @@ const checkIssuesEdgeCases = [
 
 checkIssuesEdgeCases.forEach(({ args, desc }, i) => {
   test(`check-issues.sh: edge case #${i + 1} (${desc}) args=${JSON.stringify(args)}`, async () => {
-    await tester.testEdgeCases([{ args, desc }], "Listing issues for repo:");
+    await tester.realMode({
+      args,
+      expectedOutput: ["Listing issues for repo:"]
+    });
   });
 }); 

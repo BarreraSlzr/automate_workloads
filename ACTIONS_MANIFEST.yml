@@ -1,0 +1,416 @@
+actions:
+  - name: context:add
+    category: Context
+    description: Add context fossil data
+    example: bun run context:add
+    llm: true
+  - name: context:backup
+    category: Context
+    description: Backup context fossil data
+    example: bun run context:backup
+    llm: true
+  - name: context:export
+    category: Context
+    description: Export context fossil data
+    example: bun run context:export
+    llm: true
+  - name: context:get
+    category: Context
+    description: Get context fossil data
+    example: bun run context:get
+    llm: true
+  - name: context:init
+    category: Context
+    description: Initialize context fossil storage
+    example: bun run context:init
+    llm: true
+  - name: context:query
+    category: Context
+    description: Query context fossil data
+    example: bun run context:query
+    llm: true
+  - name: context:stats
+    category: Context
+    description: Show context fossil stats
+    example: bun run context:stats
+    llm: true
+  - name: context:summary
+    category: Context
+    description: Show context fossil summary
+    example: bun run context:summary
+    llm: true
+  - name: context:update
+    category: Context
+    description: Update context fossil data
+    example: bun run context:update
+    llm: true
+  - name: issues:ci
+    category: Issues
+    description: List issues with label ci
+    example: bun run issues:ci
+    llm: true
+  - name: issues:check
+    category: Issues
+    description: Run check-issues.sh (monitoring)
+    example: bun run issues:check
+    llm: true
+  - name: issues:ensure-demo
+    category: Issues
+    description: Ensure demo issue exists
+    example: bun run issues:ensure-demo
+    llm: true
+  - name: issues:list
+    category: Issues
+    description: List all issues
+    example: bun run issues:list
+    llm: true
+  - name: issues:manager
+    category: Issues
+    description: Run LLM issue manager shell script
+    example: bun run issues:manager
+    llm: true
+  - name: issues:milestone:implementation
+    category: Issues
+    description: List issues for 'Implementation Complete'
+    example: bun run issues:milestone:implementation
+    llm: true
+  - name: issues:milestone:research
+    category: Issues
+    description: List issues for 'Research and Design Complete'
+    example: bun run issues:milestone:research
+    llm: true
+  - name: issues:quality
+    category: Issues
+    description: List issues with label quality
+    example: bun run issues:quality
+    llm: true
+  - name: issues:testing
+    category: Issues
+    description: List issues with label testing
+    example: bun run issues:testing
+    llm: true
+  - name: projects:integration
+    category: Projects
+    description: Run GitHub projects integration script
+    example: bun run projects:integration
+    llm: true
+  - name: projects:report
+    category: Projects
+    description: Generate GitHub projects report
+    example: bun run projects:report
+    llm: true
+  - name: projects:setup
+    category: Projects
+    description: Setup GitHub projects
+    example: bun run projects:setup
+    llm: true
+  - name: projects:sync
+    category: Projects
+    description: Sync GitHub projects
+    example: bun run projects:sync
+    llm: true
+  - name: repo:analyze
+    category: Repository
+    description: Analyze repository
+    example: bun run repo:analyze
+    llm: true
+  - name: repo:context
+    category: Repository
+    description: Gather repository context
+    example: bun run repo:context
+    llm: true
+  - name: repo:examples
+    category: Repository
+    description: Run repository orchestration examples
+    example: bun run repo:examples
+    llm: true
+  - name: repo:monitor-progress
+    category: Repository
+    description: Monitor progress (shell)
+    example: bun run repo:monitor-progress
+    llm: true
+  - name: repo:orchestrate
+    category: Repository
+    description: Orchestrate repository (TypeScript)
+    example: bun run repo:orchestrate
+    llm: true
+  - name: repo:orchestrator
+    category: Repository
+    description: Orchestrate repository (shell)
+    example: bun run repo:orchestrator
+    llm: true
+  - name: repo:plan
+    category: Repository
+    description: Run LLM plan CLI
+    example: bun run repo:plan
+    llm: true
+  - name: repo:quick-status
+    category: Repository
+    description: Quick status (shell)
+    example: bun run repo:quick-status
+    llm: true
+  - name: repo:simple-monitor
+    category: Repository
+    description: Simple monitor (shell)
+    example: bun run repo:simple-monitor
+    llm: true
+  - name: repo:status
+    category: Repository
+    description: Quick status (shell)
+    example: bun run repo:status
+    llm: true
+  - name: repo:target
+    category: Repository
+    description: Orchestrator (shell)
+    example: bun run repo:target
+    llm: true
+  - name: repo:track
+    category: Repository
+    description: Monitor progress (shell)
+    example: bun run repo:track
+    llm: true
+  - name: qa:review
+    category: QA
+    description: Run review workflow
+    example: bun run qa:review
+    llm: true
+  - name: qa:test
+    category: QA
+    description: Run all tests, lint, and type-check
+    example: bun run qa:test
+    llm: true
+  - name: qa:workflow
+    category: QA
+    description: Run QA workflow
+    example: bun run qa:workflow
+    llm: true
+  - name: workflow:automate
+    category: Workflow
+    description: Run LLM workflow
+    example: bun run workflow:automate
+    llm: true
+  - name: workflow:content
+    category: Workflow
+    description: Run LLM content automation
+    example: bun run workflow:content
+    llm: true
+  - name: workflow:issues
+    category: Workflow
+    description: Run LLM issue manager
+    example: bun run workflow:issues
+    llm: true
+  - name: workflow:llm
+    category: Workflow
+    description: Run LLM workflow
+    example: bun run workflow:llm
+    llm: true
+  - name: workflow:qa
+    category: Workflow
+    description: Run QA workflow
+    example: bun run workflow:qa
+    llm: true
+  - name: workflow:review
+    category: Workflow
+    description: Run review workflow
+    example: bun run workflow:review
+    llm: true
+  - name: workflow:sync
+    category: Workflow
+    description: Run LLM workflow
+    example: bun run workflow:sync
+    llm: true
+  - name: content:automation
+    category: Content
+    description: Automate content generation and management
+    example: bun run content:automation
+    llm: true
+  - name: gmail:sync
+    category: Content
+    description: Sync Gmail data
+    example: bun run gmail:sync
+    llm: true
+  - name: obsidian:sync
+    category: Content
+    description: Sync Obsidian notes
+    example: bun run obsidian:sync
+    llm: true
+  - name: social:sync
+    category: Content
+    description: Sync social media data
+    example: bun run social:sync
+    llm: true
+  - name: plan:create
+    category: Plan
+    description: Create plan
+    example: bun run plan:create
+    llm: true
+  - name: plan:execute
+    category: Plan
+    description: Execute plan
+    example: bun run plan:execute
+    llm: true
+  - name: plan:monitor
+    category: Plan
+    description: Monitor plan
+    example: bun run plan:monitor
+    llm: true
+  - name: release:execute
+    category: Release
+    description: Execute release
+    example: bun run release:execute
+    llm: true
+  - name: release:monitor
+    category: Release
+    description: Monitor release
+    example: bun run release:monitor
+    llm: true
+  - name: release:plan
+    category: Release
+    description: Plan release
+    example: bun run release:plan
+    llm: true
+  - name: llm:analyze
+    category: LLM
+    description: LLM analyze
+    example: bun run llm:analyze
+    llm: true
+  - name: llm:execute
+    category: LLM
+    description: LLM execute
+    example: bun run llm:execute
+    llm: true
+  - name: llm:monitor
+    category: LLM
+    description: LLM monitor
+    example: bun run llm:monitor
+    llm: true
+  - name: llm:plan
+    category: LLM
+    description: LLM plan
+    example: bun run llm:plan
+    llm: true
+  - name: llm:plan review-comments
+    category: LLM
+    description: Generate LLM-powered review comments for a PR
+    example: bun run llm:plan review-comments 123
+    llm: true
+  - name: validate:plan
+    category: Validation
+    description: Validate plan
+    example: bun run validate:plan
+    llm: true
+  - name: validate:plan:batch
+    category: Validation
+    description: Batch validate plan
+    example: bun run validate:plan:batch
+    llm: true
+  - name: validate:plan:create-expected
+    category: Validation
+    description: Create expected plan validation
+    example: bun run validate:plan:create-expected
+    llm: true
+  - name: build
+    category: Dev
+    description: Build the repo orchestrator
+    example: bun run build
+    llm: true
+  - name: dev
+    category: Dev
+    description: Watch mode for repo orchestrator
+    example: bun run dev
+    llm: true
+  - name: dev:start
+    category: Dev
+    description: Start GitHub issues CLI
+    example: bun run dev:start
+    llm: true
+  - name: dev:setup
+    category: Dev
+    description: Install and setup environment
+    example: bun run dev:setup
+    llm: true
+  - name: dev:test
+    category: Dev
+    description: Watch mode for tests
+    example: bun run dev:test
+    llm: true
+  - name: docs
+    category: Dev
+    description: Open project documentation
+    example: bun run docs
+    llm: true
+  - name: format
+    category: Dev
+    description: Format codebase
+    example: bun run format
+    llm: true
+  - name: lint
+    category: Dev
+    description: Lint codebase
+    example: bun run lint
+    llm: true
+  - name: start
+    category: Dev
+    description: Start GitHub issues CLI
+    example: bun run start
+    llm: true
+  - name: test
+    category: Dev
+    description: Run all tests (with SKIP_BUN_TEST=1)
+    example: bun run test
+    llm: true
+  - name: type-check
+    category: Dev
+    description: Type-check the codebase
+    example: bun run type-check
+    llm: true
+  - name: examples
+    category: Dev
+    description: Run basic usage example
+    example: bun run examples
+    llm: true
+  - name: migrate
+    category: Migration
+    description: Run migration script
+    example: bun run migrate
+    llm: true
+  - name: migrate:up
+    category: Migration
+    description: Migrate up
+    example: bun run migrate:up
+    llm: true
+  - name: migrate:down
+    category: Migration
+    description: Migrate down
+    example: bun run migrate:down
+    llm: true
+  - name: migrate:status
+    category: Migration
+    description: Migration status
+    example: bun run migrate:status
+    llm: true
+  - name: migrate:list
+    category: Migration
+    description: List migrations
+    example: bun run migrate:list
+    llm: true
+  - name: test:unit
+    category: Audit & CI
+    description: Run unit tests
+    example: bun run test:unit
+    llm: true
+  - name: test:integration
+    category: Audit & CI
+    description: Run integration tests
+    example: bun run test:integration
+    llm: true
+  - name: test:audit
+    category: Audit & CI
+    description: Run audit shell script
+    example: bun run test:audit
+    llm: true
+  - name: ci
+    category: Audit & CI
+    description: Run CI pipeline (unit tests + audit)
+    example: bun run ci
+    llm: true 

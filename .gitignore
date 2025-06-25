@@ -114,6 +114,8 @@ automation-logs/
 current-analysis.json
 current-analysis-*.json
 
+context-backups/
+
 # Temporary files
 *.tmp
 *.temp

@@ -1,0 +1,78 @@
+{
+  "goal": "Implement real service integrations in gather-context.ts, starting with GitHub.",
+  "tasks": [
+    {
+      "id": "task-1",
+      "title": "Implement Real GitHub Context Integration",
+      "description": "Replace the mock in gatherGitHubContext() with real API calls using the GitHub API (REST or GraphQL).",
+      "acceptanceCriteria": [
+        "Fetch real issues, pull requests, and recent activity for the configured repo/user.",
+        "Use a GitHub token from config/env.",
+        "Handle API errors gracefully.",
+        "Output matches UnifiedContext structure."
+      ],
+      "dependencies": [],
+      "estimatedEffort": "2 days",
+      "priority": "critical"
+    },
+    {
+      "id": "task-2",
+      "title": "Add Configuration and Error Reporting",
+      "description": "Ensure all integrations use config/env for tokens and report errors in a user-friendly way.",
+      "acceptanceCriteria": [
+        "All tokens/credentials are loaded from config or environment variables.",
+        "All errors are logged with clear messages, but do not crash the CLI."
+      ],
+      "dependencies": ["task-1"],
+      "estimatedEffort": "1 day",
+      "priority": "high"
+    },
+    {
+      "id": "task-3",
+      "title": "Add a --mock Flag for Testing",
+      "description": "Allow users to run the CLI in mock mode for testing/dev.",
+      "acceptanceCriteria": [
+        "When --mock is passed, use the current mock data.",
+        "Default to real integrations if available."
+      ],
+      "dependencies": ["task-1"],
+      "estimatedEffort": "0.5 day",
+      "priority": "medium"
+    }
+  ],
+  "timeline": {
+    "startDate": "2024-06-25T00:00:00.000Z",
+    "endDate": "2024-07-02T00:00:00.000Z",
+    "milestones": [
+      {
+        "date": "2024-06-27T00:00:00.000Z",
+        "description": "GitHub integration live",
+        "tasks": ["task-1"]
+      },
+      {
+        "date": "2024-06-29T00:00:00.000Z",
+        "description": "Config and error reporting complete",
+        "tasks": ["task-2"]
+      },
+      {
+        "date": "2024-07-02T00:00:00.000Z",
+        "description": "Mock flag and polish",
+        "tasks": ["task-3"]
+      }
+    ]
+  },
+  "risks": [
+    {
+      "description": "API rate limits or auth errors",
+      "probability": "medium",
+      "impact": "medium",
+      "mitigation": "Handle errors and document required tokens."
+    },
+    {
+      "description": "User privacy/data exposure",
+      "probability": "low",
+      "impact": "high",
+      "mitigation": "Document what data is accessed and how it's used."
+    }
+  ]
+} 

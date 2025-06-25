@@ -29,7 +29,7 @@ bun run llm:analyze --code-quality --pr "$PR_NUMBER"
 
 # 5. Generate review comments
 echo "💬 Generating review comments..."
-bun run llm:plan --review-comments "$PR_NUMBER"
+bun run llm:plan review-comments "$PR_NUMBER"
 
 # 6. Update PR status
 echo "📊 Updating PR status..."

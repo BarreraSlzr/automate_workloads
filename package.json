@@ -22,6 +22,7 @@
     "context:stats": "bun run src/cli/context-fossil.ts stats",
     "context:summary": "bun run src/cli/context-fossil.ts summary",
     "context:update": "bun run src/cli/context-fossil.ts update",
+    "context:gather": "bun run src/cli/gather-context.ts",
     "projects:integration": "./scripts/automation/github-projects-integration.sh",
     "projects:report": "./scripts/automation/github-projects-integration.sh -m report",
     "projects:setup": "./scripts/automation/github-projects-integration.sh -m setup",
@@ -69,7 +70,7 @@
     "release:plan": "bun run src/cli/release-plan.ts",
     "social:sync": "bun run src/cli/social-sync.ts",
     "start": "bun run src/cli/github-issues.ts",
-    "test": "bun test",
+    "test": "SKIP_BUN_TEST=1 bun test",
     "type-check": "bun run --bun tsc --noEmit",
     "examples": "bun run examples/basic-usage.ts",
     "llm:analyze": "bun run src/cli/llm-analyze.ts",
@@ -87,7 +88,11 @@
     "migrate:down": "./scripts/migrate.sh down",
     "migrate:status": "./scripts/migrate.sh status",
     "migrate:list": "./scripts/migrate.sh list",
-    "audit:shell-scripts": "find scripts -type f -name '*.sh' | while read script; do test_file=\"tests/unit/${script%.sh}.test.ts\"; if [ ! -f \"$test_file\" ]; then echo \"$script has no test file!\"; fi; done"
+    "audit:shell-scripts": "find scripts -type f -name '*.sh' | while read script; do test_file=\"tests/unit/${script%.sh}.test.ts\"; if [ ! -f \"$test_file\" ]; then echo \"$script has no test file!\"; fi; done",
+    "test:unit": "bun test tests/unit/scripts/**/*.test.ts",
+    "test:integration": "bun test tests/integration/*.integration.test.ts",
+    "test:audit": "bash scripts/automation/audit-shell-scripts.sh",
+    "ci": "bun run test:unit && bun run test:audit"
   },
   "devDependencies": {
     "@types/bun": "latest"

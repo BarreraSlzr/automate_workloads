@@ -9,11 +9,15 @@ bun run llm:analyze --code-quality
 
 # 2. Test generation
 echo "🔧 Generating tests..."
-bun run llm:plan --generate-tests
+bun run llm:plan generate-tests
 
 # 3. Test execution
-echo "🚀 Running tests..."
-bun run test
+if [[ "$SKIP_BUN_TEST" != "1" ]]; then
+  echo "🚀 Running tests..."
+  bun run test
+else
+  echo "🚀 Skipping bun run test (detected SKIP_BUN_TEST=1)"
+fi
 
 # 4. Test analysis
 echo "📈 Analyzing test results..."

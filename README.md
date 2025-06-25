@@ -631,3 +631,78 @@ Below are the main scripts you can run with Bun. Use `bun run <script-name>` to 
   _(ts: `src/cli/github-issues.ts`)_
 - `github:sync` — Sync GitHub  
   _(ts: `src/cli/github-sync.ts`)_
+- `llm:plan review-comments` — Generate LLM-powered review comments for a PR  
+  _(ts: `src/cli/llm-plan-review-comments.ts`)_
+
+## Shell Script Testing: Unit vs. Integration
+
+### Unit Tests
+- Located in `tests/unit/scripts/` and its subdirectories.
+- Fast, do not require network or external services.
+- Run with:
+  ```sh
+  bun run test:unit
+  ```
+
+### Integration Tests
+- Located in `tests/integration/` and named with `.integration.test.ts`.
+- Require a fully provisioned environment (network, GitHub CLI, etc.).
+- Marked with `[integration]` in the test name and a comment.
+- Run with:
+  ```sh
+  bun run test:integration
+  ```
+
+### Auditing Shell Script Test Coverage
+- Use the audit script to ensure every `.sh` file has a corresponding `.test.ts` file:
+  ```sh
+  bun run test:audit
+  ```
+- The script will exit 1 and print missing files if any are missing, or print a success message and exit 0 if all are covered.
+
+### CI Recommendations
+- Run unit tests on every commit/PR.
+- Run integration tests only in a fully provisioned environment (e.g., nightly or on demand).
+- Add a CI job to run the audit script and fail if any shell script is missing a test.
+
+## Local Testing Scripts
+
+You can use the following npm scripts (defined in `package.json`) for a streamlined local workflow:
+
+- **Unit tests (fast, no network required):**
+  ```sh
+  bun run test:unit
+  ```
+- **Integration tests (requires full environment):**
+  ```sh
+  bun run test:integration
+  ```
+- **Audit shell script test coverage:**
+  ```sh
+  bun run test:audit
+  ```
+- **CI workflow (unit tests + audit):**
+  ```sh
+  bun run ci
+  ```
+
+These scripts ensure you and your contributors can easily run the right tests for every situation. See the "Shell Script Testing: Unit vs. Integration" section above for more details.
+
+## 🧠 Automation Actions Reference (LLM-Friendly)
+
+For a complete, machine-readable list of all user-facing automation actions, see [`ACTIONS_MANIFEST.yml`](./ACTIONS_MANIFEST.yml).
+
+Below is a sample of available actions. For full details, arguments, and categories, refer to the YAML file.
+
+| Name                | Category      | Description                                      | Example Usage                        |
+|---------------------|--------------|--------------------------------------------------|--------------------------------------|
+| context:add         | Context      | Add context fossil data                          | `bun run context:add`                |
+| issues:check        | Issues       | Run check-issues.sh (monitoring)                 | `bun run issues:check`               |
+| repo:plan           | Repository   | Run LLM plan CLI                                 | `bun run repo:plan`                  |
+| qa:test             | QA           | Run all tests, lint, and type-check              | `bun run qa:test`                    |
+| test:unit           | Testing      | Run unit tests                                   | `bun run test:unit`                  |
+| test:audit          | Audit        | Run audit shell script                           | `bun run test:audit`                 |
+| ci                  | CI           | Run CI pipeline (unit tests + audit)             | `bun run ci`                         |
+| llm:plan review-comments | LLM | Generate LLM-powered review comments for a PR | `bun run llm:plan review-comments 123` |
+
+See the YAML manifest for the full, up-to-date list and for LLMs to programmatically access all actions.
