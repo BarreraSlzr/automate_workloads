@@ -103,3 +103,35 @@ temp/
 # Automation specific
 *.cache
 automation-logs/
+
+# Context Fossil Storage - Persistent knowledge base
+.context-fossil/
+
+# Orchestration Reports - Progress tracking and monitoring data
+.orchestration-reports/
+
+# Current analysis files (generated during operations)
+current-analysis.json
+current-analysis-*.json
+
+# Temporary files
+*.tmp
+*.temp
+
+# Log files
+*.log
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
