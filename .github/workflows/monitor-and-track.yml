@@ -1,0 +1,177 @@
+name: Monitor and Track Progress
+
+on:
+  schedule:
+    # Run every day at 6 AM UTC for daily monitoring
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    inputs:
+      tracking_mode:
+        description: 'Tracking mode for monitoring'
+        required: true
+        default: 'comprehensive'
+        type: choice
+        options:
+          - comprehensive
+          - action-plan
+          - health-only
+          - automation-progress
+      report_type:
+        description: 'Type of report to generate'
+        required: true
+        default: 'daily'
+        type: choice
+        options:
+          - daily
+          - weekly
+          - monthly
+          - custom
+  workflow_run:
+    workflows: ["repository-orchestrator", "action-plan-generator"]
+    types: [completed]
+
+env:
+  NODE_VERSION: '18'
+  BUN_VERSION: 'latest'
+
+jobs:
+  monitor-progress:
+    name: 📊 Monitor and Track Progress
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🟡 Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: 📦 Install dependencies
+        run: |
+          bun install
+          echo "✅ Dependencies installed"
+
+      - name: 🔍 Run progress monitoring
+        id: monitor
+        run: |
+          echo "🔍 Running progress monitoring..."
+          
+          # Run monitoring script
+          ./scripts/monitor-progress.sh \
+            -m "${{ github.event.inputs.tracking_mode || 'comprehensive' }}" \
+            -r "${{ github.event.inputs.report_type || 'daily' }}" \
+            --no-trigger \
+            ${{ github.repository_owner }} ${{ github.event.repository.name }}
+          
+          echo "✅ Progress monitoring complete"
+
+      - name: 📋 Create monitoring issue
+        id: create-issue
+        run: |
+          echo "📋 Creating monitoring issue..."
+          
+          # Find the latest report
+          LATEST_REPORT=$(find .orchestration-reports -name "progress-report-*.md" -type f -printf '%T@ %p\n' | sort -n | tail -1 | cut -f2- -d" ")
+          
+          if [[ -n "$LATEST_REPORT" && -f "$LATEST_REPORT" ]]; then
+            # Determine issue title based on tracking mode
+            TRACKING_MODE="${{ github.event.inputs.tracking_mode || 'comprehensive' }}"
+            
+            case "$TRACKING_MODE" in
+              "comprehensive")
+                TITLE="📊 Comprehensive Progress Report - $(date -u +"%Y-%m-%d")"
+                LABELS="monitoring,progress,comprehensive"
+                ;;
+              "action-plan")
+                TITLE="📋 Action Plan Progress - $(date -u +"%Y-%m-%d")"
+                LABELS="monitoring,action-plan,progress"
+                ;;
+              "health-only")
+                TITLE="🏥 Health Score Report - $(date -u +"%Y-%m-%d")"
+                LABELS="monitoring,health,progress"
+                ;;
+              "automation-progress")
+                TITLE="🤖 Automation Progress - $(date -u +"%Y-%m-%d")"
+                LABELS="monitoring,automation,progress"
+                ;;
+              *)
+                TITLE="📊 Progress Report - $(date -u +"%Y-%m-%d")"
+                LABELS="monitoring,progress"
+                ;;
+            esac
+            
+            # Create issue
+            gh issue create \
+              --title "$TITLE" \
+              --body-file "$LATEST_REPORT" \
+              --label "$LABELS" \
+              --assignee ${{ github.actor }}
+            
+            echo "✅ Monitoring issue created"
+          else
+            echo "⚠️  No progress report found"
+          fi
+
+      - name: 📤 Upload monitoring artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: monitoring-report-${{ github.run_number }}
+          path: .orchestration-reports/
+          retention-days: 90
+
+      - name: 🔄 Trigger next steps
+        id: trigger-next
+        run: |
+          echo "🔄 Determining next steps based on monitoring results..."
+          
+          # Find the latest progress data
+          LATEST_PROGRESS=$(find .orchestration-reports -name "progress-data-*.json" -type f -printf '%T@ %p\n' | sort -n | tail -1 | cut -f2- -d" ")
+          
+          if [[ -n "$LATEST_PROGRESS" && -f "$LATEST_PROGRESS" ]]; then
+            # Extract metrics
+            HEALTH_SCORE=$(jq -r '.actionPlans.completionRate // 0' "$LATEST_PROGRESS" 2>/dev/null || echo "0")
+            ACTION_COMPLETION=$(jq -r '.actionPlans.completionRate // 0' "$LATEST_PROGRESS" 2>/dev/null || echo "0")
+            
+            # Determine if we need to trigger additional workflows
+            if (( $(echo "$HEALTH_SCORE < 75" | bc -l) )) || (( $(echo "$ACTION_COMPLETION < 40" | bc -l) )); then
+              echo "⚠️  Health score low or action completion poor - triggering action plan generation"
+              gh workflow run action-plan-generator.yml \
+                --field plan_type=comprehensive \
+                --field priority=high \
+                --field context='{"trigger":"monitoring","healthScore":"'$HEALTH_SCORE'","actionCompletion":"'$ACTION_COMPLETION'"}'
+              echo "✅ Action plan generation triggered"
+            fi
+            
+            if (( $(echo "$HEALTH_SCORE < 70" | bc -l) )); then
+              echo "🚨 Health score critically low - triggering full orchestration"
+              gh workflow run repository-orchestrator.yml
+              echo "✅ Full orchestration triggered"
+            fi
+          fi
+          
+          echo "🔄 Next steps evaluation complete"
+
+      - name: 🎉 Monitoring complete
+        run: |
+          echo "🎉 Monitoring and tracking completed successfully!"
+          echo ""
+          echo "📊 Summary:"
+          echo "   - Repository: ${{ github.repository }}"
+          echo "   - Tracking mode: ${{ github.event.inputs.tracking_mode || 'comprehensive' }}"
+          echo "   - Report type: ${{ github.event.inputs.report_type || 'daily' }}"
+          echo ""
+          echo "📋 Generated:"
+          echo "   - Progress report issue"
+          echo "   - Monitoring artifacts"
+          echo "   - Trend analysis data"
+          echo ""
+          echo "🔄 Next steps:"
+          echo "   - Review generated progress report"
+          echo "   - Implement recommended actions"
+          echo "   - Monitor trends over time"
+          echo "   - Adjust strategies based on data"
