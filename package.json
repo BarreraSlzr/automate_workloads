@@ -92,7 +92,21 @@
     "test:unit": "bun test tests/unit/scripts/**/*.test.ts",
     "test:integration": "bun test tests/integration/*.integration.test.ts",
     "test:audit": "bash scripts/automation/audit-shell-scripts.sh",
-    "ci": "bun run test:unit && bun run test:audit"
+    "ci": "bun run test:unit && bun run test:audit",
+    "mcp": "bun run mcp-cli.ts",
+    "mcp:help": "bun run mcp-cli.ts --help",
+    "mcp:list": "bun run mcp-cli.ts list",
+    "mcp:status": "bun run mcp-cli.ts status",
+    "mcp:repo": "bun run mcp-cli.ts repo",
+    "mcp:context": "bun run mcp-cli.ts context",
+    "mcp:llm": "bun run mcp-cli.ts llm",
+    "mcp:workflow": "bun run mcp-cli.ts workflow",
+    "mcp:issues": "bun run mcp-cli.ts issues",
+    "mcp:projects": "bun run mcp-cli.ts projects",
+    "mcp:qa": "bun run mcp-cli.ts qa",
+    "mcp:dev": "bun run mcp-cli.ts dev",
+    "mcp:migrate": "bun run mcp-cli.ts migrate",
+    "mcp:test": "bun run mcp-cli.ts test"
   },
   "devDependencies": {
     "@types/bun": "latest"
