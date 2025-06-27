@@ -65,20 +65,14 @@ export function getEnv(): EnvironmentConfig {
 
 /**
  * Validates that a specific service token is available
- * 
+ *
  * @param {keyof EnvironmentConfig} service - The service to check
+ * @param {Function} getEnvFn - Optional custom getEnv function for testing
  * @returns {boolean} True if the service token is available
- * 
- * @example
- * ```typescript
- * if (hasServiceToken('twitterToken')) {
- *   // Twitter operations available
- * }
- * ```
  */
-export function hasServiceToken(service: keyof EnvironmentConfig): boolean {
+export function hasServiceToken(service: keyof EnvironmentConfig, getEnvFn: typeof getEnv = getEnv): boolean {
   try {
-    const config = getEnv();
+    const config = getEnvFn();
     return Boolean(config[service]);
   } catch {
     return false;
@@ -87,24 +81,18 @@ export function hasServiceToken(service: keyof EnvironmentConfig): boolean {
 
 /**
  * Gets a specific service token with validation
- * 
+ *
  * @param {keyof EnvironmentConfig} service - The service token to retrieve
+ * @param {Function} getEnvFn - Optional custom getEnv function for testing
  * @returns {string} The service token
  * @throws {Error} If the service token is not available
- * 
- * @example
- * ```typescript
- * const twitterToken = getServiceToken('twitterToken');
- * ```
  */
-export function getServiceToken(service: keyof EnvironmentConfig): string {
-  const config = getEnv();
+export function getServiceToken(service: keyof EnvironmentConfig, getEnvFn: typeof getEnv = getEnv): string {
+  const config = getEnvFn();
   const token = config[service];
-  
   if (!token) {
     throw new Error(`Service token for ${service} is not configured`);
   }
-  
   return token;
 }
 

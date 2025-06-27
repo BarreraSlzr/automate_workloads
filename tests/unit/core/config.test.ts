@@ -99,6 +99,8 @@ test("getEnv handles partial environment variables", () => {
   // Set only some environment variables
   process.env.GITHUB_TOKEN = "ghp_test123";
   process.env.TWITTER_BEARER_TOKEN = "twitter_test123";
+  delete process.env.GMAIL_TOKEN;
+  delete process.env.BUFFER_TOKEN;
 
   const config = getEnv();
 
@@ -125,19 +127,9 @@ test("hasServiceToken returns false for missing tokens", () => {
 });
 
 test("hasServiceToken handles invalid configuration gracefully", () => {
-  // Mock getEnv to throw an error
-  const originalGetEnv = getEnv;
-  const mockGetEnv = mock(() => {
-    throw new Error("Configuration error");
-  });
-
-  // Replace getEnv temporarily
-  (globalThis as any).getEnv = mockGetEnv;
-
-  expect(hasServiceToken("githubToken")).toBe(false);
-
-  // Restore original function
-  (globalThis as any).getEnv = originalGetEnv;
+  // Use dependency injection to simulate error
+  const throwingGetEnv = () => { throw new Error("Configuration error"); };
+  expect(hasServiceToken("githubToken", throwingGetEnv)).toBe(false);
 });
 
 test("getServiceToken returns token for available service", () => {

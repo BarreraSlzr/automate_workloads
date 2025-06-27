@@ -10,6 +10,7 @@
 import { Command } from 'commander';
 import { z } from 'zod';
 import { getEnv } from '../core/config.js';
+import { callOpenAIChat } from '../services/llm.js';
 
 // LLM Planning schemas
 const PlanRequestSchema = z.object({
@@ -69,9 +70,13 @@ interface Task {
  */
 class LLMPlanningService {
   private config: ReturnType<typeof getEnv>;
+  private model: string;
+  private apiKey: string;
 
-  constructor() {
+  constructor(model: string, apiKey: string) {
     this.config = getEnv();
+    this.model = model;
+    this.apiKey = apiKey;
   }
 
   /**
@@ -81,6 +86,35 @@ class LLMPlanningService {
    * @returns Structured task breakdown
    */
   async decomposeGoal(goal: string, context?: Record<string, unknown>): Promise<TaskBreakdown> {
+    if (this.model && this.apiKey) {
+      const messages = [
+        { role: 'system' as const, content: 'You are an expert project planner.' },
+        { role: 'user' as const, content: `Break down the following goal into actionable tasks.\nGoal: ${goal}\nContext: ${JSON.stringify(context || {})}\nProvide: 1. Main tasks with clear acceptance criteria 2. Dependencies between tasks 3. Estimated effort for each task 4. Success metrics for each task 5. Risk factors and mitigation strategies` },
+      ];
+      const response = await callOpenAIChat({ model: this.model, apiKey: this.apiKey, messages });
+      // You may want to parse/validate response. For now, just return the content as a single task.
+      const content = response.choices?.[0]?.message?.content || 'No response';
+      return {
+        tasks: [
+          {
+            id: 'llm-task',
+            title: 'LLM Output',
+            description: content,
+            acceptanceCriteria: [],
+            dependencies: [],
+            estimatedEffort: '',
+            priority: 'high',
+          },
+        ],
+        timeline: { startDate: new Date().toISOString(), endDate: new Date().toISOString(), milestones: [] },
+        risks: [],
+      };
+    }
+    // fallback simulation
+    return await this.simulateDecomposeGoal(goal, context);
+  }
+
+  private async simulateDecomposeGoal(goal: string, context?: Record<string, unknown>): Promise<TaskBreakdown> {
     console.log('🤖 Decomposing goal with LLM assistance...');
     
     // In a real implementation, this would call an LLM API
@@ -216,6 +250,19 @@ class LLMPlanningService {
    * @returns Generated content
    */
   async generateContent(contentType: string, topic: string): Promise<string> {
+    if (this.model && this.apiKey) {
+      const messages = [
+        { role: 'system' as const, content: `You are an expert ${contentType} writer.` },
+        { role: 'user' as const, content: `Generate ${contentType} content about: ${topic}` },
+      ];
+      const response = await callOpenAIChat({ model: this.model, apiKey: this.apiKey, messages });
+      return response.choices?.[0]?.message?.content || 'No response';
+    }
+    // fallback simulation
+    return await this.simulateGenerateContent(contentType, topic);
+  }
+
+  private async simulateGenerateContent(contentType: string, topic: string): Promise<string> {
     console.log(`📝 Generating ${contentType} content about ${topic}...`);
     
     const llmPrompt = `
@@ -292,9 +339,13 @@ program
   .argument('<goal>', 'The goal to decompose')
   .option('-c, --context <context>', 'Additional context (JSON string)')
   .option('-o, --output <file>', 'Output file for the plan')
+  .option('--model <model>', 'LLM model to use (e.g., gpt-4, gpt-3.5-turbo)', 'gpt-4')
+  .option('--api-key <apiKey>', 'OpenAI API key (optional, falls back to env)')
   .action(async (goal, options) => {
     try {
-      const service = new LLMPlanningService();
+      const model = options.model || 'gpt-4';
+      const apiKey = options.apiKey || process.env.OPENAI_API_KEY;
+      const service = new LLMPlanningService(model, apiKey);
       
       let context: Record<string, unknown> = {};
       if (options.context) {
@@ -329,9 +380,13 @@ program
   .description('Prioritize tasks based on multiple factors')
   .argument('<tasks>', 'Tasks file (JSON)')
   .option('-c, --context <context>', 'Prioritization context (JSON string)')
+  .option('--model <model>', 'LLM model to use (e.g., gpt-4, gpt-3.5-turbo)', 'gpt-4')
+  .option('--api-key <apiKey>', 'OpenAI API key (optional, falls back to env)')
   .action(async (tasksFile, options) => {
     try {
-      const service = new LLMPlanningService();
+      const model = options.model || 'gpt-4';
+      const apiKey = options.apiKey || process.env.OPENAI_API_KEY;
+      const service = new LLMPlanningService(model, apiKey);
       
       // Read tasks from file
       const fs = await import('fs/promises');
@@ -371,9 +426,13 @@ program
   .argument('<type>', 'Type of content (blog-post, tweet, etc.)')
   .argument('<topic>', 'Topic for the content')
   .option('-o, --output <file>', 'Output file for the content')
+  .option('--model <model>', 'LLM model to use (e.g., gpt-4, gpt-3.5-turbo)', 'gpt-4')
+  .option('--api-key <apiKey>', 'OpenAI API key (optional, falls back to env)')
   .action(async (type, topic, options) => {
     try {
-      const service = new LLMPlanningService();
+      const model = options.model || 'gpt-4';
+      const apiKey = options.apiKey || process.env.OPENAI_API_KEY;
+      const service = new LLMPlanningService(model, apiKey);
       const content = await service.generateContent(type, topic);
       
       if (options.output) {
@@ -394,8 +453,13 @@ program
   .command('generate-tests')
   .description('Audit shell scripts for missing test files (pure TypeScript)')
   .option('-o, --output <file>', 'Output file for the generated tests')
+  .option('--model <model>', 'LLM model to use (e.g., gpt-4, gpt-3.5-turbo)', 'gpt-4')
+  .option('--api-key <apiKey>', 'OpenAI API key (optional, falls back to env)')
   .action(async (options) => {
     try {
+      const model = options.model || 'gpt-4';
+      const apiKey = options.apiKey || process.env.OPENAI_API_KEY;
+      const service = new LLMPlanningService(model, apiKey);
       // Pure TypeScript implementation of audit-shell-scripts.sh
       const fs = await import('fs/promises');
       const path = await import('path');
