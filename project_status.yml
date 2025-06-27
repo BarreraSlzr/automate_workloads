@@ -1,0 +1,182 @@
+# Status Progression (enforced order):
+# planned → todo → blocked → documented → in-progress → implemented → tested → reviewed → deprecated
+
+project_status:
+  name: automate_workloads
+  version: 0.1
+  description: Automation ecosystem for GitHub, LLM, and context management (Bun/TypeScript)
+
+  modules:
+    core:
+      path: src/core/
+      files:
+        - config.ts:
+            functions:
+              - envSchema: tested
+              - getEnv: tested
+              - hasServiceToken: tested
+              - getServiceToken: tested
+              - validateConfig: tested
+              - ConfigValidationResult: tested
+      status: tested
+      notes: Fully unit tested, high coverage
+
+    types:
+      path: src/types/
+      files:
+        - index.ts:
+            functions:
+              - EnvironmentConfig: tested
+              - ContextEntry: tested
+              - ContextQuery: tested
+              - GitHubIssue: tested
+              - TwitterTweet: tested
+              - GmailMessage: tested
+              - BufferPost: tested
+              - ObsidianNote: tested
+              - CLIOptions: tested
+              - ServiceResponse: tested
+              - WorkflowStep: tested
+              - PerformanceMetrics: tested
+      status: tested
+      notes: Type definitions, fully tested
+
+    utils:
+      path: src/utils/
+      files:
+        - cli.ts:
+            functions:
+              - CLIExecuteOptions: todo
+              - CLIExecuteResult: todo
+              - executeCommand: todo
+              - executeCommandJSON: todo
+              - formatOutput: todo
+        - plan-validator.ts:
+            functions:
+              - ValidationError: todo
+              - ValidationWarning: todo
+              - ValidationSummary: todo
+              - ValidationOptions: todo
+              # ... (other plan validation functions)
+      status: todo
+      notes: Needs unit tests
+
+    services:
+      path: src/services/
+      files:
+        - github.ts:
+            functions:
+              - GitHubOptions: todo
+              - GitHubService: todo
+                - constructor: todo
+                - isReady: todo
+                - getIssues: todo
+                - createIssue: todo
+                - closeIssue: todo
+                - addComment: todo
+                - getRepoInfo: todo
+                - formatIssues: todo
+      status: todo
+      notes: Needs unit tests
+
+    cli:
+      path: src/cli/
+      files:
+        - context-fossil.ts:
+            functions:
+              - ContextFossilService: implemented
+                - initialize: implemented
+                - export: implemented
+                - generateMarkdownExport: implemented
+                - generateCsvExport: implemented
+                - generateYamlExport: implemented
+                # ... (other methods)
+        - track-progress.ts:
+            functions: [] # planned
+        - ensure-demo-issue.ts:
+            functions: [] # planned
+        - repo-orchestrator.ts:
+            functions: [] # planned
+        - llm-plan.ts:
+            functions: [] # planned
+        - llm-execute.ts:
+            functions: [] # planned
+        - llm-analyze.ts:
+            functions: [] # planned
+        - validate-plan.ts:
+            functions: [] # planned
+        - gather-context.ts:
+            functions: [] # planned
+        - github-issues.ts:
+            functions: [] # planned
+      status: implemented
+      notes: CLI commands, partial test coverage, needs more unit tests
+
+    scripts:
+      path: scripts/
+      files:
+        - automation/testing-status.sh:
+            functions: [] # implemented
+        - automation/audit-shell-scripts.sh:
+            functions: [] # planned
+        - automation/review-workflow.sh:
+            functions: [] # planned
+        - automation/qa-workflow.sh:
+            functions: [] # planned
+        - automation/llm-issue-manager.sh:
+            functions: [] # planned
+        - automation/monitor-progress.sh:
+            functions: [] # planned
+        - automation/github-projects-integration.sh:
+            functions: [] # planned
+        - automation/backup-context.sh:
+            functions: [] # planned
+        - automation/simple-monitor.sh:
+            functions: [] # planned
+        - automation/llm-content-automation.sh:
+            functions: [] # planned
+        - automation/repo-orchestrator.sh:
+            functions: [] # planned
+        - automation/llm-workflow.sh:
+            functions: [] # planned
+        - monitoring/quick-status.sh:
+            functions: [] # planned
+        - monitoring/check-issues.sh:
+            functions: [] # planned
+        - migrations/001-improve-project-structure.sh:
+            functions: [] # planned
+        - migrations/002-project-structure-migration.ts:
+            functions: [] # planned
+        - setup/create-milestone.sh:
+            functions: [] # planned
+        - github-projects-integration.sh:
+            functions: [] # planned
+        - monitor-progress.sh:
+            functions: [] # planned
+        - quick-status.sh:
+            functions: [] # planned
+        - migrate.sh:
+            functions: [] # implemented
+        # ... (other scripts)
+      status: implemented
+      notes: Shell scripts, some tested
+
+  overall_summary:
+    files_total: 28
+    functions_total: ~60
+    completed: 0
+    in_progress: 0
+    planned: 20
+    todo: 18
+    implemented: 2
+    tested: 21
+    reviewed: 0
+    deprecated: 0
+    completion_percent: 41
+
+  recommendations:
+    - Add unit tests for all utils and services modules
+    - Document and test all CLI command modules and their public methods
+    - Move all 'planned', 'todo', and 'implemented' statuses to 'tested' as you progress
+    - Use only the enforced status progression for all future updates
+    - Update this YAML as you make progress (automate if possible) 

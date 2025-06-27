@@ -92,6 +92,13 @@
     "test:unit": "bun test tests/unit/scripts/**/*.test.ts",
     "test:integration": "bun test tests/integration/*.integration.test.ts",
     "test:audit": "bash scripts/automation/audit-shell-scripts.sh",
+    "test:status": "./scripts/automation/testing-status.sh",
+    "test:status:quick": "./scripts/automation/testing-status.sh --quick",
+    "test:pre-commit": "./scripts/automation/testing-status.sh --quick",
+    "test:coverage": "bun test --coverage",
+    "test:coverage:report": "bun test --coverage --reporter=html",
+    "test:coverage:check": "bun test --coverage --coverage-threshold=80",
+    "test:full": "bun run test:unit && bun run test:integration && bun run test:audit && bun run test:coverage",
     "ci": "bun run test:unit && bun run test:audit",
     "mcp": "bun run mcp-cli.ts",
     "mcp:help": "bun run mcp-cli.ts --help",
@@ -134,5 +141,13 @@
     "bun",
     "typescript"
   ],
-  "description": "A comprehensive automation ecosystem integrating GitHub, Twitter, Gmail, Buffer, and Obsidian with Bun and TypeScript"
+  "description": "A comprehensive automation ecosystem integrating GitHub, Twitter, Gmail, Buffer, and Obsidian with Bun and TypeScript",
+  "coverage": {
+    "thresholds": {
+      "lines": 80,
+      "branches": 70,
+      "functions": 85,
+      "statements": 80
+    }
+  }
 }

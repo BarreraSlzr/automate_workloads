@@ -88,7 +88,18 @@ class ProgressTrackingService {
       // Step 1: Current state analysis
       console.log('🔍 Step 1: Analyzing current state...');
       const currentMetrics = await this.analyzeCurrentState(owner, repo);
-      results.metrics = currentMetrics;
+      results.metrics = currentMetrics as {
+        timestamp: string;
+        healthScore: number;
+        actionPlanCompletion: number;
+        automationCompletion: number;
+        totalActionPlans: number;
+        completedActionPlans: number;
+        openActionPlans: number;
+        totalAutomationIssues: number;
+        completedAutomationIssues: number;
+        openAutomationIssues: number;
+      };
 
       // Step 2: Progress tracking
       console.log('📈 Step 2: Tracking progress...');
@@ -276,7 +287,7 @@ class ProgressTrackingService {
 
       const firstScore = healthScores[0];
       const lastScore = healthScores[healthScores.length - 1];
-      const improvement = lastScore - firstScore;
+      const improvement = (lastScore ?? 0) - (firstScore ?? 0);
       const trend = improvement > 0 ? 'improving' : improvement < 0 ? 'declining' : 'stable';
 
       return {
@@ -431,8 +442,8 @@ class ProgressTrackingService {
 
 `;
 
-    recommendations.forEach(rec => {
-      report += `- ${rec}\n`;
+    recommendations.forEach((rec: any) => {
+      console.log(`  • ${rec}`);
     });
 
     report += `
@@ -440,8 +451,8 @@ class ProgressTrackingService {
 
 `;
 
-    nextSteps.forEach(step => {
-      report += `- ${step}\n`;
+    nextSteps.forEach((step: any) => {
+      console.log(`  • ${step}`);
     });
 
     report += `
@@ -581,14 +592,14 @@ program
       console.log('📊 Quick Status Report');
       console.log('=====================');
       console.log(`Repository: ${owner}/${repo}`);
-      console.log(`Health Score: ${results.metrics.healthScore}/100`);
-      console.log(`Action Plan Completion: ${results.metrics.actionPlanCompletion}%`);
-      console.log(`Automation Completion: ${results.metrics.automationCompletion}%`);
-      console.log(`Status: ${results.metrics.healthScore >= 80 ? '✅ Healthy' : results.metrics.healthScore >= 60 ? '⚠️ Needs Attention' : '🚨 Critical'}`);
+      console.log(`Health Score: ${(results.metrics as any).healthScore}/100`);
+      console.log(`Action Plan Completion: ${(results.metrics as any).actionPlanCompletion}%`);
+      console.log(`Automation Completion: ${(results.metrics as any).automationCompletion}%`);
+      console.log(`Status: ${(results.metrics as any).healthScore >= 80 ? '✅ Healthy' : (results.metrics as any).healthScore >= 60 ? '⚠️ Needs Attention' : '🚨 Critical'}`);
       
-      if (results.recommendations.length > 0) {
-        console.log('\n🎯 Top Recommendation:');
-        console.log(results.recommendations[0]);
+      if ((results.recommendations as any).length > 0) {
+        console.log('\n💡 Top Recommendation:');
+        console.log((results.recommendations as any)[0]);
       }
     } catch (error) {
       console.error('❌ Error during status check:', error);

@@ -1,4 +1,4 @@
-import { GitHubService } from "../src/services/github";
+import { GitHubService } from "../services/github";
 
 async function main() {
   const owner = "BarreraSlzr";
@@ -17,7 +17,7 @@ async function main() {
     process.exit(1);
   }
 
-  const existing = issuesResponse.data.find(issue => issue.title === title);
+  const existing = issuesResponse.data.find((issue: any) => issue.title === title);
   if (existing) {
     console.log(`✅ Issue already exists: #${existing.number} - ${existing.title}`);
     return;

@@ -131,7 +131,7 @@ class RepoOrchestratorService {
 
     } catch (error) {
       console.error('❌ Error during repository orchestration:', error);
-      results.steps.push({ step: 'error', status: 'failed', error: error.message });
+      results.steps.push({ step: 'error', status: 'failed', error: error instanceof Error ? error.message : String(error) });
       throw error;
     }
   }
@@ -473,7 +473,7 @@ class RepoOrchestratorService {
     } catch (error) {
       results.errors.push({
         step: 'execution',
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
         timestamp: new Date().toISOString(),
       });
     }
@@ -895,15 +895,16 @@ program
   .option('-o, --output <file>', 'Output file for analysis (JSON)')
   .action(async (owner, repo, options) => {
     try {
-      const service = new RepoOrchestratorService();
-      
       const repoConfig: RepoConfig = {
-        owner,
-        repo,
+        owner: options.owner,
+        repo: options.repo,
+        branch: 'main',
         workflow: 'analyze',
       };
 
-      const analysis = await service.analyzeRepository(repoConfig);
+      // Analyze repository
+      const service = new RepoOrchestratorService();
+      const analysis = await service.orchestrateRepository(repoConfig);
       
       if (options.output) {
         const fs = await import('fs/promises');

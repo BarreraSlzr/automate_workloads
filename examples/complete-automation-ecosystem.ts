@@ -392,23 +392,17 @@ class CompleteAutomationEcosystem {
 
   private parseProgressMetrics(monitoringOutput: string): void {
     // Extract health score
-    const healthMatch = monitoringOutput.match(/Health Score:\s*(\d+)/);
-    if (healthMatch) {
-      this.ecosystem.progress.healthScore = parseInt(healthMatch[1]);
-    }
+    const healthMatch = /Health Score: (\d+)/.exec(monitoringOutput);
+    this.ecosystem.progress.healthScore = healthMatch && healthMatch[1] ? parseInt(healthMatch[1]) : 0;
 
     // Extract action plan completion
-    const actionPlanMatch = monitoringOutput.match(/Action Plans:\s*\d+\/(\d+)\s+completed\s*\(([\d.]+)%\)/);
-    if (actionPlanMatch) {
-      this.ecosystem.progress.totalIssues = parseInt(actionPlanMatch[1]);
-      this.ecosystem.progress.actionPlanCompletion = parseFloat(actionPlanMatch[2]);
-    }
+    const actionPlanMatch = /Action Plan Completion: (\d+).*?(\d+\.\d+)/.exec(monitoringOutput);
+    this.ecosystem.progress.totalIssues = actionPlanMatch && actionPlanMatch[1] ? parseInt(actionPlanMatch[1]) : 0;
+    this.ecosystem.progress.actionPlanCompletion = actionPlanMatch && actionPlanMatch[2] ? parseFloat(actionPlanMatch[2]) : 0;
 
     // Extract automation completion
-    const automationMatch = monitoringOutput.match(/Automation:\s*\d+\/(\d+)\s+completed\s*\(([\d.]+)%\)/);
-    if (automationMatch) {
-      this.ecosystem.progress.automationCompletion = parseFloat(automationMatch[2]);
-    }
+    const automationMatch = /Automation Completion: (\d+).*?(\d+\.\d+)/.exec(monitoringOutput);
+    this.ecosystem.progress.automationCompletion = automationMatch && automationMatch[2] ? parseFloat(automationMatch[2]) : 0;
   }
 
   private generateLearningInsights(): Array<{ title: string; content: string; tags: string[] }> {

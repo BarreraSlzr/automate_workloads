@@ -12,6 +12,8 @@ import { z } from 'zod';
 import { getEnv } from '../core/config.js';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { execSync } from 'child_process';
+import type { ContextEntry, ContextQuery } from '@/types';
 
 // Context fossil schemas
 const ContextEntrySchema = z.object({
@@ -19,31 +21,32 @@ const ContextEntrySchema = z.object({
   type: z.enum(['knowledge', 'decision', 'action', 'observation', 'plan', 'result', 'insight']),
   title: z.string(),
   content: z.string(),
-  tags: z.array(z.string()).default([]),
+  tags: z.array(z.string()),
   metadata: z.record(z.unknown()).default({}),
+  source: z.enum(['llm', 'terminal', 'api', 'manual', 'automated']),
+  version: z.number(),
+  parentId: z.string().optional(),
+  children: z.array(z.string()),
   createdAt: z.string(),
   updatedAt: z.string(),
-  source: z.enum(['llm', 'terminal', 'api', 'manual', 'automated']),
-  version: z.number().default(1),
-  parentId: z.string().optional(),
-  children: z.array(z.string()).default([]),
 });
 
 const ContextQuerySchema = z.object({
+  limit: z.number().default(100),
+  offset: z.number().default(0),
   type: z.enum(['knowledge', 'decision', 'action', 'observation', 'plan', 'result', 'insight']).optional(),
   tags: z.array(z.string()).optional(),
   source: z.enum(['llm', 'terminal', 'api', 'manual', 'automated']).optional(),
   dateRange: z.object({
-    from: z.string().optional(),
-    to: z.string().optional(),
+    start: z.string(),
+    end: z.string(),
   }).optional(),
   search: z.string().optional(),
-  limit: z.number().default(50),
-  offset: z.number().default(0),
 });
 
-type ContextEntry = z.infer<typeof ContextEntrySchema>;
-type ContextQuery = z.infer<typeof ContextQuerySchema>;
+// Use imported types instead of local ones
+// type ContextEntry = z.infer<typeof ContextEntrySchema>;
+// type ContextQuery = z.infer<typeof ContextQuerySchema>;
 
 /**
  * Context Fossil Storage Service
@@ -188,7 +191,7 @@ class ContextFossilService {
       // Remove old tags
       entry.tags.forEach(tag => {
         if (index.tags[tag]) {
-          index.tags[tag] = index.tags[tag].filter(entryId => entryId !== id);
+          index.tags[tag] = index.tags[tag].filter((entryId: string) => entryId !== id);
           if (index.tags[tag].length === 0) delete index.tags[tag];
         }
       });
@@ -235,11 +238,11 @@ class ContextFossilService {
 
     // Filter by date range
     if (query.dateRange) {
-      const { from, to } = query.dateRange;
+      const { start, end } = query.dateRange;
       matchingIds = matchingIds.filter(id => {
         const createdAt = index.entries[id].createdAt;
-        if (from && createdAt < from) return false;
-        if (to && createdAt > to) return false;
+        if (start && createdAt < start) return false;
+        if (end && createdAt > end) return false;
         return true;
       });
     }
@@ -365,7 +368,7 @@ class ContextFossilService {
    * @returns Export file path
    */
   async export(format: 'json' | 'markdown' | 'csv' | 'yaml', query?: ContextQuery): Promise<string> {
-    const entries = query ? await this.queryEntries(query) : await this.getAllEntries();
+    const entries = query ? await this.queryEntries(query) : await this.queryEntries({ limit: 100, offset: 0 });
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const filename = `fossil-export-${timestamp}.${format}`;
     const exportPath = path.join(this.fossilDir, 'exports', filename);
@@ -400,7 +403,7 @@ class ContextFossilService {
    * @returns Context summary
    */
   async generateContextSummary(query?: ContextQuery): Promise<string> {
-    const entries = query ? await this.queryEntries(query) : await this.queryEntries({ limit: 100 });
+    const entries = query ? await this.queryEntries(query) : await this.queryEntries({ limit: 100, offset: 0 });
     
     const summary = {
       totalEntries: entries.length,
@@ -464,13 +467,16 @@ class ContextFossilService {
     };
 
     // Calculate statistics
-    entries.forEach(entry => {
-      stats.byType[entry.type] = (stats.byType[entry.type] || 0) + 1;
-      stats.bySource[entry.source] = (stats.bySource[entry.source] || 0) + 1;
-      
-      entry.tags.forEach(tag => {
-        stats.byTag[tag] = (stats.byTag[tag] || 0) + 1;
-      });
+    entries.forEach((entry: unknown) => {
+      if (typeof entry === 'object' && entry !== null && 'type' in entry && 'source' in entry && 'tags' in entry) {
+        const typedEntry = entry as ContextEntry;
+        stats.byType[typedEntry.type] = (stats.byType[typedEntry.type] || 0) + 1;
+        stats.bySource[typedEntry.source] = (stats.bySource[typedEntry.source] || 0) + 1;
+        
+        typedEntry.tags.forEach((tag: string) => {
+          stats.byTag[tag] = (stats.byTag[tag] || 0) + 1;
+        });
+      }
     });
 
     // Calculate storage size
@@ -536,7 +542,9 @@ class ContextFossilService {
     // Group by type
     const byType = entries.reduce((acc, entry) => {
       if (!acc[entry.type]) acc[entry.type] = [];
-      acc[entry.type].push(entry);
+      if (acc[entry.type]) {
+        acc[entry.type]!.push(entry);
+      }
       return acc;
     }, {} as Record<string, ContextEntry[]>);
 
@@ -643,13 +651,15 @@ program
       await service.initialize();
 
       const entry = await service.addEntry({
-        type: options.type as any,
+        type: options.type as ContextEntry['type'],
         title: options.title,
         content: options.content,
-        tags: options.tags ? options.tags.split(',').map(t => t.trim()) : [],
-        source: options.source as any,
+        tags: options.tags ? options.tags.split(',').map((t: string) => t.trim()) : [],
+        source: options.source as ContextEntry['source'],
         parentId: options.parentId,
         metadata: {},
+        version: 1,
+        children: [],
       });
 
       console.log('✅ Entry added:', entry.id);
@@ -676,9 +686,9 @@ program
       await service.initialize();
 
       const query: ContextQuery = {
-        type: options.type as any,
-        tags: options.tags ? options.tags.split(',').map(t => t.trim()) : undefined,
-        source: options.source as any,
+        type: options.type as ContextEntry['type'],
+        tags: options.tags ? options.tags.split(',').map((t: string) => t.trim()) : undefined,
+        source: options.source as ContextEntry['source'],
         search: options.search,
         limit: parseInt(options.limit),
         offset: parseInt(options.offset),
@@ -745,7 +755,7 @@ program
       const updates: any = {};
       if (options.title) updates.title = options.title;
       if (options.content) updates.content = options.content;
-      if (options.tags) updates.tags = options.tags.split(',').map(t => t.trim());
+      if (options.tags) updates.tags = options.tags.split(',').map((t: string) => t.trim());
 
       const entry = await service.updateEntry(id, updates);
       if (!entry) {
@@ -774,8 +784,10 @@ program
       await service.initialize();
 
       const query: ContextQuery = {
-        type: options.type as any,
-        tags: options.tags ? options.tags.split(',').map(t => t.trim()) : undefined,
+        type: options.type as ContextEntry['type'],
+        tags: options.tags ? options.tags.split(',').map((t: string) => t.trim()) : undefined,
+        limit: parseInt(options.limit),
+        offset: 0,
       };
 
       const exportPath = await service.export(options.format as any, query);
@@ -837,9 +849,10 @@ program
       await service.initialize();
 
       const query: ContextQuery = {
-        type: options.type as any,
-        tags: options.tags ? options.tags.split(',').map(t => t.trim()) : undefined,
+        type: options.type as ContextEntry['type'],
+        tags: options.tags ? options.tags.split(',').map((t: string) => t.trim()) : undefined,
         limit: parseInt(options.limit),
+        offset: 0,
       };
 
       const summary = await service.generateContextSummary(query);

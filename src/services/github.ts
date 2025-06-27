@@ -168,7 +168,7 @@ export class GitHubService {
         };
       }
 
-      const issueNumber = parseInt(match[1]);
+      const issueNumber = parseInt(match[1]!);
       
       // Fetch the created issue details
       const issueCommand = `gh issue view ${issueNumber} --repo ${this.owner}/${this.repo} --json number,title,state,body,labels,assignees,createdAt,updatedAt`;

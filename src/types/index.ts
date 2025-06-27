@@ -19,6 +19,59 @@ export interface EnvironmentConfig {
 }
 
 /**
+ * Context entry for fossil storage
+ */
+export interface ContextEntry {
+  /** Unique identifier */
+  id: string;
+  /** Entry type */
+  type: 'knowledge' | 'decision' | 'action' | 'observation' | 'plan' | 'result' | 'insight';
+  /** Entry title */
+  title: string;
+  /** Entry content */
+  content: string;
+  /** Entry tags */
+  tags: string[];
+  /** Entry metadata */
+  metadata: Record<string, unknown>;
+  /** Entry source */
+  source: 'llm' | 'terminal' | 'api' | 'manual' | 'automated';
+  /** Entry version */
+  version: number;
+  /** Parent entry ID */
+  parentId?: string;
+  /** Child entry IDs */
+  children: string[];
+  /** Creation timestamp */
+  createdAt: string;
+  /** Last update timestamp */
+  updatedAt: string;
+}
+
+/**
+ * Context query parameters
+ */
+export interface ContextQuery {
+  /** Maximum number of entries to return */
+  limit: number;
+  /** Number of entries to skip */
+  offset: number;
+  /** Filter by entry type */
+  type?: ContextEntry['type'];
+  /** Filter by tags */
+  tags?: string[];
+  /** Filter by source */
+  source?: ContextEntry['source'];
+  /** Filter by date range */
+  dateRange?: {
+    start: string;
+    end: string;
+  };
+  /** Search in title and content */
+  search?: string;
+}
+
+/**
  * GitHub issue information
  */
 export interface GitHubIssue {
