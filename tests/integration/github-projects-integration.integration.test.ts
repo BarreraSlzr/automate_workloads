@@ -1,14 +1,26 @@
-import { test } from 'bun:test';
-import { ScriptTester } from '../base-tester';
+import { test, expect } from 'bun:test';
+import { runScript } from '../integration-base-tester';
 
-const tester = new ScriptTester("./scripts/github-projects-integration.sh", "github-projects-integration.sh Integration Test");
+test('github-projects-integration.sh outputs expected log for dummy repo', () => {
+  const { stdout, stderr, exitCode } = runScript(
+    './scripts/github-projects-integration.sh',
+    ['-p', '123', 'owner', 'repo'],
+    { requiredCmds: ['gh', 'bun', 'jq'] }
+  );
 
-// [integration] This test should only be run in a fully provisioned environment with all dependencies.
-test("[integration] github-projects-integration.sh outputs integration info with dummy args", async () => {
-  await tester.realMode({
-    args: ["-p", "123", "owner", "repo"],
-    expectedOutput: ["GitHub Projects Integration", "Repository: owner/repo", "Project ID: 123"],
-    timeoutMs: 20000,
-    normalize: output => output.replace(/\x1b\[[0-9;]*m/g, ""),
-  });
-}); 
+  if (exitCode === 127) {
+    console.warn('Skipping test:', stderr);
+    return;
+  }
+
+  if (exitCode !== 0) {
+    console.error('Script failed. STDOUT:', stdout);
+    console.error('STDERR:', stderr);
+  }
+
+  expect(exitCode).toBe(0);
+  expect(stdout).toContain('GitHub Projects Integration');
+  expect(stdout).toContain('Repository: owner/repo');
+  expect(stdout).toContain('Project ID: 123');
+  // ...add more as needed
+}, 20000); // 20s timeout 

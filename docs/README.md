@@ -327,3 +327,27 @@ We welcome contributions! Please see the [Contributing Guide](../CONTRIBUTING.md
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details. 
+
+## Project Structure
+- All automation, scripts, and integration tests are local to this repository.
+- There is no `remote-repo` or cross-repo simulation; all references are to the local repository.
+
+## Integration Testing
+- Integration tests for all major shell scripts are required and included in the `tests/integration/` directory.
+- Integration tests are included in coverage metrics and must be maintained as part of overall test coverage.
+- Pre-commit hooks run all integration tests and block commits if any fail.
+
+## Best Practices
+- **Argument Validation:** Always check that required arguments (e.g., owner, repo) are provided and non-empty in scripts.
+- **Timeouts:** Wrap all external commands (e.g., `gh`, `bun`, `jq`) with a timeout to prevent hanging.
+- **Clean Output:** Remove debug output from production scripts for clarity in CI and logs.
+
+## Running Integration Tests
+```sh
+bun test tests/integration --coverage
+```
+
+## Pre-commit Expectations
+- All integration tests must pass before commit.
+- Coverage metrics include integration tests.
+- New scripts/features must include corresponding integration tests. 

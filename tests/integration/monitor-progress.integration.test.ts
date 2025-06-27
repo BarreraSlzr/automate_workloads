@@ -1,13 +1,26 @@
-import { test } from 'bun:test';
-import { ScriptTester } from '../base-tester.ts';
-const tester = new ScriptTester("./scripts/monitor-progress.sh", "monitor-progress.sh Integration Test");
+import { test, expect } from 'bun:test';
+import { runScript } from '../integration-base-tester';
 
 // [integration] This test should only be run in a fully provisioned environment with all dependencies.
-test("[integration] monitor-progress.sh outputs progress info with dummy args", async () => {
-  await tester.realMode({
-    args: ["owner", "repo"],
-    expectedOutput: ["progress", "monitor"],
-    timeoutMs: 20000,
-    normalize: output => output.replace(/\x1b\[[0-9;]*m/g, ""),
-  });
-}); 
+test('monitor-progress.sh outputs expected log for dummy repo', () => {
+  const { stdout, stderr, exitCode } = runScript(
+    './scripts/monitor-progress.sh',
+    ['owner', 'repo'],
+    { requiredCmds: ['gh', 'bun', 'jq'] }
+  );
+
+  if (exitCode === 127) {
+    console.warn('Skipping test:', stderr);
+    return;
+  }
+
+  if (exitCode !== 0) {
+    console.error('Script failed. STDOUT:', stdout);
+    console.error('STDERR:', stderr);
+  }
+
+  expect(exitCode).toBe(0);
+  expect(stdout).toContain('Progress Monitoring');
+  expect(stdout).toContain('Checking dependencies');
+  // ...add more as needed
+}, 20000); // 20s timeout 

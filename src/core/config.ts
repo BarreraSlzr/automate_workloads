@@ -65,7 +65,7 @@ export function getEnv(): EnvironmentConfig {
 
 /**
  * Validates that a specific service token is available
- *
+ * 
  * @param {keyof EnvironmentConfig} service - The service to check
  * @param {Function} getEnvFn - Optional custom getEnv function for testing
  * @returns {boolean} True if the service token is available
@@ -81,7 +81,7 @@ export function hasServiceToken(service: keyof EnvironmentConfig, getEnvFn: type
 
 /**
  * Gets a specific service token with validation
- *
+ * 
  * @param {keyof EnvironmentConfig} service - The service token to retrieve
  * @param {Function} getEnvFn - Optional custom getEnv function for testing
  * @returns {string} The service token

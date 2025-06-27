@@ -472,10 +472,10 @@ class ContextFossilService {
         const typedEntry = entry as ContextEntry;
         stats.byType[typedEntry.type] = (stats.byType[typedEntry.type] || 0) + 1;
         stats.bySource[typedEntry.source] = (stats.bySource[typedEntry.source] || 0) + 1;
-        
+      
         typedEntry.tags.forEach((tag: string) => {
-          stats.byTag[tag] = (stats.byTag[tag] || 0) + 1;
-        });
+        stats.byTag[tag] = (stats.byTag[tag] || 0) + 1;
+      });
       }
     });
 

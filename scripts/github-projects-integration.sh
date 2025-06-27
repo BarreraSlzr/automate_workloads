@@ -101,7 +101,7 @@ if [[ -z "$PROJECT_ID" ]]; then
 fi
 
 if [[ -z "$OWNER" || -z "$REPO" ]]; then
-    print_status $RED "❌ Error: Owner and repository are required"
+    print_status $RED "❌ Error: Owner and repository are required and must not be empty"
     show_usage
     exit 1
 fi
@@ -260,11 +260,11 @@ sync_issues() {
     
     # Get automation issues
     local automation_issues
-    automation_issues=$(gh issue list --repo "$OWNER/$REPO" --label "automation" --limit 100 --json number,title,state,labels,createdAt,updatedAt 2>/dev/null || echo "[]")
+    automation_issues=$(timeout 5s gh issue list --repo "$OWNER/$REPO" --label "automation" --limit 100 --json number,title,state,labels,createdAt,updatedAt 2>/dev/null || echo "[]")
     
     # Get action plan issues
     local action_plan_issues
-    action_plan_issues=$(gh issue list --repo "$OWNER/$REPO" --label "action-plan" --limit 100 --json number,title,state,labels,createdAt,updatedAt 2>/dev/null || echo "[]")
+    action_plan_issues=$(timeout 5s gh issue list --repo "$OWNER/$REPO" --label "action-plan" --limit 100 --json number,title,state,labels,createdAt,updatedAt 2>/dev/null || echo "[]")
     
     # Combine issues
     local all_issues

@@ -1,4 +1,37 @@
-# �� Automate Workloads: LLM-Powered Automation Ecosystem with Self-Improving Tools
+# Automate Workloads
+
+## Overview
+This project provides robust automation scripts and tools for repository health, progress tracking, and GitHub integration. All automation and testing is now local—there is no `remote-repo` directory or cross-repo simulation.
+
+## Requirements
+- [Bun](https://bun.sh/)
+- [gh (GitHub CLI)](https://cli.github.com/)
+- [jq](https://stedolan.github.io/jq/)
+
+## Testing
+- **Integration tests** are located in `tests/integration/` and cover all major shell scripts.
+- **Pre-commit hooks** run all integration tests and are required to pass before any commit.
+- **Coverage**: Integration tests are included in coverage metrics and are expected to be maintained as part of overall test coverage.
+
+### Running Tests
+```sh
+bun test tests/integration --coverage
+```
+
+## Pre-commit Workflow
+- Pre-commit hooks will run type-checks, linting (if configured), **all integration tests**, and coverage checks.
+- Commits are blocked if any integration test fails or coverage drops below the expected threshold.
+
+## Learnings
+- All automation and integration is now local; avoid duplicating or simulating remote-repo structures.
+- Always validate script arguments and use timeouts for external commands to prevent hangs.
+- Keep script output clean for production and CI.
+
+## Contributing
+- Add integration tests for any new scripts or features.
+- Keep documentation and test coverage up to date.
+
+#  Automate Workloads: LLM-Powered Automation Ecosystem with Self-Improving Tools
 
 A comprehensive automation ecosystem that integrates LLMs with GitHub, Raycast, Gmail, Buffer, Twitter API, and Obsidian for seamless workflow automation, planning, and execution. **This system provides powerful automation tools that continuously improve themselves through context fossil storage and self-analysis.**
 
@@ -50,27 +83,51 @@ This project provides an intelligent automation platform that combines the power
 
 ## 🏗️ Architecture
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│              LLM-Powered Automation Ecosystem               │
-├─────────────────────────────────────────────────────────────┤
-│  🔧 Repository Orchestrator  │  📊 Progress Monitor        │
-│  • Multi-Repository Analysis │  • Health Score Tracking    │
-│  • LLM-Powered Planning      │  • Trend Analysis           │
-│  • Automated Execution       │  • Automated Insights       │
-│  • Progress Tracking         │  • GitHub Projects Sync     │
-│  • GitHub Projects Integration│  • Intelligent Triggers     │
-└──────────────────────────────┼──────────────────────────────┘
-                               │
-┌──────────────────────────────┼──────────────────────────────┐
-│  🗿 Context Fossil Storage   │  🤖 LLM Workflow Automation  │
-│  • Persistent Knowledge Base │  • Goal Decomposition       │
-│  • Multi-Source Input        │  • Task Prioritization      │
-│  • Versioned Entries         │  • Content Generation       │
-│  • LLM Integration           │  • Context-Aware Execution  │
-│  • Learning from Contributions│  • Pattern Recognition      │
-└──────────────────────────────┴──────────────────────────────┘
-```
+<table>
+  <tr>
+    <th colspan="2" align="center">LLM-Powered Automation Ecosystem</th>
+  </tr>
+  <tr>
+    <td valign="top"><b>🔧 Repository Orchestrator</b><br>
+      <ul>
+        <li>Multi-Repository Analysis</li>
+        <li>LLM-Powered Planning</li>
+        <li>Automated Execution</li>
+        <li>Progress Tracking</li>
+        <li>GitHub Projects Integration</li>
+      </ul>
+    </td>
+    <td valign="top"><b>📊 Progress Monitor</b><br>
+      <ul>
+        <li>Health Score Tracking</li>
+        <li>Trend Analysis</li>
+        <li>Automated Insights</li>
+        <li>GitHub Projects Sync</li>
+        <li>Intelligent Triggers</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top"><b>🗿 Context Fossil Storage</b><br>
+      <ul>
+        <li>Persistent Knowledge Base</li>
+        <li>Multi-Source Input</li>
+        <li>Versioned Entries</li>
+        <li>LLM Integration</li>
+        <li>Learning from Contributions</li>
+      </ul>
+    </td>
+    <td valign="top"><b>🤖 LLM Workflow Automation</b><br>
+      <ul>
+        <li>Goal Decomposition</li>
+        <li>Task Prioritization</li>
+        <li>Content Generation</li>
+        <li>Context-Aware Execution</li>
+        <li>Pattern Recognition</li>
+      </ul>
+    </td>
+  </tr>
+</table>
 
 ## 🚀 Quick Start
 

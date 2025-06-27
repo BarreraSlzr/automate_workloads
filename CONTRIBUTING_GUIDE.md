@@ -2,6 +2,16 @@
 
 A comprehensive guide for contributing to the automation ecosystem that integrates LLMs with GitHub, Raycast, Gmail, Buffer, Twitter API, and Obsidian for seamless workflow automation.
 
+## 🧪 Integration Testing & Coverage (Updated)
+- All integration tests are **local** (no `remote-repo` or cross-repo simulation).
+- Integration tests are **required** for all major shell scripts and must be included in `tests/integration/`.
+- Integration tests are included in **coverage metrics** and must be maintained as part of overall test coverage.
+- **Pre-commit hooks** run all integration tests and block commits if any fail or if coverage drops below the expected threshold.
+- **Best practices:**
+  - Always validate required arguments in shell scripts.
+  - Use timeouts for all external commands (e.g., `gh`, `bun`, `jq`) to prevent hangs.
+  - Remove debug output from production scripts for clarity in CI and logs.
+
 ## 📋 Table of Contents
 
 - [🎯 LLM-Friendly Documented Goals](#-llm-friendly-documented-goals)

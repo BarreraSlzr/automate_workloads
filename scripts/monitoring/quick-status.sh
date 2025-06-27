@@ -5,6 +5,7 @@
 # Provides a quick overview of repository health and progress
 
 set -e
+set -x
 
 # Colors for output
 RED='\033[0;31m'
@@ -45,6 +46,13 @@ fi
 OWNER="$1"
 REPO="$2"
 
+# Validate arguments
+if [[ -z "$OWNER" || -z "$REPO" ]]; then
+    print_status $RED "Error: Owner and repo are required and must not be empty"
+    show_usage
+    exit 1
+fi
+
 print_status $PURPLE "🚀 Quick Status Check for $OWNER/$REPO"
 echo ""
 
@@ -77,9 +85,9 @@ echo ""
 
 # Action plan progress
 print_status $BLUE "📋 Action Plan Progress..."
-ACTION_PLANS=$(gh issue list --repo "$OWNER/$REPO" --label "action-plan" --limit 100 --json state 2>/dev/null | jq 'length' || echo "0")
-COMPLETED_PLANS=$(gh issue list --repo "$OWNER/$REPO" --label "action-plan" --limit 100 --json state 2>/dev/null | jq '[.[] | select(.state == "CLOSED")] | length' || echo "0")
-OPEN_PLANS=$(gh issue list --repo "$OWNER/$REPO" --label "action-plan" --limit 100 --json state 2>/dev/null | jq '[.[] | select(.state == "OPEN")] | length' || echo "0")
+ACTION_PLANS=$(timeout 5s gh issue list --repo "$OWNER/$REPO" --label "action-plan" --limit 100 --json state 2>/dev/null | jq 'length' || echo "0")
+COMPLETED_PLANS=$(timeout 5s gh issue list --repo "$OWNER/$REPO" --label "action-plan" --limit 100 --json state 2>/dev/null | jq '[.[] | select(.state == "CLOSED")] | length' || echo "0")
+OPEN_PLANS=$(timeout 5s gh issue list --repo "$OWNER/$REPO" --label "action-plan" --limit 100 --json state 2>/dev/null | jq '[.[] | select(.state == "OPEN")] | length' || echo "0")
 
 if [[ "$ACTION_PLANS" -gt 0 ]]; then
     COMPLETION_RATE=$(echo "scale=1; $COMPLETED_PLANS * 100 / $ACTION_PLANS" | bc -l 2>/dev/null || echo "0")
@@ -91,9 +99,9 @@ echo ""
 
 # Automation progress
 print_status $BLUE "🤖 Automation Progress..."
-AUTOMATION_ISSUES=$(gh issue list --repo "$OWNER/$REPO" --label "automation" --limit 100 --json state 2>/dev/null | jq 'length' || echo "0")
-COMPLETED_AUTOMATION=$(gh issue list --repo "$OWNER/$REPO" --label "automation" --limit 100 --json state 2>/dev/null | jq '[.[] | select(.state == "CLOSED")] | length' || echo "0")
-OPEN_AUTOMATION=$(gh issue list --repo "$OWNER/$REPO" --label "automation" --limit 100 --json state 2>/dev/null | jq '[.[] | select(.state == "OPEN")] | length' || echo "0")
+AUTOMATION_ISSUES=$(timeout 5s gh issue list --repo "$OWNER/$REPO" --label "automation" --limit 100 --json state 2>/dev/null | jq 'length' || echo "0")
+COMPLETED_AUTOMATION=$(timeout 5s gh issue list --repo "$OWNER/$REPO" --label "automation" --limit 100 --json state 2>/dev/null | jq '[.[] | select(.state == "CLOSED")] | length' || echo "0")
+OPEN_AUTOMATION=$(timeout 5s gh issue list --repo "$OWNER/$REPO" --label "automation" --limit 100 --json state 2>/dev/null | jq '[.[] | select(.state == "OPEN")] | length' || echo "0")
 
 if [[ "$AUTOMATION_ISSUES" -gt 0 ]]; then
     AUTOMATION_RATE=$(echo "scale=1; $COMPLETED_AUTOMATION * 100 / $AUTOMATION_ISSUES" | bc -l 2>/dev/null || echo "0")
@@ -152,3 +160,6 @@ fi
 echo ""
 
 print_status $GREEN "✅ Quick status check complete!"
+
+echo "[DEBUG] quick-status.sh reached end of script"
+exit 0

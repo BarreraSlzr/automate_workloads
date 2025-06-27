@@ -468,3 +468,26 @@ The Complete Automation Ecosystem demonstrates the power of **tool-centric autom
 - **Continuous improvement** is driven by pattern recognition and adaptation
 
 This ecosystem creates a virtuous cycle where every interaction contributes to better automation, smarter decisions, and more effective workflows. 🗿✨ 
+
+## Local-Only Automation
+- All automation, orchestration, and integration testing is performed locally within this repository.
+- There is no `remote-repo` or cross-repo simulation; all scripts and tests reference the local repository only.
+
+## Integration Testing & Coverage
+- Integration tests for all major shell scripts are required and included in `tests/integration/`.
+- Integration tests are included in coverage metrics and must be maintained as part of overall test coverage.
+- Pre-commit hooks run all integration tests and block commits if any fail or if coverage drops below the expected threshold.
+
+## Script Best Practices
+- **Argument Validation:** Always check that required arguments are provided and non-empty.
+- **Timeouts:** Use timeouts for all external commands to prevent hangs.
+- **Clean Output:** Remove debug output from production scripts for clarity and CI stability.
+
+## Running Integration Tests
+```sh
+bun test tests/integration --coverage
+```
+
+## Contribution Guidelines
+- All new scripts and features must include integration tests.
+- Documentation and coverage must be kept up to date. 
