@@ -83,13 +83,17 @@ class LLMPlanningService {
    * Decomposes a high-level goal into actionable tasks
    * @param goal - The goal to decompose
    * @param context - Additional context for planning
+   * @param issueMode - Treat the goal/context as a GitHub issue for checklist generation
    * @returns Structured task breakdown
    */
-  async decomposeGoal(goal: string, context?: Record<string, unknown>): Promise<TaskBreakdown> {
+  async decomposeGoal(goal: string, context?: Record<string, unknown>, issueMode: boolean = false): Promise<TaskBreakdown> {
     if (this.model && this.apiKey) {
       const messages = [
         { role: 'system' as const, content: 'You are an expert project planner.' },
-        { role: 'user' as const, content: `Break down the following goal into actionable tasks.\nGoal: ${goal}\nContext: ${JSON.stringify(context || {})}\nProvide: 1. Main tasks with clear acceptance criteria 2. Dependencies between tasks 3. Estimated effort for each task 4. Success metrics for each task 5. Risk factors and mitigation strategies` },
+        { role: 'user' as const, content: issueMode
+          ? `Given this GitHub issue, generate a concise checklist of actionable steps required to resolve it. Output the checklist in Markdown format.\n\nIssue Title: ${goal}\nContext: ${JSON.stringify(context || {})}`
+          : `Break down the following goal into actionable tasks.\nGoal: ${goal}\nContext: ${JSON.stringify(context || {})}`
+        },
       ];
       const response = await callOpenAIChat({ model: this.model, apiKey: this.apiKey, messages });
       // You may want to parse/validate response. For now, just return the content as a single task.
@@ -321,6 +325,7 @@ program
   .description('LLM-assisted planning for automation workflows')
   .version('1.0.0')
   .option('--quiet', 'Suppress all output except errors', false)
+  .option('--json', 'Output the plan as JSON (default)')
   .hook('preAction', (thisCommand) => {
     isQuiet = thisCommand.opts().quiet || process.env.LLM_PLAN_QUIET === '1';
     if (isQuiet) {
@@ -341,6 +346,7 @@ program
   .option('-o, --output <file>', 'Output file for the plan')
   .option('--model <model>', 'LLM model to use (e.g., gpt-4, gpt-3.5-turbo)', 'gpt-4')
   .option('--api-key <apiKey>', 'OpenAI API key (optional, falls back to env)')
+  .option('--issue-mode', 'Treat the goal/context as a GitHub issue for checklist generation')
   .action(async (goal, options) => {
     try {
       const model = options.model || 'gpt-4';
@@ -357,7 +363,21 @@ program
         }
       }
 
-      const breakdown = await service.decomposeGoal(goal, context);
+      // Select prompt based on --issue-mode flag
+      let breakdown;
+      if (options.issueMode) {
+        breakdown = await service.decomposeGoal(
+          goal,
+          context,
+          true // issueMode
+        );
+      } else {
+        breakdown = await service.decomposeGoal(
+          goal,
+          context,
+          false // issueMode
+        );
+      }
       
       if (options.output) {
         // Write to file

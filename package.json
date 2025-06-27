@@ -113,7 +113,9 @@
     "mcp:qa": "bun run mcp-cli.ts qa",
     "mcp:dev": "bun run mcp-cli.ts dev",
     "mcp:migrate": "bun run mcp-cli.ts migrate",
-    "mcp:test": "bun run mcp-cli.ts test"
+    "mcp:test": "bun run mcp-cli.ts test",
+    "update:checklist": "bun scripts/update-issue-checklist.ts",
+    "plan:workflow": "bun run src/cli/plan-workflow.ts"
   },
   "devDependencies": {
     "@types/bun": "latest"
