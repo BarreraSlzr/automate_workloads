@@ -26,9 +26,8 @@ automate_workloads/
 │   │       ├── setup/        # Tests for setup scripts
 │   │       └── base-tester.ts# Script testing utility
 │   ├── integration/          # Integration tests
-│   └── e2e/                  # End-to-end tests
+│   └── examples/             # Example scripts and usage demos
 │
-├── examples/                 # Example scripts and usage demos
 ├── docs/                     # Project documentation
 ├── context-backups/          # Context backup files
 ├── .github/                  # GitHub workflows and templates

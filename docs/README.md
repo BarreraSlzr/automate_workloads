@@ -351,3 +351,136 @@ bun test tests/integration --coverage
 - All integration tests must pass before commit.
 - Coverage metrics include integration tests.
 - New scripts/features must include corresponding integration tests. 
+
+## LLM Plan Workflow Orchestrator
+
+### Overview
+
+The `plan-workflow.ts` script orchestrates the process of reading GitHub issues, generating a plan with LLM, and updating issues with the plan. It is designed for both local and CI (GitHub Actions) use.
+
+### Usage
+
+```sh
+bun run plan:workflow --update
+```
+
+- `--update`: After generating the plan, automatically update issues with the plan using `update:checklist`.
+- `--output <file>`: Specify the output file for the plan JSON (default: `llm-plan-output.json`).
+
+### Requirements
+- `OPENAI_API_KEY` must be set in your environment (e.g., via `.env` or GitHub Secrets).
+- The issues script (`src/cli/github-issues.ts`) must support `--json` output.
+- The plan is output as JSON, which is required by `update:checklist`.
+
+### Example Workflow
+
+```sh
+bun run plan:workflow --update
+```
+
+This will:
+1. Read open GitHub issues
+2. Summarize and send them to the LLM planner
+3. Output the plan as JSON
+4. Update issues with the plan
+
+### Integration with GitHub Actions
+
+You can call this script from a GitHub Actions workflow for full automation.
+
+---
+
+## LLM Plan CLI: `llm-plan.ts`
+
+### New `--issue-mode` Flag
+
+- Use `--issue-mode` with the `decompose` command to generate a Markdown checklist for a GitHub issue:
+
+```sh
+bun run llm:plan decompose "Fix bug in login flow" --issue-mode
+```
+
+- Without `--issue-mode`, the command will perform general goal decomposition:
+
+```sh
+bun run llm:plan decompose "Launch new product feature"
+```
+
+### When to Use
+- Use `--issue-mode` for GitHub issues or any context where you want a checklist of actionable steps.
+- Use the default mode for broader project or goal planning.
+
+---
+
+## Automated Workloads Summary
+
+- **Per-issue checklist generation:** Each GitHub issue gets a Markdown checklist of actionable steps.
+- **Project-wide next-steps planning:** Aggregates all issue checklists and generates a global next-steps plan.
+- **Automated updating:** Updates GitHub issues with generated checklists using a single command.
+- **Flexible LLM planning:** Supports both issue-specific and general goal decomposition.
+- **CI/CD ready:** Can be run locally or in GitHub Actions for continuous automation.
+
+---
+
+## Learnings & Best Practices
+
+- Use LLMs to automate repetitive planning and checklist generation, but always review outputs for accuracy.
+- Use the `--issue-mode` flag for issue-centric workflows to get actionable Markdown checklists.
+- Aggregate per-issue results for higher-level project planning.
+- Keep your scripts modular and composable for easy integration in CI/CD.
+- Document your automation workflows and update them as your project evolves.
+
+---
+
+## Test Strategy: Bun vs. Jest
+
+- **Bun** is used for most unit, integration, and logic tests. Run all Bun-compatible tests with:
+  ```sh
+  bun test
+  ```
+- **Jest** is used for tests that require deep mocking of built-in modules (e.g., `child_process`, `fs`), such as the CLI orchestrator. These tests are named with `.jest.ts` and run with:
+  ```sh
+  bun run test:jest
+  # or
+  npx jest
+  ```
+
+### Why the Split?
+- Bun's test runner is fast and native, but does not support robust mocking of built-in modules or subprocesses.
+- Jest provides powerful mocking and is ideal for CLI/agent tests that need to simulate subprocesses or file system operations.
+
+### Example
+- Run all Bun tests:
+  ```sh
+  bun test
+  ```
+- Run only Jest tests:
+  ```sh
+  bun run test:jest
+  # or
+  npx jest
+  ```
+
+Keep `.jest.ts` files for Jest-only tests and `.test.ts` for Bun tests. This ensures clarity and reliability in your test suite. 
+
+---
+
+## Jest Experiment: Learnings and Cleanup
+
+- **Jest was explored for deep mocking and CLI testing.**
+- **Key issues:**
+  - Jest/ts-jest does not fully support ESM features (like import.meta) in Bun/TypeScript projects.
+  - ts-jest could not be made to recognize the correct module config for ESM, even with custom tsconfig.
+  - Node.js built-in modules and globals were not always recognized in the Jest/ESM/TypeScript setup.
+- **Decision:**
+  - Remove Jest and all related config and test files.
+  - Use only Bun's test runner for all tests in this project.
+  - For advanced mocking or CLI testing, consider refactoring for dependency injection or use manual/integration tests.
+
+**Cleanup:**
+- Removed all Jest-related files and configs.
+- Removed Jest-specific test files.
+- If you see any Jest dependencies in package.json, you can remove them with:
+  ```sh
+  bun remove jest ts-jest @types/jest
+  ``` 

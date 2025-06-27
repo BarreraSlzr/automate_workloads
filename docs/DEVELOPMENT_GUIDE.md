@@ -180,7 +180,6 @@ See [PROJECT_STRUCTURE.md](../../PROJECT_STRUCTURE.md) for the current directory
 **Test File Naming:**
 - `*.test.ts` - Unit tests
 - `*.integration.test.ts` - Integration tests
-- `*.e2e.test.ts` - End-to-end tests
 
 ### Testing Patterns
 
