@@ -16,6 +16,8 @@ export interface EnvironmentConfig {
   bufferToken?: string;
   /** Twitter API v2 bearer token */
   twitterToken?: string;
+  /** OpenAI API key */
+  openaiApiKey?: string;
 }
 
 /**

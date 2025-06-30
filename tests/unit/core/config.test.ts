@@ -156,15 +156,17 @@ test("validateConfig returns valid result for complete configuration", () => {
   process.env.GMAIL_TOKEN = "gmail_test123";
   process.env.BUFFER_TOKEN = "buffer_test123";
   process.env.TWITTER_BEARER_TOKEN = "twitter_test123";
+  process.env.OPENAI_API_KEY = "openai_test123";
 
   const result = validateConfig();
 
   expect(result.isValid).toBe(true);
   expect(result.availableServices).toEqual([
     "githubToken",
-    "gmailToken", 
+    "gmailToken",
     "bufferToken",
-    "twitterToken"
+    "twitterToken",
+    "openaiApiKey"
   ]);
   expect(result.missingServices).toEqual([]);
 });
@@ -174,6 +176,7 @@ test("validateConfig returns invalid result for missing configuration", () => {
   delete process.env.GMAIL_TOKEN;
   delete process.env.BUFFER_TOKEN;
   delete process.env.TWITTER_BEARER_TOKEN;
+  delete process.env.OPENAI_API_KEY;
 
   const result = validateConfig();
 
@@ -182,14 +185,16 @@ test("validateConfig returns invalid result for missing configuration", () => {
   expect(result.missingServices).toEqual([
     "githubToken",
     "gmailToken",
-    "bufferToken", 
-    "twitterToken"
+    "bufferToken",
+    "twitterToken",
+    "openaiApiKey"
   ]);
 });
 
 test("validateConfig returns partial result for mixed configuration", () => {
   process.env.GITHUB_TOKEN = "ghp_test123";
   process.env.TWITTER_BEARER_TOKEN = "twitter_test123";
+  process.env.OPENAI_API_KEY = "openai_test123";
   delete process.env.GMAIL_TOKEN;
   delete process.env.BUFFER_TOKEN;
 
@@ -198,7 +203,8 @@ test("validateConfig returns partial result for mixed configuration", () => {
   expect(result.isValid).toBe(false);
   expect(result.availableServices).toEqual([
     "githubToken",
-    "twitterToken"
+    "twitterToken",
+    "openaiApiKey"
   ]);
   expect(result.missingServices).toEqual([
     "gmailToken",
@@ -211,13 +217,15 @@ test("validateConfig handles empty tokens", () => {
   process.env.GMAIL_TOKEN = "gmail_test123";
   process.env.BUFFER_TOKEN = "";
   process.env.TWITTER_BEARER_TOKEN = "twitter_test123";
+  process.env.OPENAI_API_KEY = "openai_test123";
 
   const result = validateConfig();
 
   expect(result.isValid).toBe(false);
   expect(result.availableServices).toEqual([
     "gmailToken",
-    "twitterToken"
+    "twitterToken",
+    "openaiApiKey"
   ]);
   expect(result.missingServices).toEqual([
     "githubToken",
@@ -226,15 +234,15 @@ test("validateConfig handles empty tokens", () => {
 });
 
 test("ConfigValidationResult interface validation", () => {
-  const result: ConfigValidationResult = {
+  const result = {
     isValid: true,
     missingServices: [],
-    availableServices: ["githubToken", "twitterToken"]
+    availableServices: ["githubToken", "twitterToken", "openaiApiKey"]
   };
 
   expect(result.isValid).toBe(true);
   expect(result.missingServices).toEqual([]);
-  expect(result.availableServices).toEqual(["githubToken", "twitterToken"]);
+  expect(result.availableServices).toEqual(["githubToken", "twitterToken", "openaiApiKey"]);
 });
 
 test("Integration test: full configuration workflow", () => {
@@ -243,6 +251,7 @@ test("Integration test: full configuration workflow", () => {
   process.env.GMAIL_TOKEN = "gmail_test123";
   process.env.BUFFER_TOKEN = "buffer_test123";
   process.env.TWITTER_BEARER_TOKEN = "twitter_test123";
+  process.env.OPENAI_API_KEY = "openai_test123";
 
   // Test getEnv
   const config = getEnv();
@@ -259,13 +268,14 @@ test("Integration test: full configuration workflow", () => {
   // Test validateConfig
   const validation = validateConfig();
   expect(validation.isValid).toBe(true);
-  expect(validation.availableServices).toHaveLength(4);
+  expect(validation.availableServices).toHaveLength(5);
   expect(validation.missingServices).toHaveLength(0);
 });
 
 test("Integration test: partial configuration workflow", () => {
   // Set up partial configuration
   process.env.GITHUB_TOKEN = "ghp_test123";
+  process.env.OPENAI_API_KEY = "openai_test123";
   delete process.env.GMAIL_TOKEN;
   delete process.env.BUFFER_TOKEN;
   delete process.env.TWITTER_BEARER_TOKEN;
@@ -286,10 +296,24 @@ test("Integration test: partial configuration workflow", () => {
   // Test validateConfig
   const validation = validateConfig();
   expect(validation.isValid).toBe(false);
-  expect(validation.availableServices).toEqual(["githubToken"]);
+  expect(validation.availableServices).toEqual(["githubToken", "openaiApiKey"]);
   expect(validation.missingServices).toEqual([
     "gmailToken",
     "bufferToken",
     "twitterToken"
   ]);
+});
+
+test("returns invalid result if OPENAI_API_KEY is missing", () => {
+  const prev = process.env.OPENAI_API_KEY;
+  delete process.env.OPENAI_API_KEY;
+  const result = validateConfig();
+  expect(result.isValid).toBe(false);
+  expect(result.missingServices).toContain("openaiApiKey");
+  process.env.OPENAI_API_KEY = prev;
+});
+
+test("does not throw if OPENAI_API_KEY is present", () => {
+  process.env.OPENAI_API_KEY = "test-key";
+  expect(() => validateConfig()).not.toThrow();
 }); 

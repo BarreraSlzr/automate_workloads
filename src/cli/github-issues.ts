@@ -60,6 +60,12 @@ function parseArgs(): GitHubIssuesCLIOptions {
       case '-f':
         options.format = args[++i] as 'text' | 'json' | 'table';
         break;
+      case '--json':
+        options.format = 'json';
+        break;
+      case '--table':
+        options.format = 'table';
+        break;
       case '--verbose':
       case '-v':
         options.verbose = true;

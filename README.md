@@ -763,3 +763,18 @@ Below is a sample of available actions. For full details, arguments, and categor
 | llm:plan review-comments | LLM | Generate LLM-powered review comments for a PR | `bun run llm:plan review-comments 123` |
 
 See the YAML manifest for the full, up-to-date list and for LLMs to programmatically access all actions.
+
+## Environment Setup
+
+Before running any CLI tools or tests, copy `.env.example` to `.env` and fill in the required values:
+
+```sh
+cp .env.example .env
+```
+
+**Required environment variables:**
+- `OPENAI_API_KEY`: Your OpenAI API key (required for LLM planning)
+- `GITHUB_TOKEN`: Your GitHub token (required for issue integration)
+- `GMAIL_TOKEN`, `BUFFER_TOKEN`, `TWITTER_BEARER_TOKEN`: Optional, for additional integrations
+
+See `.env.example` for a complete list and example values.

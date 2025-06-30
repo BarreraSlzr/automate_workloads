@@ -49,7 +49,6 @@ jobs:
   integration:
     runs-on: ubuntu-latest
     needs: test
-    if: github.event_name == 'workflow_dispatch' # Only run on manual trigger
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

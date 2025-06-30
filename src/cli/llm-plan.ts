@@ -72,11 +72,13 @@ class LLMPlanningService {
   private config: ReturnType<typeof getEnv>;
   private model: string;
   private apiKey: string;
+  private llmFn: typeof callOpenAIChat;
 
-  constructor(model: string, apiKey: string) {
+  constructor(model: string, apiKey: string, llmFn = callOpenAIChat) {
     this.config = getEnv();
     this.model = model;
     this.apiKey = apiKey;
+    this.llmFn = llmFn;
   }
 
   /**
@@ -95,7 +97,7 @@ class LLMPlanningService {
           : `Break down the following goal into actionable tasks.\nGoal: ${goal}\nContext: ${JSON.stringify(context || {})}`
         },
       ];
-      const response = await callOpenAIChat({ model: this.model, apiKey: this.apiKey, messages });
+      const response = await this.llmFn({ model: this.model, apiKey: this.apiKey, messages });
       // You may want to parse/validate response. For now, just return the content as a single task.
       const content = response.choices?.[0]?.message?.content || 'No response';
       return {
@@ -259,7 +261,7 @@ class LLMPlanningService {
         { role: 'system' as const, content: `You are an expert ${contentType} writer.` },
         { role: 'user' as const, content: `Generate ${contentType} content about: ${topic}` },
       ];
-      const response = await callOpenAIChat({ model: this.model, apiKey: this.apiKey, messages });
+      const response = await this.llmFn({ model: this.model, apiKey: this.apiKey, messages });
       return response.choices?.[0]?.message?.content || 'No response';
     }
     // fallback simulation
@@ -583,4 +585,8 @@ program
   });
 
 // Parse command line arguments
-program.parse(); 
+if (import.meta.main) {
+  program.parse();
+}
+
+export { LLMPlanningService, TaskBreakdown }; 

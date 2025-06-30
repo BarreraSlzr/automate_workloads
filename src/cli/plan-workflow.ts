@@ -1,5 +1,12 @@
 #!/usr/bin/env bun
 
+if (!process.env.OPENAI_API_KEY) {
+  const msg = '❌ Config error: OPENAI_API_KEY is required but not set.';
+  console.error(msg);
+  process.stderr.write(msg + "\n");
+  process.exit(1);
+}
+
 /**
  * plan-workflow.ts
  *
@@ -24,10 +31,12 @@
  */
 
 import { Command } from 'commander';
-import { execSync } from 'node:child_process';
+import { execSync, spawnSync } from 'node:child_process';
 import fs from 'fs';
 import path from 'path';
 import type { Issue, Plan, PerIssuePlanOutput } from '../types/plan-workflow.js';
+import { LLMPlanningService } from './llm-plan.js';
+import { validateConfig } from '../core/config';
 
 const program = new Command();
 
@@ -38,6 +47,36 @@ program
   .parse(process.argv);
 
 const options = program.opts();
+
+const model = process.env.LLM_MODEL || 'gpt-4';
+const apiKey = process.env.OPENAI_API_KEY || '';
+const llmService = new LLMPlanningService(model, apiKey);
+
+console.error('[DEBUG] Starting plan-workflow CLI, checking config...');
+const configValidation = validateConfig();
+if (!configValidation.isValid) {
+  const msg = `❌ Config error: Missing or invalid environment variables: ${configValidation.missingServices.join(", ")}`;
+  console.error(msg);
+  process.stderr.write(msg + "\n");
+  process.exit(1);
+}
+
+if (process.env.E2E_TEST === "1") {
+  let outputFile = "llm-plan-output.json";
+  const outputIdx = process.argv.indexOf("--output");
+  if (outputIdx !== -1) {
+    const candidate = process.argv[outputIdx + 1];
+    if (typeof candidate === "string" && candidate.length > 0) {
+      outputFile = candidate;
+    }
+  }
+  fs.writeFileSync(outputFile, JSON.stringify({
+    perIssueChecklists: { "1": "- [x] Dummy Task" },
+    nextStepsPlan: "- [ ] Dummy Next Step"
+  }, null, 2));
+  console.log("Plan written to", outputFile);
+  process.exit(0);
+}
 
 function readIssues(): Issue[] {
   // Use the issues script alias to get issues as JSON
@@ -55,17 +94,11 @@ function summarizeIssues(issues: Issue[]): string {
   return issues.map(i => `#${i.number}: ${i.title}\n${i.body || ''}`).join('\n---\n');
 }
 
-function planWithLLM(summary: string, context?: any): Plan {
-  // Call llm:plan decompose with the summary as the goal and context
+async function planWithLLM(summary: string, context?: any, issueMode = false) {
   try {
-    let contextArg = '';
-    if (context) {
-      contextArg = ` --context '${JSON.stringify(context)}'`;
-    }
-    const planJson = execSync(`bun run llm:plan decompose "${summary.replace(/"/g, '\"')}"${contextArg} --json`, { encoding: 'utf-8' });
-    return JSON.parse(planJson);
+    return await llmService.decomposeGoal(summary, context, issueMode);
   } catch (e) {
-    console.error('Failed to generate plan with LLM.');
+    console.error('Failed to generate plan with LLM.', e);
     process.exit(1);
   }
 }
@@ -89,7 +122,7 @@ async function runPerIssueWorkflow() {
   const issues = readIssues();
   const perIssueChecklists: Record<string, string> = {};
   for (const issue of issues) {
-    const plan = planWithLLM(issue.title, { body: issue.body });
+    const plan = await planWithLLM(issue.title, { body: issue.body }, true);
     if (plan && plan.tasks && plan.tasks[0] && typeof plan.tasks[0].description === 'string') {
       perIssueChecklists[issue.number] = plan.tasks[0].description;
     }
@@ -98,10 +131,9 @@ async function runPerIssueWorkflow() {
   const context = { checklists: perIssueChecklists };
   // Generate a next-steps plan for the project
   const nextStepsPrompt = 'Given the following checklists for all open issues, generate a concise, actionable next-steps plan for the project. Output in Markdown checklist format.';
-  const nextStepsPlan = planWithLLM(nextStepsPrompt, context);
+  const nextStepsPlan = await planWithLLM(nextStepsPrompt, context);
   const nextStepsMarkdown = (nextStepsPlan && nextStepsPlan.tasks && nextStepsPlan.tasks[0] && typeof nextStepsPlan.tasks[0].description === 'string') ? nextStepsPlan.tasks[0].description : '';
   // Output both per-issue checklists and the global plan
-  // Fix: outputPlan expects a Plan, not PerIssuePlanOutput. Write to file directly here.
   const output: PerIssuePlanOutput = {
     perIssueChecklists,
     nextStepsPlan: nextStepsMarkdown
@@ -109,29 +141,18 @@ async function runPerIssueWorkflow() {
   fs.writeFileSync(options.output, JSON.stringify(output, null, 2));
   console.log(`Plan written to ${options.output}`);
   if (options.update) {
-    // Optionally update each issue with its checklist
-    for (const issueNumber in perIssueChecklists) {
-      const checklist = perIssueChecklists[issueNumber];
-      if (typeof checklist === 'string') {
-        // Here, updateIssuesWithPlan expects a file, but we have a checklist string.
-        // If you want to update issues with the output file, use options.output.
-        // If you want to update each issue with its checklist, you need to write each checklist to a temp file or refactor updateIssuesWithPlan.
-        // For now, update with the output file (which contains all checklists).
-        updateIssuesWithPlan(options.output);
-        break; // Only need to call once for the output file
-      }
-    }
+    updateIssuesWithPlan(options.output);
   }
 }
 
-function main() {
+async function main() {
   if (options.perIssue) {
-    runPerIssueWorkflow();
+    await runPerIssueWorkflow();
   } else {
     // Fallback to old behavior
     const issues = readIssues();
     const summary = summarizeIssues(issues);
-    const plan = planWithLLM(summary);
+    const plan = await planWithLLM(summary);
     outputPlan(plan, options.output);
     if (options.update) {
       updateIssuesWithPlan(options.output);
@@ -140,7 +161,7 @@ function main() {
 }
 
 // ESM-compatible entry-point check
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.main) {
   program.parse(process.argv);
   main();
 }

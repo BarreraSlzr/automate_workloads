@@ -19,6 +19,8 @@ export const envSchema = z.object({
   bufferToken: z.string().optional(),
   /** Twitter API v2 bearer token */
   twitterToken: z.string().optional(),
+  /** OpenAI API key */
+  openaiApiKey: z.string().optional(),
 });
 
 /**
@@ -49,6 +51,7 @@ export function getEnv(): EnvironmentConfig {
       gmailToken: process.env.GMAIL_TOKEN,
       bufferToken: process.env.BUFFER_TOKEN,
       twitterToken: process.env.TWITTER_BEARER_TOKEN,
+      openaiApiKey: process.env.OPENAI_API_KEY,
     };
   }
 
