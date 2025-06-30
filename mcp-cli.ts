@@ -53,6 +53,22 @@ class MCPCLIService {
   async handleRepoCommand(owner: string, repo: string, workflow: string): Promise<void> {
     console.log(`🎯 Repository Orchestration: ${owner}/${repo}`);
     
+    // Set environment variables for GitHub context
+    process.env.GITHUB_OWNER = owner;
+    process.env.GITHUB_REPO = repo;
+    process.env.GITHUB_REPO_FULL = `${owner}/${repo}`;
+    
+    // Update fossil file with basic repository context
+    await this.updateContextFossil({
+      repository: {
+        owner,
+        repo,
+        fullName: `${owner}/${repo}`,
+        lastAccessed: new Date().toISOString(),
+        workflow: workflow
+      }
+    });
+    
     try {
       switch (workflow) {
         case 'analyze':
@@ -61,7 +77,7 @@ class MCPCLIService {
           break;
         case 'plan':
           console.log('🤖 Creating LLM-powered plan...');
-          await this.executeBunScript('repo:plan', ['--owner', owner, '--repo', repo]);
+          await this.executeBunScript('repo:plan');
           break;
         case 'execute':
           console.log('🚀 Executing automation workflows...');
@@ -74,7 +90,7 @@ class MCPCLIService {
         case 'full':
           console.log('🎯 Starting full orchestration workflow...');
           await this.executeBunScript('repo:analyze', [owner, repo]);
-          await this.executeBunScript('repo:plan', ['--owner', owner, '--repo', repo]);
+          await this.executeBunScript('repo:plan');
           await this.executeBunScript('repo:orchestrate', [owner, repo, '--workflow', 'execute']);
           await this.executeBunScript('repo:monitor-progress', [owner, repo]);
           break;
@@ -84,6 +100,39 @@ class MCPCLIService {
       console.log('✅ Repository operation completed');
     } catch (error) {
       console.error('❌ Repository operation failed:', error.message);
+    }
+  }
+
+  /**
+   * Update context fossil with repository information
+   * @param context - Context data to update
+   */
+  private async updateContextFossil(context: Record<string, unknown>): Promise<void> {
+    try {
+      const fs = await import('fs/promises');
+      const fossilPath = '.context-fossil.json';
+      
+      // Read existing fossil or create new one
+      let fossilData: Record<string, unknown> = {};
+      try {
+        const existingData = await fs.readFile(fossilPath, 'utf8');
+        fossilData = JSON.parse(existingData);
+      } catch {
+        // File doesn't exist, start with empty object
+      }
+      
+      // Update with new context
+      fossilData = {
+        ...fossilData,
+        ...context,
+        lastUpdated: new Date().toISOString()
+      };
+      
+      // Write back to fossil file
+      await fs.writeFile(fossilPath, JSON.stringify(fossilData, null, 2));
+      console.log(`🗿 Updated context fossil with repository info`);
+    } catch (error) {
+      console.warn('⚠️  Could not update context fossil:', error.message);
     }
   }
 
