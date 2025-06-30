@@ -18,8 +18,8 @@ project_status:
               - getServiceToken: tested
               - validateConfig: tested
               - ConfigValidationResult: tested
-      status: tested
-      notes: Fully unit tested, high coverage
+            fossilized_output: false
+            fossil_test_coverage: false
 
     types:
       path: src/types/
@@ -38,12 +38,48 @@ project_status:
               - ServiceResponse: tested
               - WorkflowStep: tested
               - PerformanceMetrics: tested
-      status: tested
-      notes: Type definitions, fully tested
+            fossilized_output: false
+            fossil_test_coverage: false
+        - plan-workflow.ts:
+            functions: []
+            fossilized_output: false
+            fossil_test_coverage: false
 
     utils:
       path: src/utils/
       files:
+        - fossilize.ts:
+            functions:
+              - generateId: implemented
+              - toFossilEntry: implemented
+              - outputFossil: implemented
+              - writeFossilToFile: implemented
+            fossilized_output: true
+            fossil_test_coverage: true
+        - markdownChecklist.ts:
+            functions:
+              - updateMarkdownChecklist: implemented
+            fossilized_output: false
+            fossil_test_coverage: false
+        - plan-validator.ts:
+            functions:
+              - PlanValidator: implemented
+                - constructor: implemented
+                - validatePlan: implemented
+                - loadPlan: implemented
+                - validateStructure: implemented
+                - compareWithExpected: implemented
+                - validateAgainstOptions: implemented
+                - titlesAreSimilar: implemented
+                - compareTags: implemented
+                - compareTimeline: implemented
+                - compareRisks: implemented
+                - generateSummary: implemented
+                - generateEmptySummary: implemented
+                - calculateScore: implemented
+                - printReport: implemented
+            fossilized_output: false
+            fossil_test_coverage: false
         - cli.ts:
             functions:
               - CLIExecuteOptions: todo
@@ -51,115 +87,186 @@ project_status:
               - executeCommand: todo
               - executeCommandJSON: todo
               - formatOutput: todo
-        - plan-validator.ts:
-            functions:
-              - ValidationError: todo
-              - ValidationWarning: todo
-              - ValidationSummary: todo
-              - ValidationOptions: todo
-              # ... (other plan validation functions)
-      status: todo
-      notes: Needs unit tests
+            fossilized_output: false
+            fossil_test_coverage: false
 
     services:
       path: src/services/
       files:
         - github.ts:
             functions:
-              - GitHubOptions: todo
-              - GitHubService: todo
-                - constructor: todo
-                - isReady: todo
-                - getIssues: todo
-                - createIssue: todo
-                - closeIssue: todo
-                - addComment: todo
-                - getRepoInfo: todo
-                - formatIssues: todo
-      status: todo
-      notes: Needs unit tests
+              - GitHubService: implemented
+                - constructor: implemented
+                - isReady: implemented
+                - getIssues: implemented
+                - createIssue: implemented
+                - closeIssue: implemented
+                - addComment: implemented
+                - getRepoInfo: implemented
+                - formatIssues: implemented
+            fossilized_output: false
+            fossil_test_coverage: false
+        - llm.ts:
+            functions:
+              - callOpenAIChat: implemented
+            fossilized_output: false
+            fossil_test_coverage: false
 
     cli:
       path: src/cli/
       files:
+        - gather-context.ts:
+            functions:
+              - ContextGatheringService: implemented
+                - constructor: implemented
+                - gatherContext: implemented
+                - gatherGitHubContext: implemented
+                - gatherObsidianContext: implemented
+                - gatherGmailContext: implemented
+                - gatherSocialContext: implemented
+                - gatherSystemContext: implemented
+                - synthesizeContext: implemented
+                - extractCurrentState: implemented
+                - extractRecentActivity: implemented
+                - extractPendingActions: implemented
+                - generateRecommendations: implemented
+            cli_commands:
+              - gather: implemented
+            fossilized_output: true
+            fossil_test_coverage: true
+        - plan-workflow.ts:
+            functions:
+              - readIssues: implemented
+              - summarizeIssues: implemented
+              - planWithLLM: implemented
+              - outputPlan: implemented
+              - updateIssuesWithPlan: implemented
+              - runPerIssueWorkflow: implemented
+              - main: implemented
+            cli_commands:
+              - main workflow: implemented
+            fossilized_output: false
+            fossil_test_coverage: false
         - context-fossil.ts:
             functions:
               - ContextFossilService: implemented
+                - constructor: implemented
                 - initialize: implemented
+                - addEntry: implemented
+                - getEntry: implemented
+                - updateEntry: implemented
+                - queryEntries: implemented
+                - getRelatedEntries: implemented
+                - createSnapshot: implemented
                 - export: implemented
+                - generateContextSummary: implemented
+                - loadIndex: implemented
+                - saveIndex: implemented
+                - fileExists: implemented
+                - generateId: implemented
+                - getAllEntries: implemented
                 - generateMarkdownExport: implemented
                 - generateCsvExport: implemented
                 - generateYamlExport: implemented
-                # ... (other methods)
-        - track-progress.ts:
-            functions: [] # planned
-        - ensure-demo-issue.ts:
-            functions: [] # planned
-        - repo-orchestrator.ts:
-            functions: [] # planned
+            cli_commands:
+              - init: implemented
+              - add: implemented
+              - query: implemented
+              - get: implemented
+              - update: implemented
+              - export: implemented
+              - summary: implemented
+            fossilized_output: false
+            fossil_test_coverage: false
         - llm-plan.ts:
-            functions: [] # planned
-        - llm-execute.ts:
-            functions: [] # planned
-        - llm-analyze.ts:
-            functions: [] # planned
-        - validate-plan.ts:
-            functions: [] # planned
-        - gather-context.ts:
-            functions: [] # planned
+            functions:
+              - LLMPlanningService: implemented
+                - constructor: implemented
+                - decomposeGoal: implemented
+                - simulateDecomposeGoal: implemented
+                - prioritizeTasks: implemented
+                - generateContent: implemented
+                - simulateGenerateContent: implemented
+                - simulateLLMProcessing: implemented
+            cli_commands:
+              - decompose: implemented
+              - prioritize: implemented
+              - generate-content: implemented
+              - generate-tests: implemented
+              - review-comments: implemented
+            fossilized_output: false
+            fossil_test_coverage: false
         - github-issues.ts:
-            functions: [] # planned
+            functions:
+              - parseArgs: implemented
+              - showHelp: implemented
+              - main: implemented
+            cli_commands:
+              - main: implemented
+            fossilized_output: false
+            fossil_test_coverage: false
+        - track-progress.ts:
+            functions: []
+            cli_commands: []
+            fossilized_output: false
+            fossil_test_coverage: false
+        - ensure-demo-issue.ts:
+            functions: []
+            cli_commands: []
+            fossilized_output: false
+            fossil_test_coverage: false
+        - repo-orchestrator.ts:
+            functions: []
+            cli_commands: []
+            fossilized_output: false
+            fossil_test_coverage: false
+        - llm-execute.ts:
+            functions: []
+            cli_commands: []
+            fossilized_output: false
+            fossil_test_coverage: false
+        - llm-analyze.ts:
+            functions: []
+            cli_commands: []
+            fossilized_output: false
+            fossil_test_coverage: false
+        - validate-plan.ts:
+            functions: []
+            cli_commands: []
+            fossilized_output: false
+            fossil_test_coverage: false
       status: implemented
       notes: CLI commands, partial test coverage, needs more unit tests
 
     scripts:
       path: scripts/
       files:
-        - automation/testing-status.sh:
-            functions: [] # implemented
-        - automation/audit-shell-scripts.sh:
-            functions: [] # planned
-        - automation/review-workflow.sh:
-            functions: [] # planned
-        - automation/qa-workflow.sh:
-            functions: [] # planned
-        - automation/llm-issue-manager.sh:
-            functions: [] # planned
-        - automation/monitor-progress.sh:
-            functions: [] # planned
-        - automation/github-projects-integration.sh:
-            functions: [] # planned
-        - automation/backup-context.sh:
-            functions: [] # planned
-        - automation/simple-monitor.sh:
-            functions: [] # planned
-        - automation/llm-content-automation.sh:
-            functions: [] # planned
-        - automation/repo-orchestrator.sh:
-            functions: [] # planned
-        - automation/llm-workflow.sh:
-            functions: [] # planned
-        - monitoring/quick-status.sh:
-            functions: [] # planned
-        - monitoring/check-issues.sh:
-            functions: [] # planned
-        - migrations/001-improve-project-structure.sh:
-            functions: [] # planned
-        - migrations/002-project-structure-migration.ts:
-            functions: [] # planned
-        - setup/create-milestone.sh:
-            functions: [] # planned
-        - github-projects-integration.sh:
-            functions: [] # planned
-        - monitor-progress.sh:
-            functions: [] # planned
-        - quick-status.sh:
-            functions: [] # planned
-        - migrate.sh:
-            functions: [] # implemented
-        # ... (other scripts)
-      status: implemented
-      notes: Shell scripts, some tested
+        - github-projects-integration.sh: implemented
+        - quick-status.sh: implemented
+        - update-issue-checklist.ts: implemented
+        - monitor-progress.sh: implemented
+        - migrate.sh: implemented
+        - migration.log: implemented
+        - migration-state.json: implemented
+        - automation/testing-status.sh: implemented
+        - automation/audit-shell-scripts.sh: implemented
+        - automation/review-workflow.sh: implemented
+        - automation/qa-workflow.sh: implemented
+        - automation/llm-issue-manager.sh: implemented
+        - automation/monitor-progress.sh: implemented
+        - automation/github-projects-integration.sh: implemented
+        - automation/backup-context.sh: implemented
+        - automation/simple-monitor.sh: implemented
+        - automation/llm-content-automation.sh: implemented
+        - automation/repo-orchestrator.sh: implemented
+        - automation/llm-workflow.sh: implemented
+        - monitoring/quick-status.sh: implemented
+        - monitoring/check-issues.sh: implemented
+        - migrations/001-improve-project-structure.sh: implemented
+        - migrations/002-project-structure-migration.ts: implemented
+        - setup/create-milestone.sh: implemented
+      fossilized_output: false
+      fossil_test_coverage: false
 
   overall_summary:
     files_total: 28
@@ -179,4 +286,24 @@ project_status:
     - Document and test all CLI command modules and their public methods
     - Move all 'planned', 'todo', and 'implemented' statuses to 'tested' as you progress
     - Use only the enforced status progression for all future updates
-    - Update this YAML as you make progress (automate if possible) 
+    - Update this YAML as you make progress (automate if possible)
+
+tests:
+  - tests/integration/gather-context.integration.test.ts:
+      uses_fossil: true
+  - tests/unit/utils/fossilize.test.ts:
+      uses_fossil: true
+  # Add other tests here as you fossilize more outputs
+
+fossilization_summary:
+  fossilized_outputs:
+    - gather-context.ts
+  tests_using_fossils:
+    - tests/integration/gather-context.integration.test.ts
+    - tests/unit/utils/fossilize.test.ts
+  next_to_fossilize:
+    - llm-plan.ts
+    - track-progress.ts
+    - repo-orchestrator.ts
+    - validate-plan.ts
+    - github-issues.ts 

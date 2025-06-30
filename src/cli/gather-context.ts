@@ -9,6 +9,7 @@
 
 import { Command } from 'commander';
 import { getEnv } from '../core/config.js';
+import { toFossilEntry, outputFossil, writeFossilToFile } from '../utils/fossilize';
 
 interface UnifiedContext {
   timestamp: string;
@@ -363,18 +364,32 @@ program
       const context = await service.gatherContext();
       
       let outputData: UnifiedContext | Record<string, unknown> = context;
+      let fossilType: 'observation' | 'insight' = 'observation';
+      let fossilTitle = 'Gathered Context';
+      let fossilTags = ['context', 'gather'];
+      let fossilContent: string;
       if (options.synthesize) {
         outputData = await service.synthesizeContext(context);
-      }
-      
-      if (options.output) {
-        // Write to file
-        const fs = await import('fs/promises');
-        await fs.writeFile(options.output, JSON.stringify(outputData, null, 2));
-        console.log(`✅ Context saved to ${options.output}`);
+        fossilType = 'insight';
+        fossilTitle = 'Synthesized Context Insight';
+        fossilTags.push('synthesized', 'llm');
+        fossilContent = JSON.stringify(outputData, null, 2);
       } else {
-        // Output to console
-        console.log(JSON.stringify(outputData, null, 2));
+        fossilContent = JSON.stringify(outputData, null, 2);
+      }
+      const fossilEntry = toFossilEntry({
+        type: fossilType,
+        title: fossilTitle,
+        content: fossilContent,
+        tags: fossilTags,
+        source: 'terminal',
+        metadata: {},
+      });
+      if (options.output) {
+        await writeFossilToFile(fossilEntry, options.output);
+        console.log(`✅ Fossil context saved to ${options.output}`);
+      } else {
+        outputFossil(fossilEntry);
       }
     } catch (error) {
       console.error('❌ Error during context gathering:', error);
