@@ -20,7 +20,12 @@ export interface OpenAIChatOptions {
  * callVercelAIChat: Uses the Vercel AI SDK ('ai' package) for OpenAI chat completions.
  */
 
-export async function callOpenAIChat({ model, apiKey, messages, ...options }: OpenAIChatOptions): Promise<any> {
+export async function callOpenAIChat({
+  model,
+  apiKey,
+  messages,
+  ...options
+}: OpenAIChatOptions): Promise<any> {
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {

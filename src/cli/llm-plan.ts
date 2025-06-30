@@ -10,7 +10,7 @@
 import { Command } from 'commander';
 import { z } from 'zod';
 import { getEnv } from '../core/config.js';
-import { callOpenAIChat } from '../services/llm.js';
+import { callOpenAIChat } from '../services/llm';
 
 // LLM Planning schemas
 const PlanRequestSchema = z.object({

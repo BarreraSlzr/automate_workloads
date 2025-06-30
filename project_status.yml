@@ -1,309 +1,393 @@
-# Status Progression (enforced order):
-# planned → todo → blocked → documented → in-progress → implemented → tested → reviewed → deprecated
-
 project_status:
-  name: automate_workloads
-  version: 0.1
-  description: Automation ecosystem for GitHub, LLM, and context management (Bun/TypeScript)
-
   modules:
-    core:
-      path: src/core/
+    cli:
+      path: src/cli
       files:
-        - config.ts:
-            functions:
-              - envSchema: tested
-              - getEnv: tested
-              - hasServiceToken: tested
-              - getServiceToken: tested
-              - validateConfig: tested
-              - ConfigValidationResult: tested
-            fossilized_output: false
-            fossil_test_coverage: false
-
-    types:
-      path: src/types/
-      files:
-        - index.ts:
-            functions:
-              - EnvironmentConfig: tested
-              - ContextEntry: tested
-              - ContextQuery: tested
-              - GitHubIssue: tested
-              - TwitterTweet: tested
-              - GmailMessage: tested
-              - BufferPost: tested
-              - ObsidianNote: tested
-              - CLIOptions: tested
-              - ServiceResponse: tested
-              - WorkflowStep: tested
-              - PerformanceMetrics: tested
-            fossilized_output: false
-            fossil_test_coverage: false
-        - plan-workflow.ts:
+        - llm-execute.ts:
             functions: []
             fossilized_output: false
-            fossil_test_coverage: false
-
-    utils:
-      path: src/utils/
-      files:
-        - fossilize.ts:
+        - track-progress.ts:
             functions:
-              - generateId: implemented
-              - toFossilEntry: implemented
-              - outputFossil: implemented
-              - writeFossilToFile: implemented
+              - 'ProgressTrackingService: implemented'
+            fossilized_output: false
+            cli_commands:
+              - 'track: implemented'
+              - 'status: implemented'
+        - github-issues.ts:
+            functions:
+              - 'parseArgs: implemented'
+              - 'showHelp: implemented'
+              - 'main: implemented'
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-issues.integration.test.ts
+        - context-fossil.ts:
+            functions:
+              - 'ContextFossilService: implemented'
+            fossilized_output: false
+            cli_commands:
+              - 'init: implemented'
+              - 'add: implemented'
+              - 'query: implemented'
+              - 'get: implemented'
+              - 'update: implemented'
+              - 'export: implemented'
+              - 'stats: implemented'
+              - 'summary: implemented'
+        - llm-plan.ts:
+            functions:
+              - 'LLMPlanningService: implemented'
+              - 'findShellScripts: implemented'
+              - 'for: implemented'
+            fossilized_output: false
+            cli_commands:
+              - 'decompose: implemented'
+              - 'prioritize: implemented'
+              - 'generate-content: implemented'
+              - 'generate-tests: implemented'
+              - 'review-comments: implemented'
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/llm-plan.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-plan.test.ts
+        - llm-analyze.ts:
+            functions: []
+            fossilized_output: false
+        - validate-plan.ts:
+            functions: []
+            fossilized_output: false
+            cli_commands:
+              - 'validate: implemented'
+              - 'batch: implemented'
+              - 'create-expected: implemented'
+        - ensure-demo-issue.ts:
+            functions:
+              - 'main: implemented'
+            fossilized_output: false
+        - gather-context.ts:
+            functions:
+              - 'ContextGatheringService: implemented'
             fossilized_output: true
-            fossil_test_coverage: true
-        - markdownChecklist.ts:
+            cli_commands:
+              - 'gather: implemented'
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/gather-context.integration.test.ts
+        - repo-orchestrator.ts:
             functions:
-              - updateMarkdownChecklist: implemented
+              - 'RepoOrchestratorService: implemented'
             fossilized_output: false
-            fossil_test_coverage: false
-        - plan-validator.ts:
+            cli_commands:
+              - 'orchestrate: implemented'
+              - 'analyze: implemented'
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/repo-orchestrator.test.ts
+        - plan-workflow.ts:
             functions:
-              - PlanValidator: implemented
-                - constructor: implemented
-                - validatePlan: implemented
-                - loadPlan: implemented
-                - validateStructure: implemented
-                - compareWithExpected: implemented
-                - validateAgainstOptions: implemented
-                - titlesAreSimilar: implemented
-                - compareTags: implemented
-                - compareTimeline: implemented
-                - compareRisks: implemented
-                - generateSummary: implemented
-                - generateEmptySummary: implemented
-                - calculateScore: implemented
-                - printReport: implemented
+              - 'readIssues: implemented'
+              - 'summarizeIssues: implemented'
+              - 'planWithLLM: implemented'
+              - 'outputPlan: implemented'
+              - 'updateIssuesWithPlan: implemented'
+              - 'runPerIssueWorkflow: implemented'
+              - 'main: implemented'
             fossilized_output: false
-            fossil_test_coverage: false
-        - cli.ts:
-            functions:
-              - CLIExecuteOptions: todo
-              - CLIExecuteResult: todo
-              - executeCommand: todo
-              - executeCommandJSON: todo
-              - formatOutput: todo
-            fossilized_output: false
-            fossil_test_coverage: false
-
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/plan-workflow.integration.test.ts
     services:
-      path: src/services/
+      path: src/services
       files:
         - github.ts:
             functions:
-              - GitHubService: implemented
-                - constructor: implemented
-                - isReady: implemented
-                - getIssues: implemented
-                - createIssue: implemented
-                - closeIssue: implemented
-                - addComment: implemented
-                - getRepoInfo: implemented
-                - formatIssues: implemented
+              - 'for: implemented'
+              - 'GitHubService: implemented'
             fossilized_output: false
-            fossil_test_coverage: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/types/index.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/core/config.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/github-projects-integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/github-projects-integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-issues.integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-projects-integration.integration.test.ts
         - llm.ts:
             functions:
-              - callOpenAIChat: implemented
+              - 'callOpenAIChat: implemented'
             fossilized_output: false
-            fossil_test_coverage: false
-
-    cli:
-      path: src/cli/
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/types/index.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/llm-plan.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-workflow.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-content-automation.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-plan.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-issue-manager.test.ts
+    utils:
+      path: src/utils
       files:
-        - gather-context.ts:
+        - cli.ts:
             functions:
-              - ContextGatheringService: implemented
-                - constructor: implemented
-                - gatherContext: implemented
-                - gatherGitHubContext: implemented
-                - gatherObsidianContext: implemented
-                - gatherGmailContext: implemented
-                - gatherSocialContext: implemented
-                - gatherSystemContext: implemented
-                - synthesizeContext: implemented
-                - extractCurrentState: implemented
-                - extractRecentActivity: implemented
-                - extractPendingActions: implemented
-                - generateRecommendations: implemented
-            cli_commands:
-              - gather: implemented
+              - 'executeCommand: implemented'
+              - 'executeCommandJSON: implemented'
+              - 'isCommandAvailable: implemented'
+              - 'executeCommandWithRetry: implemented'
+              - 'formatOutput: implemented'
+              - 'createServiceResponse: implemented'
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/llm-plan.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-plan.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/gather-context.integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-issues.integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/plan-workflow.integration.test.ts
+        - markdownChecklist.ts:
+            functions:
+              - 'updateMarkdownChecklist: implemented'
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/utils/markdownChecklist.test.ts
+        - fossilize.ts:
+            functions:
+              - 'generateId: implemented'
+              - 'toFossilEntry: implemented'
+              - 'outputFossil: implemented'
+              - 'writeFossilToFile: implemented'
             fossilized_output: true
-            fossil_test_coverage: true
-        - plan-workflow.ts:
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/utils/fossilize.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/gather-context.integration.test.ts
+        - plan-validator.ts:
             functions:
-              - readIssues: implemented
-              - summarizeIssues: implemented
-              - planWithLLM: implemented
-              - outputPlan: implemented
-              - updateIssuesWithPlan: implemented
-              - runPerIssueWorkflow: implemented
-              - main: implemented
-            cli_commands:
-              - main workflow: implemented
+              - 'PlanValidator: implemented'
             fossilized_output: false
-            fossil_test_coverage: false
-        - context-fossil.ts:
-            functions:
-              - ContextFossilService: implemented
-                - constructor: implemented
-                - initialize: implemented
-                - addEntry: implemented
-                - getEntry: implemented
-                - updateEntry: implemented
-                - queryEntries: implemented
-                - getRelatedEntries: implemented
-                - createSnapshot: implemented
-                - export: implemented
-                - generateContextSummary: implemented
-                - loadIndex: implemented
-                - saveIndex: implemented
-                - fileExists: implemented
-                - generateId: implemented
-                - getAllEntries: implemented
-                - generateMarkdownExport: implemented
-                - generateCsvExport: implemented
-                - generateYamlExport: implemented
-            cli_commands:
-              - init: implemented
-              - add: implemented
-              - query: implemented
-              - get: implemented
-              - update: implemented
-              - export: implemented
-              - summary: implemented
-            fossilized_output: false
-            fossil_test_coverage: false
-        - llm-plan.ts:
-            functions:
-              - LLMPlanningService: implemented
-                - constructor: implemented
-                - decomposeGoal: implemented
-                - simulateDecomposeGoal: implemented
-                - prioritizeTasks: implemented
-                - generateContent: implemented
-                - simulateGenerateContent: implemented
-                - simulateLLMProcessing: implemented
-            cli_commands:
-              - decompose: implemented
-              - prioritize: implemented
-              - generate-content: implemented
-              - generate-tests: implemented
-              - review-comments: implemented
-            fossilized_output: false
-            fossil_test_coverage: false
-        - github-issues.ts:
-            functions:
-              - parseArgs: implemented
-              - showHelp: implemented
-              - main: implemented
-            cli_commands:
-              - main: implemented
-            fossilized_output: false
-            fossil_test_coverage: false
-        - track-progress.ts:
-            functions: []
-            cli_commands: []
-            fossilized_output: false
-            fossil_test_coverage: false
-        - ensure-demo-issue.ts:
-            functions: []
-            cli_commands: []
-            fossilized_output: false
-            fossil_test_coverage: false
-        - repo-orchestrator.ts:
-            functions: []
-            cli_commands: []
-            fossilized_output: false
-            fossil_test_coverage: false
-        - llm-execute.ts:
-            functions: []
-            cli_commands: []
-            fossilized_output: false
-            fossil_test_coverage: false
-        - llm-analyze.ts:
-            functions: []
-            cli_commands: []
-            fossilized_output: false
-            fossil_test_coverage: false
-        - validate-plan.ts:
-            functions: []
-            cli_commands: []
-            fossilized_output: false
-            fossil_test_coverage: false
-      status: implemented
-      notes: CLI commands, partial test coverage, needs more unit tests
-
-    scripts:
-      path: scripts/
+    core:
+      path: src/core
       files:
-        - github-projects-integration.sh: implemented
-        - quick-status.sh: implemented
-        - update-issue-checklist.ts: implemented
-        - monitor-progress.sh: implemented
-        - migrate.sh: implemented
-        - migration.log: implemented
-        - migration-state.json: implemented
-        - automation/testing-status.sh: implemented
-        - automation/audit-shell-scripts.sh: implemented
-        - automation/review-workflow.sh: implemented
-        - automation/qa-workflow.sh: implemented
-        - automation/llm-issue-manager.sh: implemented
-        - automation/monitor-progress.sh: implemented
-        - automation/github-projects-integration.sh: implemented
-        - automation/backup-context.sh: implemented
-        - automation/simple-monitor.sh: implemented
-        - automation/llm-content-automation.sh: implemented
-        - automation/repo-orchestrator.sh: implemented
-        - automation/llm-workflow.sh: implemented
-        - monitoring/quick-status.sh: implemented
-        - monitoring/check-issues.sh: implemented
-        - migrations/001-improve-project-structure.sh: implemented
-        - migrations/002-project-structure-migration.ts: implemented
-        - setup/create-milestone.sh: implemented
-      fossilized_output: false
-      fossil_test_coverage: false
+        - config.ts:
+            functions:
+              - 'getEnv: implemented'
+              - 'for: implemented'
+              - 'hasServiceToken: implemented'
+              - 'for: implemented'
+              - 'getServiceToken: implemented'
+              - 'validateConfig: implemented'
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/types/index.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/core/config.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/plan-workflow.integration.test.ts
+    types:
+      path: src/types
+      files:
+        - index.ts:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/types/index.test.ts
+        - plan-workflow.ts:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/plan-workflow.integration.test.ts
+    scripts:
+      path: scripts
+      files:
+        - 001-improve-project-structure.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/migrations/001-improve-project-structure.test.ts
+        - 002-project-structure-migration.ts:
+            functions:
+              - 'ensureDir: implemented'
+              - 'moveFile: implemented'
+            fossilized_output: false
+        - create-milestone.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/setup/create-milestone.test.ts
+        - monitor-progress.sh:
+            functions:
+              - 'with: implemented'
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/monitor-progress.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/monitor-progress.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/monitor-progress.integration.test.ts
+        - migrate.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/migrate.test.ts
+        - github-projects-integration.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/github-projects-integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/github-projects-integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-projects-integration.integration.test.ts
+        - update-issue-checklist.ts:
+            functions: []
+            fossilized_output: false
+        - update-project-status.ts:
+            functions:
+              - 'detectStatus: implemented'
+              - 'extractCliCommands: implemented'
+              - 'walk: implemented'
+              - 'extractFunctionsAndClasses: implemented'
+              - 'detectFossilization: implemented'
+              - 'scanDir: implemented'
+              - 'mapTestsToFunctions: implemented'
+              - 'mergeWithExistingYaml: implemented'
+              - 'toProjectStatusYamlStructure: implemented'
+              - 'main: implemented'
+            fossilized_output: true
+        - llm-issue-manager.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-issue-manager.test.ts
+        - review-workflow.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/review-workflow.test.ts
+        - llm-workflow.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-workflow.test.ts
+        - llm-content-automation.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-content-automation.test.ts
+        - backup-context.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/backup-context.test.ts
+        - simple-monitor.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/simple-monitor.test.ts
+        - testing-status.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/testing-status.test.ts
+        - monitor-progress.sh:
+            functions:
+              - 'with: implemented'
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/monitor-progress.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/monitor-progress.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/monitor-progress.integration.test.ts
+        - github-projects-integration.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/github-projects-integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/github-projects-integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-projects-integration.integration.test.ts
+        - repo-orchestrator.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/repo-orchestrator.test.ts
+        - qa-workflow.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/qa-workflow.test.ts
+        - audit-shell-scripts.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/audit-shell-scripts.test.ts
+        - quick-status.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/monitoring/quick-status.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/quick-status.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/monitoring-quick-status.integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/quick-status.integration.test.ts
+        - quick-status.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/monitoring/quick-status.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/quick-status.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/monitoring-quick-status.integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/quick-status.integration.test.ts
+        - check-issues.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/monitoring/check-issues.test.ts
 
-  overall_summary:
-    files_total: 28
-    functions_total: ~60
-    completed: 0
-    in_progress: 0
-    planned: 20
-    todo: 18
-    implemented: 2
-    tested: 21
-    reviewed: 0
-    deprecated: 0
-    completion_percent: 41
-
-  recommendations:
-    - Add unit tests for all utils and services modules
-    - Document and test all CLI command modules and their public methods
-    - Move all 'planned', 'todo', and 'implemented' statuses to 'tested' as you progress
-    - Use only the enforced status progression for all future updates
-    - Update this YAML as you make progress (automate if possible)
-
-tests:
-  - tests/integration/gather-context.integration.test.ts:
-      uses_fossil: true
-  - tests/unit/utils/fossilize.test.ts:
-      uses_fossil: true
-  # Add other tests here as you fossilize more outputs
-
-fossilization_summary:
-  fossilized_outputs:
-    - gather-context.ts
-  tests_using_fossils:
-    - tests/integration/gather-context.integration.test.ts
-    - tests/unit/utils/fossilize.test.ts
-  next_to_fossilize:
-    - llm-plan.ts
-    - track-progress.ts
-    - repo-orchestrator.ts
-    - validate-plan.ts
-    - github-issues.ts 
