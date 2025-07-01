@@ -352,37 +352,37 @@ bun test tests/integration --coverage
 - Coverage metrics include integration tests.
 - New scripts/features must include corresponding integration tests. 
 
-## LLM Plan Workflow Orchestrator
+## Repository Orchestrator: Unified Planning & Automation
 
-### Overview
-
-The `plan-workflow.ts` script orchestrates the process of reading GitHub issues, generating a plan with LLM, and updating issues with the plan. It is designed for both local and CI (GitHub Actions) use.
+The `repo-orchestrator.ts` script now handles all planning, orchestration, and fossilization workflows. It supports both per-issue and global LLM-powered planning via the `--plan-mode` option.
 
 ### Usage
 
 ```sh
-bun run plan:workflow --update
+bun run repo-orchestrator orchestrate <owner> <repo> --workflow plan --plan-mode both --output plan.json
 ```
 
-- `--update`: After generating the plan, automatically update issues with the plan using `update:checklist`.
-- `--output <file>`: Specify the output file for the plan JSON (default: `llm-plan-output.json`).
+- `--plan-mode`: `per-issue`, `global`, or `both` (default: `both`).
+- `--output <file>`: (Optional) Output file for the unified plan JSON (for legacy/manual use).
+- `--summary`: Print only a chat/LLM-friendly summary of the latest plan fossil (for piping into chat tools).
 
-### Requirements
-- `OPENAI_API_KEY` must be set in your environment (e.g., via `.env` or GitHub Secrets).
-- The issues script (`src/cli/github-issues.ts`) must support `--json` output.
-- The plan is output as JSON, which is required by `update:checklist`.
+### Example: Get a chat-ready summary for LLM context
+
+```sh
+bun run repo-orchestrator orchestrate barreraslzr automate_workloads --workflow plan --plan-mode both --summary | cursor chat
+```
 
 ### Example Workflow
 
 ```sh
-bun run plan:workflow --update
+bun run repo-orchestrator orchestrate barreraslzr automate_workloads --workflow plan --plan-mode both --output plan.json
 ```
 
 This will:
 1. Read open GitHub issues
-2. Summarize and send them to the LLM planner
-3. Output the plan as JSON
-4. Update issues with the plan
+2. Generate per-issue checklists and a global plan using LLM
+3. Output a unified plan object (per-issue, global, all tasks)
+4. Fossilize the plan in the context store
 
 ### Integration with GitHub Actions
 

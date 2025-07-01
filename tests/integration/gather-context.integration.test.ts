@@ -1,5 +1,7 @@
 import { execSync } from 'child_process';
 import { readFileSync, unlinkSync } from 'fs';
+import { expect, afterAll, describe, it } from "bun:test";
+
 
 describe('gather-context CLI', () => {
   const outputFile = 'test-fossil-output.json';
@@ -21,6 +23,7 @@ describe('gather-context CLI', () => {
     expect(fossil).toHaveProperty('createdAt');
     expect(fossil).toHaveProperty('updatedAt');
     expect(typeof fossil.content).toBe('string');
-    // Optionally, parse fossil.content and check for expected context structure
+    expect(typeof fossil.metadata.invocation).toBe('string');
+    expect(fossil.metadata.invocation.length).toBeGreaterThan(0);
   });
 }); 

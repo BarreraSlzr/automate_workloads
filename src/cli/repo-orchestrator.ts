@@ -12,7 +12,10 @@ import { z } from 'zod';
 import { getEnv } from '../core/config';
 import { execSync } from 'child_process';
 const fs = await import('fs/promises');
-const path = require('path');
+import { LLMPlanningService } from './llm-plan';
+import { ContextFossilService } from './context-fossil';
+import * as path from 'path';
+import type { GitHubIssue } from '../types/index';
 
 // Repository orchestration schemas
 const RepoConfigSchema = z.object({
@@ -121,37 +124,33 @@ async function loadAutomationIssueTemplate() {
   return content;
 }
 
-// Helper: Fossilize repository analysis results
-async function fossilizeAnalysis(repoConfig: RepoConfig, analysis: any): Promise<void> {
-  try {
-    const fossilEntry = {
-      type: 'observation' as const,
-      title: `Repository Analysis - ${repoConfig.owner}/${repoConfig.repo}`,
-      content: `Health Score: ${analysis.health.score}/100
-Open Issues: ${analysis.repository.openIssues}
-Automation Opportunities: ${analysis.automation.opportunities.length}
-Active Workflows: ${analysis.workflows.length}
-Recommendations: ${analysis.health.recommendations.join(', ') || 'None'}`,
-      tags: ['repository-analysis', 'health-check', 'automation', 'monitoring'],
-      source: 'automated' as const,
-      metadata: {
-        repository: `${repoConfig.owner}/${repoConfig.repo}`,
-        healthScore: analysis.health.score,
-        openIssues: analysis.repository.openIssues,
-        openPRs: analysis.repository.openPRs,
-        automationOpportunities: analysis.automation.opportunities.length,
-        workflowsActive: analysis.workflows.filter((w: any) => w.status === 'active').length,
-        recommendations: analysis.health.recommendations,
-        actions: analysis.health.actions,
-      },
-    };
+// Helper: Fossilize any entry using a temp file
+function getInvocation() {
+  const scriptName = path.basename(process.argv[1] || __filename).replace(/\.[jt]s$/, '');
+  const args = process.argv.slice(2, 5).map(a => a.replace(/[^\w-]/g, ''));
+  return [scriptName, ...args].join('-');
+}
 
-    // Add to fossil storage
-    const command = `bun run context:add --type ${fossilEntry.type} --title "${fossilEntry.title}" --content "${fossilEntry.content}" --tags "${fossilEntry.tags.join(',')}" --source ${fossilEntry.source}`;
-    execSync(command, { encoding: 'utf8' });
-    console.log('🗿 Analysis fossilized for future reference');
+async function fossilizeEntry(entry: {
+  type: string;
+  title: string;
+  content: string;
+  tags: string[];
+  source: string;
+  metadata?: any;
+}) {
+  try {
+    const fs = await import('fs/promises');
+    const tempFile = `.temp-fossil-content-${Date.now()}.json`;
+    await fs.writeFile(tempFile, entry.content);
+    const invocation = getInvocation();
+    const metadata = { ...(entry.metadata || {}), invocation };
+    const command = `bun run context:add --type ${entry.type} --title "${entry.title}" --content "$(cat ${tempFile})" --tags "${entry.tags.join(',')}" --source ${entry.source} --metadata '${JSON.stringify(metadata)}'`;
+    require('child_process').execSync(command, { encoding: 'utf8' });
+    await fs.unlink(tempFile);
+    console.log(`🗿 Fossilized: ${entry.title}`);
   } catch (error) {
-    console.warn('⚠️  Could not fossilize analysis:', error);
+    console.warn('⚠️  Could not fossilize entry:', error);
   }
 }
 
@@ -170,9 +169,10 @@ class RepoOrchestratorService {
   /**
    * Orchestrates workflow for a target repository
    * @param repoConfig - Repository configuration
+   * @param planResult - Optional unified plan result
    * @returns Orchestration results
    */
-  async orchestrateRepository(repoConfig: RepoConfig): Promise<Record<string, unknown>> {
+  async orchestrateRepository(repoConfig: RepoConfig, planResult?: any): Promise<Record<string, unknown>> {
     console.log(`🎯 Orchestrating workflow for ${repoConfig.owner}/${repoConfig.repo}`);
     
     const results = {
@@ -181,6 +181,7 @@ class RepoOrchestratorService {
       timestamp: new Date().toISOString(),
       steps: [] as any[],
       summary: {} as Record<string, unknown>,
+      plan: planResult || null,
     };
 
     try {
@@ -192,7 +193,23 @@ class RepoOrchestratorService {
         
         // Fossilize analysis results (unless disabled)
         if (repoConfig.options?.fossilize !== false) {
-          await fossilizeAnalysis(repoConfig, analysis);
+          await fossilizeEntry({
+            type: 'observation',
+            title: `Repository Analysis - ${repoConfig.owner}/${repoConfig.repo}`,
+            content: `Health Score: ${analysis.health.score}/100\nOpen Issues: ${analysis.repository.openIssues}\nAutomation Opportunities: ${analysis.automation.opportunities.length}\nActive Workflows: ${analysis.workflows.length}\nRecommendations: ${analysis.health.recommendations.join(', ') || 'None'}`,
+            tags: ['repository-analysis', 'health-check', 'automation', 'monitoring'],
+            source: 'automated',
+            metadata: {
+              repository: `${repoConfig.owner}/${repoConfig.repo}`,
+              healthScore: analysis.health.score,
+              openIssues: analysis.repository.openIssues,
+              openPRs: analysis.repository.openPRs,
+              automationOpportunities: analysis.automation.opportunities.length,
+              workflowsActive: analysis.workflows.filter((w: any) => w.status === 'active').length,
+              recommendations: analysis.health.recommendations,
+              actions: analysis.health.actions,
+            },
+          });
         }
         
         // Execute actions based on analysis
@@ -212,29 +229,14 @@ class RepoOrchestratorService {
         results.steps.push({ step: 'planning', status: 'completed', data: plan });
         // Fossilize plan
         if (repoConfig.options?.fossilize !== false) {
-          try {
-            const fossilEntry = {
-              type: 'plan' as const,
-              title: `LLM Plan - ${repoConfig.owner}/${repoConfig.repo}`,
-              content: JSON.stringify(plan, null, 2),
-              tags: ['llm-plan', 'automation', 'planning'],
-              source: 'llm' as const,
-              metadata: { repository: `${repoConfig.owner}/${repoConfig.repo}` },
-            };
-            // Write content to a temporary file to avoid command line length issues
-            const fs = await import('fs/promises');
-            const tempFile = `.temp-fossil-content-${Date.now()}.json`;
-            await fs.writeFile(tempFile, fossilEntry.content);
-            
-            const command = `bun run context:add --type ${fossilEntry.type} --title "${fossilEntry.title}" --content "$(cat ${tempFile})" --tags "${fossilEntry.tags.join(',')}" --source ${fossilEntry.source}`;
-            execSync(command, { encoding: 'utf8' });
-            
-            // Clean up temp file
-            await fs.unlink(tempFile);
-            console.log('🗿 Plan fossilized for future reference');
-          } catch (error) {
-            console.warn('⚠️  Could not fossilize plan:', error);
-          }
+          await fossilizeEntry({
+            type: 'plan',
+            title: `LLM Plan - ${repoConfig.owner}/${repoConfig.repo}`,
+            content: JSON.stringify(plan, null, 2),
+            tags: ['llm-plan', 'automation', 'planning'],
+            source: 'llm',
+            metadata: { repository: `${repoConfig.owner}/${repoConfig.repo}` },
+          });
         }
       }
 
@@ -245,29 +247,14 @@ class RepoOrchestratorService {
         results.steps.push({ step: 'execution', status: 'completed', data: execution });
         // Fossilize execution result
         if (repoConfig.options?.fossilize !== false) {
-          try {
-            const fossilEntry = {
-              type: 'result' as const,
-              title: `Execution Result - ${repoConfig.owner}/${repoConfig.repo}`,
-              content: JSON.stringify(execution, null, 2),
-              tags: ['execution', 'automation', 'result'],
-              source: 'automated' as const,
-              metadata: { repository: `${repoConfig.owner}/${repoConfig.repo}` },
-            };
-            // Write content to a temporary file to avoid command line length issues
-            const fs = await import('fs/promises');
-            const tempFile = `.temp-fossil-content-${Date.now()}.json`;
-            await fs.writeFile(tempFile, fossilEntry.content);
-            
-            const command = `bun run context:add --type ${fossilEntry.type} --title "${fossilEntry.title}" --content "$(cat ${tempFile})" --tags "${fossilEntry.tags.join(',')}" --source ${fossilEntry.source}`;
-            execSync(command, { encoding: 'utf8' });
-            
-            // Clean up temp file
-            await fs.unlink(tempFile);
-            console.log('🗿 Execution result fossilized for future reference');
-          } catch (error) {
-            console.warn('⚠️  Could not fossilize execution result:', error);
-          }
+          await fossilizeEntry({
+            type: 'result',
+            title: `Execution Result - ${repoConfig.owner}/${repoConfig.repo}`,
+            content: JSON.stringify(execution, null, 2),
+            tags: ['execution', 'automation', 'result'],
+            source: 'automated',
+            metadata: { repository: `${repoConfig.owner}/${repoConfig.repo}` },
+          });
         }
       }
 
@@ -278,34 +265,34 @@ class RepoOrchestratorService {
         results.steps.push({ step: 'monitoring', status: 'completed', data: monitoring });
         // Fossilize monitoring/observation
         if (repoConfig.options?.fossilize !== false) {
-          try {
-            const fossilEntry = {
-              type: 'observation' as const,
-              title: `Monitoring Observation - ${repoConfig.owner}/${repoConfig.repo}`,
-              content: JSON.stringify(monitoring, null, 2),
-              tags: ['monitoring', 'automation', 'observation'],
-              source: 'automated' as const,
-              metadata: { repository: `${repoConfig.owner}/${repoConfig.repo}` },
-            };
-            // Write content to a temporary file to avoid command line length issues
-            const fs = await import('fs/promises');
-            const tempFile = `.temp-fossil-content-${Date.now()}.json`;
-            await fs.writeFile(tempFile, fossilEntry.content);
-            
-            const command = `bun run context:add --type ${fossilEntry.type} --title "${fossilEntry.title}" --content "$(cat ${tempFile})" --tags "${fossilEntry.tags.join(',')}" --source ${fossilEntry.source}`;
-            execSync(command, { encoding: 'utf8' });
-            
-            // Clean up temp file
-            await fs.unlink(tempFile);
-            console.log('🗿 Monitoring observation fossilized for future reference');
-          } catch (error) {
-            console.warn('⚠️  Could not fossilize monitoring observation:', error);
-          }
+          await fossilizeEntry({
+            type: 'observation',
+            title: `Monitoring Observation - ${repoConfig.owner}/${repoConfig.repo}`,
+            content: JSON.stringify(monitoring, null, 2),
+            tags: ['monitoring', 'automation', 'observation'],
+            source: 'automated',
+            metadata: { repository: `${repoConfig.owner}/${repoConfig.repo}` },
+          });
         }
       }
 
       // Generate summary
       results.summary = this.generateSummary(results.steps);
+      
+      // Fossilize the entire orchestration output
+      if (repoConfig.options?.fossilize !== false) {
+        await fossilizeEntry({
+          type: 'observation',
+          title: `Orchestration Output - ${repoConfig.owner}/${repoConfig.repo}`,
+          content: JSON.stringify(results, null, 2),
+          tags: ['orchestration', 'automation', 'snapshot'],
+          source: 'automated',
+          metadata: {
+            repository: `${repoConfig.owner}/${repoConfig.repo}`,
+            timestamp: new Date().toISOString(),
+          },
+        });
+      }
       
       console.log('✅ Repository orchestration completed successfully');
       return results;
@@ -814,10 +801,15 @@ class RepoOrchestratorService {
         label: defaultLabel,
       };
       if (!issueExists(repo, trackingIssueData.title)) {
+        // Write body to temp file
+        const fs = await import('fs/promises');
+        const tempFile = `.temp-issue-body-${Date.now()}.md`;
+        await fs.writeFile(tempFile, trackingIssueData.body);
         const trackingIssue = execSync(
-          `gh issue create --repo ${repo} --title "${trackingIssueData.title}" --body "${trackingIssueData.body}" --label "${trackingIssueData.label}"`,
+          `gh issue create --repo ${repo} --title "${trackingIssueData.title}" --body-file "${tempFile}" --label "${trackingIssueData.label}"`,
           { encoding: 'utf8' }
         );
+        await fs.unlink(tempFile);
         issues.push({
           type: 'project-tracking',
           issue: trackingIssue.trim(),
@@ -831,10 +823,15 @@ class RepoOrchestratorService {
         label: 'automation',
       };
       if (!issueExists(repo, automationIssueData.title)) {
+        // Write YAML body to temp file
+        const fs = await import('fs/promises');
+        const tempFile = `.temp-issue-body-${Date.now()}.yml`;
+        await fs.writeFile(tempFile, automationIssueData.body);
         const automationIssue = execSync(
-          `gh issue create --repo ${repo} --title "${automationIssueData.title}" --body "${automationIssueData.body}" --label "${automationIssueData.label}"`,
+          `gh issue create --repo ${repo} --title "${automationIssueData.title}" --body-file "${tempFile}" --label "${automationIssueData.label}"`,
           { encoding: 'utf8' }
         );
+        await fs.unlink(tempFile);
         issues.push({
           type: 'automation-setup',
           issue: automationIssue.trim(),
@@ -1078,6 +1075,118 @@ class RepoOrchestratorService {
       console.warn('⚠️  Could not label unlabeled issues:', error);
     }
   }
+
+  /**
+   * Fossilizes the current state of the repository (issues, PRs, etc.)
+   * @param repoConfig - Repository configuration
+   */
+  public async fossilizeRepositoryState(repoConfig: RepoConfig): Promise<void> {
+    try {
+      const repoInfo = await this.getRepositoryInfo(repoConfig);
+      // Get open issues and PRs
+      const issues = repoInfo.issues || [];
+      let prs: any[] = [];
+      try {
+        const prsData = execSync(
+          `gh api repos/${repoConfig.owner}/${repoConfig.repo}/pulls?state=open&per_page=100`,
+          { encoding: 'utf8' }
+        );
+        prs = JSON.parse(prsData);
+      } catch {
+        prs = [];
+      }
+      const fossilEntry = {
+        type: 'observation' as const,
+        title: `Fossilized State - ${repoConfig.owner}/${repoConfig.repo}`,
+        content: `Fossilized at: ${new Date().toISOString()}\n\nOpen Issues: ${issues.length}\nOpen PRs: ${prs.length}`,
+        tags: ['repository-fossil', 'snapshot', 'automation'],
+        source: 'automated' as const,
+        metadata: {
+          repository: `${repoConfig.owner}/${repoConfig.repo}`,
+          openIssues: issues.map((i: any) => ({ number: i.number, title: i.title, labels: i.labels })),
+          openPRs: prs.map((pr: any) => ({ number: pr.number, title: pr.title, user: pr.user?.login })),
+          timestamp: new Date().toISOString(),
+        },
+      };
+      // Write metadata to a temp file to avoid command line length issues
+      const fs = await import('fs/promises');
+      const tempFile = `.temp-fossil-content-${Date.now()}.json`;
+      await fs.writeFile(tempFile, JSON.stringify(fossilEntry.metadata, null, 2));
+      const command = `bun run context:add --type ${fossilEntry.type} --title "${fossilEntry.title}" --content "$(cat ${tempFile})" --tags "${fossilEntry.tags.join(',')}" --source ${fossilEntry.source}`;
+      execSync(command, { encoding: 'utf8' });
+      await fs.unlink(tempFile);
+      console.log(`🗿 Fossilized repository state for ${repoConfig.owner}/${repoConfig.repo}`);
+      console.log(`  Open Issues: ${issues.length}`);
+      console.log(`  Open PRs: ${prs.length}`);
+    } catch (error) {
+      console.error('❌ Error during fossilization:', error);
+      throw error;
+    }
+  }
+
+  async unifiedLLMPlan(repoConfig: RepoConfig, planMode: string) {
+    // Gather issues for per-issue planning
+    const issues = await this.getRepositoryIssues(repoConfig);
+    const model = process.env.LLM_MODEL || 'gpt-4';
+    const apiKey = process.env.OPENAI_API_KEY || '';
+    const llmService = new LLMPlanningService(model, apiKey);
+    let perIssueChecklists: Record<string, string> = {};
+    let allTasks: { issue: number | null, task: string }[] = [];
+    let globalPlan = '';
+    if (planMode === 'per-issue' || planMode === 'both') {
+      for (const issue of issues) {
+        const plan = await llmService.decomposeGoal(issue.title, { body: issue.body }, true);
+        if (plan && plan.tasks && plan.tasks[0] && typeof plan.tasks[0].description === 'string') {
+          perIssueChecklists[issue.number] = plan.tasks[0].description;
+          // Parse checklist items for allTasks
+          const tasks = plan.tasks[0].description.match(/- \[.\] (.+)/g) || [];
+          for (const t of tasks) {
+            allTasks.push({ issue: issue.number, task: t.replace(/- \[.\] /, '') });
+          }
+        }
+      }
+    }
+    if (planMode === 'global' || planMode === 'both') {
+      const summary = issues.map(i => `#${i.number}: ${i.title}\n${i.body || ''}`).join('\n---\n');
+      const plan = await llmService.decomposeGoal(summary);
+      if (plan && plan.tasks && plan.tasks[0] && typeof plan.tasks[0].description === 'string') {
+        globalPlan = plan.tasks[0].description;
+        // Parse checklist items for allTasks
+        const tasks = plan.tasks[0].description.match(/- \[.\] (.+)/g) || [];
+        for (const t of tasks) {
+          allTasks.push({ issue: null, task: t.replace(/- \[.\] /, '') });
+        }
+      }
+    }
+    // Fossilize the unified plan output
+    const fossilService = new ContextFossilService();
+    await fossilService.initialize();
+    const fossil = await fossilService.addEntry({
+      type: 'plan',
+      title: `LLM Unified Plan Output - ${new Date().toISOString()}`,
+      content: JSON.stringify({ perIssueChecklists, globalPlan, allTasks }, null, 2),
+      tags: ['llm', 'plan', 'automation'],
+      source: 'llm',
+      version: 1,
+      children: [],
+      metadata: {},
+    });
+    console.log(`Plan fossilized as: ${fossil.id}`);
+    return { perIssueChecklists, globalPlan, allTasks, fossilId: fossil.id };
+  }
+
+  async getRepositoryIssues(repoConfig: RepoConfig): Promise<GitHubIssue[]> {
+    try {
+      const issuesJson = execSync(
+        `gh issue list --repo ${repoConfig.owner}/${repoConfig.repo} --state open --json number,title,body`,
+        { encoding: 'utf-8', env: { ...process.env } }
+      );
+      return JSON.parse(issuesJson);
+    } catch (e) {
+      console.error('Failed to read issues as JSON. Ensure the issues script supports --json.');
+      return [];
+    }
+  }
 }
 
 /**
@@ -1099,11 +1208,12 @@ program
   .option('-b, --branch <branch>', 'Target branch', 'main')
   .option('-w, --workflow <workflow>', 'Workflow type', 'full')
   .option('-c, --context <context>', 'Additional context (JSON string)')
+  .option('--plan-mode <mode>', 'Planning mode: per-issue, global, or both', 'both')
   .option('--no-create-issues', 'Skip creating automation issues')
   .option('--create-prs', 'Create automation PRs')
   .option('--auto-merge', 'Enable auto-merge for PRs')
   .option('--no-notifications', 'Disable notifications')
-  .option('-o, --output <file>', 'Output file for results (JSON)')
+  .option('--summary', 'Print only a chat/LLM-friendly summary of the latest plan fossil')
   .action(async (owner, repo, options) => {
     try {
       const service = new RepoOrchestratorService();
@@ -1134,15 +1244,28 @@ program
         },
       };
 
-      const results = await service.orchestrateRepository(repoConfig);
+      // Unified planning logic
+      let planResult = null;
+      if (['plan', 'full'].includes(repoConfig.workflow) && options.planMode) {
+        planResult = await service.unifiedLLMPlan(repoConfig, options.planMode);
+      }
+      const results = await service.orchestrateRepository(repoConfig, planResult);
       
-      if (options.output) {
-        // Write to file
-        const fs = await import('fs/promises');
-        await fs.writeFile(options.output, JSON.stringify(results, null, 2));
-        console.log(`✅ Results saved to ${options.output}`);
+      // If --summary, print only the summary of the latest plan fossil
+      if (options.summary && planResult && planResult.fossilId) {
+        const { getFossilSummary } = await import('../utils/fossilSummary');
+        const summary = await getFossilSummary();
+        console.log(summary);
+        return;
+      }
+      // Always print fossil ID and a short summary
+      if (planResult && planResult.fossilId) {
+        console.log(`🗿 Plan fossilized as: ${planResult.fossilId}`);
+        const { getFossilSummary } = await import('../utils/fossilSummary');
+        const summary = await getFossilSummary();
+        console.log('--- Plan Summary ---');
+        console.log(summary);
       } else {
-        // Output to console
         console.log(JSON.stringify(results, null, 2));
       }
     } catch (error) {
@@ -1157,7 +1280,6 @@ program
   .description('Analyze a repository for automation opportunities')
   .argument('<owner>', 'Repository owner')
   .argument('<repo>', 'Repository name')
-  .option('-o, --output <file>', 'Output file for analysis (JSON)')
   .option('--no-fossilize', 'Skip fossilizing analysis results')
   .action(async (owner, repo, options) => {
     try {
@@ -1179,15 +1301,38 @@ program
       const service = new RepoOrchestratorService();
       const analysis = await service.orchestrateRepository(repoConfig);
       
-      if (options.output) {
-        const fs = await import('fs/promises');
-        await fs.writeFile(options.output, JSON.stringify(analysis, null, 2));
-        console.log(`✅ Analysis saved to ${options.output}`);
-      } else {
-        console.log(JSON.stringify(analysis, null, 2));
-      }
+      console.log(JSON.stringify(analysis, null, 2));
     } catch (error) {
       console.error('❌ Error during repository analysis:', error);
+      process.exit(1);
+    }
+  });
+
+// Add new CLI command at the bottom:
+program
+  .command('fossilize')
+  .description('Fossilize the current state of a repository (issues, PRs, etc.)')
+  .argument('<owner>', 'Repository owner')
+  .argument('<repo>', 'Repository name')
+  .action(async (owner, repo) => {
+    try {
+      const repoConfig: RepoConfig = {
+        owner,
+        repo,
+        branch: 'main',
+        workflow: 'analyze',
+        options: {
+          createIssues: false,
+          createPRs: false,
+          autoMerge: false,
+          notifications: false,
+          fossilize: true,
+        },
+      };
+      const service = new RepoOrchestratorService();
+      await service.fossilizeRepositoryState(repoConfig);
+    } catch (error) {
+      console.error('❌ Error during fossilization:', error);
       process.exit(1);
     }
   });

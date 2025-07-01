@@ -15,6 +15,7 @@ import path from 'path';
 import { execSync } from 'child_process';
 import type { ContextEntry, ContextQuery } from '@/types';
 import { SemanticTaggerService } from '../services/semantic-tagger';
+import { getFossilSummary } from '../utils/fossilSummary';
 
 // Context fossil schemas
 const ContextEntrySchema = z.object({
@@ -164,6 +165,12 @@ export class ContextFossilService {
     }
     if (newEntry.semanticTags?.semanticCategory) {
       newEntry.tags.push(newEntry.semanticTags.semanticCategory);
+    }
+    // Generate LLM-based excerpt
+    try {
+      newEntry.excerpt = await this.semanticTagger.generateExcerpt(newEntry);
+    } catch (err) {
+      newEntry.excerpt = (newEntry.content || '').replace(/\s+/g, ' ').slice(0, 80).trim();
     }
 
     // Save entry file
@@ -1327,6 +1334,45 @@ program
 
     } catch (error) {
       console.error('❌ Error during enhancement:', error);
+      process.exit(1);
+    }
+  });
+
+// List fossils
+program
+  .command('list')
+  .description('List fossils with optional filtering by type and tags')
+  .option('--type <type>', 'Fossil type to filter by')
+  .option('--tags <tags>', 'Comma-separated list of tags to filter by')
+  .option('--json', 'Output as JSON array')
+  .action(async (options) => {
+    try {
+      let summary = await getFossilSummary();
+      if (options.type) {
+        summary = summary.filter(f => f.type === options.type);
+      }
+      if (options.tags) {
+        const tagList = options.tags.split(',').map((t: string) => t.trim());
+        summary = summary.filter(f => tagList.every((tag: string) => f.tags.includes(tag)));
+      }
+      if (summary.length === 0) {
+        console.log('No fossils found matching the criteria.');
+        return;
+      }
+      if (options.json) {
+        console.log(JSON.stringify(summary, null, 2));
+        return;
+      }
+      const tableData = summary.map(f => ({
+        Type: f.type,
+        Title: f.title,
+        Created: f.createdAt,
+        Tags: f.tags.join(', '),
+        Excerpt: f.excerpt
+      }));
+      console.table(tableData);
+    } catch (error) {
+      console.error('Error listing fossils:', error);
       process.exit(1);
     }
   });

@@ -46,7 +46,7 @@ test("ContextEntry interface validation", () => {
     title: "Test Entry",
     content: "This is a test entry",
     tags: ["test", "automation"],
-    metadata: { priority: "high", category: "testing" },
+    metadata: { priority: "high", category: "testing", invocation: 'test-invocation' },
     source: "manual",
     version: 1,
     parentId: "parent-123",
@@ -60,13 +60,15 @@ test("ContextEntry interface validation", () => {
   expect(entry.title).toBe("Test Entry");
   expect(entry.content).toBe("This is a test entry");
   expect(entry.tags).toEqual(["test", "automation"]);
-  expect(entry.metadata).toEqual({ priority: "high", category: "testing" });
+  expect(entry.metadata).toEqual({ priority: "high", category: "testing", invocation: 'test-invocation' });
   expect(entry.source).toBe("manual");
   expect(entry.version).toBe(1);
   expect(entry.parentId).toBe("parent-123");
   expect(entry.children).toEqual(["child-1", "child-2"]);
   expect(entry.createdAt).toBe("2024-01-01T00:00:00Z");
   expect(entry.updatedAt).toBe("2024-01-01T00:00:00Z");
+  expect((entry.metadata as any).invocation).toBe('test-invocation');
+  expect((entry.metadata as any).invocation.length).toBeGreaterThan(0);
 });
 
 test("ContextEntry with all valid types", () => {
@@ -80,7 +82,7 @@ test("ContextEntry with all valid types", () => {
       title: `Test ${type}`,
       content: `Content for ${type}`,
       tags: [],
-      metadata: {},
+      metadata: { invocation: 'test-invocation' },
       source: 'manual',
       version: 1,
       children: [],
@@ -88,6 +90,8 @@ test("ContextEntry with all valid types", () => {
       updatedAt: "2024-01-01T00:00:00Z"
     };
     expect(entry.type).toBe(type);
+    expect((entry.metadata as any).invocation).toBe('test-invocation');
+    expect((entry.metadata as any).invocation.length).toBeGreaterThan(0);
   });
 
   sources.forEach(source => {
@@ -97,7 +101,7 @@ test("ContextEntry with all valid types", () => {
       title: `Test ${source}`,
       content: `Content for ${source}`,
       tags: [],
-      metadata: {},
+      metadata: { invocation: 'test-invocation' },
       source,
       version: 1,
       children: [],
@@ -105,6 +109,8 @@ test("ContextEntry with all valid types", () => {
       updatedAt: "2024-01-01T00:00:00Z"
     };
     expect(entry.source).toBe(source);
+    expect((entry.metadata as any).invocation).toBe('test-invocation');
+    expect((entry.metadata as any).invocation.length).toBeGreaterThan(0);
   });
 });
 

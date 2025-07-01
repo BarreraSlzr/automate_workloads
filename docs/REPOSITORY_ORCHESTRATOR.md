@@ -471,4 +471,17 @@ See [CONTRIBUTING_GUIDE.md](../CONTRIBUTING_GUIDE.md) for development guidelines
 
 - [API Reference](API_REFERENCE.md) - Complete API documentation
 - [Development Guide](DEVELOPMENT_GUIDE.md) - Technical development guidelines
-- [Contributing Guide](../CONTRIBUTING_GUIDE.md) - LLM-friendly patterns and workflows 
+- [Contributing Guide](../CONTRIBUTING_GUIDE.md) - LLM-friendly patterns and workflows
+
+## Orchestration Fossils & Excerpts
+
+- All orchestration, monitoring, and execution fossils now include an LLM-generated `excerpt` field for quick preview and reporting.
+- Use the summary/cleanup/reporting tools to audit and visualize orchestration history.
+
+## Fossil Provenance and Traceability
+
+All fossil entries created by the orchestrator include:
+- `source`: A high-level string indicating the origin (e.g., 'repo-orchestrator', 'llm', 'automated').
+- `metadata.invocation`: The script name and up to the first three arguments used to create the fossil (e.g., 'repo-orchestrator-orchestrate-owner-repo').
+
+This enables both high-level filtering and detailed traceability for every fossilized record. 

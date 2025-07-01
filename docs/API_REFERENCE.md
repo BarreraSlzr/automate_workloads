@@ -10,6 +10,7 @@ This document provides a comprehensive reference for all services, CLI commands,
 - [Type Definitions](#type-definitions)
 - [Error Handling](#error-handling)
 - [Service Response Patterns](#service-response-patterns)
+- [Fossil Entry Schema](#fossil-entry-schema)
 
 ---
 
@@ -506,4 +507,48 @@ if (response.success && response.data) {
 - [Development Guide](DEVELOPMENT_GUIDE.md) - Development best practices
 - [Environment Guide](ENVIRONMENT_GUIDE.md) - Configuration management
 - [Contributing Guide](CONTRIBUTING_GUIDE.md) - How to contribute
-- [Examples](../examples/basic-usage.ts) - Usage examples 
+- [Examples](../examples/basic-usage.ts) - Usage examples
+
+## Fossil Entry Schema
+
+- `excerpt` (string): LLM-generated one-sentence summary for quick preview. Always present for new fossils.
+
+### Example Fossil JSON
+```json
+{
+  "type": "observation",
+  "title": "Orchestration Output - barreraslzr/automate_workloads",
+  "excerpt": "This fossil summarizes the orchestration output for the repo, including analysis, execution, and monitoring results.",
+  ...
+}
+```
+
+### Repository Orchestrator CLI (`repo-orchestrator.ts`)
+
+Handles all planning, orchestration, and fossilization workflows. Supports per-issue, global, or both planning modes.
+
+#### Usage
+
+```sh
+bun run repo-orchestrator orchestrate <owner> <repo> --workflow plan --plan-mode both --output plan.json
+```
+
+#### Options
+- `--plan-mode <mode>`: `per-issue`, `global`, or `both` (default: `both`).
+- `--output <file>`: Output file for the unified plan JSON.
+
+#### Output
+
+```json
+{
+  "perIssueChecklists": { "12": "- [ ] Fix bug\n- [ ] Add test" },
+  "globalPlan": "- [ ] Review all open issues\n- [ ] Deploy to staging",
+  "allTasks": [
+    { "issue": 12, "task": "Fix bug" },
+    { "issue": 12, "task": "Add test" },
+    { "issue": null, "task": "Review all open issues" },
+    { "issue": null, "task": "Deploy to staging" }
+  ],
+  "fossilId": "fossil_..."
+}
+``` 

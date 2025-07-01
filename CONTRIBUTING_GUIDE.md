@@ -619,9 +619,6 @@ else
 fi
 
 # Use LLM to determine workflow steps
-WORKFLOW_STEPS=$(bun run llm:plan-workflow "$WORKFLOW_TYPE" "$CONTEXT")
-
-# Execute workflow with LLM monitoring
 for step in $WORKFLOW_STEPS; do
     echo "Executing step: $step"
     

@@ -271,4 +271,35 @@ Respond only with valid JSON.`;
       accessCount: 1, // Will be updated on access
     };
   }
+
+  /**
+   * Generate a one-sentence excerpt/summary for a fossil entry using LLM
+   */
+  async generateExcerpt(entry: ContextEntry): Promise<string> {
+    if (!this.apiKey) {
+      // Fallback to first 80 chars
+      return (entry.content || '').replace(/\s+/g, ' ').slice(0, 80).trim();
+    }
+    try {
+      const prompt = `Summarize the following content in one sentence for a quick preview:\n\n${entry.content}`;
+      const response = await callOpenAIChat({
+        model: this.model,
+        apiKey: this.apiKey,
+        messages: [
+          { role: 'system', content: 'You are an expert at summarizing content for quick previews.' },
+          { role: 'user', content: prompt }
+        ],
+        max_tokens: 60,
+        temperature: 0.5
+      });
+      const content = response.choices?.[0]?.message?.content;
+      if (!content) {
+        return (entry.content || '').replace(/\s+/g, ' ').slice(0, 80).trim();
+      }
+      return content.replace(/\s+/g, ' ').slice(0, 160).trim();
+    } catch (error) {
+      console.warn('LLM excerpt generation failed, using fallback:', error);
+      return (entry.content || '').replace(/\s+/g, ' ').slice(0, 80).trim();
+    }
+  }
 } 

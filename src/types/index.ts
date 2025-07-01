@@ -99,6 +99,8 @@ export interface ContextEntry {
     /** Access frequency */
     accessCount?: number;
   };
+  /** LLM-generated excerpt/summary for quick preview */
+  excerpt?: string;
 }
 
 /**

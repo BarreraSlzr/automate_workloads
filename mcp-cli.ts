@@ -53,12 +53,12 @@ class MCPCLIService {
 
   async handleRepoCommand(owner: string, repo: string, workflow: string): Promise<void> {
     console.log(`🎯 Repository Orchestration: ${owner}/${repo}`);
-    
+
     // Set environment variables for GitHub context
     process.env.GITHUB_OWNER = owner;
     process.env.GITHUB_REPO = repo;
     process.env.GITHUB_REPO_FULL = `${owner}/${repo}`;
-    
+
     // Update fossil file with basic repository context
     await this.updateContextFossil({
       repository: {
@@ -69,7 +69,7 @@ class MCPCLIService {
         workflow: workflow
       }
     });
-    
+
     try {
       switch (workflow) {
         case 'analyze':
@@ -112,7 +112,7 @@ class MCPCLIService {
     try {
       const fs = await import('fs/promises');
       const fossilPath = '.context-fossil.json';
-      
+
       // Read existing fossil or create new one
       let fossilData: Record<string, unknown> = {};
       try {
@@ -121,14 +121,14 @@ class MCPCLIService {
       } catch {
         // File doesn't exist, start with empty object
       }
-      
+
       // Update with new context
       fossilData = {
         ...fossilData,
         ...context,
         lastUpdated: new Date().toISOString()
       };
-      
+
       // Write back to fossil file
       await fs.writeFile(fossilPath, JSON.stringify(fossilData, null, 2));
       console.log(`🗿 Updated context fossil with repository info`);
@@ -139,7 +139,7 @@ class MCPCLIService {
 
   async handleContextCommand(action: string): Promise<void> {
     console.log(`🗿 Context Fossil: ${action}`);
-    
+
     try {
       await this.executeBunScript(`context:${action}`);
       console.log('✅ Context operation completed');
@@ -150,7 +150,7 @@ class MCPCLIService {
 
   async handleLLMCommand(action: string): Promise<void> {
     console.log(`🤖 LLM: ${action}`);
-    
+
     try {
       await this.executeBunScript(`llm:${action}`);
       console.log('✅ LLM operation completed');
@@ -161,7 +161,7 @@ class MCPCLIService {
 
   async handleWorkflowCommand(type: string): Promise<void> {
     console.log(`🔄 Workflow: ${type}`);
-    
+
     try {
       await this.executeBunScript(`workflow:${type}`);
       console.log('✅ Workflow completed');
@@ -172,18 +172,44 @@ class MCPCLIService {
 
   async handleIssuesCommand(action: string): Promise<void> {
     console.log(`📋 Issues: ${action}`);
-    
-    try {
+
+    const issuesScriptMap: Record<string, string> = {
+      list: 'issues:list',
+      json: 'issues:json',
+      ci: 'issues:ci',
+      quality: 'issues:quality',
+      testing: 'issues:testing',
+      manager: 'issues:manager',
+      'milestone:implementation': 'issues:milestone:implementation',
+      'milestone:research': 'issues:milestone:research',
+      check: 'issues:check',
+      'ensure-demo': 'issues:ensure-demo',
+      fossilize: 'issues:fossilize',
+    };
+
+    if (action === 'create') {
+      await runIssuesCreate({
+        purpose: options.purpose,
+        checklist: options.checklist,
+        metadata: options.metadata,
+        debug: options.debug,
+      });
+    } else if (issuesScriptMap[action]) {
+      const { execSync } = await import('child_process');
+      try {
+        const output = execSync(`bun run ${issuesScriptMap[action]}`, { encoding: 'utf8' });
+        console.log(output);
+      } catch (error) {
+        console.error(`❌ Failed to fetch issues (${action}):`, error.message);
+      }
+    } else {
       await this.executeBunScript(`issues:${action}`);
-      console.log('✅ Issues operation completed');
-    } catch (error) {
-      console.error('❌ Issues operation failed:', error.message);
     }
   }
 
   async handleProjectsCommand(action: string): Promise<void> {
     console.log(`📊 Projects: ${action}`);
-    
+
     try {
       await this.executeBunScript(`projects:${action}`);
       console.log('✅ Projects operation completed');
@@ -194,7 +220,7 @@ class MCPCLIService {
 
   async handleQACommand(action: string): Promise<void> {
     console.log(`🧪 QA: ${action}`);
-    
+
     try {
       await this.executeBunScript(`qa:${action}`);
       console.log('✅ QA operation completed');
@@ -205,7 +231,7 @@ class MCPCLIService {
 
   async handleDevCommand(action: string): Promise<void> {
     console.log(`🔧 Dev: ${action}`);
-    
+
     try {
       await this.executeBunScript(action);
       console.log('✅ Dev operation completed');
@@ -216,7 +242,7 @@ class MCPCLIService {
 
   async handleMigrationCommand(action: string): Promise<void> {
     console.log(`🔄 Migration: ${action}`);
-    
+
     try {
       await this.executeBunScript(`migrate:${action}`);
       console.log('✅ Migration completed');
@@ -227,7 +253,7 @@ class MCPCLIService {
 
   async handleTestCommand(type: string): Promise<void> {
     console.log(`🧪 Test: ${type}`);
-    
+
     try {
       await this.executeBunScript(`test:${type}`);
       console.log('✅ Testing completed');
@@ -238,7 +264,7 @@ class MCPCLIService {
 
   listCommands(): void {
     console.log('📋 Available MCP CLI Commands:\n');
-    
+
     if (this.packageJson?.scripts) {
       const categories = {
         'Repository': Object.keys(this.packageJson.scripts).filter(s => s.startsWith('repo:')),
@@ -266,7 +292,7 @@ class MCPCLIService {
 
   async showStatus(): Promise<void> {
     console.log('📊 MCP CLI System Status:\n');
-    
+
     try {
       // Check if key scripts exist
       const scripts = [
@@ -276,13 +302,13 @@ class MCPCLIService {
         'src/cli/repo-orchestrator.ts',
         'src/cli/llm-plan.ts'
       ];
-      
+
       console.log('Scripts Status:');
       scripts.forEach(script => {
         const exists = existsSync(join(this.projectRoot, script));
         console.log(`  ${exists ? '✅' : '❌'} ${script}`);
       });
-      
+
       // Check GitHub CLI
       try {
         execSync('gh --version', { stdio: 'pipe' });
@@ -290,7 +316,7 @@ class MCPCLIService {
       } catch {
         console.log('  ❌ GitHub CLI not available');
       }
-      
+
       // Check Bun
       try {
         execSync('bun --version', { stdio: 'pipe' });
@@ -298,7 +324,7 @@ class MCPCLIService {
       } catch {
         console.log('  ❌ Bun runtime not available');
       }
-      
+
     } catch (error) {
       console.error('❌ Status check failed:', error.message);
     }
@@ -356,22 +382,13 @@ async function main() {
   program
     .command('issues')
     .description('GitHub issues management')
-    .argument('<action>', 'Action: list, ci, quality, testing, manager, ensure-demo, create')
+    .argument('<action>', 'Action: list, ci, quality, testing, manager, ensure-demo, create, json')
     .option('--purpose <purpose>', 'Purpose of the automation issue')
     .option('--checklist <checklist>', 'Checklist for the automation issue (markdown)')
     .option('--metadata <metadata>', 'Metadata for the automation issue')
     .option('--debug', 'Enable debug output')
     .action(async (action, options) => {
-      if (action === 'create') {
-        await runIssuesCreate({
-          purpose: options.purpose,
-          checklist: options.checklist,
-          metadata: options.metadata,
-          debug: options.debug,
-        });
-      } else {
-        await mcpService.handleIssuesCommand(action);
-      }
+      await mcpService.handleIssuesCommand(action);
     });
 
   // Projects commands

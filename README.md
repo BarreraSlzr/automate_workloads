@@ -180,8 +180,11 @@ bun run repo:monitor barreraslzr automate_workloads
 # Run the QA workflow
 bun run qa:workflow
 
-# Create a new plan
-bun run plan:create "Your Plan Name"
+# Create a new plan (unified orchestrator)
+bun run repo-orchestrator orchestrate <owner> <repo> --workflow plan --plan-mode both --output plan.json
+
+# Example:
+bun run repo-orchestrator orchestrate barreraslzr automate_workloads --workflow plan --plan-mode both --output plan.json
 ```
 
 ## 🤖 LLM Integration Patterns
@@ -778,3 +781,36 @@ cp .env.example .env
 - `GMAIL_TOKEN`, `BUFFER_TOKEN`, `TWITTER_BEARER_TOKEN`: Optional, for additional integrations
 
 See `.env.example` for a complete list and example values.
+
+## 🚀 New Features
+
+### LLM-Generated Excerpts for Fossils
+Every fossil now includes an LLM-generated `excerpt` field—a one-sentence summary generated using the fossil's type, title, tags, metadata, and content. This makes it easy to scan, search, and report on your fossil store.
+
+#### Example Fossil JSON
+```json
+{
+  "type": "observation",
+  "title": "Orchestration Output - barreraslzr/automate_workloads",
+  "excerpt": "This fossil summarizes the orchestration output for the repo, including analysis, execution, and monitoring results.",
+  "tags": ["orchestration", "automation", "snapshot"],
+  ...
+}
+```
+
+### Updated CLI & Reporting Tools
+- `bun run src/cli/context-fossil.ts list --type observation` now shows excerpts and tags for quick scanning.
+- `bun run scripts/fossil-summary-md.ts` outputs a Markdown table of all key fossils (type, title, created, tags, excerpt).
+- `bun run scripts/fossil-summary-json.ts` outputs the same summary as JSON for automation.
+- Cleanup scripts (`scripts/cleanup-fossils.ts`, `scripts/cleanup-test-fossils.ts`) keep your fossil store production-ready.
+
+### Auditability & Reporting
+With excerpts and summary tools, you can easily audit, report, and visualize the state of your repo at any time.
+
+## Fossil Provenance and Traceability
+
+Every fossil entry now includes:
+- `source`: A high-level string indicating the origin (e.g., 'repo-orchestrator', 'llm', 'automated').
+- `metadata.invocation`: The script name and up to the first three arguments used to create the fossil (e.g., 'repo-orchestrator-orchestrate-owner-repo').
+
+This ensures fossils are both easy to categorize and fully traceable to the exact command that created them.

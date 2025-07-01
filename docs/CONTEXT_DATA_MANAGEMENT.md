@@ -156,6 +156,17 @@ bun run context:export --type progress --format json --output progress-data.json
 - **Slack/Discord** bots for context sharing
 - **CI/CD integration** for automated context management
 
+## Excerpt Field in Fossils
+
+- Each fossil now includes an `excerpt` field: a one-sentence, LLM-generated summary using the fossil's type, title, tags, metadata, and content.
+- Excerpts are used in all list, summary, and reporting tools for quick scanning and search.
+- If LLM is unavailable, a fallback excerpt is generated from the first 80 characters of content.
+
+## Querying & Cleanup
+
+- Use `context-fossil list` to view fossils with excerpts
+- Use cleanup scripts to remove test/demo fossils and keep your store production-ready
+
 ## 📋 Summary
 
 **Context data should NOT be committed to git** because:

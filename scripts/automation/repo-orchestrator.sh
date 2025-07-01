@@ -226,6 +226,10 @@ if [ $? -eq 0 ]; then
     echo ""
     print_status $GREEN "✅ Repository orchestration completed successfully!"
     
+    # Fossilize GitHub issues after orchestration
+    print_status $CYAN "🦴 Fossilizing GitHub issues..."
+    bun run mcp issues fossilize
+
     if [ -n "$OUTPUT_FILE" ] && [ -f "$OUTPUT_FILE" ]; then
         print_status $GREEN "📄 Results saved to: $OUTPUT_FILE"
     fi

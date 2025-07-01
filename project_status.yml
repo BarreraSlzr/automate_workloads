@@ -13,6 +13,13 @@ project_status:
             cli_commands:
               - 'track: implemented'
               - 'status: implemented'
+        - issues-create.ts:
+            functions:
+              - 'runIssuesCreate: implemented'
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/issues-create.test.ts
         - github-issues.ts:
             functions:
               - 'parseArgs: implemented'
@@ -22,6 +29,10 @@ project_status:
             tests:
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-issues.integration.test.ts
+        - issues-fossilize.ts:
+            functions:
+              - 'main: implemented'
+            fossilized_output: false
         - context-fossil.ts:
             functions:
               - 'ContextFossilService: implemented'
@@ -35,6 +46,12 @@ project_status:
               - 'export: implemented'
               - 'stats: implemented'
               - 'summary: implemented'
+              - 'cleanup: implemented'
+              - 'enhance: implemented'
+              - 'list: implemented'
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/issues-create.test.ts
         - llm-plan.ts:
             functions:
               - 'LLMPlanningService: implemented'
@@ -78,39 +95,43 @@ project_status:
         - repo-orchestrator.ts:
             functions:
               - 'RepoOrchestratorService: implemented'
+              - 'issueExists: implemented'
+              - 'ensureLabelExists: implemented'
+              - 'addLabelToIssue: implemented'
+              - 'loadAutomationIssueTemplate: implemented'
+              - 'getInvocation: implemented'
+              - 'fossilizeEntry: implemented'
             fossilized_output: false
             cli_commands:
               - 'orchestrate: implemented'
               - 'analyze: implemented'
+              - 'fossilize: implemented'
             tests:
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/repo-orchestrator.test.ts
-        - plan-workflow.ts:
-            functions:
-              - 'readIssues: implemented'
-              - 'summarizeIssues: implemented'
-              - 'planWithLLM: implemented'
-              - 'outputPlan: implemented'
-              - 'updateIssuesWithPlan: implemented'
-              - 'runPerIssueWorkflow: implemented'
-              - 'main: implemented'
-            fossilized_output: false
-            tests:
-              - >-
-                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/plan-workflow.integration.test.ts
     services:
       path: src/services
       files:
+        - semantic-tagger.ts:
+            functions:
+              - 'SemanticTaggerService: implemented'
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/services/semantic-tagger.test.ts
         - github.ts:
             functions:
               - 'for: implemented'
               - 'GitHubService: implemented'
+              - 'loadAndFillAutomationTemplate: implemented'
             fossilized_output: false
             tests:
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/types/index.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/core/config.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/issues-create.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/github-projects-integration.test.ts
               - >-
@@ -136,6 +157,8 @@ project_status:
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-plan.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-issue-manager.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/services/semantic-tagger.test.ts
     utils:
       path: src/utils
       files:
@@ -152,13 +175,13 @@ project_status:
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/llm-plan.test.ts
               - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/issues-create.test.ts
+              - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-plan.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/gather-context.integration.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-issues.integration.test.ts
-              - >-
-                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/plan-workflow.integration.test.ts
         - markdownChecklist.ts:
             functions:
               - 'updateMarkdownChecklist: implemented'
@@ -168,6 +191,7 @@ project_status:
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/utils/markdownChecklist.test.ts
         - fossilize.ts:
             functions:
+              - 'generateContentHash: implemented'
               - 'generateId: implemented'
               - 'toFossilEntry: implemented'
               - 'outputFossil: implemented'
@@ -178,6 +202,12 @@ project_status:
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/utils/fossilize.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/gather-context.integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/repo-orchestrator-fossilization.integration.test.ts
+        - fossilSummary.ts:
+            functions:
+              - 'getFossilSummary: implemented'
+            fossilized_output: false
         - plan-validator.ts:
             functions:
               - 'PlanValidator: implemented'
@@ -199,8 +229,6 @@ project_status:
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/types/index.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/core/config.test.ts
-              - >-
-                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/plan-workflow.integration.test.ts
     types:
       path: src/types
       files:
@@ -210,12 +238,6 @@ project_status:
             tests:
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/types/index.test.ts
-        - plan-workflow.ts:
-            functions: []
-            fossilized_output: false
-            tests:
-              - >-
-                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/plan-workflow.integration.test.ts
     scripts:
       path: scripts
       files:
@@ -229,6 +251,10 @@ project_status:
             functions:
               - 'ensureDir: implemented'
               - 'moveFile: implemented'
+            fossilized_output: false
+        - cleanup-test-fossils.ts:
+            functions:
+              - 'main: implemented'
             fossilized_output: false
         - create-milestone.sh:
             functions: []
@@ -263,11 +289,16 @@ project_status:
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/github-projects-integration.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-projects-integration.integration.test.ts
+        - fossil-summary-json.ts:
+            functions:
+              - 'main: implemented'
+            fossilized_output: false
         - update-issue-checklist.ts:
             functions: []
             fossilized_output: false
         - update-project-status.ts:
             functions:
+              - 'generateLLMRecommendationsFromYAML: implemented'
               - 'detectStatus: implemented'
               - 'extractCliCommands: implemented'
               - 'walk: implemented'
@@ -275,10 +306,14 @@ project_status:
               - 'detectFossilization: implemented'
               - 'scanDir: implemented'
               - 'mapTestsToFunctions: implemented'
-              - 'mergeWithExistingYaml: implemented'
               - 'toProjectStatusYamlStructure: implemented'
+              - 'mergeWithExistingYaml: implemented'
               - 'main: implemented'
             fossilized_output: true
+        - cleanup-fossils.ts:
+            functions:
+              - 'main: implemented'
+            fossilized_output: false
         - llm-issue-manager.sh:
             functions: []
             fossilized_output: false
@@ -354,6 +389,12 @@ project_status:
             tests:
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/qa-workflow.test.ts
+        - test-automation-scripts.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/test-automation-scripts.test.ts
         - audit-shell-scripts.sh:
             functions: []
             fossilized_output: false
@@ -372,6 +413,10 @@ project_status:
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/monitoring-quick-status.integration.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/quick-status.integration.test.ts
+        - fossil-summary-md.ts:
+            functions:
+              - 'main: implemented'
+            fossilized_output: false
         - quick-status.sh:
             functions: []
             fossilized_output: false
@@ -390,4 +435,71 @@ project_status:
             tests:
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/monitoring/check-issues.test.ts
-
+  overall_summary:
+    modules_total: 6
+    files_total: 50
+    fossilized_outputs: 3
+    tests_total: 69
+    completion_percent: 6
+  fossilization_summary:
+    fossilized_outputs:
+      - gather-context.ts
+      - fossilize.ts
+      - update-project-status.ts
+    tests_using_fossils:
+      - >-
+        /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/gather-context.integration.test.ts
+      - >-
+        /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/utils/fossilize.test.ts
+      - >-
+        /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/repo-orchestrator-fossilization.integration.test.ts
+    next_to_fossilize:
+      - llm-execute.ts
+      - track-progress.ts
+      - issues-create.ts
+      - github-issues.ts
+      - issues-fossilize.ts
+      - context-fossil.ts
+      - llm-plan.ts
+      - llm-analyze.ts
+      - validate-plan.ts
+      - ensure-demo-issue.ts
+      - repo-orchestrator.ts
+      - semantic-tagger.ts
+      - github.ts
+      - llm.ts
+      - cli.ts
+      - markdownChecklist.ts
+      - fossilSummary.ts
+      - plan-validator.ts
+      - config.ts
+      - index.ts
+      - 001-improve-project-structure.sh
+      - 002-project-structure-migration.ts
+      - cleanup-test-fossils.ts
+      - create-milestone.sh
+      - monitor-progress.sh
+      - migrate.sh
+      - github-projects-integration.sh
+      - fossil-summary-json.ts
+      - update-issue-checklist.ts
+      - cleanup-fossils.ts
+      - llm-issue-manager.sh
+      - review-workflow.sh
+      - llm-workflow.sh
+      - llm-content-automation.sh
+      - backup-context.sh
+      - simple-monitor.sh
+      - testing-status.sh
+      - repo-orchestrator.sh
+      - qa-workflow.sh
+      - test-automation-scripts.sh
+      - audit-shell-scripts.sh
+      - quick-status.sh
+      - fossil-summary-md.ts
+      - check-issues.sh
+  recommendations:
+    - Increase fossilized outputs for all modules.
+    - Add or update tests for all major CLI and service files.
+    - Review manual notes and keep them outside auto-generated sections.
+    - Automate regular updates of this YAML as part of CI.

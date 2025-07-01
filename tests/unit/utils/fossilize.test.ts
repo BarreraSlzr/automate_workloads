@@ -10,7 +10,7 @@ describe('toFossilEntry', () => {
       content: '{"foo":"bar"}',
       tags: ['test'],
       source: 'terminal',
-      metadata: { test: true },
+      metadata: { test: true, invocation: 'test-invocation' },
     });
 
     expect(entry).toHaveProperty('id');
@@ -22,6 +22,8 @@ describe('toFossilEntry', () => {
     expect(entry.metadata.test).toBe(true);
     expect(typeof entry.metadata.contentHash).toBe('string');
     expect(entry.metadata.contentHash.length).toBeGreaterThan(0);
+    expect((entry.metadata as any).invocation).toBe('test-invocation');
+    expect((entry.metadata as any).invocation.length).toBeGreaterThan(0);
     expect(entry).toHaveProperty('createdAt');
     expect(entry).toHaveProperty('updatedAt');
   });

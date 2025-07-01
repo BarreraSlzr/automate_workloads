@@ -515,4 +515,17 @@ bun test tests/integration --coverage
 - All issues created by automation must have at least one label (default: `automation`).
 - If a required label does not exist, it should be created automatically.
 - Any existing open issues without labels should be automatically labeled with the default label.
-- This ensures consistent organization and makes it easy to filter/search automation-related issues. 
+- This ensures consistent organization and makes it easy to filter/search automation-related issues.
+
+## Fossilization & Excerpts
+
+Every fossil entry now includes an LLM-generated `excerpt` field. This excerpt is a one-sentence summary generated using the fossil's type, title, tags, metadata, and content, providing a quick, human-readable preview for audits and reports.
+
+- Excerpts are generated at creation time using an LLM (OpenAI or compatible)
+- If LLM is unavailable, a fallback (first 80 chars of content) is used
+- Excerpts are visible in all summary, list, and reporting tools
+
+## Auditability & Reporting
+
+- Use the `context-fossil list` command or the summary scripts to quickly audit the state of your repo
+- Cleanup scripts ensure only production fossils remain 
