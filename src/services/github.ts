@@ -191,8 +191,11 @@ export class GitHubService {
         };
       }
       // Extract issue number from the output
-      const match = result.stdout.match(/Issue #(\d+) created/);
+      let match = result.stdout.match(/Issue #(\d+) created/);
       if (!match) {
+        // Try to match a GitHub issue URL
+        match = result.stdout.match(/github\.com\/[\w-]+\/[\w-]+\/issues\/(\d+)/);
+      }if (!match) {
         return {
           success: false,
           error: 'Failed to parse created issue number',

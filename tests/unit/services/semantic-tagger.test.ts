@@ -1,4 +1,23 @@
-import { describe, it, expect, beforeEach } from 'bun:test';
+import { describe, it, expect, beforeEach, mock } from 'bun:test';
+// Dynamic mock for callOpenAIChat
+mock.module("../../../src/services/llm", () => ({
+  callOpenAIChat: async ({ messages }) => {
+    const userContent = messages?.[1]?.content || "";
+    if (userContent.includes("Health")) {
+      return {
+        choices: [{ message: { content: '{"semanticCategory":"repository-health","confidence":0.95,"concepts":["health"],"sentiment":"neutral","priority":"medium","impact":"medium","stakeholders":["developers"]}' } }]
+      };
+    }
+    if (userContent.includes("Automated workflow")) {
+      return {
+        choices: [{ message: { content: '{"semanticCategory":"automation","confidence":0.95,"concepts":["workflow","automated"],"sentiment":"neutral","priority":"medium","impact":"medium","stakeholders":["developers"]}' } }]
+      };
+    }
+    return {
+      choices: [{ message: { content: '{"semanticCategory":"test","confidence":1,"concepts":["mock"],"sentiment":"neutral","priority":"low","impact":"low","stakeholders":["test"]}' } }]
+    };
+  }
+}));
 import { SemanticTaggerService } from '../../../src/services/semantic-tagger';
 import type { ContextEntry } from '../../../src/types';
 

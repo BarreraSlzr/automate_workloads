@@ -1331,5 +1331,8 @@ program
     }
   });
 
-// Parse command line arguments
-program.parse(); 
+// Only run the CLI if this file is executed directly
+if (import.meta.main) {
+  // All CLI command registration and program.parse() should be inside this block
+  program.parse();
+} 

@@ -16,8 +16,7 @@ import { Command } from 'commander';
 import { execSync } from 'child_process';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
-import { GitHubService } from './src/services/github';
-import { ContextFossilService } from './src/cli/context-fossil';
+import { runIssuesCreate } from './src/cli/issues-create';
 
 class MCPCLIService {
   private projectRoot: string;
@@ -361,55 +360,15 @@ async function main() {
     .option('--purpose <purpose>', 'Purpose of the automation issue')
     .option('--checklist <checklist>', 'Checklist for the automation issue (markdown)')
     .option('--metadata <metadata>', 'Metadata for the automation issue')
+    .option('--debug', 'Enable debug output')
     .action(async (action, options) => {
       if (action === 'create') {
-        // Fossil deduplication and tracking
-        const fossil = new ContextFossilService();
-        await fossil.initialize();
-        const title = '[AUTOMATION] Streamlined Automation Workflow Progression';
-        const purpose = options.purpose || 'Track and ensure the tested progression of the streamlined automation workflow, from issue creation to orchestration and documentation.';
-        const checklist = options.checklist || '- [ ] Document the end-to-end workflow\n- [ ] Automate orchestration and reporting\n- [ ] Enforce consistency with templates and CI\n- [ ] Monitor and iterate on the process\n- [ ] Provide onboarding and contribution guides';
-        const metadata = options.metadata || `Created by automation on ${new Date().toISOString()}`;
-        const content = `Purpose: ${purpose}\n\nChecklist:\n${checklist}\n\nMetadata: ${metadata}`;
-        // Check for duplicate in fossil storage
-        const existing = await fossil.queryEntries({
-          search: title,
-          type: 'action',
-          limit: 1,
-          offset: 0
+        await runIssuesCreate({
+          purpose: options.purpose,
+          checklist: options.checklist,
+          metadata: options.metadata,
+          debug: options.debug,
         });
-        if (existing.length > 0) {
-          console.log('⚠️  Duplicate automation issue found in fossil storage. Skipping creation.');
-          return;
-        }
-        // Create the GitHub issue
-        const github = new GitHubService(process.env.GITHUB_OWNER || 'BarreraSlzr', process.env.GITHUB_REPO || 'automate_workloads');
-        const labels = ['automation', 'bot'];
-        const response = await github.createIssue(
-          title,
-          'TEMPLATE',
-          Object.assign({ labels }, { purpose, checklist, metadata }) as any
-        );
-        if (response.success && response.data) {
-          console.log('✅ Automation issue created:', response.data.title, response.data.number);
-          // Store in fossil storage
-          await fossil.addEntry({
-            type: 'action',
-            title,
-            content,
-            tags: labels,
-            source: 'automated',
-            metadata: {
-              githubIssueNumber: response.data.number,
-              githubIssueState: response.data.state,
-              ...response.data
-            },
-            version: 1,
-            children: [],
-          });
-        } else {
-          console.error('❌ Failed to create automation issue:', response.error);
-        }
       } else {
         await mcpService.handleIssuesCommand(action);
       }
