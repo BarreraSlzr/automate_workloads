@@ -490,4 +490,29 @@ bun test tests/integration --coverage
 
 ## Contribution Guidelines
 - All new scripts and features must include integration tests.
-- Documentation and coverage must be kept up to date. 
+- Documentation and coverage must be kept up to date.
+
+## Best Practices for Automation Scripts (June 2025)
+
+### Idempotency
+- Automation should be safe to run multiple times without causing duplicate resources or clutter.
+- Always check for the existence of resources (like issues, PRs, labels) before creating them.
+
+### Accurate State Management
+- Use robust CLI commands (e.g., `gh issue list --json number`) to get accurate repository state.
+- Avoid relying on paginated or partial API responses unless you aggregate all pages.
+- Keep health diagnostics and repository state clearly separated in your outputs and logic.
+
+### Error Handling
+- Handle each check or action independently, providing clear and actionable error messages.
+- Avoid broad error handling that can obscure the source of problems.
+
+### Continuous Verification
+- Test automation for idempotency and correctness by running it repeatedly and in different repo states.
+- Document and review learnings after each major improvement or bugfix.
+
+### Issue Labeling and Organization
+- All issues created by automation must have at least one label (default: `automation`).
+- If a required label does not exist, it should be created automatically.
+- Any existing open issues without labels should be automatically labeled with the default label.
+- This ensures consistent organization and makes it easy to filter/search automation-related issues. 

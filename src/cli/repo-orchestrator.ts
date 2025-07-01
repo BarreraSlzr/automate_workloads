@@ -24,6 +24,7 @@ const RepoConfigSchema = z.object({
     createPRs: z.boolean().default(false),
     autoMerge: z.boolean().default(false),
     notifications: z.boolean().default(true),
+    fossilize: z.boolean().default(true),
   }).optional(),
 });
 
@@ -39,11 +40,23 @@ const RepoAnalysisSchema = z.object({
     openPRs: z.number(),
     lastCommit: z.string(),
     defaultBranch: z.string(),
+    issues: z.array(z.object({
+      number: z.number(),
+      title: z.string(),
+      labels: z.array(z.object({
+        name: z.string(),
+        color: z.string(),
+      })),
+      updatedAt: z.string(),
+    })).optional(),
   }),
   health: z.object({
     score: z.number().min(0).max(100),
     issues: z.array(z.string()),
     recommendations: z.array(z.string()),
+    actions: z.object({
+      createIssues: z.boolean(),
+    }).optional(),
   }),
   workflows: z.array(z.object({
     name: z.string(),
@@ -65,6 +78,71 @@ const RepoAnalysisSchema = z.object({
 
 type RepoConfig = z.infer<typeof RepoConfigSchema>;
 type RepoAnalysis = z.infer<typeof RepoAnalysisSchema>;
+
+// Helper: Check if an open issue with the given title exists
+function issueExists(repo: string, title: string): boolean {
+  try {
+    const result = execSync(
+      `gh issue list --repo ${repo} --state open --json title`,
+      { encoding: 'utf8' }
+    );
+    const issues = JSON.parse(result);
+    return issues.some((issue: any) => issue.title.trim() === title.trim());
+  } catch {
+    return false;
+  }
+}
+
+// Helper: Ensure a label exists in the repo
+function ensureLabelExists(repo: string, label: string, color: string = 'ededed') {
+  try {
+    const result = execSync(`gh label list --repo ${repo} --json name`, { encoding: 'utf8' });
+    const labels = JSON.parse(result);
+    if (!labels.some((l: any) => l.name === label)) {
+      execSync(`gh label create "${label}" --repo ${repo} --color ${color}`);
+    }
+  } catch {}
+}
+
+// Helper: Add a label to an issue
+function addLabelToIssue(repo: string, issueNumber: number, label: string) {
+  ensureLabelExists(repo, label);
+  execSync(`gh issue edit ${issueNumber} --repo ${repo} --add-label "${label}"`);
+}
+
+// Helper: Fossilize repository analysis results
+async function fossilizeAnalysis(repoConfig: RepoConfig, analysis: any): Promise<void> {
+  try {
+    const fossilEntry = {
+      type: 'observation' as const,
+      title: `Repository Analysis - ${repoConfig.owner}/${repoConfig.repo}`,
+      content: `Health Score: ${analysis.health.score}/100
+Open Issues: ${analysis.repository.openIssues}
+Automation Opportunities: ${analysis.automation.opportunities.length}
+Active Workflows: ${analysis.workflows.length}
+Recommendations: ${analysis.health.recommendations.join(', ') || 'None'}`,
+      tags: ['repository-analysis', 'health-check', 'automation', 'monitoring'],
+      source: 'automated' as const,
+      metadata: {
+        repository: `${repoConfig.owner}/${repoConfig.repo}`,
+        healthScore: analysis.health.score,
+        openIssues: analysis.repository.openIssues,
+        openPRs: analysis.repository.openPRs,
+        automationOpportunities: analysis.automation.opportunities.length,
+        workflowsActive: analysis.workflows.filter((w: any) => w.status === 'active').length,
+        recommendations: analysis.health.recommendations,
+        actions: analysis.health.actions,
+      },
+    };
+
+    // Add to fossil storage
+    const command = `bun run context:add --type ${fossilEntry.type} --title "${fossilEntry.title}" --content "${fossilEntry.content}" --tags "${fossilEntry.tags.join(',')}" --source ${fossilEntry.source}`;
+    execSync(command, { encoding: 'utf8' });
+    console.log('🗿 Analysis fossilized for future reference');
+  } catch (error) {
+    console.warn('⚠️  Could not fossilize analysis:', error);
+  }
+}
 
 /**
  * Repository Workflow Orchestrator Service
@@ -100,6 +178,20 @@ class RepoOrchestratorService {
         console.log('📊 Step 1: Analyzing repository...');
         const analysis = await this.analyzeRepository(repoConfig);
         results.steps.push({ step: 'analysis', status: 'completed', data: analysis });
+        
+        // Fossilize analysis results (unless disabled)
+        if (repoConfig.options?.fossilize !== false) {
+          await fossilizeAnalysis(repoConfig, analysis);
+        }
+        
+        // Execute actions based on analysis
+        if (analysis.health.actions?.createIssues) {
+          console.log('📝 Creating issues based on analysis...');
+          const createdIssues = await this.createAutomationIssues(repoConfig);
+          results.steps.push({ step: 'issue-creation', status: 'completed', data: { createdIssues } });
+        }
+        // Label any open issues with no labels
+        await this.labelUnlabeledIssues(repoConfig);
       }
 
       // Step 2: LLM-Powered Planning
@@ -107,6 +199,32 @@ class RepoOrchestratorService {
         console.log('🤖 Step 2: LLM-powered planning...');
         const plan = await this.createLLMPlan(repoConfig);
         results.steps.push({ step: 'planning', status: 'completed', data: plan });
+        // Fossilize plan
+        if (repoConfig.options?.fossilize !== false) {
+          try {
+            const fossilEntry = {
+              type: 'plan' as const,
+              title: `LLM Plan - ${repoConfig.owner}/${repoConfig.repo}`,
+              content: JSON.stringify(plan, null, 2),
+              tags: ['llm-plan', 'automation', 'planning'],
+              source: 'llm' as const,
+              metadata: { repository: `${repoConfig.owner}/${repoConfig.repo}` },
+            };
+            // Write content to a temporary file to avoid command line length issues
+            const fs = await import('fs/promises');
+            const tempFile = `.temp-fossil-content-${Date.now()}.json`;
+            await fs.writeFile(tempFile, fossilEntry.content);
+            
+            const command = `bun run context:add --type ${fossilEntry.type} --title "${fossilEntry.title}" --content "$(cat ${tempFile})" --tags "${fossilEntry.tags.join(',')}" --source ${fossilEntry.source}`;
+            execSync(command, { encoding: 'utf8' });
+            
+            // Clean up temp file
+            await fs.unlink(tempFile);
+            console.log('🗿 Plan fossilized for future reference');
+          } catch (error) {
+            console.warn('⚠️  Could not fossilize plan:', error);
+          }
+        }
       }
 
       // Step 3: Workflow Execution
@@ -114,6 +232,32 @@ class RepoOrchestratorService {
         console.log('🚀 Step 3: Executing workflows...');
         const execution = await this.executeWorkflows(repoConfig);
         results.steps.push({ step: 'execution', status: 'completed', data: execution });
+        // Fossilize execution result
+        if (repoConfig.options?.fossilize !== false) {
+          try {
+            const fossilEntry = {
+              type: 'result' as const,
+              title: `Execution Result - ${repoConfig.owner}/${repoConfig.repo}`,
+              content: JSON.stringify(execution, null, 2),
+              tags: ['execution', 'automation', 'result'],
+              source: 'automated' as const,
+              metadata: { repository: `${repoConfig.owner}/${repoConfig.repo}` },
+            };
+            // Write content to a temporary file to avoid command line length issues
+            const fs = await import('fs/promises');
+            const tempFile = `.temp-fossil-content-${Date.now()}.json`;
+            await fs.writeFile(tempFile, fossilEntry.content);
+            
+            const command = `bun run context:add --type ${fossilEntry.type} --title "${fossilEntry.title}" --content "$(cat ${tempFile})" --tags "${fossilEntry.tags.join(',')}" --source ${fossilEntry.source}`;
+            execSync(command, { encoding: 'utf8' });
+            
+            // Clean up temp file
+            await fs.unlink(tempFile);
+            console.log('🗿 Execution result fossilized for future reference');
+          } catch (error) {
+            console.warn('⚠️  Could not fossilize execution result:', error);
+          }
+        }
       }
 
       // Step 4: Monitoring and Optimization
@@ -121,6 +265,32 @@ class RepoOrchestratorService {
         console.log('📈 Step 4: Monitoring and optimization...');
         const monitoring = await this.monitorAndOptimize(repoConfig);
         results.steps.push({ step: 'monitoring', status: 'completed', data: monitoring });
+        // Fossilize monitoring/observation
+        if (repoConfig.options?.fossilize !== false) {
+          try {
+            const fossilEntry = {
+              type: 'observation' as const,
+              title: `Monitoring Observation - ${repoConfig.owner}/${repoConfig.repo}`,
+              content: JSON.stringify(monitoring, null, 2),
+              tags: ['monitoring', 'automation', 'observation'],
+              source: 'automated' as const,
+              metadata: { repository: `${repoConfig.owner}/${repoConfig.repo}` },
+            };
+            // Write content to a temporary file to avoid command line length issues
+            const fs = await import('fs/promises');
+            const tempFile = `.temp-fossil-content-${Date.now()}.json`;
+            await fs.writeFile(tempFile, fossilEntry.content);
+            
+            const command = `bun run context:add --type ${fossilEntry.type} --title "${fossilEntry.title}" --content "$(cat ${tempFile})" --tags "${fossilEntry.tags.join(',')}" --source ${fossilEntry.source}`;
+            execSync(command, { encoding: 'utf8' });
+            
+            // Clean up temp file
+            await fs.unlink(tempFile);
+            console.log('🗿 Monitoring observation fossilized for future reference');
+          } catch (error) {
+            console.warn('⚠️  Could not fossilize monitoring observation:', error);
+          }
+        }
       }
 
       // Generate summary
@@ -173,11 +343,39 @@ class RepoOrchestratorService {
     try {
       // Use GitHub CLI to get repository information
       const repoData = execSync(
-        `gh repo view ${repoConfig.owner}/${repoConfig.repo} --json name,owner,description,primaryLanguage,stargazerCount,forkCount,openIssuesCount,openPullRequestsCount,defaultBranchRef,updatedAt`,
+        `gh repo view ${repoConfig.owner}/${repoConfig.repo} --json name,owner,description,primaryLanguage,stargazerCount,forkCount,defaultBranchRef,updatedAt`,
         { encoding: 'utf8' }
       );
       
       const repo = JSON.parse(repoData);
+      
+      // Get issues and PRs count separately since they're not available in the main repo view
+      let openIssues = 0;
+      let openPRs = 0;
+      
+      try {
+        const issuesData = execSync(
+          `gh issue list --repo ${repoConfig.owner}/${repoConfig.repo} --state open --json number,title,labels,updatedAt`,
+          { encoding: 'utf8' }
+        );
+        const issues = JSON.parse(issuesData);
+        openIssues = issues.length;
+        // Store issues for later use
+        (repoConfig as any).openIssuesList = issues;
+      } catch {
+        // Ignore issues fetch error
+      }
+      
+      try {
+        const prsData = execSync(
+          `gh api repos/${repoConfig.owner}/${repoConfig.repo}/pulls?state=open&per_page=1`,
+          { encoding: 'utf8' }
+        );
+        const prs = JSON.parse(prsData);
+        openPRs = prs.length > 0 ? parseInt(prs[0].number) : 0;
+      } catch {
+        // Ignore PRs fetch error
+      }
       
       return {
         name: repo.name,
@@ -186,10 +384,11 @@ class RepoOrchestratorService {
         language: repo.primaryLanguage?.name,
         stars: repo.stargazerCount,
         forks: repo.forkCount,
-        openIssues: repo.openIssuesCount,
-        openPRs: repo.openPullRequestsCount,
+        openIssues,
+        openPRs,
         lastCommit: repo.updatedAt,
         defaultBranch: repo.defaultBranchRef.name,
+        issues: (repoConfig as any).openIssuesList || [],
       };
     } catch (error) {
       console.warn('⚠️  Could not fetch repository info, using defaults');
@@ -217,68 +416,101 @@ class RepoOrchestratorService {
     const issues: string[] = [];
     const recommendations: string[] = [];
     let score = 100;
+    let checksPerformed = 0;
+    let checksFailed = 0;
 
+    // Check for recent activity
     try {
-      // Check for recent activity
       const lastCommit = execSync(
         `gh api repos/${repoConfig.owner}/${repoConfig.repo}/commits?per_page=1`,
         { encoding: 'utf8' }
       );
       
       const commits = JSON.parse(lastCommit);
+      checksPerformed++;
+      
       if (commits.length === 0) {
         issues.push('No recent commits found');
         score -= 20;
         recommendations.push('Consider adding recent commits to maintain activity');
       }
+    } catch (error) {
+      checksFailed++;
+      issues.push(`Could not check recent commits: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      score -= 5;
+    }
 
-      // Check for open issues
+    // Check for open issues
+    let hasOpenIssues = false;
+    try {
       const openIssues = execSync(
-        `gh api repos/${repoConfig.owner}/${repoConfig.repo}/issues?state=open&per_page=1`,
+        `gh issue list --repo ${repoConfig.owner}/${repoConfig.repo} --state open --json number`,
         { encoding: 'utf8' }
       );
       
       const issuesData = JSON.parse(openIssues);
+      checksPerformed++;
+      
       if (issuesData.length === 0) {
+        hasOpenIssues = false;
         recommendations.push('No open issues found - consider creating issues for tracking');
-      }
-
-      // Check for README
-      try {
-        execSync(`gh api repos/${repoConfig.owner}/${repoConfig.repo}/contents/README.md`);
-      } catch {
-        issues.push('No README.md found');
-        score -= 15;
-        recommendations.push('Add a comprehensive README.md file');
-      }
-
-      // Check for CI/CD workflows
-      try {
-        const workflows = execSync(
-          `gh api repos/${repoConfig.owner}/${repoConfig.repo}/actions/workflows`,
-          { encoding: 'utf8' }
-        );
-        
-        const workflowsData = JSON.parse(workflows);
-        if (workflowsData.total_count === 0) {
-          issues.push('No CI/CD workflows found');
-          score -= 25;
-          recommendations.push('Add GitHub Actions workflows for automated testing and deployment');
+      } else {
+        hasOpenIssues = true;
+        if (issuesData.length > 10) {
+          recommendations.push(`Repository has ${issuesData.length} open issues - consider prioritizing and closing some`);
         }
-      } catch {
-        issues.push('Could not check CI/CD workflows');
-        score -= 10;
       }
-
     } catch (error) {
-      issues.push('Could not perform complete health analysis');
-      score -= 30;
+      checksFailed++;
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      issues.push(`Could not check open issues: ${errorMessage}`);
+      score -= 5;
+    }
+
+    // Check for README
+    try {
+      execSync(`gh api repos/${repoConfig.owner}/${repoConfig.repo}/contents/README.md`);
+      checksPerformed++;
+    } catch (error) {
+      checksFailed++;
+      issues.push('No README.md found');
+      score -= 15;
+      recommendations.push('Add a comprehensive README.md file');
+    }
+
+    // Check for CI/CD workflows
+    try {
+      const workflows = execSync(
+        `gh api repos/${repoConfig.owner}/${repoConfig.repo}/actions/workflows`,
+        { encoding: 'utf8' }
+      );
+      
+      const workflowsData = JSON.parse(workflows);
+      checksPerformed++;
+      
+      if (workflowsData.total_count === 0) {
+        issues.push('No CI/CD workflows found');
+        score -= 25;
+        recommendations.push('Add GitHub Actions workflows for automated testing and deployment');
+      }
+    } catch (error) {
+      checksFailed++;
+      issues.push(`Could not check CI/CD workflows: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      score -= 10;
+    }
+
+    // Add summary if some checks failed
+    if (checksFailed > 0) {
+      issues.push(`Health analysis: ${checksPerformed} checks passed, ${checksFailed} checks failed`);
     }
 
     return {
       score: Math.max(0, score),
       issues,
       recommendations,
+      actions: {
+        createIssues: !hasOpenIssues && repoConfig.options?.createIssues !== false,
+      },
     };
   }
 
@@ -560,47 +792,47 @@ class RepoOrchestratorService {
    */
   private async createAutomationIssues(repoConfig: RepoConfig): Promise<any[]> {
     const issues = [];
-
+    const repo = `${repoConfig.owner}/${repoConfig.repo}`;
+    const defaultLabel = 'automation';
+    ensureLabelExists(repo, defaultLabel, 'ededed');
     try {
-      // Create issue for automation setup
-      const issueData = {
-        title: '🤖 Set up repository automation',
-        body: `## Automation Setup
-
-This issue was created by the LLM-powered repository orchestrator to improve automation for this repository.
-
-### Recommended Actions:
-- [ ] Set up GitHub Actions workflows
-- [ ] Configure automated testing
-- [ ] Add issue templates
-- [ ] Set up automated dependency updates
-
-### Benefits:
-- Faster development cycles
-- Reduced manual work
-- Improved code quality
-- Better project management
-
----
-*Created by Repository Orchestrator on ${new Date().toISOString()}*`,
-        labels: ['automation', 'enhancement'],
+      // Create issue for project tracking
+      const trackingIssueData = {
+        title: '📋 Project Tracking and Management',
+        body: `## Project Tracking Setup\n\nThis issue was created by the LLM-powered repository orchestrator to establish proper project tracking.\n\n### Purpose:\n- Track project progress and milestones\n- Organize tasks and priorities\n- Monitor development activities\n- Ensure project visibility\n\n### Recommended Actions:\n- [ ] Set up project boards or milestones\n- [ ] Create issue templates for different task types\n- [ ] Establish labeling conventions\n- [ ] Set up automated progress tracking\n\n### Benefits:\n- Better project organization\n- Improved team collaboration\n- Clear progress visibility\n- Enhanced project management\n\n---\n*Created by Repository Orchestrator on ${new Date().toISOString()}*`,
+        label: defaultLabel,
       };
-
-      const issue = execSync(
-        `gh issue create --repo ${repoConfig.owner}/${repoConfig.repo} --title "${issueData.title}" --body "${issueData.body}" --label "${issueData.labels.join(',')}"`,
-        { encoding: 'utf8' }
-      );
-
-      issues.push({
-        type: 'automation-setup',
-        issue: issue.trim(),
-        timestamp: new Date().toISOString(),
-      });
-
+      if (!issueExists(repo, trackingIssueData.title)) {
+        const trackingIssue = execSync(
+          `gh issue create --repo ${repo} --title "${trackingIssueData.title}" --body "${trackingIssueData.body}" --label "${trackingIssueData.label}"`,
+          { encoding: 'utf8' }
+        );
+        issues.push({
+          type: 'project-tracking',
+          issue: trackingIssue.trim(),
+          timestamp: new Date().toISOString(),
+        });
+      }
+      // Create issue for automation setup
+      const automationIssueData = {
+        title: '🤖 Repository Automation Setup',
+        body: `## Automation Setup\n\nThis issue was created by the LLM-powered repository orchestrator to improve automation for this repository.\n\n### Recommended Actions:\n- [ ] Set up GitHub Actions workflows\n- [ ] Configure automated testing\n- [ ] Add issue templates\n- [ ] Set up automated dependency updates\n- [ ] Configure automated code quality checks\n\n### Benefits:\n- Faster development cycles\n- Reduced manual work\n- Improved code quality\n- Better project management\n\n---\n*Created by Repository Orchestrator on ${new Date().toISOString()}*`,
+        label: defaultLabel,
+      };
+      if (!issueExists(repo, automationIssueData.title)) {
+        const automationIssue = execSync(
+          `gh issue create --repo ${repo} --title "${automationIssueData.title}" --body "${automationIssueData.body}" --label "${automationIssueData.label}"`,
+          { encoding: 'utf8' }
+        );
+        issues.push({
+          type: 'automation-setup',
+          issue: automationIssue.trim(),
+          timestamp: new Date().toISOString(),
+        });
+      }
     } catch (error) {
-      console.warn('⚠️  Could not create automation issue:', error);
+      console.warn('⚠️  Could not create automation issues:', error);
     }
-
     return issues;
   }
 
@@ -814,6 +1046,27 @@ This issue was created by the LLM-powered repository orchestrator to improve aut
     await new Promise(resolve => setTimeout(resolve, 2000));
     console.log('✅ LLM processing completed');
   }
+
+  // After analysis, add the automation label to any open issue with no labels
+  private async labelUnlabeledIssues(repoConfig: RepoConfig) {
+    const repo = `${repoConfig.owner}/${repoConfig.repo}`;
+    const defaultLabel = 'automation';
+    ensureLabelExists(repo, defaultLabel, 'ededed');
+    try {
+      const issuesData = execSync(
+        `gh issue list --repo ${repo} --state open --json number,labels`,
+        { encoding: 'utf8' }
+      );
+      const issues = JSON.parse(issuesData);
+      for (const issue of issues) {
+        if (!issue.labels || issue.labels.length === 0) {
+          addLabelToIssue(repo, issue.number, defaultLabel);
+        }
+      }
+    } catch (error) {
+      console.warn('⚠️  Could not label unlabeled issues:', error);
+    }
+  }
 }
 
 /**
@@ -866,6 +1119,7 @@ program
           createPRs: options.createPRs,
           autoMerge: options.autoMerge,
           notifications: options.notifications,
+          fossilize: true, // Default to true for orchestrate command
         },
       };
 
@@ -893,13 +1147,21 @@ program
   .argument('<owner>', 'Repository owner')
   .argument('<repo>', 'Repository name')
   .option('-o, --output <file>', 'Output file for analysis (JSON)')
+  .option('--no-fossilize', 'Skip fossilizing analysis results')
   .action(async (owner, repo, options) => {
     try {
       const repoConfig: RepoConfig = {
-        owner: options.owner,
-        repo: options.repo,
+        owner,
+        repo,
         branch: 'main',
         workflow: 'analyze',
+        options: {
+          createIssues: true,
+          createPRs: false,
+          autoMerge: false,
+          notifications: true,
+          fossilize: options.fossilize !== false,
+        },
       };
 
       // Analyze repository

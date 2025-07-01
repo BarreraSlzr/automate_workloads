@@ -1,20 +1,46 @@
 import { test, expect } from "bun:test";
-import { spawnSync } from "node:child_process";
-import { readFileSync, existsSync, unlinkSync } from "node:fs";
+import { spawnSync } from "child_process";
+import fs from "fs";
 
-test("plan-workflow CLI runs and outputs plan", () => {
-  const outputFile = "tmp-plan.json";
-  const result = spawnSync("bun", ["src/cli/plan-workflow.ts", "--output", outputFile], {
-    encoding: "utf-8",
-    env: { ...process.env, E2E_TEST: "1", OPENAI_API_KEY: "test" }
-  });
+const OUTPUT_FILE = "llm-plan-output.json";
+
+test("plan-workflow CLI E2E mode produces expected output file", () => {
+  // Clean up any previous output
+  if (fs.existsSync(OUTPUT_FILE)) fs.unlinkSync(OUTPUT_FILE);
+
+  // Run the CLI with E2E_TEST=1
+  const result = spawnSync(
+    "bun",
+    ["run", "src/cli/plan-workflow.ts", "--output", OUTPUT_FILE],
+    {
+      env: { 
+        ...process.env, 
+        E2E_TEST: "1", 
+        OPENAI_API_KEY: "dummy-key",
+        GMAIL_TOKEN: "dummy-gmail-token",
+        BUFFER_TOKEN: "dummy-buffer-token", 
+        TWITTER_BEARER_TOKEN: "dummy-twitter-token"
+      },
+      encoding: "utf-8",
+    }
+  );
+
+  if (result.status !== 0) {
+    console.error("STDOUT:", result.stdout);
+    console.error("STDERR:", result.stderr);
+  }
   expect(result.status).toBe(0);
-  expect(result.stdout).toContain("Plan written to");
-  expect(existsSync(outputFile)).toBe(true);
-  const output = JSON.parse(readFileSync(outputFile, "utf-8"));
+  expect(result.stdout + result.stderr).toContain("Plan written to");
+  expect(fs.existsSync(OUTPUT_FILE)).toBe(true);
+
+  // Check output file structure
+  const output = JSON.parse(fs.readFileSync(OUTPUT_FILE, "utf-8"));
   expect(output).toHaveProperty("perIssueChecklists");
   expect(output).toHaveProperty("nextStepsPlan");
-  unlinkSync(outputFile);
+  expect(typeof output.nextStepsPlan).toBe("string");
+
+  // Clean up
+  fs.unlinkSync(OUTPUT_FILE);
 });
 
 // Note: We do not integration-test the scenario where OPENAI_API_KEY is missing,
