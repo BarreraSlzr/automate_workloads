@@ -1,10 +1,23 @@
 import type { ContextEntry } from '../types';
+import { createHash } from 'crypto';
 
 /**
- * Generate a unique fossil entry ID (copied from ContextFossilService)
+ * Generate a content hash for deduplication
  */
-function generateId(): string {
-  return `fossil_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+function generateContentHash(content: string, type: string, title: string): string {
+  return createHash('sha256')
+    .update(`${content}${type}${title}`)
+    .digest('hex')
+    .substring(0, 12);
+}
+
+/**
+ * Generate a unique fossil entry ID based on content hash
+ */
+function generateId(content: string, type: string, title: string): string {
+  const contentHash = generateContentHash(content, type, title);
+  const timestamp = Date.now();
+  return `fossil_${contentHash}_${timestamp}`;
 }
 
 /**
@@ -32,13 +45,18 @@ export function toFossilEntry({
   version?: number;
 }): ContextEntry {
   const now = new Date().toISOString();
+  const contentHash = generateContentHash(content, type, title);
+  
   return {
-    id: generateId(),
+    id: generateId(content, type, title),
     type,
     title,
     content,
     tags,
-    metadata,
+    metadata: {
+      ...metadata,
+      contentHash, // Store content hash for deduplication
+    },
     source,
     version,
     parentId,

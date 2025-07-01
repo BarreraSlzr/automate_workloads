@@ -48,6 +48,8 @@ export interface ContextEntry {
   createdAt: string;
   /** Last update timestamp */
   updatedAt: string;
+  /** Previous versions for version history */
+  previousVersions?: Array<Omit<ContextEntry, 'previousVersions'>>;
 }
 
 /**

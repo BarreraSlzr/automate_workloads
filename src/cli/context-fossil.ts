@@ -92,12 +92,50 @@ class ContextFossilService {
    * @returns Created entry with ID
    */
   async addEntry(entry: Omit<ContextEntry, 'id' | 'createdAt' | 'updatedAt'>): Promise<ContextEntry> {
-    const id = this.generateId();
+    const contentHash = this.generateContentHash(entry.content, entry.type, entry.title);
+    
+    // First, check for exact content match (existing deduplication logic)
+    const existingFossil = await this.findFossilByContentHash(contentHash);
+    if (existingFossil) {
+      // Update existing fossil instead of creating duplicate
+      const updatedFossil = await this.updateEntry(existingFossil.id, {
+        updatedAt: new Date().toISOString(),
+        version: existingFossil.version + 1,
+      });
+      return updatedFossil!;
+    }
+    
+    // If no exact match, check for similar fossils
+    const similarFossils = await this.findSimilarFossils(entry.title, entry.content, 60);
+    if (similarFossils.length > 0) {
+      const mostSimilar = similarFossils[0]!;
+      console.log(`🔍 Found similar fossil (${mostSimilar.similarity}% similarity): ${mostSimilar.fossil.id}`);
+      
+      // Update the most similar fossil with new content
+      const updatedFossil = await this.updateEntry(mostSimilar.fossil.id, {
+        content: entry.content,
+        metadata: {
+          ...entry.metadata,
+          contentHash,
+          similarityScore: mostSimilar.similarity,
+        },
+        updatedAt: new Date().toISOString(),
+        version: mostSimilar.fossil.version + 1,
+      });
+      return updatedFossil!;
+    }
+    
+    // No similar fossils found, create new entry
+    const id = this.generateId(entry.content, entry.type, entry.title);
     const now = new Date().toISOString();
     
     const newEntry: ContextEntry = {
       ...entry,
       id,
+      metadata: {
+        ...entry.metadata,
+        contentHash, // Store content hash for deduplication
+      },
       createdAt: now,
       updatedAt: now,
     };
@@ -164,11 +202,18 @@ class ContextFossilService {
     const entry = await this.getEntry(id);
     if (!entry) return null;
 
+    // Prepare previousVersions array
+    const previousVersions = entry.previousVersions || [];
+    // Push the old version (excluding previousVersions itself)
+    const { previousVersions: _omit, ...entryWithoutPrev } = entry;
+    previousVersions.push(entryWithoutPrev);
+
     const updatedEntry: ContextEntry = {
       ...entry,
       ...updates,
       updatedAt: new Date().toISOString(),
       version: entry.version + 1,
+      previousVersions,
     };
 
     // Save updated entry
@@ -320,7 +365,7 @@ class ContextFossilService {
    * @returns Snapshot metadata
    */
   async createSnapshot(name: string): Promise<{ id: string; name: string; timestamp: string; entryCount: number }> {
-    const snapshotId = this.generateId();
+    const snapshotId = this.generateId(`snapshot-${name}`, 'snapshot', name);
     const timestamp = new Date().toISOString();
     const snapshotDir = path.join(this.fossilDir, 'snapshots', snapshotId);
     
@@ -518,8 +563,40 @@ class ContextFossilService {
     }
   }
 
-  private generateId(): string {
-    return `fossil_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  /**
+   * Generate a content hash for deduplication
+   */
+  private generateContentHash(content: string, type: string, title: string): string {
+    const { createHash } = require('crypto');
+    return createHash('sha256')
+      .update(`${content}${type}${title}`)
+      .digest('hex')
+      .substring(0, 12);
+  }
+
+  /**
+   * Generate a unique fossil entry ID based on content hash
+   */
+  private generateId(content: string, type: string, title: string): string {
+    const contentHash = this.generateContentHash(content, type, title);
+    const timestamp = Date.now();
+    return `fossil_${contentHash}_${timestamp}`;
+  }
+
+  /**
+   * Find existing fossil by content hash
+   */
+  private async findFossilByContentHash(contentHash: string): Promise<ContextEntry | null> {
+    const index = await this.loadIndex();
+    
+    for (const [id, entryData] of Object.entries(index.entries)) {
+      const entry = await this.getEntry(id);
+      if (entry && entry.metadata?.contentHash === contentHash) {
+        return entry;
+      }
+    }
+    
+    return null;
   }
 
   private async getAllEntries(): Promise<ContextEntry[]> {
@@ -607,6 +684,55 @@ class ContextFossilService {
     });
 
     return yaml;
+  }
+
+  /**
+   * Calculate content similarity percentage using Levenshtein distance
+   */
+  private calculateSimilarity(str1: string, str2: string): number {
+    const matrix = Array(str2.length + 1).fill(null).map(() => Array(str1.length + 1).fill(null));
+    
+    for (let i = 0; i <= str1.length; i++) matrix[0]![i] = i;
+    for (let j = 0; j <= str2.length; j++) matrix[j]![0] = j;
+    
+    for (let j = 1; j <= str2.length; j++) {
+      for (let i = 1; i <= str1.length; i++) {
+        const indicator = str1[i - 1] === str2[j - 1] ? 0 : 1;
+        matrix[j]![i] = Math.min(
+          matrix[j]![i - 1]! + 1, // deletion
+          matrix[j - 1]![i]! + 1, // insertion
+          matrix[j - 1]![i - 1]! + indicator // substitution
+        );
+      }
+    }
+    
+    const maxLength = Math.max(str1.length, str2.length);
+    const similarity = ((maxLength - matrix[str2.length]![str1.length]!) / maxLength) * 100;
+    return Math.round(similarity * 100) / 100; // Round to 2 decimal places
+  }
+
+  /**
+   * Find similar fossils by title and content similarity
+   */
+  private async findSimilarFossils(title: string, content: string, similarityThreshold: number = 60): Promise<{ fossil: ContextEntry; similarity: number }[]> {
+    const index = await this.loadIndex();
+    const similarFossils: { fossil: ContextEntry; similarity: number }[] = [];
+    
+    for (const [id, entryData] of Object.entries(index.entries)) {
+      const entry = await this.getEntry(id);
+      if (!entry) continue;
+      
+      // Check if titles are similar (exact match for now, could be enhanced)
+      if (entry.title === title) {
+        const similarity = this.calculateSimilarity(entry.content, content);
+        if (similarity >= similarityThreshold) {
+          similarFossils.push({ fossil: entry, similarity });
+        }
+      }
+    }
+    
+    // Sort by similarity (highest first)
+    return similarFossils.sort((a, b) => b.similarity - a.similarity);
   }
 }
 
