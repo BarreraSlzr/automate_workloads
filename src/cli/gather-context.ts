@@ -8,7 +8,7 @@
  */
 
 import { Command } from 'commander';
-import { getEnv } from '../core/config.js';
+import { getEnv } from '../core/config';
 import { toFossilEntry, outputFossil, writeFossilToFile } from '../utils/fossilize';
 
 interface UnifiedContext {

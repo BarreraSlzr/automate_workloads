@@ -153,5 +153,8 @@
       "functions": 85,
       "statements": 80
     }
+  },
+  "bin": {
+    "mcp": "./mcp-cli.ts"
   }
 }

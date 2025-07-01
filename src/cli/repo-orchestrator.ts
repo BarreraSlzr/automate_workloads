@@ -9,8 +9,10 @@
 
 import { Command } from 'commander';
 import { z } from 'zod';
-import { getEnv } from '../core/config.js';
+import { getEnv } from '../core/config';
 import { execSync } from 'child_process';
+const fs = await import('fs/promises');
+const path = require('path');
 
 // Repository orchestration schemas
 const RepoConfigSchema = z.object({
@@ -108,6 +110,15 @@ function ensureLabelExists(repo: string, label: string, color: string = 'ededed'
 function addLabelToIssue(repo: string, issueNumber: number, label: string) {
   ensureLabelExists(repo, label);
   execSync(`gh issue edit ${issueNumber} --repo ${repo} --add-label "${label}"`);
+}
+
+// Helper to load automation issue template
+async function loadAutomationIssueTemplate() {
+  const templatePath = path.resolve('.github/ISSUE_TEMPLATE/automation_task.yml');
+  const content = await fs.readFile(templatePath, 'utf8');
+  // Simple YAML parse to extract body sections (for now, just use as markdown)
+  // In a real implementation, you might use a YAML parser to extract fields
+  return content;
 }
 
 // Helper: Fossilize repository analysis results
@@ -815,9 +826,9 @@ class RepoOrchestratorService {
       }
       // Create issue for automation setup
       const automationIssueData = {
-        title: '🤖 Repository Automation Setup',
-        body: `## Automation Setup\n\nThis issue was created by the LLM-powered repository orchestrator to improve automation for this repository.\n\n### Recommended Actions:\n- [ ] Set up GitHub Actions workflows\n- [ ] Configure automated testing\n- [ ] Add issue templates\n- [ ] Set up automated dependency updates\n- [ ] Configure automated code quality checks\n\n### Benefits:\n- Faster development cycles\n- Reduced manual work\n- Improved code quality\n- Better project management\n\n---\n*Created by Repository Orchestrator on ${new Date().toISOString()}*`,
-        label: defaultLabel,
+        title: '[AUTOMATION] Repository Automation Setup',
+        body: await loadAutomationIssueTemplate(),
+        label: 'automation',
       };
       if (!issueExists(repo, automationIssueData.title)) {
         const automationIssue = execSync(

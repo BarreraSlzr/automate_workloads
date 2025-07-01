@@ -1,0 +1,33 @@
+name: "Automation Task"
+description: "Template for issues created automatically by scripts or bots."
+title: "[AUTOMATION] <short description>"
+labels: [automation, bot]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Automation Task
+        This issue was created automatically by a script or bot to track automation-related work.
+  - type: textarea
+    id: purpose
+    attributes:
+      label: "Purpose"
+      description: "Describe the purpose of this automation task."
+      placeholder: "E.g., Set up CI, update dependencies, etc."
+    validations:
+      required: true
+  - type: textarea
+    id: checklist
+    attributes:
+      label: "Checklist"
+      description: "List the steps or actions to be completed."
+      placeholder: "- [ ] Step 1\n- [ ] Step 2"
+    validations:
+      required: false
+  - type: textarea
+    id: metadata
+    attributes:
+      label: "Automation Metadata"
+      description: "(Optional) Add any metadata, such as script name, timestamp, or related links."
+    validations:
+      required: false 

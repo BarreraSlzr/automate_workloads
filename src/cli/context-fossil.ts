@@ -9,12 +9,12 @@
 
 import { Command } from 'commander';
 import { z } from 'zod';
-import { getEnv } from '../core/config.js';
+import { getEnv } from '../core/config';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
 import type { ContextEntry, ContextQuery } from '@/types';
-import { SemanticTaggerService } from '../services/semantic-tagger.js';
+import { SemanticTaggerService } from '../services/semantic-tagger';
 
 // Context fossil schemas
 const ContextEntrySchema = z.object({
@@ -54,7 +54,7 @@ const ContextQuerySchema = z.object({
  * 
  * Manages persistent, editable knowledge base with versioning and relationships
  */
-class ContextFossilService {
+export class ContextFossilService {
   private config: ReturnType<typeof getEnv>;
   private fossilDir: string;
   private indexFile: string;

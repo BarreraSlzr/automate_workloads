@@ -34,8 +34,8 @@ import { Command } from 'commander';
 import { execSync, spawnSync } from 'node:child_process';
 import fs from 'fs';
 import path from 'path';
-import type { Issue, Plan, PerIssuePlanOutput } from '../types/plan-workflow.js';
-import { LLMPlanningService } from './llm-plan.js';
+import type { Issue, Plan, PerIssuePlanOutput } from '../types/plan-workflow';
+import { LLMPlanningService } from './llm-plan';
 import { validateConfig } from '../core/config';
 
 const program = new Command();

@@ -5,6 +5,8 @@
 
 import { executeCommand, executeCommandJSON, isCommandAvailable } from "../utils/cli";
 import type { GitHubIssue, ServiceResponse, CLIOptions } from "../types";
+import * as fs from 'fs';
+import * as path from 'path';
 
 /**
  * Options for GitHub operations
@@ -20,6 +22,30 @@ export interface GitHubOptions extends CLIOptions {
   labels?: string[];
   /** Issue assignee filter */
   assignee?: string;
+}
+
+// Utility to load and fill the automation issue template
+export type AutomationTemplateFields = {
+  purpose: string;
+  checklist?: string;
+  metadata?: string;
+};
+
+export function loadAndFillAutomationTemplate(fields: AutomationTemplateFields): string {
+  const templatePath = path.resolve('.github/ISSUE_TEMPLATE/automation_task.yml');
+  const content = fs.readFileSync(templatePath, 'utf8');
+  // Compose the body using the template's markdown and fields
+  let body = '## Automation Task\n';
+  if (fields.purpose) {
+    body += `\n**Purpose:**\n${fields.purpose}\n`;
+  }
+  if (fields.checklist) {
+    body += `\n**Checklist:**\n${fields.checklist}\n`;
+  }
+  if (fields.metadata) {
+    body += `\n**Metadata:**\n${fields.metadata}\n`;
+  }
+  return body;
 }
 
 /**
@@ -138,18 +164,25 @@ export class GitHubService {
     options: Partial<GitHubOptions> = {}
   ): Promise<ServiceResponse<GitHubIssue>> {
     try {
-      let command = `gh issue create --repo ${this.owner}/${this.repo} --title "${title}" --body "${body}"`;
-      
+      // If this is an automation issue, use the template
+      const isAutomation = (options.labels && options.labels.includes('automation')) || title.toLowerCase().includes('automation');
+      let issueBody = body;
+      if (isAutomation && (!body || body === 'TEMPLATE')) {
+        // Fill with default or provided fields
+        issueBody = loadAndFillAutomationTemplate({
+          purpose: (options as any)['purpose'] || 'Automated task',
+          checklist: (options as any)['checklist'],
+          metadata: (options as any)['metadata'],
+        });
+      }
+      let command = `gh issue create --repo ${this.owner}/${this.repo} --title "${title}" --body "${issueBody}"`;
       if (options.labels && options.labels.length > 0) {
         command += ` --label "${options.labels.join(',')}"`;
       }
-      
       if (options.assignee) {
         command += ` --assignee "${options.assignee}"`;
       }
-
       const result = executeCommand(command);
-      
       if (!result.success) {
         return {
           success: false,
@@ -157,7 +190,6 @@ export class GitHubService {
           statusCode: result.exitCode,
         };
       }
-
       // Extract issue number from the output
       const match = result.stdout.match(/Issue #(\d+) created/);
       if (!match) {
@@ -167,13 +199,10 @@ export class GitHubService {
           statusCode: 500,
         };
       }
-
       const issueNumber = parseInt(match[1]!);
-      
       // Fetch the created issue details
       const issueCommand = `gh issue view ${issueNumber} --repo ${this.owner}/${this.repo} --json number,title,state,body,labels,assignees,createdAt,updatedAt`;
       const issue = executeCommandJSON<GitHubIssue>(issueCommand);
-      
       return {
         success: true,
         data: issue,

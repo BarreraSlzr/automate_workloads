@@ -1,0 +1,24 @@
+name: "General question or improvement"
+description: "Ask a question or suggest a general improvement."
+title: "[QUESTION/IMPROVEMENT] <short description>"
+labels: [question]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Question or suggestion
+        Please provide your question or describe your suggested improvement.
+  - type: textarea
+    id: context
+    attributes:
+      label: "Context"
+      description: "Provide any relevant context, links, or screenshots."
+    validations:
+      required: false
+  - type: textarea
+    id: additional
+    attributes:
+      label: "Additional information"
+      description: "Add any other information here."
+    validations:
+      required: false 

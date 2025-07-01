@@ -484,3 +484,15 @@ Keep `.jest.ts` files for Jest-only tests and `.test.ts` for Bun tests. This ens
   ```sh
   bun remove jest ts-jest @types/jest
   ``` 
+
+## Automation Issue Template
+
+This project uses a dedicated issue template for automation/programmatically created issues: `.github/ISSUE_TEMPLATE/automation_task.yml`.
+
+- All issues created by scripts or bots (e.g., repository orchestration) will use this template structure.
+- The template includes fields for purpose, checklist, and automation metadata.
+- This ensures consistency and clarity for all automation-related issues.
+
+## Programmatic Issue Creation
+
+When scripts create issues automatically, they now read from the automation issue template to populate the issue body. This makes it easy to update the format for all automation issues in one place. 
