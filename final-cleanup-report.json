@@ -1,0 +1,283 @@
+{
+  "totalBefore": 21,
+  "totalAfter": 6,
+  "duplicatesFound": 2,
+  "consolidated": 2,
+  "storageSaved": 15360,
+  "duplicateGroups": [
+    [
+      {
+        "type": "observation",
+        "title": "Repository Analysis - test-owner/test-repo",
+        "content": "Health Score: 65/100\nOpen Issues: 0\nAutomation Opportunities: 1\nActive Workflows: 0\nRecommendations: Add a comprehensive README.md file",
+        "tags": [
+          "repository-analysis",
+          "health-check",
+          "automation",
+          "monitoring"
+        ],
+        "source": "automated",
+        "metadata": {},
+        "version": 1,
+        "children": [],
+        "id": "fossil_1751328718341_dzwzeqf4l",
+        "createdAt": "2025-07-01T00:11:58.341Z",
+        "updatedAt": "2025-07-01T00:11:58.341Z"
+      },
+      {
+        "type": "observation",
+        "title": "Repository Analysis - test-owner/test-repo",
+        "content": "Health Score: 65/100\nOpen Issues: 0\nAutomation Opportunities: 1\nActive Workflows: 0\nRecommendations: Add a comprehensive README.md file",
+        "tags": [
+          "repository-analysis",
+          "health-check",
+          "automation",
+          "monitoring"
+        ],
+        "source": "automated",
+        "metadata": {},
+        "version": 1,
+        "children": [],
+        "id": "fossil_1751328722611_srne3r1tr",
+        "createdAt": "2025-07-01T00:12:02.611Z",
+        "updatedAt": "2025-07-01T00:12:02.611Z"
+      },
+      {
+        "type": "observation",
+        "title": "Repository Analysis - test-owner/test-repo",
+        "content": "Health Score: 65/100\nOpen Issues: 0\nAutomation Opportunities: 1\nActive Workflows: 0\nRecommendations: Add a comprehensive README.md file",
+        "tags": [
+          "repository-analysis",
+          "health-check",
+          "automation",
+          "monitoring"
+        ],
+        "source": "automated",
+        "metadata": {},
+        "version": 1,
+        "children": [],
+        "id": "fossil_1751328735436_fn0kkh3wi",
+        "createdAt": "2025-07-01T00:12:15.436Z",
+        "updatedAt": "2025-07-01T00:12:15.436Z"
+      },
+      {
+        "type": "observation",
+        "title": "Repository Analysis - test-owner/test-repo",
+        "content": "Health Score: 65/100\nOpen Issues: 0\nAutomation Opportunities: 1\nActive Workflows: 0\nRecommendations: Add a comprehensive README.md file",
+        "tags": [
+          "repository-analysis",
+          "health-check",
+          "automation",
+          "monitoring"
+        ],
+        "source": "automated",
+        "metadata": {},
+        "version": 1,
+        "children": [],
+        "id": "fossil_1751328740872_c4emzk2n7",
+        "createdAt": "2025-07-01T00:12:20.872Z",
+        "updatedAt": "2025-07-01T00:12:20.872Z"
+      },
+      {
+        "type": "observation",
+        "title": "Repository Analysis - test-owner/test-repo",
+        "content": "Health Score: 65/100\nOpen Issues: 0\nAutomation Opportunities: 1\nActive Workflows: 0\nRecommendations: Add a comprehensive README.md file",
+        "tags": [
+          "repository-analysis",
+          "health-check",
+          "automation",
+          "monitoring"
+        ],
+        "source": "automated",
+        "metadata": {},
+        "version": 1,
+        "children": [],
+        "id": "fossil_1751328745029_zgq5i51mo",
+        "createdAt": "2025-07-01T00:12:25.029Z",
+        "updatedAt": "2025-07-01T00:12:25.029Z"
+      },
+      {
+        "type": "observation",
+        "title": "Repository Analysis - test-owner/test-repo",
+        "content": "Health Score: 65/100\nOpen Issues: 0\nAutomation Opportunities: 1\nActive Workflows: 0\nRecommendations: Add a comprehensive README.md file",
+        "tags": [
+          "repository-analysis",
+          "health-check",
+          "automation",
+          "monitoring"
+        ],
+        "source": "automated",
+        "metadata": {},
+        "version": 1,
+        "children": [],
+        "id": "fossil_1751328752814_mzcyvbj45",
+        "createdAt": "2025-07-01T00:12:32.814Z",
+        "updatedAt": "2025-07-01T00:12:32.814Z"
+      },
+      {
+        "type": "observation",
+        "title": "Repository Analysis - test-owner/test-repo",
+        "content": "Health Score: 65/100\nOpen Issues: 0\nAutomation Opportunities: 1\nActive Workflows: 0\nRecommendations: Add a comprehensive README.md file",
+        "tags": [
+          "repository-analysis",
+          "health-check",
+          "automation",
+          "monitoring"
+        ],
+        "source": "automated",
+        "metadata": {},
+        "version": 1,
+        "children": [],
+        "id": "fossil_1751328757039_b2c4t1kwp",
+        "createdAt": "2025-07-01T00:12:37.039Z",
+        "updatedAt": "2025-07-01T00:12:37.039Z"
+      },
+      {
+        "type": "observation",
+        "title": "Repository Analysis - test-owner/test-repo",
+        "content": "Health Score: 65/100\nOpen Issues: 0\nAutomation Opportunities: 1\nActive Workflows: 0\nRecommendations: Add a comprehensive README.md file",
+        "tags": [
+          "repository-analysis",
+          "health-check",
+          "automation",
+          "monitoring"
+        ],
+        "source": "automated",
+        "metadata": {},
+        "version": 1,
+        "children": [],
+        "id": "fossil_1751328761405_pskd084fk",
+        "createdAt": "2025-07-01T00:12:41.405Z",
+        "updatedAt": "2025-07-01T00:12:41.405Z"
+      },
+      {
+        "type": "observation",
+        "title": "Repository Analysis - test-owner/test-repo",
+        "content": "Health Score: 65/100\nOpen Issues: 0\nAutomation Opportunities: 1\nActive Workflows: 0\nRecommendations: Add a comprehensive README.md file",
+        "tags": [
+          "repository-analysis",
+          "health-check",
+          "automation",
+          "monitoring"
+        ],
+        "source": "automated",
+        "metadata": {},
+        "version": 1,
+        "children": [],
+        "id": "fossil_1751328765578_bdkgroja3",
+        "createdAt": "2025-07-01T00:12:45.578Z",
+        "updatedAt": "2025-07-01T00:12:45.578Z"
+      },
+      {
+        "type": "observation",
+        "title": "Repository Analysis - test-owner/test-repo",
+        "content": "Health Score: 65/100\nOpen Issues: 0\nAutomation Opportunities: 1\nActive Workflows: 0\nRecommendations: Add a comprehensive README.md file",
+        "tags": [
+          "repository-analysis",
+          "health-check",
+          "automation",
+          "monitoring"
+        ],
+        "source": "automated",
+        "metadata": {},
+        "version": 1,
+        "children": [],
+        "id": "fossil_1751328831403_3j4ka9k9f",
+        "createdAt": "2025-07-01T00:13:51.403Z",
+        "updatedAt": "2025-07-01T00:13:51.403Z"
+      },
+      {
+        "type": "observation",
+        "title": "Repository Analysis - test-owner/test-repo",
+        "content": "Health Score: 65/100\nOpen Issues: 0\nAutomation Opportunities: 1\nActive Workflows: 0\nRecommendations: Add a comprehensive README.md file",
+        "tags": [
+          "repository-analysis",
+          "health-check",
+          "automation",
+          "monitoring"
+        ],
+        "source": "automated",
+        "metadata": {},
+        "version": 1,
+        "children": [],
+        "id": "fossil_1751328835572_jgv0rgsyt",
+        "createdAt": "2025-07-01T00:13:55.572Z",
+        "updatedAt": "2025-07-01T00:13:55.572Z"
+      },
+      {
+        "type": "observation",
+        "title": "Repository Analysis - test-owner/test-repo",
+        "content": "Health Score: 65/100\nOpen Issues: 0\nAutomation Opportunities: 1\nActive Workflows: 0\nRecommendations: Add a comprehensive README.md file",
+        "tags": [
+          "repository-analysis",
+          "health-check",
+          "automation",
+          "monitoring"
+        ],
+        "source": "automated",
+        "metadata": {},
+        "version": 1,
+        "children": [],
+        "id": "fossil_1751328839844_7dgph74dt",
+        "createdAt": "2025-07-01T00:13:59.844Z",
+        "updatedAt": "2025-07-01T00:13:59.844Z"
+      },
+      {
+        "type": "observation",
+        "title": "Repository Analysis - test-owner/test-repo",
+        "content": "Health Score: 65/100\nOpen Issues: 0\nAutomation Opportunities: 1\nActive Workflows: 0\nRecommendations: Add a comprehensive README.md file",
+        "tags": [
+          "repository-analysis",
+          "health-check",
+          "automation",
+          "monitoring"
+        ],
+        "source": "automated",
+        "metadata": {},
+        "version": 1,
+        "children": [],
+        "id": "fossil_1751328844036_v5fosuc2f",
+        "createdAt": "2025-07-01T00:14:04.036Z",
+        "updatedAt": "2025-07-01T00:14:04.036Z"
+      }
+    ],
+    [
+      {
+        "type": "observation",
+        "title": "Repository Analysis - owner/repo",
+        "content": "Health Score: 65/100\nOpen Issues: 0\nAutomation Opportunities: 1\nActive Workflows: 0\nRecommendations: Add a comprehensive README.md file",
+        "tags": [
+          "repository-analysis",
+          "health-check",
+          "automation",
+          "monitoring"
+        ],
+        "source": "automated",
+        "metadata": {},
+        "version": 1,
+        "children": [],
+        "id": "fossil_1751328805842_j13w88hic",
+        "createdAt": "2025-07-01T00:13:25.842Z",
+        "updatedAt": "2025-07-01T00:13:25.842Z"
+      },
+      {
+        "type": "observation",
+        "title": "Repository Analysis - owner/repo",
+        "content": "Health Score: 65/100\nOpen Issues: 0\nAutomation Opportunities: 1\nActive Workflows: 0\nRecommendations: Add a comprehensive README.md file",
+        "tags": [
+          "repository-analysis",
+          "health-check",
+          "automation",
+          "monitoring"
+        ],
+        "source": "automated",
+        "metadata": {},
+        "version": 1,
+        "children": [],
+        "id": "fossil_1751328810187_78hfl75iw",
+        "createdAt": "2025-07-01T00:13:30.187Z",
+        "updatedAt": "2025-07-01T00:13:30.187Z"
+      }
+    ]
+  ]
+}

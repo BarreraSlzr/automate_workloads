@@ -4,6 +4,7 @@
       "id": "task-1",
       "title": "Implement Content Hash-Based Fossil IDs",
       "description": "Replace timestamp-based ID generation with content hash to prevent duplicates",
+      "tags": ["fossilization", "deduplication", "content-hash"],
       "acceptanceCriteria": [
         "Content hash function implemented using SHA-256",
         "Fossil ID generation uses content hash as base",
@@ -18,6 +19,7 @@
       "id": "task-2", 
       "title": "Add Duplicate Detection Logic",
       "description": "Check for existing fossils with same content before creating new ones",
+      "tags": ["fossilization", "deduplication", "detection"],
       "acceptanceCriteria": [
         "Duplicate detection function implemented",
         "Existing fossils updated instead of creating duplicates",
@@ -32,6 +34,7 @@
       "id": "task-3",
       "title": "Create Fossil Cleanup Utility",
       "description": "Build tool to consolidate existing duplicate fossils",
+      "tags": ["fossilization", "cleanup", "utility"],
       "acceptanceCriteria": [
         "Cleanup script identifies duplicate fossils",
         "Consolidation logic merges duplicates",
@@ -46,6 +49,7 @@
       "id": "task-4",
       "title": "Add Fossil Versioning System",
       "description": "Implement version tracking for fossil content evolution",
+      "tags": ["fossilization", "versioning", "history"],
       "acceptanceCriteria": [
         "Version history tracking implemented",
         "Previous versions array added to fossil structure",
@@ -60,6 +64,7 @@
       "id": "task-5",
       "title": "Enhance Fossil Tagging System",
       "description": "Add content-specific tags and duplicate grouping",
+      "tags": ["fossilization", "tagging", "organization"],
       "acceptanceCriteria": [
         "Content hash tags added automatically",
         "Duplicate group tagging implemented",
@@ -108,7 +113,7 @@
     {
       "description": "Data loss during cleanup process",
       "probability": "low",
-      "impact": "critical",
+      "impact": "high",
       "mitigation": "Always create backups before cleanup operations"
     }
   ]

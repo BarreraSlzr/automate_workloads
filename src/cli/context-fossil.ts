@@ -14,6 +14,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
 import type { ContextEntry, ContextQuery } from '@/types';
+import { SemanticTaggerService } from '../services/semantic-tagger.js';
 
 // Context fossil schemas
 const ContextEntrySchema = z.object({
@@ -57,11 +58,13 @@ class ContextFossilService {
   private config: ReturnType<typeof getEnv>;
   private fossilDir: string;
   private indexFile: string;
+  private semanticTagger: SemanticTaggerService;
 
   constructor() {
     this.config = getEnv();
     this.fossilDir = '.context-fossil';
     this.indexFile = path.join(this.fossilDir, 'index.json');
+    this.semanticTagger = new SemanticTaggerService();
   }
 
   /**
@@ -140,6 +143,29 @@ class ContextFossilService {
       updatedAt: now,
     };
 
+    // Generate intelligent tags
+    console.log('🧠 Generating intelligent tags...');
+    
+    // Generate semantic tags
+    newEntry.semanticTags = await this.semanticTagger.generateSemanticTags(newEntry);
+    
+    // Get all entries for relationship analysis
+    const allEntries = await this.getAllEntries();
+    
+    // Generate relationship tags
+    newEntry.relationships = await this.semanticTagger.generateRelationshipTags(newEntry, allEntries);
+    
+    // Generate temporal tags
+    newEntry.temporal = this.semanticTagger.generateTemporalTags(newEntry);
+    
+    // Add semantic tags to regular tags for backward compatibility
+    if (newEntry.semanticTags?.concepts) {
+      newEntry.tags = [...newEntry.tags, ...newEntry.semanticTags.concepts];
+    }
+    if (newEntry.semanticTags?.semanticCategory) {
+      newEntry.tags.push(newEntry.semanticTags.semanticCategory);
+    }
+
     // Save entry file
     const entryFile = path.join(this.fossilDir, 'entries', `${id}.json`);
     await fs.writeFile(entryFile, JSON.stringify(newEntry, null, 2));
@@ -173,6 +199,7 @@ class ContextFossilService {
     index.lastUpdated = now;
     await this.saveIndex(index);
 
+    console.log('✅ Intelligent tags generated successfully');
     return newEntry;
   }
 
@@ -599,7 +626,75 @@ class ContextFossilService {
     return null;
   }
 
-  private async getAllEntries(): Promise<ContextEntry[]> {
+  /**
+   * Enhance an existing entry with intelligent semantic tags
+   */
+  async enhanceEntryWithTags(entry: ContextEntry, dryRun: boolean): Promise<ContextEntry> {
+    console.log(`🧠 Generating intelligent tags for: ${entry.title}`);
+    
+    // Generate semantic tags
+    const semanticTags = await this.semanticTagger.generateSemanticTags(entry);
+    
+    // Get all entries for relationship analysis
+    const allEntries = await this.getAllEntries();
+    
+    // Generate relationship tags
+    const relationships = await this.semanticTagger.generateRelationshipTags(entry, allEntries);
+    
+    // Generate temporal tags
+    const temporal = this.semanticTagger.generateTemporalTags(entry);
+    
+    // Create enhanced entry
+    const enhancedEntry: ContextEntry = {
+      ...entry,
+      semanticTags,
+      relationships,
+      temporal,
+      updatedAt: new Date().toISOString(),
+    };
+    
+    // Add semantic tags to regular tags for backward compatibility
+    if (semanticTags?.concepts) {
+      enhancedEntry.tags = [...entry.tags, ...semanticTags.concepts];
+    }
+    if (semanticTags?.semanticCategory) {
+      enhancedEntry.tags.push(semanticTags.semanticCategory);
+    }
+    
+    if (!dryRun) {
+      // Save enhanced entry
+      const entryFile = path.join(this.fossilDir, 'entries', `${entry.id}.json`);
+      await fs.writeFile(entryFile, JSON.stringify(enhancedEntry, null, 2));
+      
+      // Update index
+      const index = await this.loadIndex();
+      if (index.entries[entry.id]) {
+        index.entries[entry.id] = {
+          ...index.entries[entry.id],
+          tags: enhancedEntry.tags,
+          updatedAt: enhancedEntry.updatedAt,
+        };
+      }
+      
+      // Update tag index
+      enhancedEntry.tags.forEach(tag => {
+        if (!index.tags[tag]) index.tags[tag] = [];
+        if (!index.tags[tag].includes(entry.id)) {
+          index.tags[tag].push(entry.id);
+        }
+      });
+      
+      index.lastUpdated = enhancedEntry.updatedAt;
+      await this.saveIndex(index);
+    }
+    
+    return enhancedEntry;
+  }
+
+  /**
+   * Get all entries (public method for CLI commands)
+   */
+  async getAllEntries(): Promise<ContextEntry[]> {
     const index = await this.loadIndex();
     const entries: ContextEntry[] = [];
     
@@ -733,6 +828,124 @@ class ContextFossilService {
     
     // Sort by similarity (highest first)
     return similarFossils.sort((a, b) => b.similarity - a.similarity);
+  }
+
+  // Cleanup duplicates
+  async cleanupDuplicates(options: {
+    dryRun: boolean;
+    similarityThreshold: number;
+  }): Promise<{
+    totalBefore: number;
+    totalAfter: number;
+    duplicatesFound: number;
+    consolidated: number;
+    storageSaved: number;
+    duplicateGroups: ContextEntry[][];
+  }> {
+    const allEntries = await this.getAllEntries();
+    const duplicates: Record<string, ContextEntry[]> = {};
+
+    // First pass: Group by content hash (for newer fossils)
+    for (const entry of allEntries) {
+      const contentHash = entry.metadata?.contentHash as string;
+      if (contentHash) {
+        if (!duplicates[contentHash]) {
+          duplicates[contentHash] = [];
+        }
+        duplicates[contentHash].push(entry);
+      }
+    }
+
+    // Second pass: Group by exact content match (for older fossils without content hash)
+    const entriesWithoutHash = allEntries.filter(entry => !entry.metadata?.contentHash);
+    for (const entry of entriesWithoutHash) {
+      const contentKey = `${entry.content}_${entry.type}_${entry.title}`;
+      if (!duplicates[contentKey]) {
+        duplicates[contentKey] = [];
+      }
+      duplicates[contentKey].push(entry);
+    }
+
+    const result = {
+      totalBefore: allEntries.length,
+      totalAfter: allEntries.length,
+      duplicatesFound: 0,
+      consolidated: 0,
+      storageSaved: 0,
+      duplicateGroups: [] as ContextEntry[][],
+    };
+
+    // Process each group of duplicates
+    for (const [key, group] of Object.entries(duplicates)) {
+      if (group.length > 1) {
+        result.duplicatesFound++;
+        result.totalAfter -= (group.length - 1); // Keep one, remove the rest
+        result.storageSaved += (group.length - 1) * 1024; // Assuming 1KB per entry
+
+        if (!options.dryRun) {
+          // Consolidate duplicates
+          const consolidatedEntry = group[0]!;
+          const previousVersions = group.slice(1).map(e => {
+            const { previousVersions: _omit, ...entryWithoutPrev } = e;
+            return entryWithoutPrev;
+          });
+          
+          consolidatedEntry.previousVersions = previousVersions;
+          consolidatedEntry.updatedAt = new Date().toISOString();
+          consolidatedEntry.version += group.length - 1;
+
+          // Add content hash if missing
+          if (!consolidatedEntry.metadata?.contentHash) {
+            const contentHash = this.generateContentHash(consolidatedEntry.content, consolidatedEntry.type, consolidatedEntry.title);
+            consolidatedEntry.metadata = {
+              ...consolidatedEntry.metadata,
+              contentHash,
+            };
+          }
+
+          // Save consolidated entry
+          const entryFile = path.join(this.fossilDir, 'entries', `${consolidatedEntry.id}.json`);
+          await fs.writeFile(entryFile, JSON.stringify(consolidatedEntry, null, 2));
+
+          // Remove duplicate files
+          for (let i = 1; i < group.length; i++) {
+            const duplicateFile = path.join(this.fossilDir, 'entries', `${group[i]!.id}.json`);
+            try {
+              await fs.unlink(duplicateFile);
+            } catch (error) {
+              // File might not exist, continue
+            }
+          }
+
+          // Update index
+          const updatedIndex = await this.loadIndex();
+          
+          // Remove duplicate entries from index
+          for (let i = 1; i < group.length; i++) {
+            delete updatedIndex.entries[group[i]!.id];
+          }
+
+          // Update consolidated entry in index
+          updatedIndex.entries[consolidatedEntry.id] = {
+            id: consolidatedEntry.id,
+            type: consolidatedEntry.type,
+            title: consolidatedEntry.title,
+            tags: consolidatedEntry.tags,
+            source: consolidatedEntry.source,
+            createdAt: consolidatedEntry.createdAt,
+            updatedAt: consolidatedEntry.updatedAt,
+          };
+
+          updatedIndex.lastUpdated = consolidatedEntry.updatedAt;
+          await this.saveIndex(updatedIndex);
+        }
+
+        result.consolidated++;
+        result.duplicateGroups.push(group.slice(1)); // Add duplicates (excluding the one we keep)
+      }
+    }
+
+    return result;
   }
 }
 
@@ -985,6 +1198,135 @@ program
       console.log(summary);
     } catch (error) {
       console.error('❌ Error generating summary:', error);
+      process.exit(1);
+    }
+  });
+
+// Cleanup duplicates
+program
+  .command('cleanup')
+  .description('Clean up duplicate fossils and consolidate them')
+  .option('--dry-run', 'Show what would be cleaned up without making changes', false)
+  .option('--backup', 'Create backup before cleanup', true)
+  .option('--similarity-threshold <number>', 'Similarity threshold for consolidation', '80')
+  .option('--report-file <file>', 'Output cleanup report to file')
+  .action(async (options) => {
+    try {
+      const service = new ContextFossilService();
+      await service.initialize();
+
+      console.log('🧹 Starting fossil cleanup process...\n');
+
+      // Create backup if requested
+      if (options.backup) {
+        const backupName = `cleanup-backup-${new Date().toISOString().replace(/[:.]/g, '-')}`;
+        console.log(`📦 Creating backup: ${backupName}`);
+        await service.createSnapshot(backupName);
+        console.log('✅ Backup created successfully\n');
+      }
+
+      // Perform cleanup
+      const cleanupResult = await service.cleanupDuplicates({
+        dryRun: options.dryRun,
+        similarityThreshold: parseInt(options.similarityThreshold),
+      });
+
+      // Display results
+      console.log('📊 Cleanup Results:');
+      console.log(`   Total fossils before: ${cleanupResult.totalBefore}`);
+      console.log(`   Total fossils after: ${cleanupResult.totalAfter}`);
+      console.log(`   Duplicates found: ${cleanupResult.duplicatesFound}`);
+      console.log(`   Fossils consolidated: ${cleanupResult.consolidated}`);
+      console.log(`   Storage saved: ${(cleanupResult.storageSaved / 1024).toFixed(2)} KB\n`);
+
+      if (cleanupResult.duplicateGroups.length > 0) {
+        console.log('🔍 Duplicate Groups Found:');
+        cleanupResult.duplicateGroups.forEach((group, index) => {
+          console.log(`   Group ${index + 1}:`);
+          group.forEach(fossil => {
+            console.log(`     - ${fossil.id}: "${fossil.title}" (${fossil.content.substring(0, 50)}...)`);
+          });
+          console.log('');
+        });
+      }
+
+      // Save report if requested
+      if (options.reportFile) {
+        const fs = await import('fs/promises');
+        await fs.writeFile(options.reportFile, JSON.stringify(cleanupResult, null, 2));
+        console.log(`📄 Cleanup report saved to: ${options.reportFile}`);
+      }
+
+      if (options.dryRun) {
+        console.log('🔍 This was a dry run. No changes were made.');
+        console.log('   Run without --dry-run to perform actual cleanup.');
+      } else {
+        console.log('✅ Cleanup completed successfully!');
+      }
+
+    } catch (error) {
+      console.error('❌ Error during cleanup:', error);
+      process.exit(1);
+    }
+  });
+
+// Enhance existing fossils with intelligent tags
+program
+  .command('enhance')
+  .description('Enhance existing fossils with intelligent semantic tags')
+  .option('--dry-run', 'Show what would be enhanced without making changes', false)
+  .option('--entry-id <id>', 'Enhance specific entry by ID')
+  .option('--all', 'Enhance all existing fossils', false)
+  .action(async (options) => {
+    try {
+      const service = new ContextFossilService();
+      await service.initialize();
+
+      console.log('🧠 Starting fossil enhancement process...\n');
+
+      if (options.entryId) {
+        // Enhance specific entry
+        const entry = await service.getEntry(options.entryId);
+        if (!entry) {
+          console.error(`❌ Entry not found: ${options.entryId}`);
+          process.exit(1);
+        }
+
+        console.log(`📝 Enhancing entry: ${entry.title}`);
+        const enhanced = await service.enhanceEntryWithTags(entry, options.dryRun);
+        
+        if (!options.dryRun) {
+          console.log('✅ Entry enhanced successfully');
+          console.log(`   Semantic Category: ${enhanced.semanticTags?.semanticCategory}`);
+          console.log(`   Concepts: ${enhanced.semanticTags?.concepts?.join(', ')}`);
+          console.log(`   Priority: ${enhanced.semanticTags?.priority}`);
+          console.log(`   Sentiment: ${enhanced.semanticTags?.sentiment}`);
+        }
+      } else if (options.all) {
+        // Enhance all entries
+        const allEntries = await service.getAllEntries();
+        console.log(`📊 Found ${allEntries.length} entries to enhance\n`);
+
+        let enhanced = 0;
+        for (const entry of allEntries) {
+          console.log(`📝 Enhancing: ${entry.title}`);
+          await service.enhanceEntryWithTags(entry, options.dryRun);
+          enhanced++;
+        }
+
+        console.log(`\n✅ Enhanced ${enhanced} entries`);
+      } else {
+        console.error('❌ Please specify --entry-id <id> or --all');
+        process.exit(1);
+      }
+
+      if (options.dryRun) {
+        console.log('\n🔍 This was a dry run. No changes were made.');
+        console.log('   Run without --dry-run to perform actual enhancement.');
+      }
+
+    } catch (error) {
+      console.error('❌ Error during enhancement:', error);
       process.exit(1);
     }
   });
