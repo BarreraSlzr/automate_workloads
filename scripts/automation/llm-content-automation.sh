@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # LLM-powered content automation
+set -e
+
 CONTENT_TYPE="$1"
 TOPIC="$2"
 PLATFORMS="$3"

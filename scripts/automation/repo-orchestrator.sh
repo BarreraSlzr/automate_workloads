@@ -5,6 +5,8 @@
 # Convenient wrapper for targeting any GitHub repository with LLM-powered automation
 # Usage: ./scripts/repo-orchestrator.sh <owner> <repo> [options]
 
+set -e
+
 OWNER="$1"
 REPO="$2"
 WORKFLOW="${3:-full}"

@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # LLM-enhanced review workflow
+set -e
+
 PR_NUMBER="$1"
 
 if [ -z "$PR_NUMBER" ]; then

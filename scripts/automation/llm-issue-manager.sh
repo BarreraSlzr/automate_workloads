@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # LLM-powered issue management
+set -e
+
 ISSUE_ACTION="$1"
 ISSUE_DATA="$2"
 

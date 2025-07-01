@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # LLM-powered workflow automation
+set -e
+
 WORKFLOW_TYPE="$1"
 CONTEXT_FILE="$2"
 

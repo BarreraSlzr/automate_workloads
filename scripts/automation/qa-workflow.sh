@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # LLM-enhanced QA workflow
+set -e
+
 echo "🧪 Starting LLM-enhanced QA workflow..."
 
 # 1. Code analysis
