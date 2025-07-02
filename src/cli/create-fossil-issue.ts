@@ -48,4 +48,6 @@ program
     }
   });
 
-program.parse(process.argv); 
+if (import.meta.main) {
+  program.parse(process.argv);
+} 
