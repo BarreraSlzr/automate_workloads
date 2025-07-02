@@ -41,9 +41,34 @@ function detectStatus(line: string): string | null {
   return null;
 }
 
-function extractCliCommands(content: string): string[] {
-  const matches = [...content.matchAll(/\.command\(['"]([\w-]+)['"]/g)];
-  return matches.map(m => m[1]);
+function extractCliDetails(content: string) {
+  // Extract all commands, options, and required options for a CLI file
+  const commandRegex = /\.command\(['"]([\w-]+)['"]/g;
+  const optionRegex = /\.option\(['"]([^'"]+)['"]/g;
+  const requiredOptionRegex = /\.requiredOption\(['"]([^'"]+)['"]/g;
+
+  const commands: { name: string; options: string[]; required: string[] }[] = [];
+  let match;
+  // Find all commands
+  while ((match = commandRegex.exec(content))) {
+    commands.push({ name: match[1], options: [], required: [] });
+  }
+  // Find all options
+  let options: string[] = [];
+  while ((match = optionRegex.exec(content))) {
+    options.push(match[1]);
+  }
+  // Find all required options
+  let required: string[] = [];
+  while ((match = requiredOptionRegex.exec(content))) {
+    required.push(match[1]);
+  }
+  // Assign options/required to all commands (simple heuristic: all options apply to all commands in the file)
+  for (const cmd of commands) {
+    cmd.options = options;
+    cmd.required = required;
+  }
+  return commands;
 }
 
 async function walk(dir: string): Promise<string[]> {
@@ -109,12 +134,13 @@ async function scanDir(dir: string) {
     const content = await fs.readFile(file, 'utf-8');
     const { classes, functions } = extractFunctionsAndClasses(content);
     const fossilized = detectFossilization(content);
-    const cliCommands = dir.includes('cli') ? extractCliCommands(content) : [];
+    const cliDetails = dir.includes('cli') ? extractCliDetails(content) : [];
     result.push({
       file: relPath,
       classes,
       functions,
-      cli_commands: cliCommands,
+      cli_commands: cliDetails.map((c: any) => c.name),
+      cli_details: cliDetails,
       fossilized_output: fossilized,
     });
   }
@@ -162,6 +188,9 @@ function toProjectStatusYamlStructure(scanned: any, testMap: Record<string, stri
       };
       if (fileObj.cli_commands && fileObj.cli_commands.length > 0) {
         fileEntry[fileName].cli_commands = fileObj.cli_commands.map((c: string) => `${c}: implemented`);
+      }
+      if (fileObj.cli_details && fileObj.cli_details.length > 0) {
+        fileEntry[fileName].cli_details = fileObj.cli_details;
       }
       // Add test mapping if available
       if (testMap[fileObj.file]) {
@@ -251,6 +280,108 @@ async function mergeWithExistingYaml(newStatus: any) {
   return { project_status: preserved };
 }
 
+function buildDeveloperSummary(audit: any) {
+  // Build a summary similar to functionality-audit.json
+  const cli: any[] = [];
+  const utils: any[] = [];
+  const services: any[] = [];
+  const examples: any[] = [];
+  let testedCLI = 0, testedUtils = 0, testedServices = 0;
+
+  for (const modKey of Object.keys(audit)) {
+    const mod = audit[modKey];
+    if (modKey === 'cli') {
+      for (const file of mod.files) {
+        const fileKey = Object.keys(file)[0];
+        const entry = file[fileKey];
+        cli.push({
+          file: `${mod.path}/${fileKey}`,
+          commands: entry.cli_commands ? entry.cli_commands.map((c: string) => c.split(':')[0]) : [],
+          functions: entry.functions ? entry.functions.map((f: string) => f.split(':')[0]) : [],
+          hasTests: !!entry.tests,
+          testFiles: entry.tests || []
+        });
+        if (entry.tests) testedCLI++;
+      }
+    } else if (modKey === 'utils') {
+      for (const file of mod.files) {
+        const fileKey = Object.keys(file)[0];
+        const entry = file[fileKey];
+        utils.push({
+          file: `${mod.path}/${fileKey}`,
+          functions: entry.functions ? entry.functions.map((f: string) => f.split(':')[0]) : [],
+          hasTests: !!entry.tests,
+          testFiles: entry.tests || []
+        });
+        if (entry.tests) testedUtils++;
+      }
+    } else if (modKey === 'services') {
+      for (const file of mod.files) {
+        const fileKey = Object.keys(file)[0];
+        const entry = file[fileKey];
+        services.push({
+          file: `${mod.path}/${fileKey}`,
+          functions: entry.functions ? entry.functions.map((f: string) => f.split(':')[0]) : [],
+          hasTests: !!entry.tests,
+          testFiles: entry.tests || []
+        });
+        if (entry.tests) testedServices++;
+      }
+    } else if (modKey === 'examples') {
+      for (const file of mod.files) {
+        const fileKey = Object.keys(file)[0];
+        const entry = file[fileKey];
+        examples.push({
+          file: `${mod.path}/${fileKey}`,
+          description: entry.description || '',
+          demonstrates: entry.demonstrates || []
+        });
+      }
+    }
+  }
+  const summary = {
+    totalCLI: cli.length,
+    totalUtils: utils.length,
+    totalServices: services.length,
+    totalExamples: examples.length,
+    testedCLI,
+    testedUtils,
+    testedServices,
+    coverage: (cli.length + utils.length + services.length) > 0 ? Math.round(((testedCLI + testedUtils + testedServices) / (cli.length + utils.length + services.length)) * 100) : 0
+  };
+  // Recommendations
+  const untestedCLI = cli.filter(c => !c.hasTests);
+  const untestedUtils = utils.filter(u => !u.hasTests);
+  const untestedServices = services.filter(s => !s.hasTests);
+  const recommendations: string[] = [];
+  if (untestedCLI.length > 0) {
+    recommendations.push('Priority 1: Test CLI commands');
+    untestedCLI.slice(0, 3).forEach(c => {
+      recommendations.push(`- ${c.file} (${c.commands.length} commands)`);
+    });
+  }
+  if (untestedUtils.length > 0) {
+    recommendations.push('Priority 2: Test utility functions');
+    untestedUtils.slice(0, 3).forEach(u => {
+      recommendations.push(`- ${u.file} (${u.functions.length} functions)`);
+    });
+  }
+  if (untestedServices.length > 0) {
+    recommendations.push('Priority 3: Test services');
+    untestedServices.slice(0, 3).forEach(s => {
+      recommendations.push(`- ${s.file} (${s.functions.length} functions)`);
+    });
+  }
+  return {
+    cli,
+    utils,
+    services,
+    examples,
+    summary,
+    recommendations
+  };
+}
+
 async function main() {
   const scanned: any = {};
   let allCodeFiles: string[] = [];
@@ -266,8 +397,27 @@ async function main() {
   }
   const testMap = await mapTestsToFunctions(TEST_DIRS, allCodeFiles);
   const modules = toProjectStatusYamlStructure(scanned, testMap);
+  const developerSummary = buildDeveloperSummary(modules);
   const merged = await mergeWithExistingYaml(modules);
+  (merged as any).developer_summary = developerSummary;
   console.log(yaml.dump(merged));
+
+  // LLM Developer Insights
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (apiKey) {
+    const devSummaryYaml = yaml.dump(developerSummary);
+    const prompt = `Here is a developer summary of our project:\n\n${devSummaryYaml}\n\nPlease provide:\n- The top 3 most urgent and granular test plans (with file/function/class names)\n- Any architectural or documentation gaps you see\n- Suggestions for refactoring or improving code quality\nRespond in markdown.`;
+    try {
+      const response = await callOpenAIChat({
+        model: 'gpt-4',
+        apiKey,
+        messages: [{ role: 'user', content: prompt }]
+      });
+      console.log('\nLLM Developer Insights:\n', response.choices[0].message.content);
+    } catch (e) {
+      console.warn('LLM analysis failed:', e);
+    }
+  }
 }
 
 main().catch(e => {

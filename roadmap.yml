@@ -135,4 +135,27 @@ tasks:
       - project_status.yml is generated/updated by scripts/update-project-status.ts and is a canonical, curated fossil artifact.
       - roadmap.yml should be treated the same way: a living, curated, versioned fossil, updated by automation and committed as a source of truth.
       - Both files enable traceability, automation, and reproducibility for the project.
-      - Automate updates, curate and commit, integrate into E2E/CI, and document the workflow in onboarding/CONTRIBUTING docs. 
+      - Automate updates, curate and commit, integrate into E2E/CI, and document the workflow in onboarding/CONTRIBUTING docs.
+  - task: Scaffold E2E tests for fossilization and LLM insights workflow
+    status: planned
+    owner: emmanuelbarrera
+    context: >
+      Design and implement E2E tests that validate the correctness, completeness, and traceability of project_status.yml and roadmap.yml as curated fossil artifacts. Ensure tests check YAML schema, fossilization status, test coverage, and integration of LLM-generated insights. Explore advanced patterns such as:
+        - Automated validation of LLM recommendations for actionable test plans and code quality suggestions
+        - Regression checks to ensure no loss of fossilization or coverage over time
+        - CI integration to fail builds on regression or missing fossilization
+        - Optionally, auto-curate or annotate fossils with LLM insights in a separate markdown file
+    subtasks:
+      - task: Define YAML schema and validation rules for both fossils
+        status: planned
+      - task: Implement E2E test to check schema and required fields
+        status: planned
+      - task: Add test to assert minimum coverage and fossilization thresholds
+        status: planned
+      - task: Add regression test to compare current and previous fossils
+        status: planned
+      - task: Integrate LLM insights validation (presence, format, actionable content)
+        status: planned
+      - task: Document E2E workflow and update onboarding/CONTRIBUTING docs
+        status: planned
+    milestone: Fossilization E2E & LLM Integration 
