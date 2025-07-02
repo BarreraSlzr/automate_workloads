@@ -22,6 +22,14 @@ export interface GitHubOptions extends CLIOptions {
   labels?: string[];
   /** Issue assignee filter */
   assignee?: string;
+  /** Issue milestone */
+  milestone?: string;
+  /** Issue section */
+  section?: string;
+  /** Issue checklist */
+  checklist?: string;
+  /** Issue metadata */
+  metadata?: Record<string, unknown>;
 }
 
 // Utility to load and fill the automation issue template
@@ -142,21 +150,7 @@ export class GitHubService {
   }
 
   /**
-   * Creates a new issue
-   * 
-   * @param {string} title - Issue title
-   * @param {string} body - Issue body content
-   * @param {Partial<GitHubOptions>} options - Issue options
-   * @returns {Promise<ServiceResponse<GitHubIssue>>} Created issue response
-   * 
-   * @example
-   * ```typescript
-   * const response = await github.createIssue(
-   *   'New feature request',
-   *   'Please add support for...',
-   *   { labels: ['enhancement'] }
-   * );
-   * ```
+   * Create a GitHub issue using fossil-backed creation for deduplication and traceability
    */
   async createIssue(
     title: string,
@@ -164,52 +158,55 @@ export class GitHubService {
     options: Partial<GitHubOptions> = {}
   ): Promise<ServiceResponse<GitHubIssue>> {
     try {
-      // If this is an automation issue, use the template
-      const isAutomation = (options.labels && options.labels.includes('automation')) || title.toLowerCase().includes('automation');
-      let issueBody = body;
-      if (isAutomation && (!body || body === 'TEMPLATE')) {
-        // Fill with default or provided fields
-        issueBody = loadAndFillAutomationTemplate({
-          purpose: (options as any)['purpose'] || 'Automated task',
-          checklist: (options as any)['checklist'],
-          metadata: (options as any)['metadata'],
-        });
-      }
-      let command = `gh issue create --repo ${this.owner}/${this.repo} --title "${title}" --body "${issueBody}"`;
-      if (options.labels && options.labels.length > 0) {
-        command += ` --label "${options.labels.join(',')}"`;
-      }
-      if (options.assignee) {
-        command += ` --assignee "${options.assignee}"`;
-      }
-      const result = executeCommand(command);
-      if (!result.success) {
+      // Import createFossilIssue dynamically to avoid circular dependencies
+      const { createFossilIssue } = await import('../utils/fossilIssue');
+      
+      const result = await createFossilIssue({
+        owner: this.owner,
+        repo: this.repo,
+        title,
+        body,
+        labels: options.labels || [],
+        milestone: options.milestone,
+        section: options.section,
+        type: 'action',
+        tags: ['github-service'],
+        metadata: { source: 'github-service', originalOptions: options },
+        purpose: body || title,
+        checklist: options.checklist,
+        automationMetadata: options.metadata ? JSON.stringify(options.metadata, null, 2) : undefined
+      });
+      
+      if (result.deduplicated) {
         return {
-          success: false,
-          error: result.stderr,
-          statusCode: result.exitCode,
+          success: true,
+          data: { 
+            title, 
+            number: parseInt(result.issueNumber || '0'), 
+            state: 'open',
+            body,
+            labels: options.labels || [],
+            assignees: [],
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          },
+          statusCode: 200
         };
       }
-      // Extract issue number from the output
-      let match = result.stdout.match(/Issue #(\d+) created/);
-      if (!match) {
-        // Try to match a GitHub issue URL
-        match = result.stdout.match(/github\.com\/[\w-]+\/[\w-]+\/issues\/(\d+)/);
-      }if (!match) {
-        return {
-          success: false,
-          error: 'Failed to parse created issue number',
-          statusCode: 500,
-        };
-      }
-      const issueNumber = parseInt(match[1]!);
-      // Fetch the created issue details
-      const issueCommand = `gh issue view ${issueNumber} --repo ${this.owner}/${this.repo} --json number,title,state,body,labels,assignees,createdAt,updatedAt`;
-      const issue = executeCommandJSON<GitHubIssue>(issueCommand);
+      
       return {
         success: true,
-        data: issue,
-        statusCode: 201,
+        data: { 
+          title, 
+          number: parseInt(result.issueNumber || '0'), 
+          state: 'open',
+          body,
+          labels: options.labels || [],
+          assignees: [],
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        statusCode: 201
       };
     } catch (error) {
       return {
@@ -362,5 +359,17 @@ export class GitHubService {
           `#${issue.number}: ${issue.title} [${issue.state}]`
         ).join('\n');
     }
+  }
+
+  /**
+   * Checks if an issue with the given title exists in the repository
+   * @param {string} title - Issue title to search for
+   * @param {'open' | 'all'} state - Issue state to search (default: 'open')
+   * @returns {boolean} True if an issue with the title exists
+   */
+  issueExistsByTitle(title: string, state: 'open' | 'all' = 'open'): boolean {
+    // Use the shared utility
+    const { issueExists } = require('../utils/cli');
+    return issueExists(this.owner, this.repo, title, state);
   }
 } 

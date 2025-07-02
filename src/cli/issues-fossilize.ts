@@ -1,8 +1,17 @@
 import { GitHubService } from '../services/github';
 import { ContextFossilService } from './context-fossil';
 import type { ContextEntry } from '../types';
+import { Command } from 'commander';
+import { extractJsonBlock, checklistToMarkdown, metadataToMarkdown } from '../utils/markdownChecklist';
 
 async function main() {
+  const program = new Command();
+  program
+    .option('--state <state>', 'Issue state to pull (open, closed, all)', 'all');
+  program.parse(process.argv);
+  const opts = program.opts();
+  const state = opts.state || 'all';
+
   const owner = process.env.GITHUB_OWNER || 'BarreraSlzr';
   const repo = process.env.GITHUB_REPO || 'automate_workloads';
   const github = new GitHubService(owner, repo);
@@ -10,7 +19,7 @@ async function main() {
   await fossil.initialize();
 
   // Fetch all issues as JSON
-  const response = await github.getIssues({ state: 'all' });
+  const response = await github.getIssues({ state });
   if (!response.success || !response.data) {
     console.error('❌ Failed to fetch issues:', response.error);
     process.exit(1);
@@ -18,6 +27,8 @@ async function main() {
 
   let fossilized = 0;
   let skipped = 0;
+
+  const now = new Date().toISOString();
 
   for (const issue of response.data) {
     // Check if already fossilized by GitHub issue number
@@ -35,25 +46,84 @@ async function main() {
     const labels: string[] = Array.isArray(issue.labels)
       ? issue.labels.map(l => typeof l === 'string' ? l : (l && typeof (l as any).name === 'string' ? (l as any).name : String(l)))
       : [];
-    // Create fossil entry
-    const now = new Date().toISOString();
+    // Fetch the latest body and parse JSON block if present
+    const jsonBlock = extractJsonBlock(issue.body || '');
+    let purpose = jsonBlock?.purpose;
+    let checklist = jsonBlock?.checklist;
+    let automationMetadata = jsonBlock?.automationMetadata;
+
+    // If no JSON block, fallback to markdown parsing (optional, not implemented here)
+    // You can add a markdown parser for legacy issues if needed
+
+    // Build improved markdown body from JSON (source of truth)
+    const bodyLines = [
+      `# [GH] Issue: ${issue.title}`,
+      '',
+      `**Number:** ${issue.number}`,
+      `**State:** ${issue.state}`,
+      `**Labels:** ${(labels && labels.length > 0) ? labels.join(', ') : 'None'}`,
+      `**Assignees:** ${(issue.assignees && issue.assignees.length > 0) ? issue.assignees.map((a: any) => a.login || a).join(', ') : 'None'}`,
+      `**Created At:** ${issue.created_at || 'N/A'}`,
+      `**Updated At:** ${issue.updated_at || 'N/A'}`,
+      '',
+      '---',
+      '',
+      '## Purpose',
+      purpose || '*No purpose provided*',
+      '',
+      '## Checklist',
+      checklistToMarkdown(checklist),
+      '',
+      '## Automation Metadata',
+      metadataToMarkdown(automationMetadata),
+      '',
+      '---',
+      '',
+      `Fossilized at: ${now}`,
+      `Fossil Metadata:`,
+      '```json',
+      JSON.stringify({
+        ...issue,
+        githubIssueNumber: issue.number,
+        githubIssueState: issue.state,
+        purpose,
+        checklist,
+        automationMetadata,
+        labels,
+        assignees: issue.assignees,
+        created_at: issue.created_at,
+        updated_at: issue.updated_at
+      }, null, 2),
+      '```'
+    ];
+    const improvedBody = bodyLines.join('\n');
     const entry: Omit<ContextEntry, 'id' | 'createdAt' | 'updatedAt'> = {
       type: 'action',
       title: `[GH] Issue: ${issue.title}`,
-      content: issue.body || '',
+      content: improvedBody,
       tags: ['github', 'issue', ...labels],
       source: 'api',
       metadata: {
         githubIssueNumber: issue.number,
         githubIssueState: issue.state,
+        purpose,
+        checklist,
+        automationMetadata,
         ...issue
       },
       version: 1,
       children: [],
     };
-    await fossil.addEntry(entry);
-    fossilized++;
-    console.log(`🦴 Fossilized issue #${issue.number}: ${issue.title}`);
+    // If fossil exists, update it; otherwise, add new
+    if (existing && existing.length > 0 && existing[0]) {
+      await fossil.updateEntry(existing[0].id, entry);
+      console.log(`📝 Updated fossil for issue #${issue.number}: ${issue.title}`);
+      fossilized++;
+    } else {
+      await fossil.addEntry(entry);
+      console.log(`🦴 Fossilized issue #${issue.number}: ${issue.title}`);
+      fossilized++;
+    }
   }
 
   // Query all [GH] Issue fossils

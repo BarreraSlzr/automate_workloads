@@ -264,4 +264,26 @@ export function createServiceResponse<T>(
       statusCode: result.exitCode,
     };
   }
+}
+
+/**
+ * Checks if an issue with the given title exists in the repository
+ * @param {string} owner - Repository owner
+ * @param {string} repo - Repository name
+ * @param {string} title - Issue title to search for
+ * @param {'open' | 'all'} state - Issue state to search (default: 'open')
+ * @returns {boolean} True if an issue with the title exists
+ */
+export function issueExists(owner: string, repo: string, title: string, state: 'open' | 'all' = 'open'): boolean {
+  try {
+    const result = executeCommand(
+      `gh issue list --repo ${owner}/${repo} --state ${state} --json title`,
+      { captureStderr: true, throwOnError: false }
+    );
+    if (!result.success) return false;
+    const issues = JSON.parse(result.stdout);
+    return issues.some((issue: any) => issue.title.trim() === title.trim());
+  } catch {
+    return false;
+  }
 } 

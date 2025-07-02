@@ -1,6 +1,7 @@
 import { GitHubService } from '../services/github.ts';
 import { ContextFossilService } from './context-fossil.ts';
 import * as fs from 'fs';
+import { createFossilIssue } from '../utils/fossilIssue';
 
 export interface IssuesCreateOptions {
   purpose?: string;
@@ -62,54 +63,27 @@ export async function runIssuesCreate(options: IssuesCreateOptions = {}) {
     return 0;
   }
 
-  // Create the GitHub issue
-  let response;
+  // Use fossil-backed issue creation
   try {
-    const labels = ['automation', 'bot'];
-    response = await github.createIssue(
+    const result = await createFossilIssue({
+      owner,
+      repo,
       title,
-      'TEMPLATE',
-      Object.assign({ labels }, { purpose, checklist, metadata }) as any
-    );
-  } catch (githubError: any) {
-    console.error('❌ Exception while creating GitHub issue:', githubError.message);
-    if (debug) console.error(githubError);
-    return 1;
-  }
-
-  if (response && response.success && response.data) {
-    console.log('✅ Automation issue created:', response.data.title, response.data.number);
-    // Store in fossil storage
-    try {
-      await fossil.addEntry({
-        type: 'action',
-        title,
-        content,
-        tags: ['automation', 'bot'],
-        source: 'automated',
-        metadata: {
-          githubIssueNumber: response.data.number,
-          githubIssueState: response.data.state,
-          ...response.data
-        },
-        version: 1,
-        children: [],
-      });
-    } catch (addError: any) {
-      console.error('❌ Failed to add entry to fossil storage:', addError.message);
-      if (debug) console.error(addError);
-      return 1;
+      body: content,
+      labels: ['automation', 'bot'],
+      tags: ['automation', 'bot'],
+      metadata: { createdBy: 'automation', ...options },
+    });
+    if (result.deduplicated) {
+      console.log(`⚠️ Duplicate automation issue found for fossil hash: ${result.fossilHash}. Skipping creation.`);
+      return 0;
+    } else {
+      console.log(`✅ Automation issue created: ${title} (Fossil ID: ${result.fossilId}, Issue #: ${result.issueNumber})`);
+      return 0;
     }
-    return 0;
-  } else {
-    console.error('❌ Failed to create automation issue:', response?.error);
-    if (response?.error?.includes('authentication')) {
-      console.error('👉 Please check your GitHub authentication: gh auth login');
-    }
-    if (response?.error?.includes('template')) {
-      console.error('👉 Please ensure the issue template exists and is readable.');
-    }
-    if (debug && response) console.error(response);
+  } catch (err: any) {
+    console.error('❌ Failed to create automation issue:', err.message);
+    if (debug) console.error(err);
     return 1;
   }
 } 

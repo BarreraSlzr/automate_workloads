@@ -16,6 +16,7 @@ import { execSync } from 'child_process';
 import type { ContextEntry, ContextQuery } from '@/types';
 import { SemanticTaggerService } from '../services/semantic-tagger';
 import { getFossilSummary } from '../utils/fossilSummary';
+import { extractJsonBlock } from '../utils/markdownChecklist';
 
 // Context fossil schemas
 const ContextEntrySchema = z.object({
@@ -851,6 +852,7 @@ export class ContextFossilService {
   }> {
     const allEntries = await this.getAllEntries();
     const duplicates: Record<string, ContextEntry[]> = {};
+    const jsonBlockGroups: Record<string, ContextEntry[]> = {};
 
     // First pass: Group by content hash (for newer fossils)
     for (const entry of allEntries) {
@@ -860,6 +862,13 @@ export class ContextFossilService {
           duplicates[contentHash] = [];
         }
         duplicates[contentHash].push(entry);
+      }
+      // Group by JSON block if present
+      const json = extractJsonBlock(entry.content);
+      if (json) {
+        const jsonKey = JSON.stringify(json);
+        if (!jsonBlockGroups[jsonKey]) jsonBlockGroups[jsonKey] = [];
+        jsonBlockGroups[jsonKey].push(entry);
       }
     }
 
@@ -882,26 +891,24 @@ export class ContextFossilService {
       duplicateGroups: [] as ContextEntry[][],
     };
 
-    // Process each group of duplicates
+    // Consolidate by content hash and content match (existing logic)
     for (const [key, group] of Object.entries(duplicates)) {
       if (group.length > 1) {
         result.duplicatesFound++;
-        result.totalAfter -= (group.length - 1); // Keep one, remove the rest
-        result.storageSaved += (group.length - 1) * 1024; // Assuming 1KB per entry
-
+        result.totalAfter -= (group.length - 1);
+        result.storageSaved += (group.length - 1) * 1024;
         if (!options.dryRun) {
-          // Consolidate duplicates
           const consolidatedEntry = group[0]!;
           const previousVersions = group.slice(1).map(e => {
             const { previousVersions: _omit, ...entryWithoutPrev } = e;
             return entryWithoutPrev;
           });
-          
-          consolidatedEntry.previousVersions = previousVersions;
+          consolidatedEntry.previousVersions = [
+            ...(consolidatedEntry.previousVersions || []),
+            ...previousVersions
+          ];
           consolidatedEntry.updatedAt = new Date().toISOString();
           consolidatedEntry.version += group.length - 1;
-
-          // Add content hash if missing
           if (!consolidatedEntry.metadata?.contentHash) {
             const contentHash = this.generateContentHash(consolidatedEntry.content, consolidatedEntry.type, consolidatedEntry.title);
             consolidatedEntry.metadata = {
@@ -909,30 +916,16 @@ export class ContextFossilService {
               contentHash,
             };
           }
-
-          // Save consolidated entry
           const entryFile = path.join(this.fossilDir, 'entries', `${consolidatedEntry.id}.json`);
           await fs.writeFile(entryFile, JSON.stringify(consolidatedEntry, null, 2));
-
-          // Remove duplicate files
           for (let i = 1; i < group.length; i++) {
             const duplicateFile = path.join(this.fossilDir, 'entries', `${group[i]!.id}.json`);
-            try {
-              await fs.unlink(duplicateFile);
-            } catch (error) {
-              // File might not exist, continue
-            }
+            try { await fs.unlink(duplicateFile); } catch {}
           }
-
-          // Update index
           const updatedIndex = await this.loadIndex();
-          
-          // Remove duplicate entries from index
           for (let i = 1; i < group.length; i++) {
             delete updatedIndex.entries[group[i]!.id];
           }
-
-          // Update consolidated entry in index
           updatedIndex.entries[consolidatedEntry.id] = {
             id: consolidatedEntry.id,
             type: consolidatedEntry.type,
@@ -942,13 +935,67 @@ export class ContextFossilService {
             createdAt: consolidatedEntry.createdAt,
             updatedAt: consolidatedEntry.updatedAt,
           };
-
           updatedIndex.lastUpdated = consolidatedEntry.updatedAt;
           await this.saveIndex(updatedIndex);
         }
-
         result.consolidated++;
-        result.duplicateGroups.push(group.slice(1)); // Add duplicates (excluding the one we keep)
+        result.duplicateGroups.push(group.slice(1));
+      }
+    }
+
+    // Consolidate by JSON block (new logic)
+    for (const [jsonKey, group] of Object.entries(jsonBlockGroups)) {
+      if (group.length > 1) {
+        // Avoid double-consolidating fossils already handled by content hash
+        const alreadyConsolidated = group.every(f => result.duplicateGroups.flat().some(d => d.id === f.id));
+        if (alreadyConsolidated) continue;
+        result.duplicatesFound++;
+        result.totalAfter -= (group.length - 1);
+        result.storageSaved += (group.length - 1) * 1024;
+        if (!options.dryRun) {
+          const consolidatedEntry = group[0]!;
+          const previousVersions = group.slice(1).map(e => {
+            const { previousVersions: _omit, ...entryWithoutPrev } = e;
+            return entryWithoutPrev;
+          });
+          consolidatedEntry.previousVersions = [
+            ...(consolidatedEntry.previousVersions || []),
+            ...previousVersions
+          ];
+          consolidatedEntry.updatedAt = new Date().toISOString();
+          consolidatedEntry.version += group.length - 1;
+          // Merge metadata
+          for (let i = 1; i < group.length; i++) {
+            consolidatedEntry.metadata = {
+              ...consolidatedEntry.metadata,
+              ...group[i]!.metadata,
+            };
+          }
+          const entryFile = path.join(this.fossilDir, 'entries', `${consolidatedEntry.id}.json`);
+          await fs.writeFile(entryFile, JSON.stringify(consolidatedEntry, null, 2));
+          for (let i = 1; i < group.length; i++) {
+            const duplicateFile = path.join(this.fossilDir, 'entries', `${group[i]!.id}.json`);
+            try { await fs.unlink(duplicateFile); } catch {}
+          }
+          const updatedIndex = await this.loadIndex();
+          for (let i = 1; i < group.length; i++) {
+            delete updatedIndex.entries[group[i]!.id];
+          }
+          updatedIndex.entries[consolidatedEntry.id] = {
+            id: consolidatedEntry.id,
+            type: consolidatedEntry.type,
+            title: consolidatedEntry.title,
+            tags: consolidatedEntry.tags,
+            source: consolidatedEntry.source,
+            createdAt: consolidatedEntry.createdAt,
+            updatedAt: consolidatedEntry.updatedAt,
+          };
+          updatedIndex.lastUpdated = consolidatedEntry.updatedAt;
+          await this.saveIndex(updatedIndex);
+        }
+        result.consolidated++;
+        result.duplicateGroups.push(group.slice(1));
+        console.log(`🔍 Consolidated fossils by JSON block: ${group.map(f => f.id).join(', ')}`);
       }
     }
 
@@ -991,11 +1038,20 @@ program
   .option('--tags <tags>', 'Comma-separated tags')
   .option('--source <source>', 'Entry source (llm|terminal|api|manual|automated)', 'manual')
   .option('--parent-id <id>', 'Parent entry ID')
+  .option('--metadata <metadata>', 'JSON string for additional metadata')
   .action(async (options) => {
     try {
       const service = new ContextFossilService();
       await service.initialize();
-
+      let metadata = {};
+      if (options.metadata) {
+        try {
+          metadata = JSON.parse(options.metadata);
+        } catch {
+          console.error('❌ Invalid JSON for --metadata');
+          process.exit(1);
+        }
+      }
       const entry = await service.addEntry({
         type: options.type as ContextEntry['type'],
         title: options.title,
@@ -1003,11 +1059,10 @@ program
         tags: options.tags ? options.tags.split(',').map((t: string) => t.trim()) : [],
         source: options.source as ContextEntry['source'],
         parentId: options.parentId,
-        metadata: {},
+        metadata,
         version: 1,
         children: [],
       });
-
       console.log('✅ Entry added:', entry.id);
     } catch (error) {
       console.error('❌ Error adding entry:', error);

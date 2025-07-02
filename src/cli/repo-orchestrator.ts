@@ -16,6 +16,8 @@ import { LLMPlanningService } from './llm-plan';
 import { ContextFossilService } from './context-fossil';
 import * as path from 'path';
 import type { GitHubIssue } from '../types/index';
+import { createFossilIssue } from '../utils/fossilIssue';
+import { syncTrackerWithGitHub } from '../utils/syncTracker';
 
 // Repository orchestration schemas
 const RepoConfigSchema = z.object({
@@ -83,20 +85,6 @@ const RepoAnalysisSchema = z.object({
 
 type RepoConfig = z.infer<typeof RepoConfigSchema>;
 type RepoAnalysis = z.infer<typeof RepoAnalysisSchema>;
-
-// Helper: Check if an open issue with the given title exists
-function issueExists(repo: string, title: string): boolean {
-  try {
-    const result = execSync(
-      `gh issue list --repo ${repo} --state open --json title`,
-      { encoding: 'utf8' }
-    );
-    const issues = JSON.parse(result);
-    return issues.some((issue: any) => issue.title.trim() === title.trim());
-  } catch {
-    return false;
-  }
-}
 
 // Helper: Ensure a label exists in the repo
 function ensureLabelExists(repo: string, label: string, color: string = 'ededed') {
@@ -274,6 +262,22 @@ class RepoOrchestratorService {
             metadata: { repository: `${repoConfig.owner}/${repoConfig.repo}` },
           });
         }
+      }
+
+      // After all orchestration steps, sync tracker and project status
+      try {
+        console.log('🔄 Syncing tracker and project status with GitHub as part of orchestration...');
+        await syncTrackerWithGitHub({
+          trackerMdPath: '.temp-issue-14-body.md',
+          projectStatusYmlPath: 'project_status.yml',
+          owner: repoConfig.owner,
+          repo: repoConfig.repo,
+          projectNumber: 4, // Update as needed or make configurable
+          autoClose: false,
+          syncTests: false,
+        });
+      } catch (err) {
+        console.warn('⚠️  Tracker sync failed:', err);
       }
 
       // Generate summary
@@ -789,7 +793,7 @@ class RepoOrchestratorService {
    * @returns Created issues
    */
   private async createAutomationIssues(repoConfig: RepoConfig): Promise<any[]> {
-    const issues = [];
+    const issues: any[] = [];
     const repo = `${repoConfig.owner}/${repoConfig.repo}`;
     const defaultLabel = 'automation';
     ensureLabelExists(repo, defaultLabel, 'ededed');
@@ -800,21 +804,28 @@ class RepoOrchestratorService {
         body: `## Project Tracking Setup\n\nThis issue was created by the LLM-powered repository orchestrator to establish proper project tracking.\n\n### Purpose:\n- Track project progress and milestones\n- Organize tasks and priorities\n- Monitor development activities\n- Ensure project visibility\n\n### Recommended Actions:\n- [ ] Set up project boards or milestones\n- [ ] Create issue templates for different task types\n- [ ] Establish labeling conventions\n- [ ] Set up automated progress tracking\n\n### Benefits:\n- Better project organization\n- Improved team collaboration\n- Clear progress visibility\n- Enhanced project management\n\n---\n*Created by Repository Orchestrator on ${new Date().toISOString()}*`,
         label: defaultLabel,
       };
-      if (!issueExists(repo, trackingIssueData.title)) {
-        // Write body to temp file
-        const fs = await import('fs/promises');
-        const tempFile = `.temp-issue-body-${Date.now()}.md`;
-        await fs.writeFile(tempFile, trackingIssueData.body);
-        const trackingIssue = execSync(
-          `gh issue create --repo ${repo} --title "${trackingIssueData.title}" --body-file "${tempFile}" --label "${trackingIssueData.label}"`,
-          { encoding: 'utf8' }
-        );
-        await fs.unlink(tempFile);
+      // Use fossil-backed issue creation
+      const result = await createFossilIssue({
+        owner: repoConfig.owner,
+        repo: repoConfig.repo,
+        title: trackingIssueData.title,
+        body: trackingIssueData.body,
+        labels: [trackingIssueData.label],
+        tags: ['github', 'issue', 'project-tracking'],
+        section: 'project-tracking',
+        metadata: { orchestrator: true },
+      });
+      if (result.deduplicated) {
+        console.log(`⚠️ Issue already exists for fossil hash: ${result.fossilHash}`);
+      } else {
         issues.push({
           type: 'project-tracking',
-          issue: trackingIssue.trim(),
+          issue: result.issueNumber,
+          fossilId: result.fossilId,
+          fossilHash: result.fossilHash,
           timestamp: new Date().toISOString(),
         });
+        console.log(`🆕 Created project-tracking issue: ${trackingIssueData.title} (Fossil ID: ${result.fossilId}, Issue #: ${result.issueNumber})`);
       }
       // Create issue for automation setup
       const automationIssueData = {
@@ -822,21 +833,27 @@ class RepoOrchestratorService {
         body: await loadAutomationIssueTemplate(),
         label: 'automation',
       };
-      if (!issueExists(repo, automationIssueData.title)) {
-        // Write YAML body to temp file
-        const fs = await import('fs/promises');
-        const tempFile = `.temp-issue-body-${Date.now()}.yml`;
-        await fs.writeFile(tempFile, automationIssueData.body);
-        const automationIssue = execSync(
-          `gh issue create --repo ${repo} --title "${automationIssueData.title}" --body-file "${tempFile}" --label "${automationIssueData.label}"`,
-          { encoding: 'utf8' }
-        );
-        await fs.unlink(tempFile);
+      const automationResult = await createFossilIssue({
+        owner: repoConfig.owner,
+        repo: repoConfig.repo,
+        title: automationIssueData.title,
+        body: automationIssueData.body,
+        labels: [automationIssueData.label],
+        tags: ['github', 'issue', 'automation'],
+        section: 'automation',
+        metadata: { orchestrator: true },
+      });
+      if (automationResult.deduplicated) {
+        console.log(`⚠️ Issue already exists for fossil hash: ${automationResult.fossilHash}`);
+      } else {
         issues.push({
           type: 'automation-setup',
-          issue: automationIssue.trim(),
+          issue: automationResult.issueNumber,
+          fossilId: automationResult.fossilId,
+          fossilHash: automationResult.fossilHash,
           timestamp: new Date().toISOString(),
         });
+        console.log(`🆕 Created automation-setup issue: ${automationIssueData.title} (Fossil ID: ${automationResult.fossilId}, Issue #: ${automationResult.issueNumber})`);
       }
     } catch (error) {
       console.warn('⚠️  Could not create automation issues:', error);

@@ -22,4 +22,34 @@ export function updateMarkdownChecklist(markdown: string, updates: ChecklistUpda
     }
     return match;
   });
+}
+
+/**
+ * Extracts the first JSON code block from a markdown string.
+ */
+export function extractJsonBlock(markdown: string): any | undefined {
+  const safeMarkdown = typeof markdown === 'string' ? markdown : '';
+  const match = safeMarkdown.match(/```json\s*([\s\S]*?)\s*```/);
+  if (match && typeof match[1] === 'string') {
+    try {
+      return JSON.parse(match[1]);
+    } catch {}
+  }
+  return undefined;
+}
+
+/**
+ * Renders markdown checklist from JSON array
+ */
+export function checklistToMarkdown(checklist: {task: string, checked: boolean}[] | undefined): string {
+  if (!Array.isArray(checklist)) return '';
+  return checklist.map(item => `- [${item.checked ? 'x' : ' '}] ${item.task}`).join('\n');
+}
+
+/**
+ * Renders markdown metadata from JSON object
+ */
+export function metadataToMarkdown(metadata: Record<string, any> | undefined): string {
+  if (!metadata || typeof metadata !== 'object') return '';
+  return Object.entries(metadata).map(([k, v]) => `${k}: ${v}`).join('\n');
 } 
