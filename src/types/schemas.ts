@@ -304,4 +304,154 @@ export const CreateCommandSchema = z.object({
   input: z.string(),
   output: z.string().optional(),
   dryRun: z.boolean().default(false),
+});
+
+// Project Status Update Schemas
+// Used in: scripts/update-project-status.ts
+export const UpdateProjectStatusParamsSchema = z.object({
+  rootDirs: z.array(z.string()).default([
+    'src/cli',
+    'src/services', 
+    'src/utils',
+    'src/core',
+    'src/types',
+    'scripts',
+  ]),
+  testDirs: z.array(z.string()).default(['tests', 'test']),
+  fossilKeywords: z.array(z.string()).default([
+    'toFossilEntry', 
+    'outputFossil', 
+    'writeFossilToFile'
+  ]),
+  statusTags: z.array(z.string()).default([
+    '@planned', '@todo', '@blocked', '@documented', 
+    '@in-progress', '@implemented', '@tested', '@reviewed', '@deprecated'
+  ]),
+  outputPath: z.string().default('fossils/project_status.yml'),
+  enableLLM: z.boolean().default(true),
+  verbose: z.boolean().default(false),
+  dryRun: z.boolean().default(false),
+});
+
+// File Analysis Schemas
+export const ClassInfoSchema = z.object({
+  name: z.string(),
+  status: z.string(),
+});
+
+export const FunctionInfoSchema = z.object({
+  name: z.string(),
+  status: z.string(),
+});
+
+export const CliCommandSchema = z.object({
+  name: z.string(),
+  options: z.array(z.string()),
+  required: z.array(z.string()),
+});
+
+export const FileAnalysisSchema = z.object({
+  file: z.string(),
+  classes: z.array(ClassInfoSchema),
+  functions: z.array(FunctionInfoSchema),
+  cli_commands: z.array(z.string()),
+  cli_details: z.array(CliCommandSchema),
+  fossilized_output: z.boolean(),
+});
+
+export const DirectoryScanSchema = z.array(FileAnalysisSchema);
+
+// Test Mapping Schema
+export const TestMappingSchema = z.record(z.string(), z.array(z.string()));
+
+// Project Status Structure Schemas
+export const FileEntrySchema = z.object({
+  functions: z.array(z.string()),
+  fossilized_output: z.boolean(),
+  cli_commands: z.array(z.string()).optional(),
+  cli_details: z.array(CliCommandSchema).optional(),
+  tests: z.array(z.string()).optional(),
+});
+
+export const ModuleFileSchema = z.record(z.string(), FileEntrySchema);
+
+export const ModuleSchema = z.object({
+  path: z.string(),
+  files: z.array(ModuleFileSchema),
+});
+
+export const ModulesSchema = z.record(z.string(), ModuleSchema);
+
+// Overall Summary Schema
+export const OverallSummarySchema = z.object({
+  modules_total: z.number(),
+  files_total: z.number(),
+  fossilized_outputs: z.number(),
+  tests_total: z.number(),
+  completion_percent: z.number(),
+});
+
+// Fossilization Summary Schema
+export const FossilizationSummarySchema = z.object({
+  fossilized_outputs: z.array(z.string()),
+  tests_using_fossils: z.array(z.string()),
+  next_to_fossilize: z.array(z.string()),
+});
+
+// Developer Summary Schemas
+export const CliEntrySchema = z.object({
+  file: z.string(),
+  commands: z.array(z.string()),
+  functions: z.array(z.string()),
+  hasTests: z.boolean(),
+  testFiles: z.array(z.string()),
+});
+
+export const UtilsEntrySchema = z.object({
+  file: z.string(),
+  functions: z.array(z.string()),
+  hasTests: z.boolean(),
+  testFiles: z.array(z.string()),
+});
+
+export const ServicesEntrySchema = z.object({
+  file: z.string(),
+  functions: z.array(z.string()),
+  hasTests: z.boolean(),
+  testFiles: z.array(z.string()),
+});
+
+export const ExamplesEntrySchema = z.object({
+  file: z.string(),
+  description: z.string(),
+  demonstrates: z.array(z.string()),
+});
+
+export const DeveloperSummarySchema = z.object({
+  cli: z.array(CliEntrySchema),
+  utils: z.array(UtilsEntrySchema),
+  services: z.array(ServicesEntrySchema),
+  examples: z.array(ExamplesEntrySchema),
+  summary: z.object({
+    totalCLI: z.number(),
+    totalUtils: z.number(),
+    totalServices: z.number(),
+    totalExamples: z.number(),
+    testedCLI: z.number(),
+    testedUtils: z.number(),
+    testedServices: z.number(),
+    coverage: z.number(),
+  }),
+  recommendations: z.array(z.string()),
+});
+
+// Complete Project Status Schema
+export const ProjectStatusSchema = z.object({
+  project_status: z.object({
+    modules: ModulesSchema,
+    overall_summary: OverallSummarySchema.optional(),
+    fossilization_summary: FossilizationSummarySchema.optional(),
+    recommendations: z.array(z.string()).optional(),
+  }),
+  developer_summary: DeveloperSummarySchema.optional(),
 }); 

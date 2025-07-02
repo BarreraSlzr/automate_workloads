@@ -22,7 +22,26 @@ import {
   CurateFossilParamsSchema,
   CreateFossilIssueParamsSchema,
   CreateFossilLabelParamsSchema,
-  CreateFossilMilestoneParamsSchema
+  CreateFossilMilestoneParamsSchema,
+  UpdateProjectStatusParamsSchema,
+  ClassInfoSchema,
+  FunctionInfoSchema,
+  CliCommandSchema,
+  FileAnalysisSchema,
+  DirectoryScanSchema,
+  TestMappingSchema,
+  FileEntrySchema,
+  ModuleFileSchema,
+  ModuleSchema,
+  ModulesSchema,
+  OverallSummarySchema,
+  FossilizationSummarySchema,
+  CliEntrySchema,
+  UtilsEntrySchema,
+  ServicesEntrySchema,
+  ExamplesEntrySchema,
+  DeveloperSummarySchema,
+  ProjectStatusSchema
 } from './schemas';
 
 // PARAMS OBJECT PATTERN
@@ -129,3 +148,46 @@ export type CurateFossilParams = z.infer<typeof CurateFossilParamsSchema>;
 export type CreateFossilIssueParams = z.infer<typeof CreateFossilIssueParamsSchema>;
 export type CreateFossilLabelParams = z.infer<typeof CreateFossilLabelParamsSchema>;
 export type CreateFossilMilestoneParams = z.infer<typeof CreateFossilMilestoneParamsSchema>;
+
+export type UpdateProjectStatusParams = z.infer<typeof UpdateProjectStatusParamsSchema>;
+export type ClassInfo = z.infer<typeof ClassInfoSchema>;
+export type FunctionInfo = z.infer<typeof FunctionInfoSchema>;
+export type CliCommand = z.infer<typeof CliCommandSchema>;
+export type FileAnalysis = z.infer<typeof FileAnalysisSchema>;
+export type DirectoryScan = z.infer<typeof DirectoryScanSchema>;
+export type TestMapping = z.infer<typeof TestMappingSchema>;
+export type FileEntry = z.infer<typeof FileEntrySchema>;
+export type ModuleFile = z.infer<typeof ModuleFileSchema>;
+export type Module = z.infer<typeof ModuleSchema>;
+export type Modules = z.infer<typeof ModulesSchema>;
+export type OverallSummary = z.infer<typeof OverallSummarySchema>;
+export type FossilizationSummary = z.infer<typeof FossilizationSummarySchema>;
+export type CliEntry = z.infer<typeof CliEntrySchema>;
+export type UtilsEntry = z.infer<typeof UtilsEntrySchema>;
+export type ServicesEntry = z.infer<typeof ServicesEntrySchema>;
+export type ExamplesEntry = z.infer<typeof ExamplesEntrySchema>;
+export type DeveloperSummary = z.infer<typeof DeveloperSummarySchema>;
+export type ProjectStatus = z.infer<typeof ProjectStatusSchema>;
+
+// Schema Exports
+export {
+  UpdateProjectStatusParamsSchema,
+  ClassInfoSchema,
+  FunctionInfoSchema,
+  CliCommandSchema,
+  FileAnalysisSchema,
+  DirectoryScanSchema,
+  TestMappingSchema,
+  FileEntrySchema,
+  ModuleFileSchema,
+  ModuleSchema,
+  ModulesSchema,
+  OverallSummarySchema,
+  FossilizationSummarySchema,
+  CliEntrySchema,
+  UtilsEntrySchema,
+  ServicesEntrySchema,
+  ExamplesEntrySchema,
+  DeveloperSummarySchema,
+  ProjectStatusSchema
+};
