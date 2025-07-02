@@ -9,15 +9,15 @@
  */
 export interface EnvironmentConfig {
   /** GitHub personal access token (optional - uses gh CLI by default) */
-  githubToken?: string;
+  GITHUB_TOKEN?: string;
   /** Gmail API OAuth token */
-  gmailToken?: string;
+  GMAIL_TOKEN?: string;
   /** Buffer API access token */
-  bufferToken?: string;
+  BUFFER_TOKEN?: string;
   /** Twitter API v2 bearer token */
-  twitterToken?: string;
+  TWITTER_TOKEN?: string;
   /** OpenAI API key */
-  openaiApiKey?: string;
+  OPENAI_API_KEY?: string;
 }
 
 /**

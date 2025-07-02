@@ -35,7 +35,9 @@
   },
   "include": [
     "src/**/*",
-    "examples/**/*"
+    "scripts/**/*",
+    "tests/**/*",
+    "tests/test-mocks.ts"
   ],
   "exclude": [
     "node_modules",

@@ -7,7 +7,7 @@
  */
 
 // Core types - fundamental interfaces and types
-export {
+export type {
   EnvironmentConfig,
   BaseFossil,
   ContextEntry,
@@ -28,7 +28,7 @@ export {
 } from './core';
 
 // GitHub types - all GitHub-related interfaces
-export {
+export type {
   GitHubIssue,
   GitHubIssueFossil,
   GitHubMilestoneFossil,
@@ -43,21 +43,7 @@ export {
 } from './github';
 
 // CLI types - command-line interface schemas and types
-export {
-  BaseCLIArgsSchema,
-  GitHubCLIArgsSchema,
-  FossilCLIArgsSchema,
-  RoadmapCLIArgsSchema,
-  GitHubIssueCreateSchema,
-  GitHubMilestoneCreateSchema,
-  GitHubLabelCreateSchema,
-  GitHubIssueViewSchema,
-  GitHubIssueListSchema,
-  GitHubLabelListSchema,
-  GitHubMilestoneListSchema,
-  GitHubIssueEditSchema,
-  GitHubProjectSchema,
-  GitHubAuthSchema,
+export type {
   BaseCLIArgs,
   GitHubCLIArgs,
   FossilCLIArgs,
@@ -80,7 +66,7 @@ export {
 } from './cli';
 
 // Workflow types - roadmap and plan-related interfaces
-export {
+export type {
   E2ERoadmapTask,
   E2ERoadmap,
   Issue as WorkflowIssue,
@@ -93,7 +79,7 @@ export {
 } from './workflow';
 
 // External service types - non-GitHub service interfaces
-export {
+export type {
   TwitterTweet,
   GmailMessage,
   BufferPost,
@@ -187,3 +173,24 @@ export type {
   MilestoneParams as CreateMilestoneParams,
   CurateFossilParams,
 } from './cli';
+
+export {
+  BaseCLIArgsSchema,
+  FossilCLIArgsSchema,
+  GitHubCLIArgsSchema,
+  RoadmapCLIArgsSchema,
+  GitHubIssueCreateSchema,
+  GitHubMilestoneCreateSchema,
+  GitHubLabelCreateSchema,
+  GitHubIssueViewSchema,
+  GitHubIssueListSchema,
+  GitHubLabelListSchema,
+  GitHubMilestoneListSchema,
+  GitHubIssueEditSchema,
+  GitHubProjectSchema,
+  GitHubAuthSchema,
+  CurateFossilParamsSchema,
+  CreateFossilIssueParamsSchema,
+  CreateFossilLabelParamsSchema,
+  CreateFossilMilestoneParamsSchema
+} from './schemas';

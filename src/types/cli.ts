@@ -4,8 +4,26 @@
  */
 
 import { z } from 'zod';
-import { CLIOptions } from './core';
-import type { ContextEntry } from './core';
+import {
+  BaseCLIArgsSchema,
+  FossilCLIArgsSchema,
+  GitHubCLIArgsSchema,
+  RoadmapCLIArgsSchema,
+  GitHubIssueCreateSchema,
+  GitHubMilestoneCreateSchema,
+  GitHubLabelCreateSchema,
+  GitHubIssueViewSchema,
+  GitHubIssueListSchema,
+  GitHubLabelListSchema,
+  GitHubMilestoneListSchema,
+  GitHubIssueEditSchema,
+  GitHubProjectSchema,
+  GitHubAuthSchema,
+  CurateFossilParamsSchema,
+  CreateFossilIssueParamsSchema,
+  CreateFossilLabelParamsSchema,
+  CreateFossilMilestoneParamsSchema
+} from './schemas';
 
 // PARAMS OBJECT PATTERN
 // ---------------------
@@ -24,146 +42,8 @@ import type { ContextEntry } from './core';
 //
 // (See CONTRIBUTING.md for more details.)
 
-// 1. Base/Shared Schemas and Types
-// Used in: scripts/automate-github-fossils.ts (via extension)
-export const BaseCLIArgsSchema = z.object({
-  dryRun: z.boolean().default(false),
-  test: z.boolean().default(false),
-  verbose: z.boolean().default(false),
-  help: z.boolean().default(false),
-});
 
-// 2. CLI Argument Schemas and Types
-// Used in:
-export const GitHubCLIArgsSchema = BaseCLIArgsSchema.extend({
-  owner: z.string().default('barreraslzr'),
-  repo: z.string().default('automate_workloads'),
-  token: z.string().optional(),
-  branch: z.string().optional(),
-});
-
-// Used in:
-export const FossilCLIArgsSchema = BaseCLIArgsSchema.extend({
-  inputPath: z.string(),
-  outputPath: z.string().optional(),
-  format: z.enum(['yaml', 'json', 'markdown']).default('yaml'),
-  validate: z.boolean().default(true),
-});
-
-// Used in:
-export const RoadmapCLIArgsSchema = GitHubCLIArgsSchema.extend({
-  roadmapPath: z.string().default('src/types/e2e-roadmap.yaml'),
-  createIssues: z.boolean().default(true),
-  createMilestones: z.boolean().default(true),
-  createLabels: z.boolean().default(true),
-  updateExisting: z.boolean().default(false),
-});
-
-// 3. GitHub CLI Operation Schemas and Types
-// Used in:
-export const GitHubIssueCreateSchema = z.object({
-  owner: z.string(),
-  repo: z.string(),
-  title: z.string(),
-  body: z.string().optional(),
-  bodyFile: z.string().optional(),
-  labels: z.array(z.string()).default([]),
-  assignees: z.array(z.string()).default([]),
-  milestone: z.string().optional(),
-  project: z.string().optional(),
-  template: z.string().optional(),
-  web: z.boolean().default(false),
-  editor: z.boolean().default(false),
-});
-
-// Used in:
-export const GitHubMilestoneCreateSchema = z.object({
-  owner: z.string(),
-  repo: z.string(),
-  title: z.string(),
-  description: z.string().optional(),
-  dueOn: z.string().optional(), // ISO 8601 date string
-  state: z.enum(['open', 'closed']).default('open'),
-});
-
-// Used in:
-export const GitHubLabelCreateSchema = z.object({
-  owner: z.string(),
-  repo: z.string(),
-  name: z.string(),
-  description: z.string().optional(),
-  color: z.string().regex(/^[0-9a-fA-F]{6}$/), // 6-digit hex color
-});
-
-// Used in:
-export const GitHubIssueViewSchema = z.object({
-  owner: z.string(),
-  repo: z.string(),
-  issueNumber: z.number(),
-  json: z.boolean().default(true),
-  fields: z.array(z.string()).optional(),
-});
-
-// Used in:
-export const GitHubIssueListSchema = z.object({
-  owner: z.string(),
-  repo: z.string(),
-  state: z.enum(['open', 'closed', 'all']).default('open'),
-  labels: z.array(z.string()).optional(),
-  assignee: z.string().optional(),
-  milestone: z.string().optional(),
-  limit: z.number().min(1).max(100).default(30),
-  json: z.boolean().default(true),
-});
-
-// Used in:
-export const GitHubLabelListSchema = z.object({
-  owner: z.string(),
-  repo: z.string(),
-  json: z.boolean().default(true),
-});
-
-// Used in:
-export const GitHubMilestoneListSchema = z.object({
-  owner: z.string(),
-  repo: z.string(),
-  state: z.enum(['open', 'closed', 'all']).default('open'),
-  json: z.boolean().default(true),
-});
-
-// Used in:
-export const GitHubIssueEditSchema = z.object({
-  owner: z.string(),
-  repo: z.string(),
-  issueNumber: z.number(),
-  title: z.string().optional(),
-  body: z.string().optional(),
-  bodyFile: z.string().optional(),
-  addLabels: z.array(z.string()).optional(),
-  removeLabels: z.array(z.string()).optional(),
-  assignees: z.array(z.string()).optional(),
-  milestone: z.string().optional(),
-  state: z.enum(['open', 'closed']).optional(),
-});
-
-// Used in:
-export const GitHubProjectSchema = z.object({
-  owner: z.string(),
-  repo: z.string(),
-  projectNumber: z.number(),
-  title: z.string().optional(),
-  body: z.string().optional(),
-  state: z.enum(['open', 'closed']).optional(),
-});
-
-// Used in:
-export const GitHubAuthSchema = z.object({
-  token: z.string().optional(),
-  status: z.boolean().default(false),
-  login: z.boolean().default(false),
-});
-
-// 4. CLI Command Result Interface
+// CLI Command Result Interface
 // Used in: src/utils/githubCliCommands.ts
 export interface CommandResult {
   success: boolean;
@@ -173,7 +53,7 @@ export interface CommandResult {
   message?: string;
 }
 
-// 5. CLI Parameter Interfaces (Params Suffix)
+// CLI Parameter Interfaces (Params Suffix)
 // Used in: src/utils/githubCliCommands.ts
 export interface IssueParams {
   title: string;
@@ -196,57 +76,6 @@ export interface MilestoneParams {
   description: string;
   dueOn?: string;
 }
-
-// 6. Fossil/Custom Utility Params and Schemas
-// Used in: src/utils/curateFossil.ts, examples/curate-fossil-demo.ts
-export const CurateFossilParamsSchema = z.object({
-  inputYaml: z.string(),
-  tag: z.string().optional(),
-  outputDir: z.string().optional(),
-});
-export type CurateFossilParams = z.infer<typeof CurateFossilParamsSchema>;
-
-// Used in: src/utils/fossilIssue.ts
-export const CreateFossilIssueParamsSchema = z.object({
-  owner: z.string(),
-  repo: z.string(),
-  title: z.string(),
-  body: z.string().optional(),
-  labels: z.array(z.string()).optional(),
-  milestone: z.string().optional(),
-  section: z.string().optional(),
-  type: z.enum(['action', 'knowledge', 'decision', 'observation', 'plan', 'result', 'insight']).optional(),
-  tags: z.array(z.string()).optional(),
-  metadata: z.record(z.unknown()).optional(),
-  purpose: z.string().optional(),
-  checklist: z.string().optional(),
-  automationMetadata: z.string().optional(),
-  extraBody: z.string().optional(),
-});
-
-// Used in: src/utils/fossilLabel.ts
-export const CreateFossilLabelParamsSchema = z.object({
-  owner: z.string(),
-  repo: z.string(),
-  name: z.string(),
-  description: z.string(),
-  color: z.string(),
-  type: z.string().optional(),
-  tags: z.array(z.string()).optional(),
-  metadata: z.record(z.unknown()).optional(),
-});
-
-// Used in: src/utils/fossilMilestone.ts
-export const CreateFossilMilestoneParamsSchema = z.object({
-  owner: z.string(),
-  repo: z.string(),
-  title: z.string(),
-  description: z.string(),
-  dueOn: z.string().optional(),
-  type: z.string().optional(),
-  tags: z.array(z.string()).optional(),
-  metadata: z.record(z.unknown()).optional(),
-});
 
 // 7. Utility Functions
 // Used in: scripts/automate-github-fossils.ts
@@ -296,6 +125,7 @@ export type GitHubIssueEdit = z.infer<typeof GitHubIssueEditSchema>;
 export type GitHubProject = z.infer<typeof GitHubProjectSchema>;
 export type GitHubAuth = z.infer<typeof GitHubAuthSchema>; 
 
+export type CurateFossilParams = z.infer<typeof CurateFossilParamsSchema>;
 export type CreateFossilIssueParams = z.infer<typeof CreateFossilIssueParamsSchema>;
 export type CreateFossilLabelParams = z.infer<typeof CreateFossilLabelParamsSchema>;
 export type CreateFossilMilestoneParams = z.infer<typeof CreateFossilMilestoneParamsSchema>;
