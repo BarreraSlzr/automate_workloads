@@ -54,10 +54,10 @@ function exampleConfigValidation(): void {
     // Get environment configuration
     const config = getEnv();
     console.log("📋 Current configuration:");
-    console.log("- GitHub Token:", config.githubToken ? "✅ Set" : "❌ Not set");
-    console.log("- Twitter Token:", config.twitterToken ? "✅ Set" : "❌ Not set");
-    console.log("- Gmail Token:", config.gmailToken ? "✅ Set" : "❌ Not set");
-    console.log("- Buffer Token:", config.bufferToken ? "✅ Set" : "❌ Not set");
+    console.log("- GitHub Token:", config.GITHUB_TOKEN ? "✅ Set" : "❌ Not set");
+    console.log("- Twitter Token:", config.TWITTER_TOKEN ? "✅ Set" : "❌ Not set");
+    console.log("- Gmail Token:", config.GMAIL_TOKEN ? "✅ Set" : "❌ Not set");
+    console.log("- Buffer Token:", config.BUFFER_TOKEN ? "✅ Set" : "❌ Not set");
 
     // Validate configuration
     const validation = validateConfig();
