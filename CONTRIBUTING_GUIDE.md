@@ -26,6 +26,23 @@ A comprehensive guide for contributing to the automation ecosystem that integrat
 - [🔍 Review Process](#-review-process)
 - [🚀 Deployment & Release](#-deployment--release)
 
+## PARAMS OBJECT PATTERN
+
+All utility and CLI functions that take multiple or complex arguments MUST accept a single object parameter, typed as a `Params` interface.
+
+- Name the interface with a `Params` suffix (e.g., `CurateFossilParams`).
+- Define the interface in `src/types/cli.ts` (or a relevant types file).
+- Re-export from `src/types/index.ts` for discoverability.
+- Always call the function with an object, not positional arguments.
+
+**Benefits:**
+- Type safety and IDE autocompletion
+- Extensibility (easy to add new options)
+- Consistency across CLI, scripts, and utilities
+- Self-documenting code
+
+See `src/types/cli.ts` for examples and more details.
+
 ---
 
 ## 🎯 LLM-Friendly Documented Goals
