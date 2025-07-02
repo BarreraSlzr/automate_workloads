@@ -140,6 +140,24 @@ const schema = z.object({
 const validatedParams = schema.parse(params);
 ```
 
+## Fossilization Sync, Deduplication, and Reporting Patterns
+
+- **Deduplication**: All CLI tools should check for existing issues, milestones, and labels before creating new ones, using fossil-backed utilities (e.g., `createFossilIssue`, `createFossilMilestone`, `createFossilLabel`).
+- **Fossilization Percentage**: CLI tools should calculate and report the percentage of roadmap tasks that are fossilized (i.e., have corresponding GitHub artifacts). This can be shown in CLI output or as part of a summary report.
+- **Recommendations**: If fossilization is incomplete, CLI tools should recommend which tasks to sync next, which labels/milestones are missing, or which items may be duplicates.
+- **Glue Pattern**: CLI tools should always use the local fossils (e.g., `fossils/roadmap.yml`, `github-fossil-collection.json`) as the source of truth, syncing with GitHub as needed and updating fossils to reflect the current state.
+- **Example CLI Output**:
+  ```
+  Fossilization Summary:
+  - 8 tasks in fossils/roadmap.yml
+  - 5 issues created on GitHub
+  - 3 tasks pending fossilization
+  - Fossilization: 62.5%
+  Recommendations:
+  - Sync tasks: "Implement deduplication logic", "Add reporting script"
+  - Create missing label: "deduplication"
+  ```
+
 ## Code Duplication Patterns to Avoid
 
 ### 1. Direct GitHub CLI Calls

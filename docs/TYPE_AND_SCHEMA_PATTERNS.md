@@ -241,6 +241,28 @@ const result = GitHubCLICommands.executeCommand(args);
 - **Testing**: Type-safe test utilities
 - **Monitoring**: Schema validation in production
 
+## Schema-Driven Deduplication, Fossilization Metrics, and Reporting
+
+- **Deduplication**: Extend types and schemas to include unique identifiers (e.g., issue number, milestone title, label name) for explicit linkage between roadmap tasks and GitHub artifacts.
+- **Fossilization Percentage**: Add utility functions and CLI patterns to calculate the percentage of tasks that are fossilized (i.e., have corresponding GitHub issues/milestones/labels).
+- **Reporting**: Surface fossilization metrics and recommendations in CLI output and reports, using type-safe patterns.
+- **Example Type Extension**:
+  ```typescript
+  export interface RoadmapTask {
+    task: string;
+    status: string;
+    issues?: number[];
+    milestones?: string[];
+    labels?: string[];
+    // ...
+  }
+  ```
+- **Example CLI Output**:
+  ```
+  Fossilization: 75% (6/8 tasks have issues)
+  Recommendations: Sync missing tasks, create missing labels
+  ```
+
 ---
 
 This pattern system provides a foundation for building type-safe, maintainable, and extensible automation tools. Follow these patterns when adding new features to ensure consistency and quality across the codebase. 

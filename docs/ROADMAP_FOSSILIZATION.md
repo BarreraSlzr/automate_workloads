@@ -62,4 +62,34 @@ tasks:
 
 - **LLMs and humans** can both reason about, update, and document project roadmaps and checklists.
 - **Automation** is easy: parse, validate, render, and update fossils programmatically.
-- **Documentation** is always up to date and consistent with the codebase. 
+- **Documentation** is always up to date and consistent with the codebase.
+
+## Glue: Roadmap, Fossils, and GitHub Sync
+
+### Local-First, Deduplication, and Sync
+- The automation reads `fossils/roadmap.yml` and checks for existing issues/milestones/labels in the local fossil collection (e.g., `github-fossil-collection.json`).
+- Before creating anything on GitHub, the tool checks if the item already exists (by title, label, milestone, or linked issue number).
+- If it exists, it updates or skips; if not, it creates.
+- Each task in `fossils/roadmap.yml` can reference one or more GitHub issues via the `issues` property, and can be extended to support `milestones` and `labels`.
+
+### Fossilization Percentage and Recommendations
+- The tool can calculate what percentage of roadmap tasks are fossilized (i.e., have corresponding issues/milestones/labels on GitHub).
+- This can be surfaced as a metric in the CLI or in a report.
+- If fossilization is incomplete, the tool can recommend which tasks to sync next, or which labels/milestones are missing.
+- The tool can also suggest new labels/milestones based on local fossils that don't exist on GitHub, and recommend cleaning up or merging duplicates.
+
+### CLI/Utility Integration
+- CLI tools like `automate-github-fossils` and the Repository Orchestrator use this pattern to ensure traceability, deduplication, and automation.
+- All utilities should use Zod schemas for parameter validation and the object params pattern for extensibility.
+
+### Extending fossils/roadmap.yml
+- Use the `issues` property to link tasks to GitHub issues.
+- Optionally add `milestones` and `labels` properties for explicit linkage.
+- Example:
+```yaml
+  - task: Implement deduplication logic
+    status: in progress
+    issues: [123, 124]
+    milestones: ["Automation Sync"]
+    labels: ["automation", "deduplication"]
+``` 

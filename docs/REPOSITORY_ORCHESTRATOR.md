@@ -230,6 +230,15 @@ bun run repo:orchestrate your-org your-repo --workflow monitor --output monitori
 bun run llm:analyze --compare monitoring-baseline.json monitoring-$(date +%Y%m%d).json
 ```
 
+## 🧬 Fossilization & Orchestrator Integration
+
+- The Repository Orchestrator reads local fossils (e.g., `fossils/roadmap.yml`, `github-fossil-collection.json`) to determine the intended state of issues, milestones, and labels.
+- Before creating or updating GitHub artifacts, it checks for existing items to prevent duplication, using fossil-backed utilities.
+- The orchestrator calculates the fossilization percentage (the proportion of roadmap tasks with corresponding GitHub artifacts) and surfaces this metric in CLI output and reports.
+- If fossilization is incomplete, the orchestrator recommends which tasks to sync next, which labels/milestones are missing, or which items may be duplicates.
+- As GitHub state changes, the orchestrator updates local fossils to reflect the current state, ensuring traceability and reproducibility.
+- This feedback loop enables continuous improvement, automation, and alignment between local project state and GitHub.
+
 ## Output Format
 
 ### Analysis Output

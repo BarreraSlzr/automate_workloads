@@ -228,6 +228,15 @@ Storing decisions and insights in persistent fossil storage...
 - Architecture insights: 2 entries
 ```
 
+## 🧬 Fossilization Feedback Loop: Local Fossils, GitHub, and Automation
+
+- **Local fossils** (e.g., `fossils/roadmap.yml`, `fossils/project_status.yml`, `github-fossil-collection.json`) serve as the source of truth for project state, tasks, and automation targets.
+- **Automation tools** (like `automate-github-fossils` and the Repository Orchestrator) read these fossils, check for existing issues/milestones/labels both locally and on GitHub, and only create new items if they do not already exist (deduplication).
+- **Fossilization percentage** is calculated as the proportion of roadmap tasks that have corresponding GitHub artifacts (issues, milestones, labels). This metric can be surfaced in CLI output or reports.
+- **Recommendations** are generated for missing or incomplete fossilization, suggesting which tasks to sync next or which labels/milestones to create or clean up.
+- **Feedback loop**: As GitHub state changes (e.g., issues closed, milestones completed), automation tools update local fossils to reflect the current state, ensuring traceability and reproducibility.
+- **Extensibility**: The system can be extended to support new artifact types, advanced reporting, and LLM-driven insights for continuous improvement.
+
 ## 📊 Progress Tracking
 
 ### Purpose
@@ -569,3 +578,13 @@ Every fossil entry now includes an LLM-generated `excerpt` field. This excerpt i
 ### LLM Integration for Metadata Extraction
 - When `OPENAI_API_KEY` is set, the system uses OpenAI to extract purpose, checklist, and metadata from legacy markdown issues.
 - If LLM is unavailable, robust local extraction ensures all checklists and metadata are captured. 
+
+## Fossil-First Test Output Policy
+
+All test and script output files must serve a clear purpose for fossil curation, automation, or traceability. This means:
+- Only write output files if they are curated as fossils or referenced in `fossils/roadmap.yml`, `fossils/project_status.yml`, or onboarding documentation.
+- Do **not** write temporary or test output files unless they are used for fossilization, context gathering, or are part of the automation/reporting workflow.
+- Remove or refactor any test or script that writes files not used for these purposes.
+- Register all curated fossil outputs in the `fossils/` directory and reference them in the roadmap or project status as appropriate.
+
+This policy ensures a clean, meaningful fossil set and maximizes the value of all automation artifacts for future context gathering and reproducibility. 

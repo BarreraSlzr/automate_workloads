@@ -171,6 +171,14 @@ const result = await commands.createIssue({ title, body, labels });
 - ✅ **CLI Commands**: Listed 30 open issues, 30 labels
 - ✅ **Fossil Collection**: Created comprehensive fossil collection
 
+## 🧬 Deduplication, Fossilization Metrics, and Recommendations
+
+- **Deduplication**: The system checks for existing issues, milestones, and labels before creating new ones, using fossil-backed utilities and unique identifiers (title, number, name).
+- **Fossilization Percentage**: The system calculates the percentage of roadmap tasks that are fossilized (i.e., have corresponding GitHub artifacts) and surfaces this metric in CLI output and reports.
+- **Recommendations**: If fossilization is incomplete, the system recommends which tasks to sync next, which labels/milestones are missing, or which items may be duplicates.
+- **Actionable Insights**: CLI tools and utilities provide actionable insights and next steps based on fossilization status, helping users maintain alignment between local fossils and GitHub state.
+- **Continuous Improvement**: As GitHub state changes, the system updates local fossils to reflect the current state, ensuring traceability and reproducibility.
+
 ## 🎯 Systematic Thinking Patterns Applied
 
 ### 1. Pattern Recognition
