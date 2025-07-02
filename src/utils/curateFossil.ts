@@ -3,7 +3,7 @@ import path from 'path';
 import { yamlToJson } from './yamlToJson';
 import type { CuratedFossilMetadata } from '../types/core';
 import type { CurateFossilParams } from '../types';
-import { CurateFossilParamsSchema } from '../types/cli';
+import { CurateFossilParamsSchema } from '../types';
 
 /**
  * Curate a YAML file into a JSON fossil and return the output path.

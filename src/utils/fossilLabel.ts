@@ -1,7 +1,7 @@
 import { execSync } from 'child_process';
 import { ContextFossilService } from '../cli/context-fossil';
 import type { ContextEntry } from '../types';
-import { CreateFossilLabelParamsSchema } from '../types/cli';
+import { CreateFossilLabelParamsSchema } from '../types';
 import type { CreateFossilLabelParams } from '../types/cli';
 
 /**

@@ -1,7 +1,7 @@
 import { execSync } from 'child_process';
 import { ContextFossilService } from '../cli/context-fossil';
 import type { ContextEntry } from '../types';
-import { CreateFossilMilestoneParamsSchema } from '../types/cli';
+import { CreateFossilMilestoneParamsSchema } from '../types';
 import type { CreateFossilMilestoneParams } from '../types/cli';
 
 /**

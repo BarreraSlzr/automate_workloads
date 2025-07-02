@@ -4,7 +4,9 @@ import type { ContextEntry } from '../types';
 import * as fs from 'fs';
 import { extractJsonBlock } from './markdownChecklist';
 import type { CreateFossilIssueParams } from '../types/cli';
-import { CreateFossilIssueParamsSchema } from '../types/cli';
+import { CreateFossilIssueParamsSchema } from '../types';
+import { z } from 'zod';
+import { isTestMode } from '../cli/repo-orchestrator';
 
 /**
  * Preferred utility for fossil-backed, deduplicated GitHub issue creation.
@@ -27,7 +29,8 @@ function toSectionLabel(section: string): string {
 /**
  * Ensure a label exists in the repo, create if missing
  */
-function ensureLabel(owner: string, repo: string, label: string) {
+function ensureLabel(owner: string, repo: string, label: string, options?: any) {
+  if (isTestMode(options)) return;
   try {
     const out = execSync(`gh label list --repo ${owner}/${repo} --json name`, { encoding: 'utf8' });
     const arr = JSON.parse(out);
@@ -72,6 +75,10 @@ function generateAutomationIssueBody({
 }
 
 export async function createFossilIssue(params: CreateFossilIssueParams): Promise<{ issueNumber?: string; fossilId: string; fossilHash: string; deduplicated: boolean }> {
+  if (isTestMode(params)) {
+    console.log(`[MOCK] createFossilIssue: ${params.title}`);
+    return { deduplicated: false, issueNumber: '1', fossilId: 'mock-fossil-id', fossilHash: 'mock-fossil-hash' };
+  }
   CreateFossilIssueParamsSchema.parse(params);
   const {
     owner,
@@ -126,10 +133,10 @@ export async function createFossilIssue(params: CreateFossilIssueParams): Promis
   let sectionLabel = '';
   if (typeof section === 'string' && section.trim().length > 0) {
     sectionLabel = toSectionLabel(section);
-    ensureLabel(owner, repo, sectionLabel);
+    ensureLabel(owner, repo, sectionLabel, params);
   }
   const traceLabel = `${type}-${contentHash || ''}`;
-  ensureLabel(owner, repo, traceLabel);
+  ensureLabel(owner, repo, traceLabel, params);
   const filteredLabels = labels.filter(l => l && l !== section);
   const validLabels = [...filteredLabels, sectionLabel, traceLabel].filter(Boolean);
   let createCmd = `gh issue create --repo ${owner}/${repo} --title "${title}" --body-file "${tempFile}"`;
