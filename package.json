@@ -118,7 +118,8 @@
     "issues:fossilize": "bun run src/cli/issues-fossilize.ts"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/js-yaml": "^4.0.9"
   },
   "peerDependencies": {
     "typescript": "^5"

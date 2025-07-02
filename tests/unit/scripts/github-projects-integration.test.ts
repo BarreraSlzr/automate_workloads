@@ -1,6 +1,6 @@
 import { test } from "bun:test";
 import { ScriptTester } from "../../base-tester";
-const tester = new ScriptTester("./scripts/github-projects-integration.sh", "github-projects-integration.sh Test");
+const tester = new ScriptTester("./scripts/automation/github-projects-integration.sh", "github-projects-integration.sh Test");
 
 test("github-projects-integration.sh is executable", async () => {
   await tester.isExecutable();

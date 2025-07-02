@@ -7,13 +7,13 @@ const originalExistsSync = fs.existsSync;
 fs.existsSync = () => true;
 
 test("runIssuesCreate creates an issue and fossil entry", async () => {
-  mock.module("../../../src/services/github.ts", () => ({
-    GitHubService: class {
-      async isReady() { return true; }
-      async createIssue() {
-        return { success: true, data: { title: "Test Issue", number: 123, state: "open" } };
-      }
-    }
+  mock.module("../../../src/utils/fossilIssue", () => ({
+    createFossilIssue: async () => ({
+      issueNumber: "123",
+      fossilId: "fossil-1",
+      fossilHash: "hash-1",
+      deduplicated: false,
+    })
   }));
   mock.module("../../../src/cli/context-fossil.ts", () => ({
     ContextFossilService: class {
@@ -28,18 +28,18 @@ test("runIssuesCreate creates an issue and fossil entry", async () => {
 });
 
 test("runIssuesCreate skips duplicate", async () => {
-  mock.module("../../../src/services/github.ts", () => ({
-    GitHubService: class {
-      async isReady() { return true; }
-      async createIssue() {
-        return { success: true, data: { title: "Test Issue", number: 123, state: "open" } };
-      }
-    }
+  mock.module("../../../src/utils/fossilIssue", () => ({
+    createFossilIssue: async () => ({
+      issueNumber: "123",
+      fossilId: "fossil-1",
+      fossilHash: "hash-1",
+      deduplicated: true,
+    })
   }));
   mock.module("../../../src/cli/context-fossil.ts", () => ({
     ContextFossilService: class {
       async initialize() { return; }
-      async queryEntries() { return [{ id: "1" }]; }
+      async queryEntries() { return []; }
       async addEntry() { return; }
     }
   }));
@@ -49,19 +49,24 @@ test("runIssuesCreate skips duplicate", async () => {
 });
 
 test("runIssuesCreate handles GitHub CLI not ready", async () => {
-  mock.module("../../../src/services/github.ts", () => ({
-    GitHubService: class {
-      async isReady() { return false; }
-      async createIssue() {
-        return { success: true, data: { title: "Test Issue", number: 123, state: "open" } };
-      }
-    }
+  mock.module("../../../src/utils/fossilIssue", () => ({
+    createFossilIssue: async () => ({
+      issueNumber: "123",
+      fossilId: "fossil-1",
+      fossilHash: "hash-1",
+      deduplicated: false,
+    })
   }));
   mock.module("../../../src/cli/context-fossil.ts", () => ({
     ContextFossilService: class {
       async initialize() { return; }
       async queryEntries() { return []; }
       async addEntry() { return; }
+    }
+  }));
+  mock.module("../../../src/services/github.ts", () => ({
+    GitHubService: class {
+      async isReady() { return false; }
     }
   }));
   const result = await runIssuesCreate({ purpose: "Test", checklist: "- [ ] Test", metadata: "Meta" });

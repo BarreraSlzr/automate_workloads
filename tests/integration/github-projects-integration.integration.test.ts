@@ -3,7 +3,7 @@ import { runScript } from '../integration-base-tester';
 
 test('github-projects-integration.sh outputs expected log for dummy repo', () => {
   const { stdout, stderr, exitCode } = runScript(
-    './scripts/github-projects-integration.sh',
+    './scripts/automation/github-projects-integration.sh',
     ['-p', '123', 'owner', 'repo'],
     { requiredCmds: ['gh', 'bun', 'jq'] }
   );

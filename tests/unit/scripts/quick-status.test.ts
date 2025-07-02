@@ -1,6 +1,6 @@
 import { test } from "bun:test";
 import { ScriptTester } from "../../base-tester.ts";
-const tester = new ScriptTester("./scripts/quick-status.sh", "quick-status.sh Test");
+const tester = new ScriptTester("./scripts/monitoring/quick-status.sh", "quick-status.sh Test");
 
 test("quick-status.sh is executable", async () => {
   await tester.isExecutable();

@@ -4,8 +4,8 @@ import { runScript } from '../integration-base-tester';
 // [integration] This test should only be run in a fully provisioned environment with all dependencies.
 test('quick-status.sh outputs expected log for dummy repo', () => {
   const { stdout, stderr, exitCode } = runScript(
-    './scripts/quick-status.sh',
-    ['owner', 'repo'],
+    './scripts/monitoring/quick-status.sh',
+    ['dummy-owner', 'dummy-repo'],
     { requiredCmds: ['gh', 'bun', 'jq'] }
   );
 
@@ -20,7 +20,7 @@ test('quick-status.sh outputs expected log for dummy repo', () => {
   }
 
   expect(exitCode).toBe(0);
-  expect(stdout).toContain('Quick Status Check for owner/repo');
+  expect(stdout).toContain('Quick Status Check for dummy-owner/dummy-repo');
   expect(stdout).toContain('Checking dependencies');
   // Optionally check for health/plan/automation warnings if dummy repo
   // expect(stdout).toContain('Could not analyze health');
