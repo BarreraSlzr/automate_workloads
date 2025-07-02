@@ -1,0 +1,104 @@
+{
+  "type": "e2e_automation_roadmap",
+  "source": "llm-human-collab",
+  "createdBy": "llm+human",
+  "createdAt": "2024-07-01T12:00:00.000Z",
+  "tasks": [
+    {
+      "task": "Update integration tests to use real repo",
+      "status": "done",
+      "issues": [
+        101,
+        102
+      ],
+      "owner": "emmanuelbarrera",
+      "context": "Refactor E2E tests to use barreraslzr/automate_workloads and test branch.",
+      "subtasks": [
+        {
+          "task": "Replace all test-owner/test-repo references",
+          "status": "done",
+          "issues": [
+            101
+          ],
+          "context": "All references updated in integration tests."
+        },
+        {
+          "task": "Add GitHub CLI auth check",
+          "status": "pending",
+          "issues": [
+            102
+          ],
+          "context": "Automate gh auth status pre-check in test runner."
+        }
+      ],
+      "deadline": "2024-07-10T00:00:00.000Z",
+      "milestone": "E2E Test Refactor"
+    },
+    {
+      "task": "Document fossilization workflow",
+      "status": "done",
+      "owner": "llm+human",
+      "context": "Ensure all contributors understand YAML→JSON→Markdown fossil workflow.",
+      "issues": [
+        103
+      ],
+      "deadline": "2024-07-05T00:00:00.000Z",
+      "milestone": "Documentation Update"
+    },
+    {
+      "task": "Automate roadmap to GitHub issue/project sync",
+      "status": "done",
+      "owner": "emmanuelbarrera",
+      "context": "Script to create/update GitHub issues and milestones from roadmap YAML.",
+      "issues": [
+        104,
+        105
+      ],
+      "subtasks": [
+        {
+          "task": "Generate Markdown from YAML for GitHub issue body",
+          "status": "done"
+        },
+        {
+          "task": "Create/update issues for each roadmap task",
+          "status": "partial"
+        },
+        {
+          "task": "Sync milestones with roadmap deadlines",
+          "status": "pending"
+        }
+      ],
+      "milestone": "Automation Sync"
+    },
+    {
+      "task": "Tag all test-created issues/labels for cleanup",
+      "status": "done",
+      "recommendation": "Use unique tags/labels",
+      "preference": "Automate cleanup"
+    },
+    {
+      "task": "Add reporting/cleanup scripts for test artifacts",
+      "status": "done",
+      "recommendation": "Run post-test in CI",
+      "preference": "Summarize repo changes"
+    },
+    {
+      "task": "Integrate E2E tests into CI pipeline",
+      "status": "done",
+      "recommendation": "Fail fast on setup/auth errors",
+      "preference": "Run on PRs to main/test"
+    },
+    {
+      "task": "Save this roadmap as a fossil or issue for LLM/human reference",
+      "status": "done",
+      "recommendation": "Use e2e-roadmap tag/type",
+      "preference": "Store in /src/types or as .md/.json"
+    },
+    {
+      "task": "Document all E2E insights, code preferences, and automation patterns",
+      "status": "done",
+      "recommendation": "Add to project docs and reference in fossil",
+      "preference": "Keep docs up to date with codebase changes"
+    }
+  ]
+}
