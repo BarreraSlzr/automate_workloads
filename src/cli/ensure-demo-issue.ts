@@ -1,4 +1,4 @@
-import { GitHubService } from "../services/github";
+import { createFossilIssue } from '../utils/fossilIssue';
 
 async function main() {
   const owner = "BarreraSlzr";
@@ -7,29 +7,20 @@ async function main() {
   const body =
     "This issue is automatically created to ensure that `examples/tool-centric-demo.ts` remains in sync with the latest core features and integration patterns. Please review and update the demo as new capabilities are added to the automation ecosystem.";
   const labels = ["maintenance", "demo"];
-
-  const github = new GitHubService(owner, repo);
-
-  // Get all open issues and check for an existing one with the same title
-  const issuesResponse = await github.getIssues({ state: "open" });
-  if (!issuesResponse.success || !issuesResponse.data) {
-    console.error("Failed to fetch issues:", issuesResponse.error);
-    process.exit(1);
-  }
-
-  const existing = issuesResponse.data.find((issue: any) => issue.title === title);
-  if (existing) {
-    console.log(`✅ Issue already exists: #${existing.number} - ${existing.title}`);
-    return;
-  }
-
-  // Create the issue
-  const createResponse = await github.createIssue(title, body, { labels });
-  if (createResponse.success && createResponse.data) {
-    console.log(`✅ Created issue: #${createResponse.data.number} - ${createResponse.data.title}`);
+  // Use fossil-backed issue creation
+  const result = await createFossilIssue({
+    owner,
+    repo,
+    title,
+    body,
+    labels,
+    tags: labels,
+    metadata: { createdBy: 'automation' },
+  });
+  if (result.deduplicated) {
+    console.log(`⚠️ Issue already exists for fossil hash: ${result.fossilHash} (Fossil ID: ${result.fossilId})`);
   } else {
-    console.error("❌ Failed to create issue:", createResponse.error);
-    process.exit(1);
+    console.log(`✅ Created issue #${result.issueNumber} (Fossil ID: ${result.fossilId}, Hash: ${result.fossilHash})`);
   }
 }
 
