@@ -814,3 +814,74 @@ Every fossil entry now includes:
 - `metadata.invocation`: The script name and up to the first three arguments used to create the fossil (e.g., 'repo-orchestrator-orchestrate-owner-repo').
 
 This ensures fossils are both easy to categorize and fully traceable to the exact command that created them.
+
+## Fossil-Backed Issue Creation (Preferred Standard)
+
+> **All new GitHub issues must be created using the fossil-backed utility.**
+> This ensures deduplication, traceability, and context preservation for every issue.
+
+### Why?
+- Prevents duplicate issues by content hash
+- Links every issue to a fossil (persistent context entry)
+- Enables robust automation, reporting, and self-improvement
+
+### How to Use
+
+#### CLI (Recommended for scripts and automation)
+```sh
+bun run src/cli/create-fossil-issue.ts \
+  --owner barreraslzr \
+  --repo automate_workloads \
+  --title "My Issue Title" \
+  --body "My issue body" \
+  --labels "automation,bug" \
+  --milestone "Sprint 1"
+```
+
+#### TypeScript Utility (for programmatic use)
+```typescript
+import { createFossilIssue } from './src/utils/fossilIssue';
+
+const result = await createFossilIssue({
+  owner: 'barreraslzr',
+  repo: 'automate_workloads',
+  title: 'My Issue Title',
+  body: 'My issue body',
+  labels: ['automation', 'bug'],
+  milestone: 'Sprint 1',
+});
+if (result.deduplicated) {
+  console.log('Issue already exists for fossil hash:', result.fossilHash);
+} else {
+  console.log('Created issue #', result.issueNumber);
+}
+```
+
+> **Warning:** Do NOT use direct `gh issue create` or `GitHubService.createIssue` for new issues. These are deprecated in favor of fossil-backed creation.
+
+## 🦴 Migration & Issue Update Workflow
+
+### LLM-Powered Issue Migration & Update
+
+You can migrate or update legacy issues to a modern, automation-friendly format using:
+
+```sh
+bun run scripts/migrations/003-migrate-legacy-issues.ts --update <issue_number> <markdown_file>
+```
+
+- This command reads the markdown file, extracts purpose, checklist, and metadata (using OpenAI LLM if `OPENAI_API_KEY` is set), and updates the GitHub issue with a structured markdown + JSON block body.
+- If `OPENAI_API_KEY` is not set, robust local extraction is used.
+
+### Batch Migration
+
+To migrate all open issues to the modern format:
+
+```sh
+bun run scripts/migrations/003-migrate-legacy-issues.ts
+```
+
+### Environment Variables
+- `OPENAI_API_KEY`: (optional) If set, enables LLM-powered extraction for issue migration and updates.
+
+### Canonical Issue Body Format
+All issues and fossils now use a structured markdown + JSON block format for robust automation, deduplication, and traceability.

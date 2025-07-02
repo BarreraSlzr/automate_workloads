@@ -11,6 +11,7 @@ This document provides a comprehensive reference for all services, CLI commands,
 - [Error Handling](#error-handling)
 - [Service Response Patterns](#service-response-patterns)
 - [Fossil Entry Schema](#fossil-entry-schema)
+- [🦴 Migration & Issue Update CLI](#migration-issue-update-cli)
 
 ---
 
@@ -74,9 +75,39 @@ if (!validation.isValid) {
 
 ## 🔗 GitHub Service
 
+### Fossil-Backed Issue Creation (Preferred)
+
+All new issues should be created using the fossil-backed utility or CLI. This ensures deduplication, traceability, and robust automation.
+
+#### Utility Usage
+```typescript
+import { createFossilIssue } from '../src/utils/fossilIssue';
+const result = await createFossilIssue({
+  owner: 'barreraslzr',
+  repo: 'automate_workloads',
+  title: 'My Issue Title',
+  body: 'My issue body',
+  labels: ['automation', 'bug'],
+  milestone: 'Sprint 1',
+});
+```
+
+#### CLI Usage
+```sh
+bun run src/cli/create-fossil-issue.ts \
+  --owner barreraslzr \
+  --repo automate_workloads \
+  --title "My Issue Title" \
+  --body "My issue body" \
+  --labels "automation,bug" \
+  --milestone "Sprint 1"
+```
+
+> **Warning:** `GitHubService.createIssue` is deprecated. Do NOT use direct `gh issue create` for new issues.
+
 ### GitHubService Class
 
-The GitHub service provides comprehensive GitHub integration using the GitHub CLI.
+> **Deprecated:** Use createFossilIssue for all new issue creation.
 
 #### Constructor
 
@@ -136,23 +167,10 @@ if (response.success && response.data) {
 }
 ```
 
-##### `createIssue(title, body, options)`
-Creates a new issue in the repository.
-
-**Parameters:**
-- `title`: Issue title
-- `body`: Issue body content
-- `options`: Issue options (labels, assignee)
-
-**Returns:** `Promise<ServiceResponse<GitHubIssue>>`
-
-**Example:**
+##### `createIssue (deprecated)`
 ```typescript
-const response = await github.createIssue(
-  'New feature request',
-  'Please add support for...',
-  { labels: ['enhancement'] }
-);
+// Deprecated: Use createFossilIssue instead
+const response = await github.createIssue('title', 'body', { labels: ['bug'] });
 ```
 
 ##### `closeIssue(number, comment)`
@@ -551,4 +569,30 @@ bun run repo-orchestrator orchestrate <owner> <repo> --workflow plan --plan-mode
   ],
   "fossilId": "fossil_..."
 }
-``` 
+```
+
+## 🦴 Migration & Issue Update CLI
+
+### scripts/migrations/003-migrate-legacy-issues.ts
+
+- **Update a single issue:**
+  ```sh
+  bun run scripts/migrations/003-migrate-legacy-issues.ts --update <issue_number> <markdown_file>
+  ```
+- **Batch migrate all open issues:**
+  ```sh
+  bun run scripts/migrations/003-migrate-legacy-issues.ts
+  ```
+- Uses OpenAI LLM (if `OPENAI_API_KEY` is set) for robust extraction of purpose, checklist, and metadata from markdown. Falls back to local extraction if LLM is unavailable or fails.
+
+### getLLMSuggestions
+- Now uses OpenAI LLM (via `callOpenAIChat`) if `OPENAI_API_KEY` is set.
+- Extracts structured data (purpose, checklist, metadata) from markdown.
+- Falls back to robust local extraction if LLM is unavailable or fails.
+
+### Utilities
+- **Checklist Extraction:** Now extracts all checklist items from any markdown, not just a specific section.
+- **Canonical Issue Body:** All issues and fossils use a markdown + JSON block format for automation and deduplication.
+
+### Environment Variables
+- `OPENAI_API_KEY`: Enables LLM-powered extraction for migration and updates. 

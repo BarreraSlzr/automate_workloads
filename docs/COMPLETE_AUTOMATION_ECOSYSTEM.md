@@ -517,6 +517,36 @@ bun test tests/integration --coverage
 - Any existing open issues without labels should be automatically labeled with the default label.
 - This ensures consistent organization and makes it easy to filter/search automation-related issues.
 
+## Fossil-Backed Issue Creation: Best Practice
+
+All new GitHub issues must be created using the fossil-backed utility or CLI. This ensures deduplication, traceability, and context preservation for every issue.
+
+### CLI Example
+```sh
+bun run src/cli/create-fossil-issue.ts \
+  --owner barreraslzr \
+  --repo automate_workloads \
+  --title "My Issue Title" \
+  --body "My issue body" \
+  --labels "automation,bug" \
+  --milestone "Sprint 1"
+```
+
+### TypeScript Example
+```typescript
+import { createFossilIssue } from '../src/utils/fossilIssue';
+const result = await createFossilIssue({
+  owner: 'barreraslzr',
+  repo: 'automate_workloads',
+  title: 'My Issue Title',
+  body: 'My issue body',
+  labels: ['automation', 'bug'],
+  milestone: 'Sprint 1',
+});
+```
+
+> **Warning:** Do NOT use direct `gh issue create` or `GitHubService.createIssue` for new issues. These are deprecated in favor of fossil-backed creation.
+
 ## Fossilization & Excerpts
 
 Every fossil entry now includes an LLM-generated `excerpt` field. This excerpt is a one-sentence summary generated using the fossil's type, title, tags, metadata, and content, providing a quick, human-readable preview for audits and reports.
@@ -529,3 +559,13 @@ Every fossil entry now includes an LLM-generated `excerpt` field. This excerpt i
 
 - Use the `context-fossil list` command or the summary scripts to quickly audit the state of your repo
 - Cleanup scripts ensure only production fossils remain 
+
+## 🦴 LLM-Powered Migration & Issue Update
+
+- The ecosystem now supports automated migration and updating of issues to a modern, structured format using LLMs (if `OPENAI_API_KEY` is set) or robust local extraction.
+- All issues and fossils use a canonical markdown + JSON block format for traceability and automation.
+- The migration script (`scripts/migrations/003-migrate-legacy-issues.ts`) can update single issues or batch migrate all open issues.
+
+### LLM Integration for Metadata Extraction
+- When `OPENAI_API_KEY` is set, the system uses OpenAI to extract purpose, checklist, and metadata from legacy markdown issues.
+- If LLM is unavailable, robust local extraction ensures all checklists and metadata are captured. 
