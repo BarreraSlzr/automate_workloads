@@ -162,7 +162,8 @@ export type {
   // Core types
   BaseFossil as Fossil,
   ContextEntry as Entry,
-  ServiceResponse as Response
+  ServiceResponse as Response,
+  CuratedFossilMetadata as CuratedMetadata
 } from './core';
 
 export type {
@@ -183,5 +184,6 @@ export type {
   CommandResult as CLIResult,
   IssueParams as CreateIssueParams,
   LabelParams as CreateLabelParams,
-  MilestoneParams as CreateMilestoneParams
-} from './cli'; 
+  MilestoneParams as CreateMilestoneParams,
+  CurateFossilParams,
+} from './cli';

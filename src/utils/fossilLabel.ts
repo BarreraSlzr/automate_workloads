@@ -1,6 +1,8 @@
 import { execSync } from 'child_process';
 import { ContextFossilService } from '../cli/context-fossil';
 import type { ContextEntry } from '../types';
+import { CreateFossilLabelParamsSchema } from '../types/cli';
+import type { CreateFossilLabelParams } from '../types/cli';
 
 /**
  * Preferred utility for fossil-backed, deduplicated GitHub label creation.
@@ -10,25 +12,19 @@ import type { ContextEntry } from '../types';
 /**
  * Create a GitHub label with fossil deduplication and metadata storage
  */
-export async function createFossilLabel({
-  owner,
-  repo,
-  name,
-  description,
-  color,
-  type = 'label',
-  tags = [],
-  metadata = {}
-}: {
-  owner: string;
-  repo: string;
-  name: string;
-  description: string;
-  color: string;
-  type?: string;
-  tags?: string[];
-  metadata?: Record<string, unknown>;
-}): Promise<{ fossilId: string; fossilHash: string; deduplicated: boolean }> {
+export async function createFossilLabel(params: CreateFossilLabelParams): Promise<{ fossilId: string; fossilHash: string; deduplicated: boolean }> {
+  CreateFossilLabelParamsSchema.parse(params);
+  const {
+    owner,
+    repo,
+    name,
+    description,
+    color,
+    type = 'label',
+    tags = [],
+    metadata = {}
+  } = params;
+  
   const fossilService = new ContextFossilService();
   await fossilService.initialize();
   

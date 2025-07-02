@@ -3,6 +3,8 @@ import { ContextFossilService } from '../cli/context-fossil';
 import type { ContextEntry } from '../types';
 import * as fs from 'fs';
 import { extractJsonBlock } from './markdownChecklist';
+import type { CreateFossilIssueParams } from '../types/cli';
+import { CreateFossilIssueParamsSchema } from '../types/cli';
 
 /**
  * Preferred utility for fossil-backed, deduplicated GitHub issue creation.
@@ -69,37 +71,24 @@ function generateAutomationIssueBody({
   ].filter(Boolean).join('\n');
 }
 
-export async function createFossilIssue({
-  owner,
-  repo,
-  title,
-  body,
-  labels = [],
-  milestone = '',
-  section = '',
-  type = 'action',
-  tags = [],
-  metadata = {},
-  purpose,
-  checklist,
-  automationMetadata,
-  extraBody,
-}: {
-  owner: string;
-  repo: string;
-  title: string;
-  body?: string;
-  labels?: string[];
-  milestone?: string;
-  section?: string;
-  type?: ContextEntry['type'];
-  tags?: string[];
-  metadata?: Record<string, unknown>;
-  purpose?: string;
-  checklist?: string;
-  automationMetadata?: string;
-  extraBody?: string;
-}): Promise<{ issueNumber?: string; fossilId: string; fossilHash: string; deduplicated: boolean }> {
+export async function createFossilIssue(params: CreateFossilIssueParams): Promise<{ issueNumber?: string; fossilId: string; fossilHash: string; deduplicated: boolean }> {
+  CreateFossilIssueParamsSchema.parse(params);
+  const {
+    owner,
+    repo,
+    title,
+    body,
+    labels = [],
+    milestone = '',
+    section = '',
+    type = 'action',
+    tags = [],
+    metadata = {},
+    purpose,
+    checklist,
+    automationMetadata,
+    extraBody,
+  } = params;
   const fossilService = new ContextFossilService();
   await fossilService.initialize();
   // Check for existing fossil by content hash or title

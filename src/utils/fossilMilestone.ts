@@ -1,6 +1,8 @@
 import { execSync } from 'child_process';
 import { ContextFossilService } from '../cli/context-fossil';
 import type { ContextEntry } from '../types';
+import { CreateFossilMilestoneParamsSchema } from '../types/cli';
+import type { CreateFossilMilestoneParams } from '../types/cli';
 
 /**
  * Preferred utility for fossil-backed, deduplicated GitHub milestone creation.
@@ -10,25 +12,18 @@ import type { ContextEntry } from '../types';
 /**
  * Create a GitHub milestone with fossil deduplication and metadata storage
  */
-export async function createFossilMilestone({
-  owner,
-  repo,
-  title,
-  description,
-  dueOn,
-  type = 'milestone',
-  tags = [],
-  metadata = {}
-}: {
-  owner: string;
-  repo: string;
-  title: string;
-  description: string;
-  dueOn?: string;
-  type?: string;
-  tags?: string[];
-  metadata?: Record<string, unknown>;
-}): Promise<{ milestoneNumber?: string; fossilId: string; fossilHash: string; deduplicated: boolean }> {
+export async function createFossilMilestone(params: CreateFossilMilestoneParams): Promise<{ milestoneNumber?: string; fossilId: string; fossilHash: string; deduplicated: boolean }> {
+  CreateFossilMilestoneParamsSchema.parse(params);
+  const {
+    owner,
+    repo,
+    title,
+    description,
+    dueOn,
+    type = 'milestone',
+    tags = [],
+    metadata = {}
+  } = params;
   const fossilService = new ContextFossilService();
   await fossilService.initialize();
   

@@ -179,7 +179,7 @@ export type Impact = 'low' | 'medium' | 'high' | 'critical';
 /**
  * Common fossil types
  */
-export type FossilType = 
+export type FossilType =
   | 'github_issue_fossil'
   | 'github_milestone_fossil'
   | 'github_label_fossil'
@@ -189,7 +189,7 @@ export type FossilType =
   | 'plan_fossil'
   | 'project_documentation_fossil';
 
-export type FossilSource = 
+export type FossilSource =
   | 'roadmap-automation'
   | 'llm-human-collab'
   | 'automation'
@@ -197,7 +197,7 @@ export type FossilSource =
   | 'api'
   | 'cli';
 
-export type FossilCreator = 
+export type FossilCreator =
   | 'automation'
   | 'llm'
   | 'human'
@@ -254,4 +254,17 @@ export interface FossilCollection<T extends BaseFossil = BaseFossil> {
   createdAt: string;
   fossils: T[];
   metadata?: Record<string, unknown>;
-} 
+}
+
+/**
+ * Curated fossil metadata for project status, roadmap, etc. (CLI usage)
+ */
+export interface CuratedFossilMetadata extends BaseFossil {
+  kind: 'project_status' | 'roadmap';
+  tag: string;
+  curatedAt: string;
+  inputFile: string; 
+  outputYml: string;
+  outputJson: string;
+  diff?: string; 
+}
