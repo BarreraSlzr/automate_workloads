@@ -1,0 +1,1276 @@
+project_status:
+  modules:
+    cli:
+      path: src/cli
+      files:
+        - update-checklist.ts:
+            functions: []
+            fossilized_output: false
+            cli_commands:
+              - 'file: implemented'
+              - 'batch: implemented'
+              - 'roadmap: implemented'
+            cli_details:
+              - name: file
+                options: &ref_0
+                  - '-u, --updates <updates>'
+                  - '-f, --updates-file <file>'
+                  - '--dry-run'
+                  - '--no-backup'
+                  - '-c, --config <file>'
+                  - '-u, --updates <updates>'
+                  - '--dry-run'
+                  - '--report <file>'
+                  - '-t, --task <task>'
+                  - '-s, --status <status>'
+                  - '-c, --comment <comment>'
+                  - '--dry-run'
+                required: &ref_1 []
+              - name: batch
+                options: *ref_0
+                required: *ref_1
+              - name: roadmap
+                options: *ref_0
+                required: *ref_1
+            tests: &ref_14
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/scripts.e2e.test.ts
+        - create-fossil-issue.ts:
+            functions: []
+            fossilized_output: false
+            cli_details: []
+        - curate-fossil.ts:
+            functions: []
+            fossilized_output: false
+            cli_details: []
+            tests: &ref_15
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/examples.e2e.test.ts
+        - llm-execute.ts:
+            functions: []
+            fossilized_output: false
+            cli_details: []
+        - track-progress.ts:
+            functions:
+              - 'ProgressTrackingService: implemented'
+            fossilized_output: false
+            cli_commands:
+              - 'track: implemented'
+              - 'status: implemented'
+            cli_details:
+              - name: track
+                options: &ref_2
+                  - '-m, --mode <mode>'
+                  - '-r, --report-type <type>'
+                  - '-o, --output-dir <dir>'
+                  - '--no-trends'
+                  - '--no-trigger'
+                  - '--output <file>'
+                required: &ref_3 []
+              - name: status
+                options: *ref_2
+                required: *ref_3
+        - issues-create.ts:
+            functions:
+              - 'runIssuesCreate: implemented'
+            fossilized_output: false
+            cli_details: []
+            tests: &ref_16
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/issues-create.test.ts
+        - github-issues.ts:
+            functions:
+              - 'parseArgs: implemented'
+              - 'showHelp: implemented'
+              - 'main: implemented'
+            fossilized_output: false
+            cli_details: []
+            tests: &ref_17
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-issues.integration.test.ts
+        - issues-fossilize.ts:
+            functions:
+              - 'main: implemented'
+            fossilized_output: false
+            cli_details: []
+        - context-fossil.ts:
+            functions:
+              - 'ContextFossilService: implemented'
+            fossilized_output: false
+            cli_commands:
+              - 'init: implemented'
+              - 'add: implemented'
+              - 'query: implemented'
+              - 'get: implemented'
+              - 'update: implemented'
+              - 'export: implemented'
+              - 'stats: implemented'
+              - 'summary: implemented'
+              - 'cleanup: implemented'
+              - 'enhance: implemented'
+              - 'list: implemented'
+            cli_details:
+              - name: init
+                options: &ref_4
+                  - '--tags <tags>'
+                  - '--source <source>'
+                  - '--parent-id <id>'
+                  - '--metadata <metadata>'
+                  - '-t, --type <type>'
+                  - '--tags <tags>'
+                  - '--source <source>'
+                  - '--search <search>'
+                  - '--limit <number>'
+                  - '--offset <number>'
+                  - '--format <format>'
+                  - '--title <title>'
+                  - '--content <content>'
+                  - '--tags <tags>'
+                  - '--output <file>'
+                  - '--type <type>'
+                  - '--tags <tags>'
+                  - '--type <type>'
+                  - '--tags <tags>'
+                  - '--limit <number>'
+                  - '--dry-run'
+                  - '--backup'
+                  - '--similarity-threshold <number>'
+                  - '--report-file <file>'
+                  - '--dry-run'
+                  - '--entry-id <id>'
+                  - '--all'
+                  - '--type <type>'
+                  - '--tags <tags>'
+                  - '--json'
+                required: &ref_5
+                  - '-t, --type <type>'
+                  - '--title <title>'
+                  - '--content <content>'
+                  - '-f, --format <format>'
+              - name: add
+                options: *ref_4
+                required: *ref_5
+              - name: query
+                options: *ref_4
+                required: *ref_5
+              - name: get
+                options: *ref_4
+                required: *ref_5
+              - name: update
+                options: *ref_4
+                required: *ref_5
+              - name: export
+                options: *ref_4
+                required: *ref_5
+              - name: stats
+                options: *ref_4
+                required: *ref_5
+              - name: summary
+                options: *ref_4
+                required: *ref_5
+              - name: cleanup
+                options: *ref_4
+                required: *ref_5
+              - name: enhance
+                options: *ref_4
+                required: *ref_5
+              - name: list
+                options: *ref_4
+                required: *ref_5
+            tests: &ref_18
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/issues-create.test.ts
+        - llm-plan.ts:
+            functions:
+              - 'LLMPlanningService: implemented'
+              - 'findShellScripts: implemented'
+              - 'for: implemented'
+            fossilized_output: false
+            cli_commands:
+              - 'decompose: implemented'
+              - 'prioritize: implemented'
+              - 'generate-content: implemented'
+              - 'generate-tests: implemented'
+              - 'review-comments: implemented'
+            cli_details:
+              - name: decompose
+                options: &ref_6
+                  - '--quiet'
+                  - '--json'
+                  - '-c, --context <context>'
+                  - '-o, --output <file>'
+                  - '--model <model>'
+                  - '--api-key <apiKey>'
+                  - '--issue-mode'
+                  - '-c, --context <context>'
+                  - '--model <model>'
+                  - '--api-key <apiKey>'
+                  - '-o, --output <file>'
+                  - '--model <model>'
+                  - '--api-key <apiKey>'
+                  - '-o, --output <file>'
+                  - '--model <model>'
+                  - '--api-key <apiKey>'
+                required: &ref_7 []
+              - name: prioritize
+                options: *ref_6
+                required: *ref_7
+              - name: generate-content
+                options: *ref_6
+                required: *ref_7
+              - name: generate-tests
+                options: *ref_6
+                required: *ref_7
+              - name: review-comments
+                options: *ref_6
+                required: *ref_7
+            tests: &ref_19
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/llm-plan.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-plan.test.ts
+        - llm-analyze.ts:
+            functions: []
+            fossilized_output: false
+            cli_details: []
+        - validate-plan.ts:
+            functions: []
+            fossilized_output: false
+            cli_commands:
+              - 'validate: implemented'
+              - 'batch: implemented'
+              - 'create-expected: implemented'
+            cli_details:
+              - name: validate
+                options: &ref_8
+                  - '-e, --expected <file>'
+                  - '-s, --strict'
+                  - '--ignore-timeline'
+                  - '--ignore-risks'
+                  - '--min-tasks <number>'
+                  - '--max-tasks <number>'
+                  - '--min-tags <number>'
+                  - '--max-tags <number>'
+                  - '--required-tags <tags>'
+                  - '--forbidden-tags <tags>'
+                  - '--output <file>'
+                  - '-e, --expected-dir <dir>'
+                  - '-p, --pattern <pattern>'
+                  - '-s, --strict'
+                  - '--output <file>'
+                  - '-o, --output <file>'
+                required: &ref_9 []
+              - name: batch
+                options: *ref_8
+                required: *ref_9
+              - name: create-expected
+                options: *ref_8
+                required: *ref_9
+        - automate-github-fossils.ts:
+            functions: []
+            fossilized_output: false
+            cli_commands:
+              - 'create: implemented'
+              - 'validate: implemented'
+              - 'list: implemented'
+            cli_details:
+              - name: create
+                options: &ref_10
+                  - '--create-labels'
+                  - '--create-milestones'
+                  - '--create-issues'
+                  - '--output <path>'
+                  - '--dry-run'
+                  - '--verbose'
+                  - '--verbose'
+                  - '--type <type>'
+                  - '--format <format>'
+                  - '--verbose'
+                required: &ref_11
+                  - '--owner <owner>'
+                  - '--repo <repo>'
+                  - '--roadmap <path>'
+                  - '--roadmap <path>'
+                  - '--owner <owner>'
+                  - '--repo <repo>'
+              - name: validate
+                options: *ref_10
+                required: *ref_11
+              - name: list
+                options: *ref_10
+                required: *ref_11
+            tests: &ref_20
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-fossil-automation.integration.test.ts
+        - ensure-demo-issue.ts:
+            functions:
+              - 'main: implemented'
+            fossilized_output: false
+            cli_details: []
+        - gather-context.ts:
+            functions:
+              - 'ContextGatheringService: implemented'
+            fossilized_output: true
+            cli_commands:
+              - 'gather: implemented'
+            cli_details:
+              - name: gather
+                options:
+                  - '-o, --output <file>'
+                  - '-s, --synthesize'
+                required: []
+            tests: &ref_21
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/gather-context.integration.test.ts
+        - sync-tracker.ts:
+            functions: []
+            fossilized_output: false
+            cli_commands:
+              - 'sync-tracker: implemented'
+            cli_details:
+              - name: sync-tracker
+                options:
+                  - '--auto-close'
+                  - '--sync-tests'
+                required: []
+        - repo-orchestrator.ts:
+            functions:
+              - 'RepoOrchestratorService: implemented'
+              - 'ensureLabelExists: implemented'
+              - 'addLabelToIssue: implemented'
+              - 'loadAutomationIssueTemplate: implemented'
+              - 'getInvocation: implemented'
+              - 'fossilizeEntry: implemented'
+            fossilized_output: false
+            cli_commands:
+              - 'orchestrate: implemented'
+              - 'analyze: implemented'
+              - 'fossilize: implemented'
+            cli_details:
+              - name: orchestrate
+                options: &ref_12
+                  - '-b, --branch <branch>'
+                  - '-w, --workflow <workflow>'
+                  - '-c, --context <context>'
+                  - '--plan-mode <mode>'
+                  - '--no-create-issues'
+                  - '--create-prs'
+                  - '--auto-merge'
+                  - '--no-notifications'
+                  - '--summary'
+                  - '--no-fossilize'
+                required: &ref_13 []
+              - name: analyze
+                options: *ref_12
+                required: *ref_13
+              - name: fossilize
+                options: *ref_12
+                required: *ref_13
+            tests: &ref_22
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/repo-orchestrator.test.ts
+    services:
+      path: src/services
+      files:
+        - semantic-tagger.ts:
+            functions:
+              - 'SemanticTaggerService: implemented'
+            fossilized_output: false
+            tests: &ref_28
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/services/semantic-tagger.test.ts
+        - github.ts:
+            functions:
+              - 'for: implemented'
+              - 'GitHubService: implemented'
+              - 'loadAndFillAutomationTemplate: implemented'
+            fossilized_output: false
+            tests: &ref_29
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/types/index.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/core/config.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/issues-create.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/github-projects-integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/github-projects-integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-issues.integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-fossil-automation.integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-projects-integration.integration.test.ts
+        - llm.ts:
+            functions:
+              - 'callOpenAIChat: implemented'
+            fossilized_output: false
+            tests: &ref_30
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/types/index.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/llm-plan.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-workflow.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-content-automation.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-plan.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-issue-manager.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/services/semantic-tagger.test.ts
+    utils:
+      path: src/utils
+      files:
+        - fossilIssue.ts:
+            functions:
+              - 'toSectionLabel: implemented'
+              - 'ensureLabel: implemented'
+              - 'generateAutomationIssueBody: implemented'
+              - 'createFossilIssue: implemented'
+            fossilized_output: false
+            tests: &ref_23
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/issues-create.test.ts
+        - syncTracker.ts:
+            functions:
+              - 'runGh: implemented'
+              - 'getMilestoneIdByTitle: implemented'
+              - 'ensureMilestone: implemented'
+              - 'getIssueByTitle: implemented'
+              - 'ensureIssue: implemented'
+              - 'addIssueToProject: implemented'
+              - 'closeIssueByTitle: implemented'
+              - 'ensureTestOrFossilIssue: implemented'
+              - 'syncTrackerWithGitHub: implemented'
+            fossilized_output: false
+        - roadmapToMarkdown.ts:
+            functions:
+              - 'roadmapToMarkdown: implemented'
+            fossilized_output: false
+        - githubFossilManager.ts:
+            functions:
+              - 'GitHubFossilManager: implemented'
+            fossilized_output: false
+        - fossilLabel.ts:
+            functions:
+              - 'createFossilLabel: implemented'
+              - 'ensureLabel: implemented'
+            fossilized_output: false
+        - fossilMilestone.ts:
+            functions:
+              - 'createFossilMilestone: implemented'
+              - 'ensureMilestone: implemented'
+            fossilized_output: false
+        - cli.ts:
+            functions:
+              - 'executeCommand: implemented'
+              - 'executeCommandJSON: implemented'
+              - 'isCommandAvailable: implemented'
+              - 'executeCommandWithRetry: implemented'
+              - 'formatOutput: implemented'
+              - 'createServiceResponse: implemented'
+              - 'issueExists: implemented'
+            fossilized_output: false
+            tests: &ref_24
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/llm-plan.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/issues-create.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-plan.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/gather-context.integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-issues.integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-fossil-automation.integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/examples.e2e.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/fossilization-workflow.e2e.test.ts
+        - markdownChecklist.ts:
+            functions:
+              - 'updateMarkdownChecklist: implemented'
+              - 'extractJsonBlock: implemented'
+              - 'checklistToMarkdown: implemented'
+              - 'metadataToMarkdown: implemented'
+            fossilized_output: false
+            tests: &ref_25
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/utils/markdownChecklist.test.ts
+        - yamlToJson.ts:
+            functions:
+              - 'yamlToJson: implemented'
+            fossilized_output: false
+        - fossilize.ts:
+            functions:
+              - 'generateContentHash: implemented'
+              - 'generateId: implemented'
+              - 'toFossilEntry: implemented'
+              - 'outputFossil: implemented'
+              - 'writeFossilToFile: implemented'
+            fossilized_output: true
+            tests: &ref_26
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/utils/fossilize.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/gather-context.integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/repo-orchestrator-fossilization.integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/fossilization-workflow.e2e.test.ts
+        - checklistUpdater.ts:
+            functions:
+              - 'detectFileType: implemented'
+              - 'createBackup: implemented'
+              - 'updateMarkdownChecklistFile: implemented'
+              - 'updateJsonChecklistFile: implemented'
+              - 'updateYamlChecklistFile: implemented'
+              - 'updateRoadmapTasks: implemented'
+              - 'updateChecklistArray: implemented'
+              - 'to: implemented'
+              - 'updateChecklistFile: implemented'
+              - 'updateMultipleChecklistFiles: implemented'
+              - 'parseChecklistUpdates: implemented'
+              - 'generateUpdateReport: implemented'
+            fossilized_output: false
+            tests: &ref_27
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/utils/checklistUpdater.test.ts
+        - githubCliCommands.ts:
+            functions:
+              - 'GitHubCLICommands: implemented'
+            fossilized_output: false
+        - curateFossil.ts:
+            functions:
+              - 'curateAndCheck: implemented'
+            fossilized_output: false
+        - fossilSummary.ts:
+            functions:
+              - 'getFossilSummary: implemented'
+            fossilized_output: false
+        - plan-validator.ts:
+            functions:
+              - 'PlanValidator: implemented'
+            fossilized_output: false
+    core:
+      path: src/core
+      files:
+        - config.ts:
+            functions:
+              - 'getEnv: implemented'
+              - 'for: implemented'
+              - 'hasServiceToken: implemented'
+              - 'for: implemented'
+              - 'getServiceToken: implemented'
+              - 'validateConfig: implemented'
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/types/index.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/core/config.test.ts
+    types:
+      path: src/types
+      files:
+        - external.ts:
+            functions: []
+            fossilized_output: false
+        - github.ts:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/types/index.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/core/config.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/issues-create.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/github-projects-integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/github-projects-integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-issues.integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-fossil-automation.integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-projects-integration.integration.test.ts
+        - workflow.ts:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/core/config.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-workflow.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/qa-workflow.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/review-workflow.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/services/semantic-tagger.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/repo-orchestrator-fossilization.integration.test.ts
+        - cli.ts:
+            functions:
+              - 'with: implemented'
+              - 'parseCLIArgs: implemented'
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/llm-plan.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/issues-create.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-plan.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/gather-context.integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-issues.integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-fossil-automation.integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/examples.e2e.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/fossilization-workflow.e2e.test.ts
+        - schemas.ts:
+            functions: []
+            fossilized_output: false
+        - core.ts:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/core/config.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/services/semantic-tagger.test.ts
+        - legacy-fossil.ts:
+            functions: []
+            fossilized_output: false
+        - index.ts:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/types/index.test.ts
+    scripts:
+      path: scripts
+      files:
+        - 001-improve-project-structure.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/migrations/001-improve-project-structure.test.ts
+        - 003-migrate-legacy-issues.ts:
+            functions:
+              - 'parseLegacySections: implemented'
+              - 'buildModernBody: implemented'
+              - 'hasModernJsonBlock: implemented'
+              - 'getLLMSuggestions: implemented'
+              - 'migrate: implemented'
+            fossilized_output: false
+        - 002-project-structure-migration.ts:
+            functions:
+              - 'ensureDir: implemented'
+              - 'moveFile: implemented'
+            fossilized_output: false
+        - migrate-legacy-issues.ts:
+            functions:
+              - 'parseLegacySections: implemented'
+              - 'buildModernBody: implemented'
+              - 'hasModernJsonBlock: implemented'
+              - 'getLLMSuggestions: implemented'
+              - 'migrate: implemented'
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/scripts.e2e.test.ts
+        - fossilize-roadmap.ts:
+            functions: []
+            fossilized_output: false
+        - cleanup-test-fossils.ts:
+            functions:
+              - 'main: implemented'
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/scripts.e2e.test.ts
+        - create-milestone.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/setup/create-milestone.test.ts
+        - monitor-progress.sh:
+            functions:
+              - 'with: implemented'
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/monitor-progress.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/monitor-progress.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/monitor-progress.integration.test.ts
+        - migrate.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/migrate.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/scripts.e2e.test.ts
+        - fossil-summary-json.ts:
+            functions:
+              - 'main: implemented'
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/scripts.e2e.test.ts
+        - update-issue-checklist.ts:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/scripts.e2e.test.ts
+        - update-project-status.ts:
+            functions:
+              - 'names: implemented'
+              - 'generateLLMRecommendationsFromYAML: implemented'
+              - 'detectStatus: implemented'
+              - 'extractCliDetails: implemented'
+              - 'walk: implemented'
+              - 'extractFunctionsAndClasses: implemented'
+              - 'detectFossilization: implemented'
+              - 'scanDir: implemented'
+              - 'mapTestsToFunctions: implemented'
+              - 'toProjectStatusYamlStructure: implemented'
+              - 'mergeWithExistingYaml: implemented'
+              - 'buildDeveloperSummary: implemented'
+              - 'main: implemented'
+            fossilized_output: true
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/scripts.e2e.test.ts
+        - cleanup-fossils.ts:
+            functions:
+              - 'main: implemented'
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/scripts.e2e.test.ts
+        - llm-issue-manager.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-issue-manager.test.ts
+        - review-workflow.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/review-workflow.test.ts
+        - llm-workflow.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-workflow.test.ts
+        - llm-content-automation.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-content-automation.test.ts
+        - backup-context.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/backup-context.test.ts
+        - simple-monitor.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/simple-monitor.test.ts
+        - testing-status.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/testing-status.test.ts
+        - monitor-progress.sh:
+            functions:
+              - 'with: implemented'
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/monitor-progress.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/monitor-progress.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/monitor-progress.integration.test.ts
+        - github-projects-integration.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/github-projects-integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/github-projects-integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-projects-integration.integration.test.ts
+        - repo-orchestrator.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/repo-orchestrator.test.ts
+        - qa-workflow.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/qa-workflow.test.ts
+        - test-automation-scripts.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/test-automation-scripts.test.ts
+        - audit-shell-scripts.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/audit-shell-scripts.test.ts
+        - update-checklist-demo.ts:
+            functions:
+              - 'createSampleFiles: implemented'
+              - 'demoMarkdownUpdate: implemented'
+              - 'demoJsonUpdate: implemented'
+              - 'demoYamlUpdate: implemented'
+              - 'demoBatchUpdate: implemented'
+              - 'demoErrorHandling: implemented'
+              - 'cleanup: implemented'
+              - 'main: implemented'
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/scripts.e2e.test.ts
+        - fossil-summary-md.ts:
+            functions:
+              - 'main: implemented'
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/scripts.e2e.test.ts
+        - quick-status.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/monitoring/quick-status.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/quick-status.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/monitoring-quick-status.integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/quick-status.integration.test.ts
+        - check-issues.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/monitoring/check-issues.test.ts
+  overall_summary:
+    modules_total: 6
+    files_total: 74
+    fossilized_outputs: 3
+    tests_total: 105
+    completion_percent: 5
+  fossilization_summary:
+    fossilized_outputs:
+      - gather-context.ts
+      - fossilize.ts
+      - update-project-status.ts
+    tests_using_fossils:
+      - >-
+        /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/gather-context.integration.test.ts
+      - >-
+        /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/utils/fossilize.test.ts
+      - >-
+        /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/repo-orchestrator-fossilization.integration.test.ts
+      - >-
+        /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/fossilization-workflow.e2e.test.ts
+      - >-
+        /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/scripts.e2e.test.ts
+    next_to_fossilize:
+      - update-checklist.ts
+      - create-fossil-issue.ts
+      - curate-fossil.ts
+      - llm-execute.ts
+      - track-progress.ts
+      - issues-create.ts
+      - github-issues.ts
+      - issues-fossilize.ts
+      - context-fossil.ts
+      - llm-plan.ts
+      - llm-analyze.ts
+      - validate-plan.ts
+      - automate-github-fossils.ts
+      - ensure-demo-issue.ts
+      - sync-tracker.ts
+      - repo-orchestrator.ts
+      - semantic-tagger.ts
+      - github.ts
+      - llm.ts
+      - fossilIssue.ts
+      - syncTracker.ts
+      - roadmapToMarkdown.ts
+      - githubFossilManager.ts
+      - fossilLabel.ts
+      - fossilMilestone.ts
+      - cli.ts
+      - markdownChecklist.ts
+      - yamlToJson.ts
+      - checklistUpdater.ts
+      - githubCliCommands.ts
+      - curateFossil.ts
+      - fossilSummary.ts
+      - plan-validator.ts
+      - config.ts
+      - external.ts
+      - workflow.ts
+      - schemas.ts
+      - core.ts
+      - legacy-fossil.ts
+      - index.ts
+      - 001-improve-project-structure.sh
+      - 003-migrate-legacy-issues.ts
+      - 002-project-structure-migration.ts
+      - migrate-legacy-issues.ts
+      - fossilize-roadmap.ts
+      - cleanup-test-fossils.ts
+      - create-milestone.sh
+      - monitor-progress.sh
+      - migrate.sh
+      - fossil-summary-json.ts
+      - update-issue-checklist.ts
+      - cleanup-fossils.ts
+      - llm-issue-manager.sh
+      - review-workflow.sh
+      - llm-workflow.sh
+      - llm-content-automation.sh
+      - backup-context.sh
+      - simple-monitor.sh
+      - testing-status.sh
+      - github-projects-integration.sh
+      - repo-orchestrator.sh
+      - qa-workflow.sh
+      - test-automation-scripts.sh
+      - audit-shell-scripts.sh
+      - update-checklist-demo.ts
+      - fossil-summary-md.ts
+      - quick-status.sh
+      - check-issues.sh
+  recommendations:
+    - Increase fossilized outputs for all modules.
+    - Add or update tests for all major CLI and service files.
+    - Review manual notes and keep them outside auto-generated sections.
+    - Automate regular updates of this YAML as part of CI.
+developer_summary:
+  cli:
+    - file: src/cli/update-checklist.ts
+      commands:
+        - file
+        - batch
+        - roadmap
+      functions: []
+      hasTests: true
+      testFiles: *ref_14
+    - file: src/cli/create-fossil-issue.ts
+      commands: []
+      functions: []
+      hasTests: false
+      testFiles: []
+    - file: src/cli/curate-fossil.ts
+      commands: []
+      functions: []
+      hasTests: true
+      testFiles: *ref_15
+    - file: src/cli/llm-execute.ts
+      commands: []
+      functions: []
+      hasTests: false
+      testFiles: []
+    - file: src/cli/track-progress.ts
+      commands:
+        - track
+        - status
+      functions:
+        - ProgressTrackingService
+      hasTests: false
+      testFiles: []
+    - file: src/cli/issues-create.ts
+      commands: []
+      functions:
+        - runIssuesCreate
+      hasTests: true
+      testFiles: *ref_16
+    - file: src/cli/github-issues.ts
+      commands: []
+      functions:
+        - parseArgs
+        - showHelp
+        - main
+      hasTests: true
+      testFiles: *ref_17
+    - file: src/cli/issues-fossilize.ts
+      commands: []
+      functions:
+        - main
+      hasTests: false
+      testFiles: []
+    - file: src/cli/context-fossil.ts
+      commands:
+        - init
+        - add
+        - query
+        - get
+        - update
+        - export
+        - stats
+        - summary
+        - cleanup
+        - enhance
+        - list
+      functions:
+        - ContextFossilService
+      hasTests: true
+      testFiles: *ref_18
+    - file: src/cli/llm-plan.ts
+      commands:
+        - decompose
+        - prioritize
+        - generate-content
+        - generate-tests
+        - review-comments
+      functions:
+        - LLMPlanningService
+        - findShellScripts
+        - for
+      hasTests: true
+      testFiles: *ref_19
+    - file: src/cli/llm-analyze.ts
+      commands: []
+      functions: []
+      hasTests: false
+      testFiles: []
+    - file: src/cli/validate-plan.ts
+      commands:
+        - validate
+        - batch
+        - create-expected
+      functions: []
+      hasTests: false
+      testFiles: []
+    - file: src/cli/automate-github-fossils.ts
+      commands:
+        - create
+        - validate
+        - list
+      functions: []
+      hasTests: true
+      testFiles: *ref_20
+    - file: src/cli/ensure-demo-issue.ts
+      commands: []
+      functions:
+        - main
+      hasTests: false
+      testFiles: []
+    - file: src/cli/gather-context.ts
+      commands:
+        - gather
+      functions:
+        - ContextGatheringService
+      hasTests: true
+      testFiles: *ref_21
+    - file: src/cli/sync-tracker.ts
+      commands:
+        - sync-tracker
+      functions: []
+      hasTests: false
+      testFiles: []
+    - file: src/cli/repo-orchestrator.ts
+      commands:
+        - orchestrate
+        - analyze
+        - fossilize
+      functions:
+        - RepoOrchestratorService
+        - ensureLabelExists
+        - addLabelToIssue
+        - loadAutomationIssueTemplate
+        - getInvocation
+        - fossilizeEntry
+      hasTests: true
+      testFiles: *ref_22
+  utils:
+    - file: src/utils/fossilIssue.ts
+      functions:
+        - toSectionLabel
+        - ensureLabel
+        - generateAutomationIssueBody
+        - createFossilIssue
+      hasTests: true
+      testFiles: *ref_23
+    - file: src/utils/syncTracker.ts
+      functions:
+        - runGh
+        - getMilestoneIdByTitle
+        - ensureMilestone
+        - getIssueByTitle
+        - ensureIssue
+        - addIssueToProject
+        - closeIssueByTitle
+        - ensureTestOrFossilIssue
+        - syncTrackerWithGitHub
+      hasTests: false
+      testFiles: []
+    - file: src/utils/roadmapToMarkdown.ts
+      functions:
+        - roadmapToMarkdown
+      hasTests: false
+      testFiles: []
+    - file: src/utils/githubFossilManager.ts
+      functions:
+        - GitHubFossilManager
+      hasTests: false
+      testFiles: []
+    - file: src/utils/fossilLabel.ts
+      functions:
+        - createFossilLabel
+        - ensureLabel
+      hasTests: false
+      testFiles: []
+    - file: src/utils/fossilMilestone.ts
+      functions:
+        - createFossilMilestone
+        - ensureMilestone
+      hasTests: false
+      testFiles: []
+    - file: src/utils/cli.ts
+      functions:
+        - executeCommand
+        - executeCommandJSON
+        - isCommandAvailable
+        - executeCommandWithRetry
+        - formatOutput
+        - createServiceResponse
+        - issueExists
+      hasTests: true
+      testFiles: *ref_24
+    - file: src/utils/markdownChecklist.ts
+      functions:
+        - updateMarkdownChecklist
+        - extractJsonBlock
+        - checklistToMarkdown
+        - metadataToMarkdown
+      hasTests: true
+      testFiles: *ref_25
+    - file: src/utils/yamlToJson.ts
+      functions:
+        - yamlToJson
+      hasTests: false
+      testFiles: []
+    - file: src/utils/fossilize.ts
+      functions:
+        - generateContentHash
+        - generateId
+        - toFossilEntry
+        - outputFossil
+        - writeFossilToFile
+      hasTests: true
+      testFiles: *ref_26
+    - file: src/utils/checklistUpdater.ts
+      functions:
+        - detectFileType
+        - createBackup
+        - updateMarkdownChecklistFile
+        - updateJsonChecklistFile
+        - updateYamlChecklistFile
+        - updateRoadmapTasks
+        - updateChecklistArray
+        - to
+        - updateChecklistFile
+        - updateMultipleChecklistFiles
+        - parseChecklistUpdates
+        - generateUpdateReport
+      hasTests: true
+      testFiles: *ref_27
+    - file: src/utils/githubCliCommands.ts
+      functions:
+        - GitHubCLICommands
+      hasTests: false
+      testFiles: []
+    - file: src/utils/curateFossil.ts
+      functions:
+        - curateAndCheck
+      hasTests: false
+      testFiles: []
+    - file: src/utils/fossilSummary.ts
+      functions:
+        - getFossilSummary
+      hasTests: false
+      testFiles: []
+    - file: src/utils/plan-validator.ts
+      functions:
+        - PlanValidator
+      hasTests: false
+      testFiles: []
+  services:
+    - file: src/services/semantic-tagger.ts
+      functions:
+        - SemanticTaggerService
+      hasTests: true
+      testFiles: *ref_28
+    - file: src/services/github.ts
+      functions:
+        - for
+        - GitHubService
+        - loadAndFillAutomationTemplate
+      hasTests: true
+      testFiles: *ref_29
+    - file: src/services/llm.ts
+      functions:
+        - callOpenAIChat
+      hasTests: true
+      testFiles: *ref_30
+  examples: []
+  summary:
+    totalCLI: 17
+    totalUtils: 15
+    totalServices: 3
+    totalExamples: 0
+    testedCLI: 9
+    testedUtils: 5
+    testedServices: 3
+    coverage: 49
+  recommendations:
+    - 'Priority 1: Test CLI commands'
+    - '- src/cli/create-fossil-issue.ts (0 commands)'
+    - '- src/cli/llm-execute.ts (0 commands)'
+    - '- src/cli/track-progress.ts (2 commands)'
+    - 'Priority 2: Test utility functions'
+    - '- src/utils/syncTracker.ts (9 functions)'
+    - '- src/utils/roadmapToMarkdown.ts (1 functions)'
+    - '- src/utils/githubFossilManager.ts (1 functions)'
+
