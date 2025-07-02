@@ -1,11 +1,11 @@
 #!/bin/bash
 
+set -e
+set -x
+
 # Quick Status Check Script
 # 
 # Provides a quick overview of repository health and progress
-
-set -e
-set -x
 
 # Colors for output
 RED='\033[0;31m'
@@ -160,6 +160,5 @@ fi
 echo ""
 
 print_status $GREEN "✅ Quick status check complete!"
-
 echo "[DEBUG] quick-status.sh reached end of script"
 exit 0
