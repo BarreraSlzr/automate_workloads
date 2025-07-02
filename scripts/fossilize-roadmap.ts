@@ -1,6 +1,6 @@
 import { yamlToJson } from '../src/utils/yamlToJson';
 import { roadmapToMarkdown } from '../src/utils/roadmapToMarkdown';
-import { E2ERoadmap } from '../src/types/e2e-roadmap';
+import { E2ERoadmap } from '../src/types';
 import fs from 'fs';
 
 const yamlPath = 'src/types/e2e-roadmap.yaml';

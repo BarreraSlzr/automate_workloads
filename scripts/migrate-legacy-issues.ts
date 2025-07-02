@@ -1,5 +1,5 @@
-// This file will be moved to scripts/migrations/003-migrate-legacy-issues.ts
 #!/usr/bin/env bun
+// This file will be moved to scripts/migrations/003-migrate-legacy-issues.ts
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import { extractJsonBlock, checklistToMarkdown, metadataToMarkdown } from '../src/utils/markdownChecklist';
@@ -16,7 +16,7 @@ function parseLegacySections(body: string) {
   if (checklistMatch) {
     checklist = (checklistMatch[1] || '').split('\n').map(line => {
       const m = line.match(/- \[( |x|X)\] (.+)/);
-      if (m) return { task: m[2].trim(), checked: m[1].toLowerCase() === 'x' };
+      if (m && m[1] && m[2]) return { task: m[2].trim(), checked: m[1].toLowerCase() === 'x' };
       return null;
     }).filter(Boolean) as {task: string, checked: boolean}[];
   }
@@ -25,11 +25,11 @@ function parseLegacySections(body: string) {
   if (metadataMatch) {
     (metadataMatch[1] || '').split('\n').forEach(line => {
       const m = line.match(/^([\w\s]+):\s*(.+)$/);
-      if (m) automationMetadata[m[1].trim()] = m[2].trim();
+      if (m && m[1] && m[2]) automationMetadata[m[1].trim()] = m[2].trim();
     });
   }
   return {
-    purpose: (purposeMatch && purposeMatch[1].trim()) || fallbackPurpose,
+    purpose: (purposeMatch && purposeMatch[1]?.trim()) || fallbackPurpose,
     checklist,
     automationMetadata
   };

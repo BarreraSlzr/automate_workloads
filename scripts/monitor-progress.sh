@@ -184,7 +184,7 @@ analyze_current_state() {
     else
         print_status $YELLOW "⚠️  Could not analyze current state, using defaults"
         echo "0" > "$REPORTS_DIR/health-score-$TIMESTAMP.txt"
-        return 1
+        return 0
     fi
 }
 

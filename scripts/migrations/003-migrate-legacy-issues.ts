@@ -18,7 +18,7 @@ function parseLegacySections(body: string) {
   if (checklistMatch) {
     checklist = (checklistMatch[1] || '').split('\n').map(line => {
       const m = line.match(/- \[( |x|X)\] (.+)/);
-      if (m) return { task: m[2].trim(), checked: m[1].toLowerCase() === 'x' };
+      if (m && m[1] && m[2]) return { task: m[2].trim(), checked: m[1].toLowerCase() === 'x' };
       return null;
     }).filter(Boolean) as {task: string, checked: boolean}[];
   }
@@ -27,11 +27,11 @@ function parseLegacySections(body: string) {
   if (metadataMatch) {
     (metadataMatch[1] || '').split('\n').forEach(line => {
       const m = line.match(/^([\w\s]+):\s*(.+)$/);
-      if (m) automationMetadata[m[1].trim()] = m[2].trim();
+      if (m && m[1] && m[2]) automationMetadata[m[1].trim()] = m[2].trim();
     });
   }
   return {
-    purpose: (purposeMatch && purposeMatch[1].trim()) || fallbackPurpose,
+    purpose: (purposeMatch && purposeMatch[1]?.trim()) || fallbackPurpose,
     checklist,
     automationMetadata
   };
@@ -120,10 +120,12 @@ async function getLLMSuggestions(body: string): Promise<{purpose: string, checkl
   const checklist: {task: string, checked: boolean}[] = [];
   let match;
   while ((match = checklistRegex.exec(body)) !== null) {
-    checklist.push({
-      task: match[4].trim(),
-      checked: match[2].toLowerCase() === 'x'
-    });
+    if (match && match[4] && match[2]) {
+      checklist.push({
+        task: match[4].trim(),
+        checked: match[2].toLowerCase() === 'x'
+      });
+    }
   }
   // Try to extract a purpose from the first non-header, non-checklist paragraph
   const lines = body.split('\n');
@@ -189,9 +191,9 @@ async function migrate() {
 // CLI: allow updating a single issue from a file, with LLM processing
 if (process.argv[2] === '--update' && process.argv[3] && process.argv[4]) {
   (async () => {
-    const issueNumber = parseInt(process.argv[3], 10);
+    const issueNumber = process.argv[3] ? parseInt(process.argv[3], 10) : undefined;
     const filePath = process.argv[4];
-    if (!fs.existsSync(filePath)) {
+    if (!filePath || !fs.existsSync(filePath)) {
       console.error(`File not found: ${filePath}`);
       process.exit(1);
     }
