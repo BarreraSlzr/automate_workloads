@@ -237,4 +237,52 @@ describe('SemanticTaggerService', () => {
       expect(service['llmService']['config'].preferLocalLLM).toBe(false);
     });
   });
+
+  describe('generateExcerpt', () => {
+    it('should prefer local LLM for excerpt generation when available', async () => {
+      const service = new SemanticTaggerService('gpt-4', 'test-key', { enableLocalLLM: true, localBackend: 'ollama', routingPreference: 'local' });
+      // Patch callLLM to simulate local LLM selection
+      service['llmService'].callLLM = async (opts: any) => {
+        expect(opts.routingPreference).toBe('local');
+        expect(opts.localBackend).toBe('ollama');
+        return { choices: [{ message: { content: 'Local summary.' } }] };
+      };
+      const result = await service.generateExcerpt({
+        id: 'id',
+        type: 'insight',
+        title: 'Test',
+        content: 'This is a test content for local LLM.',
+        tags: [],
+        metadata: {},
+        source: 'manual',
+        version: 1,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        children: [],
+      });
+      expect(result).toBe('Local summary.');
+    });
+    it('should fallback to cloud LLM or fallback if local is unavailable', async () => {
+      const service = new SemanticTaggerService('gpt-4', 'test-key', { enableLocalLLM: false, routingPreference: 'cloud' });
+      // Patch callLLM to simulate cloud LLM selection
+      service['llmService'].callLLM = async (opts: any) => {
+        expect(opts.routingPreference).toBe('cloud');
+        return { choices: [{ message: { content: 'Cloud summary.' } }] };
+      };
+      const result = await service.generateExcerpt({
+        id: 'id',
+        type: 'insight',
+        title: 'Test',
+        content: 'This is a test content for cloud LLM.',
+        tags: [],
+        metadata: {},
+        source: 'manual',
+        version: 1,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        children: [],
+      });
+      expect(result).toBe('Cloud summary.');
+    });
+  });
 }); 

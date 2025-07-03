@@ -330,6 +330,7 @@ Respond only with valid JSON.`;
 
   /**
    * Generate a one-sentence excerpt/summary for a fossil entry using LLM
+   * Prefers local LLM (Ollama) if available, falls back to cloud LLM if needed.
    */
   async generateExcerpt(entry: ContextEntry): Promise<string> {
     if (!this.apiKey) {
@@ -338,6 +339,7 @@ Respond only with valid JSON.`;
     }
     try {
       const prompt = `Summarize the following content in one sentence for a quick preview:\n\n${entry.content}`;
+      // Prefer local LLM for summarization if available
       const response = await this.llmService.callLLM({
         model: this.model,
         apiKey: this.apiKey,
@@ -350,7 +352,8 @@ Respond only with valid JSON.`;
         context: 'excerpt-generation',
         purpose: 'excerpt-generation',
         valueScore: 0.3, // Lower value for excerpts
-        routingPreference: this.llmOptions.routingPreference
+        routingPreference: this.llmOptions.routingPreference ?? 'local', // Prefer local by default
+        localBackend: this.llmOptions.localBackend ?? 'ollama',
       });
       const content = response.choices?.[0]?.message?.content;
       if (!content) {
