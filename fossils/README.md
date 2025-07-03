@@ -1,65 +1,189 @@
 # Curated Fossils: Project State & Roadmap
 
-This folder contains **curated fossils**—JSON (and optionally YAML for original human input) snapshots of the project's current state and intended direction.
+This folder contains **canonical fossils**—the authoritative, versioned artifacts that serve as the single source of truth for the project's current state and planned direction.
 
-## What is a Curated Fossil?
-A curated fossil is a reviewed, versioned, and committed artifact that serves as the "source of truth" for:
-- The current state of the project (automation, tests, fossilization)
-- The planned direction and milestones (roadmap)
-- Key decisions, milestones, or audit points
+## 🎯 Canonical Fossilization System
 
-## Naming Conventions
+### What is a Canonical Fossil?
+A canonical fossil is a **curated, versioned, and committed artifact** that serves as the definitive source of truth for:
+- **Project State**: Current implementation status, test coverage, and fossilization metrics
+- **Project Direction**: Planned tasks, milestones, and automation targets
+- **Decision History**: Key decisions, audit points, and process metadata
 
-| File Example                                 | Overwritten? | Curated? | Use Case                |
-|----------------------------------------------|--------------|----------|-------------------------|
-| `project_status.yml`                         | Yes          | Yes      | Preserves raw human input for audits, LLMs, Always up-to-date, canonical fossil |
-| `roadmap.yml`                                | Yes          | Yes      | Preserves raw human input for audits, LLMs, Always up-to-date, canonical fossil |
-| `curated_project_status_YYYY-MM-DD.json`     | No           | Yes      | Machine-readable, milestone, audit, freeze |
-| `curated_roadmap_YYYY-MM-DD.json`           | No           | Yes      | Machine-readable, milestone, audit, freeze |
-| `.meta.json`                                 | No           | Yes      | Audit/process metadata, provenance |
+### Core Canonical Files
 
-- **Latest files** (`project_status.yml`, `roadmap.yml`):
-  - Always reflect the most recent state and plan
-  - Overwritten by automation (E2E/pre-commit/CI)
-  - Committed as the canonical, curated source of truth (automation-friendly fossil)
-  - Used for traceability, reproducibility, and as the basis for all automation
-- **Curated files** (`curated_*.json`):
-  - Created at milestones, audits, or when a state needs to be frozen
-  - Never overwritten; serve as immutable, historical fossils
-  - Machine-readable, used for automation, LLMs, and reproducibility
-- **.meta.json**:
-  - (Optional) Stores process metadata, audit trails, hashes, timestamps, or curation context
-  - Valuable for provenance, reproducibility, and advanced automation
+| File | Purpose | Update Frequency | Curation Status |
+|------|---------|------------------|-----------------|
+| `project_status.yml` | **Canonical project state** - Complete module/file/function analysis with fossilization tracking | Automated (scripts/update-project-status.ts) | ✅ Canonical |
+| `roadmap.yml` | **Canonical project direction** - Task planning, milestones, and automation targets | Manual + Automated updates | ✅ Canonical |
 
-**Automation & Curation Workflow:**
-- Both `project_status.yml` and `roadmap.yml` are updated by automation scripts (e.g., `update-project-status.ts`), and should be committed after every meaningful automation run.
-- E2E/CI/pre-commit workflows should check that these files are up to date and fail if not.
-- Curated snapshots (`curated_*.json`) are created for milestones, audits, or releases and never overwritten.
-- This ensures a transparent, reproducible, and automation-friendly project history.
+### Canonical Fossil Properties
 
-**YAML vs JSON Rationale:**
-- **YAML** is used for human editing, planning, and collaborative workflows (more readable, supports comments).
-- **JSON** is used for automation, APIs, and LLMs (strict, unambiguous, easy to validate and process).
-- For curated fossils, only `.json` is produced for programmatic, automation, and LLM usage. YAML is retained only as the original human input if needed for audits or traceability.
+**✅ Always Up-to-Date**: Reflects the most recent state and plan  
+**✅ Version Controlled**: Every commit shows the project's exact state  
+**✅ Automation-Friendly**: Used by all scripts, CI/CD, and LLM services  
+**✅ Human-Readable**: YAML format supports comments and collaboration  
+**✅ Schema-Validated**: Enforced structure ensures consistency  
+**✅ Traceable**: Links to GitHub issues, milestones, and labels  
 
-## Why This Matters
-- **Traceability:** Every commit shows the project's state and plan at that point in time.
-- **Reproducibility:** Anyone can check out any commit and see the exact status and roadmap.
-- **Automation:** Scripts and CI/CD always rely on these files as canonical artifacts.
+## 🔄 Canonical Fossilization Workflow
 
-## Example
-```
-fossils/
-  project_status.yml
-  roadmap.yml
-  curated_project_status_2024-07-01.json
-  curated_roadmap_2024-07-01.json
+### 1. **Automated Updates**
+```bash
+# Update project status (generates fossils/project_status.yml)
+bun run scripts/update-project-status.ts
+
+# Update roadmap (manual + automated)
+# Edit fossils/roadmap.yml directly or use automation tools
 ```
 
-## Ephemeral Fossils
-- Local, in-progress, or sensitive fossils live in `.context-fossil/` and are **not committed**.
-- Only curated fossils are committed here.
+### 2. **Validation & Curation**
+```bash
+# Validate fossils meet schema requirements
+bun run test:e2e  # Includes fossil validation
+
+# Check fossilization completeness
+bun run cli:curate --validate fossils/project_status.yml
+```
+
+### 3. **Commit & Version**
+```bash
+# Commit canonical fossils after meaningful changes
+git add fossils/project_status.yml fossils/roadmap.yml
+git commit -m "feat: update canonical fossils - [description]"
+```
+
+### 4. **Automation Integration**
+- **CI/CD**: Validates fossils on every commit
+- **E2E Tests**: Ensures fossil completeness and schema compliance
+- **LLM Services**: Use fossils for context and decision-making
+- **GitHub Sync**: Creates/updates issues and milestones from fossils
+
+## 📊 Fossil Schema & Validation
+
+### Project Status Schema
+```yaml
+project_status:
+  modules:
+    [module_name]:
+      path: src/[module]/
+      files:
+        - [filename].ts:
+            functions:
+              - [function_name]: [status]
+            fossilized_output: [boolean]
+            tests: [test_file_paths]
+      status: [overall_status]
+      notes: [context]
+  overall_summary:
+    total_modules: [number]
+    total_files: [number]
+    total_functions: [number]
+    completion_percentage: [number]
+  recommendations: [list_of_recommendations]
+```
+
+### Roadmap Schema
+```yaml
+type: e2e_automation_roadmap
+source: [source]
+createdBy: [creator]
+createdAt: [timestamp]
+tasks:
+  - task: [task_name]
+    status: [status]
+    owner: [owner]
+    context: [description]
+    issues: [github_issue_numbers]
+    milestones: [milestone_names]
+    labels: [label_names]
+    deadline: [timestamp]
+    subtasks: [subtask_list]
+```
+
+## 🎯 Benefits of Canonical Fossilization
+
+### **Single Source of Truth**
+- All automation, documentation, and decisions reference the same canonical files
+- No ambiguity about current state or planned direction
+- Consistent data across all tools and services
+
+### **Automation Reliability**
+- Scripts always use the most up-to-date, validated data
+- CI/CD can enforce fossil completeness and schema compliance
+- LLM services have authoritative context for decision-making
+
+### **Traceability & Reproducibility**
+- Every commit shows the exact project state and plan
+- Historical analysis and regression detection
+- Audit trails for all changes and decisions
+
+### **Team Collaboration**
+- Clear, documented state and direction
+- Consistent terminology and status tracking
+- Automated validation prevents inconsistencies
+
+## 🚀 Usage Examples
+
+### **Update Project Status**
+```bash
+# Generate updated project status
+bun run scripts/update-project-status.ts
+
+# Validate the generated fossil
+bun run test:e2e --grep "project_status"
+```
+
+### **Update Roadmap**
+```bash
+# Edit roadmap directly
+code fossils/roadmap.yml
+
+# Or use automation tools
+bun run cli:create --roadmap fossils/roadmap.yml
+```
+
+### **Validate Fossils**
+```bash
+# Run E2E tests (includes fossil validation)
+bun run test:e2e
+
+# Check specific fossil
+bun run cli:curate --validate fossils/project_status.yml
+```
+
+### **Sync with GitHub**
+```bash
+# Create issues from roadmap tasks
+bun run cli:sync --roadmap fossils/roadmap.yml
+
+# Update project board
+bun run cli:projects --sync
+```
+
+## 📋 Maintenance Guidelines
+
+### **When to Update Canonical Fossils**
+- ✅ After significant code changes (new modules, functions, tests)
+- ✅ After roadmap changes (new tasks, status updates, milestones)
+- ✅ Before major releases or milestones
+- ✅ After automation script updates
+- ✅ When fossilization patterns change
+
+### **Quality Standards**
+- ✅ All required fields must be present and valid
+- ✅ Status progression must follow enforced order
+- ✅ GitHub references (issues, milestones, labels) must be accurate
+- ✅ Test coverage must be up-to-date
+- ✅ Fossilization tracking must be complete
+
+### **Automation Integration**
+- ✅ CI/CD validates fossils on every commit
+- ✅ E2E tests ensure fossil completeness
+- ✅ Pre-commit hooks check fossil schema
+- ✅ LLM services use fossils for context
+- ✅ GitHub sync uses fossils as source of truth
 
 ---
 
-**Keep this folder as the single source of truth for your project's automation, roadmap, and milestone history!** 
+**🎯 Keep these canonical fossils as the definitive source of truth for all project automation, planning, and decision-making!** 

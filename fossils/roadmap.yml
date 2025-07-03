@@ -1,3 +1,33 @@
+# ============================================================================
+# CANONICAL ROADMAP FOSSIL
+# ============================================================================
+# 
+# This is the canonical roadmap fossil - the authoritative source of truth for
+# all project planning, automation targets, and milestone tracking.
+#
+# CANONICAL FOSSIL PROPERTIES:
+# ✅ Always Up-to-Date: Reflects the most recent project direction
+# ✅ Version Controlled: Every commit shows the exact project plan
+# ✅ Automation-Friendly: Used by all scripts, CI/CD, and LLM services
+# ✅ Human-Readable: YAML format supports comments and collaboration
+# ✅ Schema-Validated: Enforced structure ensures consistency
+# ✅ Traceable: Links to GitHub issues, milestones, and labels
+#
+# WORKFLOW:
+# 1. Manual updates: Edit this file directly for planning changes
+# 2. Automated updates: Scripts can update task status, add issues, etc.
+# 3. Validation: E2E tests ensure schema compliance and completeness
+# 4. GitHub sync: Creates/updates issues and milestones from this roadmap
+# 5. Commit: Always commit after meaningful changes
+#
+# USAGE:
+# - All automation scripts reference this file as the source of truth
+# - LLM services use this for context and decision-making
+# - CI/CD validates this file on every commit
+# - GitHub sync creates issues and milestones from tasks
+#
+# ============================================================================
+
 type: e2e_automation_roadmap
 # Each task can now reference GitHub issues, milestones, and labels for explicit linkage.
 # Example: issues: [101], milestones: ["E2E Test Refactor"], labels: ["automation", "roadmap"]
@@ -153,34 +183,38 @@ tasks:
         status: done
     milestone: Type-Safe Automation Refactor
   - task: Canonical fossilization of roadmap.yml and project_status.yml
-    status: planned
+    status: done
     owner: emmanuelbarrera
     context: >
-      Move roadmap.yml and project_status.yml into fossils/ as the canonical, versioned artifacts.
-      Update all automation, CI, and documentation to reference these files.
-      Remove demo fossils and update the roadmap to reflect this transition.
+      ✅ COMPLETED: Move roadmap.yml and project_status.yml into fossils/ as the canonical, versioned artifacts.
+      ✅ COMPLETED: Update all automation, CI, and documentation to reference these files.
+      ✅ COMPLETED: Remove demo fossils and update the roadmap to reflect this transition.
+      ✅ COMPLETED: Mark this transition as done in roadmap.yml
+      ✅ COMPLETED: Validate the new fossils in CI/E2E
+      ✅ COMPLETED: Update onboarding docs and recommendations as needed
     subtasks:
       - task: Validate current roadmap.yml and project_status.yml for schema and completeness
-        status: planned
+        status: done
       - task: Move roadmap.yml and project_status.yml to fossils/ (use mv, not cp)
-        status: planned
+        status: done
       - task: Update fossils/README.md and add doc comments to the YAMLs
-        status: planned
+        status: done
       - task: Update all scripts, tests, and CI to use fossils/roadmap.yml and fossils/project_status.yml
-        status: planned
+        status: done
       - task: Remove or archive demo/test fossils (curated_roadmap_demo_*.json)
-        status: planned
+        status: done
       - task: Mark this transition as done in roadmap.yml
-        status: planned
+        status: done
       - task: Validate the new fossils in CI/E2E
-        status: planned
+        status: done
       - task: Update onboarding docs and recommendations as needed
-        status: planned
+        status: done
     key_points:
       - project_status.yml is generated/updated by scripts/update-project-status.ts and is a canonical, curated fossil artifact.
       - roadmap.yml should be treated the same way: a living, curated, versioned fossil, updated by automation and committed as a source of truth.
       - Both files enable traceability, automation, and reproducibility for the project.
       - Automate updates, curate and commit, integrate into E2E/CI, and document the workflow in onboarding/CONTRIBUTING docs.
+    milestone: Canonical Fossilization Complete
   - task: Scaffold E2E tests for fossilization and LLM insights workflow
     status: planned
     owner: emmanuelbarrera
@@ -237,4 +271,127 @@ tasks:
       - task: Verify the test and output comply with the new policy
         status: planned
     recommendation: Use as a template for refactoring other tests
-    preference: All test outputs must be curated fossils or referenced artifacts 
+    preference: All test outputs must be curated fossils or referenced artifacts
+  - task: Enhance local LLM support for automation ecosystem
+    status: planned
+    owner: emmanuelbarrera
+    context: >
+      Expand and optimize local LLM integration to support the full automation ecosystem, including intelligent model management, 
+      cost optimization, and seamless integration with fossilization workflows. The current implementation has basic Ollama support 
+      but needs enhancement for production automation use cases.
+    issues: []
+    milestones: ["Local LLM Integration"]
+    labels: ["automation", "llm", "optimization", "local"]
+    subtasks:
+      - task: Implement intelligent model management and discovery
+        status: planned
+        context: >
+          Create a model management system that can discover, validate, and manage local LLM models (Ollama, LM Studio, etc.)
+          with automatic fallback and performance benchmarking.
+        subtasks:
+          - task: Add model discovery and validation for Ollama, LM Studio, and other local providers
+            status: planned
+          - task: Implement model performance benchmarking and quality assessment
+            status: planned
+          - task: Add automatic model download and setup for common automation tasks
+            status: planned
+          - task: Create model registry with metadata (size, performance, use cases)
+            status: planned
+      - task: Enhance intelligent routing and cost optimization
+        status: planned
+        context: >
+          Improve the existing intelligent routing system to better handle local vs cloud LLM decisions based on task complexity,
+          cost sensitivity, and performance requirements.
+        subtasks:
+          - task: Refine complexity analysis for better local/cloud routing decisions
+            status: planned
+          - task: Add task-specific model selection (e.g., code generation vs content analysis)
+            status: planned
+          - task: Implement adaptive cost thresholds based on usage patterns
+            status: planned
+          - task: Add performance monitoring and automatic provider switching
+            status: planned
+      - task: Integrate local LLM with fossilization workflows
+        status: planned
+        context: >
+          Ensure local LLM can handle all fossilization tasks including semantic tagging, content generation, and analysis
+          with appropriate fallback to cloud LLM when needed.
+        subtasks:
+          - task: Test and optimize local LLM for semantic tagging tasks
+            status: planned
+          - task: Implement local LLM support for content generation and summarization
+            status: planned
+          - task: Add local LLM support for fossil curation and validation
+            status: planned
+          - task: Create fallback strategies for complex fossilization tasks
+            status: planned
+      - task: Add CLI tools for local LLM management
+        status: planned
+        context: >
+          Extend the existing llm-usage CLI with comprehensive local LLM management capabilities including model management,
+          performance testing, and configuration.
+        subtasks:
+          - task: Add model management commands (list, install, remove, test)
+            status: planned
+          - task: Implement performance benchmarking and comparison tools
+            status: planned
+          - task: Add configuration management for local LLM settings
+            status: planned
+          - task: Create usage analytics specific to local LLM performance
+            status: planned
+      - task: Implement caching and optimization for local LLM
+        status: planned
+        context: >
+          Add intelligent caching, response optimization, and performance tuning for local LLM calls to improve
+          automation workflow efficiency.
+        subtasks:
+          - task: Implement response caching for repeated queries
+            status: planned
+          - task: Add prompt optimization and template management
+            status: planned
+          - task: Implement batch processing for multiple LLM calls
+            status: planned
+          - task: Add memory management and resource optimization
+            status: planned
+      - task: Add comprehensive testing and validation
+        status: planned
+        context: >
+          Create comprehensive test suites for local LLM functionality including integration tests, performance tests,
+          and fallback scenario testing.
+        subtasks:
+          - task: Add unit tests for local LLM provider implementations
+            status: planned
+          - task: Create integration tests for local LLM with fossilization workflows
+            status: planned
+          - task: Implement performance benchmarking tests
+            status: planned
+          - task: Add fallback and error handling tests
+            status: planned
+      - task: Document local LLM setup and usage patterns
+        status: planned
+        context: >
+          Create comprehensive documentation for setting up and using local LLM in the automation ecosystem,
+          including best practices and troubleshooting guides.
+        subtasks:
+          - task: Create setup guide for Ollama and other local LLM providers
+            status: planned
+          - task: Document best practices for local LLM configuration
+            status: planned
+          - task: Add troubleshooting guide for common local LLM issues
+            status: planned
+          - task: Create performance optimization guide
+            status: planned
+    key_points:
+      - Current implementation has basic Ollama support but needs enhancement for production automation
+      - Focus on intelligent routing, cost optimization, and seamless integration with existing workflows
+      - Local LLM should handle most automation tasks with cloud LLM as fallback for complex operations
+      - Performance monitoring and automatic optimization are critical for automation reliability
+      - Comprehensive testing and documentation ensure maintainability and adoption
+    recommendation: >
+      Prioritize intelligent routing and fossilization integration first, then add CLI tools and optimization features.
+      Focus on reliability and seamless fallback to cloud LLM when local LLM is insufficient.
+    preference: >
+      Prefer local LLM for cost-sensitive automation tasks, with cloud LLM for complex analysis and generation tasks.
+      Implement comprehensive monitoring and automatic provider switching based on performance and cost metrics.
+    deadline: 2024-08-15T00:00:00.000Z
+    milestone: Local LLM Integration 
