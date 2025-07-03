@@ -1,4 +1,5 @@
-import type { ContextEntry } from '../types';
+import type { ContextEntry } from '@/types';
+import { ContextEntrySchema } from '@/types/schemas';
 import { createHash } from 'crypto';
 
 /**
@@ -23,17 +24,7 @@ function generateId(content: string, type: string, title: string): string {
 /**
  * Standardize any output as a fossil context entry
  */
-export function toFossilEntry({
-  type,
-  title,
-  content,
-  tags = [],
-  source = 'manual',
-  metadata = {},
-  parentId,
-  children = [],
-  version = 1,
-}: {
+export function toFossilEntry(params: {
   type: ContextEntry['type'];
   title: string;
   content: string;
@@ -44,23 +35,38 @@ export function toFossilEntry({
   children?: string[];
   version?: number;
 }): ContextEntry {
+  // Validate params using Zod schema (omit id, createdAt, updatedAt for input)
+  const PartialContextEntrySchema = ContextEntrySchema.omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+  });
+  const safeParams = {
+    ...params,
+    tags: params.tags ?? [],
+    source: params.source ?? 'manual',
+    metadata: params.metadata ?? {},
+    children: params.children ?? [],
+    version: params.version ?? 1,
+  };
+  PartialContextEntrySchema.parse(safeParams);
   const now = new Date().toISOString();
-  const contentHash = generateContentHash(content, type, title);
+  const contentHash = generateContentHash(safeParams.content, safeParams.type, safeParams.title);
   
   return {
-    id: generateId(content, type, title),
-    type,
-    title,
-    content,
-    tags,
+    id: generateId(safeParams.content, safeParams.type, safeParams.title),
+    type: safeParams.type,
+    title: safeParams.title,
+    content: safeParams.content,
+    tags: safeParams.tags,
     metadata: {
-      ...metadata,
+      ...safeParams.metadata,
       contentHash, // Store content hash for deduplication
     },
-    source,
-    version,
-    parentId,
-    children,
+    source: safeParams.source,
+    version: safeParams.version,
+    parentId: safeParams.parentId,
+    children: safeParams.children,
     createdAt: now,
     updatedAt: now,
   };

@@ -5,23 +5,7 @@
 
 import { z } from "zod";
 import type { EnvironmentConfig } from "../types";
-
-/**
- * Environment variable validation schema using Zod
- * All tokens are optional since we prefer CLI tools when available
- */
-export const envSchema = z.object({
-  /** GitHub personal access token (optional - uses gh CLI by default) */
-  githubToken: z.string().optional(),
-  /** Gmail API OAuth token */
-  gmailToken: z.string().optional(),
-  /** Buffer API access token */
-  bufferToken: z.string().optional(),
-  /** Twitter API v2 bearer token */
-  twitterToken: z.string().optional(),
-  /** OpenAI API key */
-  openaiApiKey: z.string().optional(),
-});
+import { envSchema } from '@/types/schemas';
 
 /**
  * Loads and validates environment configuration
@@ -43,15 +27,22 @@ export function getEnv(): EnvironmentConfig {
     // Try to load from Raycast environment (for Raycast extensions)
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { getPreferenceValues } = require("@raycast/api");
-    raw = getPreferenceValues();
+    const prefs = getPreferenceValues();
+    raw = {
+      GITHUB_TOKEN: prefs.GITHUB_TOKEN || prefs.githubToken,
+      GMAIL_TOKEN: prefs.GMAIL_TOKEN || prefs.gmailToken,
+      BUFFER_TOKEN: prefs.BUFFER_TOKEN || prefs.bufferToken,
+      TWITTER_TOKEN: prefs.TWITTER_TOKEN || prefs.twitterToken,
+      OPENAI_API_KEY: prefs.OPENAI_API_KEY || prefs.openaiApiKey,
+    };
   } catch (error) {
     // Fallback to process.env for CLI usage
     raw = {
-      githubToken: process.env.GITHUB_TOKEN,
-      gmailToken: process.env.GMAIL_TOKEN,
-      bufferToken: process.env.BUFFER_TOKEN,
-      twitterToken: process.env.TWITTER_BEARER_TOKEN,
-      openaiApiKey: process.env.OPENAI_API_KEY,
+      GITHUB_TOKEN: process.env.GITHUB_TOKEN,
+      GMAIL_TOKEN: process.env.GMAIL_TOKEN,
+      BUFFER_TOKEN: process.env.BUFFER_TOKEN,
+      TWITTER_TOKEN: process.env.TWITTER_BEARER_TOKEN,
+      OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     };
   }
 
@@ -143,4 +134,6 @@ export function validateConfig(): ConfigValidationResult {
     missingServices,
     availableServices,
   };
-} 
+}
+
+export { envSchema }; 

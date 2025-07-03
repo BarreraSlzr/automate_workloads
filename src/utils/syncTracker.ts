@@ -3,6 +3,7 @@ import * as yaml from "js-yaml";
 import { execSync } from "child_process";
 import { issueExists } from './cli';
 import { createFossilIssue } from './fossilIssue';
+import { isTestMode } from '../cli/repo-orchestrator';
 
 function runGh(cmd: string) {
   try {
@@ -13,6 +14,7 @@ function runGh(cmd: string) {
 }
 
 function getMilestoneIdByTitle(owner: string, repo: string, title: string): string | null {
+  if (isTestMode({ owner, repo, title })) return null;
   const out = runGh(`gh api repos/${owner}/${repo}/milestones --jq '.[] | select(.title=="${title}") | .number'`);
   if (typeof out === "undefined" || out === null) return null;
   const first = out.split("\n")[0];
@@ -20,6 +22,7 @@ function getMilestoneIdByTitle(owner: string, repo: string, title: string): stri
 }
 
 function ensureMilestone(owner: string, repo: string, name: string): string | null {
+  if (isTestMode({ owner, repo, name })) return null;
   let milestoneId: string | null = getMilestoneIdByTitle(owner, repo, name);
   if (milestoneId) {
     console.log(`✅ Milestone exists: ${name}`);
@@ -37,6 +40,7 @@ function ensureMilestone(owner: string, repo: string, name: string): string | nu
 }
 
 function getIssueByTitle(owner: string, repo: string, title: string): {number: string, state: string} | null {
+  if (isTestMode({ owner, repo, title })) return null;
   if (!issueExists(owner, repo, title, 'all')) return null;
   const out = runGh(`gh issue list --repo ${owner}/${repo} --state all --search "${title}" --json number,title,state`);
   if (!out) return null;
@@ -52,6 +56,7 @@ function getIssueByTitle(owner: string, repo: string, title: string): {number: s
 }
 
 async function ensureIssue(task: { section: string; text: string }, milestoneId: string | undefined, owner: string, repo: string, projectNumber: number) {
+  if (isTestMode({ owner, repo, milestoneId, projectNumber })) return;
   if (!milestoneId || milestoneId === "") return;
   let issue = getIssueByTitle(owner, repo, task.text);
   if (issue) {
@@ -84,6 +89,7 @@ async function ensureIssue(task: { section: string; text: string }, milestoneId:
 }
 
 function addIssueToProject(issueNumber: string | undefined, owner: string, repo: string, projectNumber: number) {
+  if (isTestMode({ owner, repo, issueNumber, projectNumber })) return;
   if (!issueNumber || issueNumber === "") return;
   const addResult = runGh(`gh project item-add ${projectNumber} --owner ${owner} --issue ${String(issueNumber ?? "")}`);
   if (addResult && !addResult.includes("already exists")) {
@@ -94,6 +100,7 @@ function addIssueToProject(issueNumber: string | undefined, owner: string, repo:
 }
 
 function closeIssueByTitle(title: string, owner: string, repo: string) {
+  if (isTestMode({ owner, repo, title })) return;
   const issue = getIssueByTitle(owner, repo, title);
   if (issue && issue.state === "open") {
     runGh(`gh issue close ${String(issue.number ?? "")} --repo ${owner}/${repo}`);
@@ -102,6 +109,7 @@ function closeIssueByTitle(title: string, owner: string, repo: string) {
 }
 
 async function ensureTestOrFossilIssue(item: { type: string; name: string; file: string }, milestoneId: string | undefined, owner: string, repo: string, projectNumber: number) {
+  if (isTestMode({ owner, repo, milestoneId, projectNumber })) return;
   if (!milestoneId || milestoneId === "") return;
   const title = `Add ${item.type} for ${item.name} in ${item.file}`;
   let issue = getIssueByTitle(owner, repo, title);
@@ -132,15 +140,7 @@ async function ensureTestOrFossilIssue(item: { type: string; name: string; file:
   }
 }
 
-export async function syncTrackerWithGitHub({
-  trackerMdPath,
-  projectStatusYmlPath,
-  owner,
-  repo,
-  projectNumber,
-  autoClose = false,
-  syncTests = false,
-}: {
+export async function syncTrackerWithGitHub(options: {
   trackerMdPath: string;
   projectStatusYmlPath: string;
   owner: string;
@@ -148,9 +148,15 @@ export async function syncTrackerWithGitHub({
   projectNumber: number;
   autoClose?: boolean;
   syncTests?: boolean;
+  test?: boolean;
+  mock?: boolean;
 }) {
+  if (isTestMode(options)) {
+    console.log('[MOCK] syncTrackerWithGitHub called');
+    return;
+  }
   // --- 1. Parse master tracker markdown ---
-  const trackerMd = fs.readFileSync(trackerMdPath, "utf8");
+  const trackerMd = fs.readFileSync(options.trackerMdPath, "utf8");
   let currentSection = "";
   const tasks: { section: string; checked: boolean; text: string }[] = [];
   let lastSection = "";
@@ -169,14 +175,14 @@ export async function syncTrackerWithGitHub({
       });
     }
   }
-  // --- 2. Parse project_status.yml ---
-  const projectStatus = yaml.load(fs.readFileSync(projectStatusYmlPath, "utf8")) as any;
+  // --- 2. Parse fossils/project_status.yml ---
+  const projectStatus = yaml.load(fs.readFileSync(options.projectStatusYmlPath, "utf8")) as any;
   // --- 3. Ensure milestones exist ---
   const uniqueSections = Array.from(new Set(tasks.map(t => t.section)));
   const milestoneIds: Record<string, string> = {};
   for (const section of uniqueSections) {
     if (section) {
-      const msId = ensureMilestone(owner, repo, section);
+      const msId = ensureMilestone(options.owner, options.repo, section);
       if (typeof msId === "string" && msId.length > 0) milestoneIds[section] = msId;
     }
   }
@@ -184,14 +190,14 @@ export async function syncTrackerWithGitHub({
   for (const task of tasks) {
     const msId = String(milestoneIds[task.section] || "");
     if (!task.checked && task.section && msId.length > 0) {
-      await ensureIssue(task, msId, owner, repo, projectNumber);
+      await ensureIssue(task, msId, options.owner, options.repo, options.projectNumber);
     }
-    if (autoClose && task.checked) {
-      closeIssueByTitle(task.text, owner, repo);
+    if (options.autoClose && task.checked) {
+      closeIssueByTitle(task.text, options.owner, options.repo);
     }
   }
-  // --- 5. Sync missing tests/fossils from project_status.yml ---
-  if (syncTests && projectStatus && projectStatus.modules) {
+  // --- 5. Sync missing tests/fossils from fossils/project_status.yml ---
+  if (options.syncTests && projectStatus && projectStatus.modules) {
     const testMilestone = String(milestoneIds["Testing & Automation"] || "");
     for (const moduleKey of Object.keys(projectStatus.modules)) {
       const module = projectStatus.modules[moduleKey];
@@ -203,12 +209,12 @@ export async function syncTrackerWithGitHub({
           // Missing tests
           if (Array.isArray(fileData.functions) && typeof fileData.tests === "undefined" && testMilestone.length > 0) {
             for (const func of fileData.functions) {
-              await ensureTestOrFossilIssue({ type: "test", name: func, file: fileName }, testMilestone, owner, repo, projectNumber);
+              await ensureTestOrFossilIssue({ type: "test", name: func, file: fileName }, testMilestone, options.owner, options.repo, options.projectNumber);
             }
           }
           // Missing fossilization
           if (typeof fileData.fossilized_output === "boolean" && fileData.fossilized_output === false && testMilestone.length > 0) {
-            await ensureTestOrFossilIssue({ type: "fossilization", name: fileName, file: fileName }, testMilestone, owner, repo, projectNumber);
+            await ensureTestOrFossilIssue({ type: "fossilization", name: fileName, file: fileName }, testMilestone, options.owner, options.repo, options.projectNumber);
           }
         }
       }

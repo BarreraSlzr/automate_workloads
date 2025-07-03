@@ -1,10 +1,10 @@
 import { E2ERoadmap, E2ERoadmapTask } from '../types';
-import { 
+import type { 
   GitHubIssueFossil, 
   GitHubMilestoneFossil, 
   GitHubLabelFossil,
   GitHubFossilCollection 
-} from '../types';
+} from '@/types';
 import { GitHubService } from '../services/github';
 
 export class GitHubFossilManager {
@@ -240,8 +240,6 @@ export class GitHubFossilManager {
     
     return labels;
   }
-
-
 
   /**
    * Get milestone due date from roadmap tasks
