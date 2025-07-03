@@ -160,6 +160,10 @@ tasks:
     owner: emmanuelbarrera
     context: >
       Create a script that scans for test-generated output files (especially .temp-fossil-content-*.json, .temp-issue-body-*.md, fossils/curated_roadmap_demo_*.json) and curates them as versioned fossils. Prioritize handling these specific patterns first, as they are the most common untracked outputs after running tests. Only files with a valuable fossil curation or automation use case (referenced in roadmap.yml, project_status.yml, or onboarding/docs) should be written by tests/scripts. All other temp/test output files should be removed or refactored to avoid unnecessary file creation. This will enable future context gathering, automation, and traceability of test artifacts. The script should be integrated into the test or CI workflow and optionally summarize curated outputs.
+      **New requirements:**
+      - The curation logic must refuse or clean up any output files with timestamped filenames, unless explicitly archived outside the main repo.
+      - Only stable, canonical filenames are allowed for curated fossils.
+      - Document this policy and update onboarding/CONTRIBUTING docs to reflect the new filename and curation rules.
     subtasks:
       - task: Handle .temp-fossil-content-*.json, .temp-issue-body-*.md, fossils/curated_roadmap_demo_*.json as first-class curated fossils
         status: in progress
@@ -172,6 +176,8 @@ tasks:
       - task: Integrate script into test/CI workflow
         status: planned
       - task: Document the workflow and update onboarding/CONTRIBUTING docs
+        status: planned
+      - task: Refuse or clean up any output files with timestamped filenames; only allow stable, canonical filenames for curated fossils
         status: planned
     recommendation: Automate curation post-test; only write files that are curated fossils or referenced artifacts
     preference: Store curated outputs in fossils/ or a dedicated directory
@@ -319,12 +325,17 @@ tasks:
     owner: emmanuelbarrera
     context: >
       Refactor a specific test (e.g., one that writes .temp-fossil-content-*.json or .temp-issue-body-*.md) so that it only writes output files if they are curated fossils or referenced artifacts. This will serve as an example for enforcing the new fossil-first test output policy.
+      **New requirements:**
+      - Tests must never write timestamped or mock/demo files to the repo.
+      - Only stable, canonical filenames are allowed for any output that is fossilized or versioned.
     subtasks:
       - task: Identify a test that writes .temp-fossil-content-*.json or .temp-issue-body-*.md
         status: planned
       - task: Update the test to only write output if it is a curated fossil or referenced artifact
         status: planned
       - task: Verify the test and output comply with the new policy
+        status: planned
+      - task: Ensure no timestamped or mock/demo files are written to the repo; only stable, canonical filenames are used
         status: planned
     recommendation: Use as a template for refactoring other tests
     preference: All test outputs must be curated fossils or referenced artifacts
@@ -481,6 +492,11 @@ tasks:
     owner: emmanuelbarrera
     context: |
       Implement and enforce a clear, canonical policy for fossil artifact storage, curation, and test output management. This ensures all fossil artifacts are versioned, traceable, and automation-friendly, and that test outputs do not pollute the repo with non-canonical files. The policy will clarify the use of .context-fossil/entries for knowledge/context fossils, and fossils/ for canonical YAML/JSON artifacts. The curation script will be updated to reflect this policy, and documentation and CI will be enhanced to enforce it.
+      **New requirements:**
+      - Timestamped filenames (e.g., file-2024-07-01T12:00:00.000Z.json) are strictly prohibited for all canonical fossils, exports, backups, and reports. Use stable, predictable names (e.g., project_status.yml, insight.json, progress-report.md).
+      - Only real, curated artifacts are versioned and committed. Test/demo outputs must be cleaned up post-test and never committed.
+      - Temporary/backup files (if needed) must be .gitignore'd or stored outside the main repo.
+      - All fossil entries must have a type field and be schema-validated.
     subtasks:
       - task: Update curation script to remove fossil_content.json and ensure curated_roadmap_demo.json is a programmatic export of roadmap.yml
         status: planned
@@ -491,4 +507,32 @@ tasks:
       - task: Integrate the curation script into CI to enforce artifact policy post-test
         status: planned
       - task: Clarify and document the canonical use of .context-fossil/entries for versioned fossil artifacts
-        status: planned 
+        status: planned
+      - task: Prohibit timestamped filenames for all canonical fossils, exports, and reports; require stable filenames and cleanup of any timestamped or test/demo outputs
+        status: planned
+  - task: Automate public markdown and JSON generation from project_status.yml
+    status: planned
+    owner: emmanuelbarrera
+    context: |
+      Implement a TypeScript script that reads fossils/project_status.yml (YAML, canonical source of truth)
+      and generates:
+        - fossils/public/blog/project_status.post.md (public/blog-ready markdown, with frontmatter metadata)
+        - fossils/public/api/project_status_public.json (optional, for public API/automation/metadata use)
+      The script should use a robust timestamp library (e.g., luxon or date-fns) for all date fields.
+      All outputs must include frontmatter (for markdown) or metadata (for JSON) with audience, timestamp, and source.
+    milestone: Immediate Actions
+  - task: Automate fossil-to-markdown/json workflow with GitHub Actions/CI
+    status: planned
+    owner: emmanuelbarrera
+    context: |
+      Implement a GitHub Actions/CI workflow that automatically runs the fossil-to-markdown/json publication script on commit/PR/merge.
+      The workflow should validate generated outputs, publish to docs/blog/API as needed, and optionally update GitHub issues with the latest markdown.
+      Ensure outputs are always in sync with the canonical YAML fossils and are CI-stamped for traceability.
+    milestone: Immediate Actions
+  - task: Fossilize prompts/system messages and publish as needed
+    status: planned
+    owner: emmanuelbarrera
+    context: |
+      Design and implement a process to curate, version, and store prompts/system messages as fossils in fossils/prompts/.
+      Automate publication of these prompts for LLM context, automation, and reproducibility, supporting future integrations and audits.
+    milestone: Immediate Actions 
