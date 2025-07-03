@@ -277,8 +277,7 @@ tasks:
     owner: emmanuelbarrera
     context: >
       Expand and optimize local LLM integration to support the full automation ecosystem, including intelligent model management, 
-      cost optimization, and seamless integration with fossilization workflows. The current implementation has basic Ollama support 
-      but needs enhancement for production automation use cases.
+      cost optimization, and seamless integration with fossilization workflows. Intelligent routing (auto/local/cloud), CLI override, documentation, and tests are now implemented. The current implementation has robust routing and override support, with further enhancements planned for model selection, cost adaptation, and performance monitoring.
     issues: []
     milestones: ["Local LLM Integration"]
     labels: ["automation", "llm", "optimization", "local"]
@@ -299,13 +298,12 @@ tasks:
           - task: Document setup, usage, and test mapping in onboarding/docs
             status: done
       - task: Enhance intelligent routing and cost optimization
-        status: planned
+        status: done
         context: >
-          Improve the existing intelligent routing system to better handle local vs cloud LLM decisions based on task complexity,
-          cost sensitivity, and performance requirements.
+          Intelligent routing between local and cloud LLMs is now implemented, including CLI override flags (--prefer-local, --prefer-cloud, --auto), full documentation, and unit tests. The system now automatically selects the best provider based on task complexity, cost, and user preference, with override support. See commit: feat(llm): intelligent routing between local and cloud LLMs with CLI override, docs, and tests. Docs updated in API_REFERENCE.md, README.md, and COMPLETE_AUTOMATION_ECOSYSTEM.md.
         subtasks:
           - task: Refine complexity analysis for better local/cloud routing decisions
-            status: planned
+            status: done
           - task: Add task-specific model selection (e.g., code generation vs content analysis)
             status: planned
           - task: Implement adaptive cost thresholds based on usage patterns
