@@ -2,6 +2,29 @@
 
 This document provides a comprehensive reference for all services, CLI commands, types, and utilities in the Automation Ecosystem.
 
+## 🚀 Onboarding & Automated Setup
+
+The recommended way to set up your environment is via the automated onboarding script and canonical fossil:
+
+- **Run:** `bash scripts/setup.sh` to automatically:
+  - Check/install all required tools (Bun, GitHub CLI, yq, etc.)
+  - Validate and install project dependencies
+  - Ensure `.env` is present
+  - Check and download required Ollama LLM models
+  - Update the fossil after each step for traceability and CI
+- The script is idempotent and safe to run multiple times.
+- Onboarding will fail if no LLM provider is available (local or cloud).
+
+**Canonical onboarding fossil:**
+- The status of each onboarding step is tracked in `fossils/setup_status.yml`.
+- See this file for troubleshooting and to audit onboarding state.
+
+**Troubleshooting:**
+- If onboarding fails, see `fossils/setup_status.yml` for detailed step status and notes.
+- For LLM issues, ensure Ollama is running and models are available, or provide a valid cloud LLM API key in `.env`.
+
+---
+
 ## 📋 Table of Contents
 
 - [Core Configuration](#core-configuration)

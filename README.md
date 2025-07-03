@@ -885,3 +885,42 @@ bun run scripts/migrations/003-migrate-legacy-issues.ts
 
 ### Canonical Issue Body Format
 All issues and fossils now use a structured markdown + JSON block format for robust automation, deduplication, and traceability.
+
+## Onboarding & LLM Model Management
+
+This project uses a robust, auditable onboarding workflow powered by the `scripts/setup.sh` script and tracked in the canonical fossil `fossils/setup_status.yml`.
+
+### Automated Onboarding
+- Run `bash scripts/setup.sh` to automatically:
+  - Check/install all required tools (Bun, GitHub CLI, yq, etc.)
+  - Validate and install project dependencies
+  - Ensure `.env` is present
+  - Check and download required Ollama LLM models
+  - Update the fossil after each step for traceability and CI
+- The script is idempotent and safe to run multiple times.
+- Onboarding will fail if no LLM provider is available (local or cloud).
+
+### Fossil Structure
+- The fossil (`setup_status.yml`) tracks the status, version, and notes for each onboarding step.
+- The `ollama_models` section is dynamically updated for each model.
+- The `summary` section provides a high-level status and troubleshooting notes.
+
+### LLM Model Management
+- Local LLMs are required for privacy, speed, and reproducibility.
+- The following models are managed automatically:
+
+| Model      | Usage Note                                                      |
+|------------|-----------------------------------------------------------------|
+| llama2     | General-purpose LLM for local dev and testing                   |
+| mistral    | Lightweight, fast LLM for quick prototyping and CI              |
+| phi3       | Compact LLM for resource-constrained environments               |
+| codellama  | Code-focused LLM for code generation and completion             |
+
+- To add/remove models, edit the `OLLAMA_MODELS` array in `scripts/setup.sh`.
+- Each model's status and notes are updated in the fossil after onboarding.
+
+### Troubleshooting
+- If onboarding fails, see `fossils/setup_status.yml` for detailed step status and notes.
+- For LLM issues, ensure Ollama is running and models are available, or provide a valid cloud LLM API key in `.env`.
+
+---

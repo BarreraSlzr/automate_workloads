@@ -16,6 +16,7 @@ A canonical fossil is a **curated, versioned, and committed artifact** that serv
 |------|---------|------------------|-----------------|
 | `project_status.yml` | **Canonical project state** - Complete module/file/function analysis with fossilization tracking | Automated (scripts/update-project-status.ts) | ✅ Canonical |
 | `roadmap.yml` | **Canonical project direction** - Task planning, milestones, and automation targets | Manual + Automated updates | ✅ Canonical |
+| `setup_status.yml` | **Canonical onboarding state** - Tracks all setup/onboarding steps, tool versions, and LLM model status | Automated (scripts/setup.sh) | ✅ Canonical |
 
 ### Canonical Fossil Properties
 
@@ -183,6 +184,12 @@ bun run cli:projects --sync
 - ✅ Pre-commit hooks check fossil schema
 - ✅ LLM services use fossils for context
 - ✅ GitHub sync uses fossils as source of truth
+
+### Onboarding & Setup
+
+- The canonical onboarding fossil is `fossils/setup_status.yml`, updated by `scripts/setup.sh` after each step.
+- To onboard, run `bash scripts/setup.sh` and follow the instructions.
+- See `setup_status.yml` for troubleshooting and to audit onboarding state.
 
 ---
 
