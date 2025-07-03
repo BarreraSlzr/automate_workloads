@@ -47,7 +47,7 @@ tasks:
       Implementation order: 1) Implement/update the script with fossil update logic, 2) define/setup_status.yml schema, 3) write tests/validation for both.
     subtasks:
       - task: Provide comprehensive setup script and onboarding documentation for local development
-        status: planned
+        status: in progress
         owner: emmanuelbarrera
         context: |
           Create a shell script (scripts/setup.sh) that automates installation of all required dependencies for local development and CI:
@@ -67,14 +67,14 @@ tasks:
           Update onboarding documentation (README.md, API_REFERENCE.md) to reference this script and provide quick setup instructions for all platforms. Include a troubleshooting section for common install issues. This will streamline onboarding for new contributors and CI environments, and ensure all local LLM and fossilization features are ready to use.
         subtasks:
           - task: Implement scripts/setup.sh with all required installation and setup steps, including platform detection, model download, and updating setup_status.yml
-            status: planned
+            status: in progress
           - task: Update README.md and API_REFERENCE.md with quick setup and troubleshooting instructions for all platforms, referencing setup_status.yml
-            status: planned
+            status: in progress
           - task: Test script on clean Mac, Linux, and Windows environments; ensure setup_status.yml is correctly updated and validated
             status: planned
         milestone: Immediate Actions
       - task: Document and promote setup_status.yml as canonical, programmatic, and auditable project setup fossil
-        status: planned
+        status: in progress
         owner: emmanuelbarrera
         context: |
           Create and maintain fossils/setup_status.yml as the single source of truth for project setup and onboarding state. This file should:
@@ -84,7 +84,7 @@ tasks:
           The setup script must update this file after each step, and tests must validate its correctness. Reference setup_status.yml in onboarding and documentation. Integrate automation/scripts to update and validate this file as part of the setup workflow. This approach keeps project_status.yml focused on code/test state and makes setup status easy to scale, audit, and automate.
         subtasks:
           - task: Create fossils/setup_status.yml with a clear, extensible schema for setup/onboarding state, supporting automation from the setup script
-            status: planned
+            status: in progress
           - task: Integrate automation/scripts to update and validate setup_status.yml as part of setup and CI
             status: planned
           - task: Update onboarding and documentation to reference setup_status.yml for setup tracking and validation
@@ -156,15 +156,15 @@ tasks:
     recommendation: Run post-test in CI
     preference: Summarize repo changes
   - task: Set up script to automatically curate test outputs as fossils
-    status: planned
+    status: in progress
     owner: emmanuelbarrera
     context: >
       Create a script that scans for test-generated output files (especially .temp-fossil-content-*.json, .temp-issue-body-*.md, fossils/curated_roadmap_demo_*.json) and curates them as versioned fossils. Prioritize handling these specific patterns first, as they are the most common untracked outputs after running tests. Only files with a valuable fossil curation or automation use case (referenced in roadmap.yml, project_status.yml, or onboarding/docs) should be written by tests/scripts. All other temp/test output files should be removed or refactored to avoid unnecessary file creation. This will enable future context gathering, automation, and traceability of test artifacts. The script should be integrated into the test or CI workflow and optionally summarize curated outputs.
     subtasks:
       - task: Handle .temp-fossil-content-*.json, .temp-issue-body-*.md, fossils/curated_roadmap_demo_*.json as first-class curated fossils
-        status: planned
+        status: in progress
       - task: Identify all other test output file patterns and locations
-        status: planned
+        status: in progress
       - task: Audit all test output files and stop writing any that are not used for fossil curation, context gathering, or traceability
         status: planned
       - task: Implement script to collect and curate outputs as fossils
@@ -191,7 +191,7 @@ tasks:
     recommendation: Add to project docs and reference in fossil
     preference: Keep docs up to date with codebase changes
   - task: Enforce schema-driven Params and runtime validation in all utilities
-    status: partial
+    status: in progress
     owner: emmanuelbarrera
     context: Refactor all utility and CLI functions to use Zod schemas for Params objects, with runtime validation and type safety.
     subtasks:
@@ -208,15 +208,15 @@ tasks:
       - task: Add Zod schema and runtime validation to toFossilEntry (fossilize.ts)
         status: in progress
       - task: Add Zod schema and runtime validation to syncTrackerWithGitHub (syncTracker.ts)
-        status: pending
+        status: planned
       - task: Audit and refactor other utilities for Params/schema pattern
-        status: pending
+        status: in progress
       - task: Refactor all CLI/scripts/examples to use new Params types
-        status: pending
+        status: in progress
       - task: Add/extend unit tests for runtime validation (invalid/valid params)
-        status: pending
+        status: in progress
       - task: Add/extend integration/E2E tests for CLI/scripts
-        status: pending
+        status: planned
       - task: Document the pattern in code comments and onboarding docs
         status: done
     deadline: 2024-07-15T00:00:00.000Z
@@ -475,4 +475,20 @@ tasks:
     context: >
       The current semantic tag tests patch callLLM to simulate LLM responses for stable results. Once a local Ollama model is reliably connected and used in CI/tests, remove these patches and use the real local LLM for semantic tagging tests. This will ensure tests reflect actual model behavior and integration.
     labels: ["testing", "llm", "local-llm", "cleanup"]
-    milestone: Local LLM Integration 
+    milestone: Local LLM Integration
+  - task: Immediate Action: Enforce Canonical Fossil Artifact Policy and Curation Workflow
+    status: planned
+    owner: emmanuelbarrera
+    context: |
+      Implement and enforce a clear, canonical policy for fossil artifact storage, curation, and test output management. This ensures all fossil artifacts are versioned, traceable, and automation-friendly, and that test outputs do not pollute the repo with non-canonical files. The policy will clarify the use of .context-fossil/entries for knowledge/context fossils, and fossils/ for canonical YAML/JSON artifacts. The curation script will be updated to reflect this policy, and documentation and CI will be enhanced to enforce it.
+    subtasks:
+      - task: Update curation script to remove fossil_content.json and ensure curated_roadmap_demo.json is a programmatic export of roadmap.yml
+        status: planned
+      - task: Document the canonical fossil artifact policy in onboarding and CONTRIBUTING docs
+        status: planned
+      - task: Refactor tests to only write output files if they are curated fossils or referenced artifacts
+        status: planned
+      - task: Integrate the curation script into CI to enforce artifact policy post-test
+        status: planned
+      - task: Clarify and document the canonical use of .context-fossil/entries for versioned fossil artifacts
+        status: planned 

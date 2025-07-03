@@ -168,7 +168,7 @@ async function fossilizeEntry(entry: {
   }
   try {
     const fs = await import('fs/promises');
-    const tempFile = `.temp-fossil-content-${Date.now()}.json`;
+    const tempFile = `.temp-fossil-content-${process.pid}.json`;
     await fs.writeFile(tempFile, entry.content);
     const invocation = getInvocation();
     const metadata = { ...(entry.metadata || {}), invocation };
@@ -1232,7 +1232,7 @@ class RepoOrchestratorService {
       };
       // Write metadata to a temp file to avoid command line length issues
       const fs = await import('fs/promises');
-      const tempFile = `.temp-fossil-content-${Date.now()}.json`;
+      const tempFile = `.temp-fossil-content-${process.pid}.json`;
       await fs.writeFile(tempFile, JSON.stringify(fossilEntry.metadata, null, 2));
       const command = `bun run context:add --type ${fossilEntry.type} --title "${fossilEntry.title}" --content "$(cat ${tempFile})" --tags "${fossilEntry.tags.join(',')}" --source ${fossilEntry.source}`;
       execSync(command, { encoding: 'utf8' });

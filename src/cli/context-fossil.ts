@@ -423,35 +423,32 @@ export class ContextFossilService {
    * Export fossil storage in various formats
    * @param format - Export format
    * @param query - Optional query to filter entries
+   * @param stable - If true, write to a stable filename for canonical exports
    * @returns Export file path
    */
-  async export(format: 'json' | 'markdown' | 'csv' | 'yaml', query?: ContextQuery): Promise<string> {
+  async export(format: 'json' | 'markdown' | 'csv' | 'yaml', query?: ContextQuery, stable: boolean = true): Promise<string> {
     const entries = query ? await this.queryEntries(query) : await this.queryEntries({ limit: 100, offset: 0 });
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const filename = `fossil-export-${timestamp}.${format}`;
+    const filename = stable ? `fossil-export-latest.${format}` : `fossil-export-${timestamp}.${format}`;
     const exportPath = path.join(this.fossilDir, 'exports', filename);
 
     switch (format) {
       case 'json':
         await fs.writeFile(exportPath, JSON.stringify(entries, null, 2));
         break;
-
       case 'markdown':
         const markdown = this.generateMarkdownExport(entries);
         await fs.writeFile(exportPath, markdown);
         break;
-
       case 'csv':
         const csv = this.generateCsvExport(entries);
         await fs.writeFile(exportPath, csv);
         break;
-
       case 'yaml':
         const yaml = this.generateYamlExport(entries);
         await fs.writeFile(exportPath, yaml);
         break;
     }
-
     return exportPath;
   }
 

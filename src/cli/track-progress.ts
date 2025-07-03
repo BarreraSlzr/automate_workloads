@@ -459,7 +459,7 @@ class ProgressTrackingService {
 ## 📁 Generated Files
 
 - \`current-analysis.json\` - Current repository analysis
-- \`progress-report-${timestamp.replace(/[:.]/g, '-')}.md\` - This report
+- \`progress-report.md\` - This report
 - \`.orchestration-reports/trends/\` - Historical trend data
 
 ---
@@ -477,8 +477,7 @@ class ProgressTrackingService {
   private async saveReport(report: string, outputDir: string): Promise<void> {
     try {
       await fs.mkdir(outputDir, { recursive: true });
-      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-      const reportFile = path.join(outputDir, `progress-report-${timestamp}.md`);
+      const reportFile = path.join(outputDir, 'progress-report.md');
       await fs.writeFile(reportFile, report);
       console.log(`📄 Report saved to: ${reportFile}`);
     } catch (error) {

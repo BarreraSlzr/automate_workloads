@@ -15,8 +15,7 @@ export async function curateAndCheck(params: CurateFossilParams): Promise<string
   const { inputYaml, outputDir = 'fossils', tag = 'manual' } = params;
   const kind = inputYaml.includes('status') ? 'project_status' : inputYaml.includes('roadmap') ? 'roadmap' : 'other';
   const content = yamlToJson<any>(inputYaml);
-  const date = new Date().toISOString().slice(0, 10);
-  const outputJson = path.join(outputDir, `curated_${kind}_${tag}_${date}.json`);
+  const outputJson = path.join(outputDir, `curated_${kind}_${tag}.json`);
   const curated: CuratedFossilMetadata = {
     type: 'curated_fossil',
     source: 'automation',

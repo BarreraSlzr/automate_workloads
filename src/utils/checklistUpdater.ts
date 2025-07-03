@@ -77,8 +77,7 @@ export function detectFileType(filePath: string): FileType {
  * Create backup of original file
  */
 export function createBackup(filePath: string): string {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const backupPath = `${filePath}.backup.${timestamp}`;
+  const backupPath = `${filePath}.backup`;
   fs.copyFileSync(filePath, backupPath);
   return backupPath;
 }

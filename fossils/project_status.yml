@@ -245,6 +245,10 @@ project_status:
             cli_details:
               - name: report
                 options: &ref_8
+                  - '--local-backend <name>'
+                  - '--prefer-local'
+                  - '--prefer-cloud'
+                  - '--auto'
                   - '-f, --format <format>'
                   - '-d, --days <days>'
                   - '-p, --purpose <purpose>'
@@ -469,6 +473,8 @@ project_status:
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/github-projects-integration.test.ts
               - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/setup.test.ts
+              - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-issues.integration.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-fossil-automation.integration.test.ts
@@ -496,6 +502,8 @@ project_status:
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/services/llm.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/services/semantic-tagger.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/llm-fossilization.integration.test.ts
     utils:
       path: src/utils
       files:
@@ -557,6 +565,8 @@ project_status:
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-plan.test.ts
               - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/setup.test.ts
+              - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/gather-context.integration.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-issues.integration.test.ts
@@ -587,12 +597,18 @@ project_status:
               - 'toFossilEntry: implemented'
               - 'outputFossil: implemented'
               - 'writeFossilToFile: implemented'
+              - 'ensureFossilDir: implemented'
+              - 'fossilizeLLMInsight: implemented'
+              - 'fossilizeLLMBenchmark: implemented'
+              - 'fossilizeLLMDiscovery: implemented'
             fossilized_output: true
             tests: &ref_29
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/utils/fossilize.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/gather-context.integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/llm-fossilization.integration.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/repo-orchestrator-fossilization.integration.test.ts
               - >-
@@ -655,6 +671,12 @@ project_status:
     types:
       path: src/types
       files:
+        - llmFossil.ts:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/llm-fossilization.integration.test.ts
         - external.ts:
             functions: []
             fossilized_output: false
@@ -670,6 +692,8 @@ project_status:
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/github-projects-integration.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/github-projects-integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/setup.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-issues.integration.test.ts
               - >-
@@ -705,6 +729,8 @@ project_status:
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-plan.test.ts
               - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/setup.test.ts
+              - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/gather-context.integration.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-issues.integration.test.ts
@@ -739,6 +765,20 @@ project_status:
     scripts:
       path: scripts
       files:
+        - setup.sh:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/setup/create-milestone.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/setup.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/base-tester.ts
+        - curate-test-outputs.ts:
+            functions:
+              - 'scanAndCurate: implemented'
+            fossilized_output: false
         - 001-improve-project-structure.sh:
             functions: []
             fossilized_output: false
@@ -1289,6 +1329,10 @@ developer_summary:
         - toFossilEntry
         - outputFossil
         - writeFossilToFile
+        - ensureFossilDir
+        - fossilizeLLMInsight
+        - fossilizeLLMBenchmark
+        - fossilizeLLMDiscovery
       hasTests: true
       testFiles: *ref_29
     - file: src/utils/checklistUpdater.ts

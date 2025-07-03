@@ -108,7 +108,7 @@ describe("Checklist Updater", () => {
       const backupPath = createBackup(markdownFile);
       
       expect(fs.existsSync(backupPath)).toBe(true);
-      expect(backupPath).toMatch(/\.backup\./);
+      expect(backupPath).toMatch(/\.backup$/);
       
       // Clean up
       fs.unlinkSync(backupPath);
