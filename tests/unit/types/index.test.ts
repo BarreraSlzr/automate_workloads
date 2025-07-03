@@ -11,32 +11,32 @@ import type {
   CLIOptions,
   ServiceResponse,
   WorkflowStep,
-  PerformanceMetrics
+  GitHubPerformanceMetrics
 } from "../../../src/types/index";
 
 test("EnvironmentConfig interface validation", () => {
   const config: EnvironmentConfig = {
-    githubToken: "ghp_test123",
-    gmailToken: "gmail_test123",
-    bufferToken: "buffer_test123",
-    twitterToken: "twitter_test123"
+    GITHUB_TOKEN: "ghp_test123",
+    GMAIL_TOKEN: "gmail_test123",
+    BUFFER_TOKEN: "buffer_test123",
+    TWITTER_TOKEN: "twitter_test123"
   };
 
-  expect(config.githubToken).toBe("ghp_test123");
-  expect(config.gmailToken).toBe("gmail_test123");
-  expect(config.bufferToken).toBe("buffer_test123");
-  expect(config.twitterToken).toBe("twitter_test123");
+  expect(config.GITHUB_TOKEN).toBe("ghp_test123");
+  expect(config.GMAIL_TOKEN).toBe("gmail_test123");
+  expect(config.BUFFER_TOKEN).toBe("buffer_test123");
+  expect(config.TWITTER_TOKEN).toBe("twitter_test123");
 });
 
 test("EnvironmentConfig with partial tokens", () => {
   const config: EnvironmentConfig = {
-    githubToken: "ghp_test123"
+    GITHUB_TOKEN: "ghp_test123"
   };
 
-  expect(config.githubToken).toBe("ghp_test123");
-  expect(config.gmailToken).toBeUndefined();
-  expect(config.bufferToken).toBeUndefined();
-  expect(config.twitterToken).toBeUndefined();
+  expect(config.GITHUB_TOKEN).toBe("ghp_test123");
+  expect(config.GMAIL_TOKEN).toBeUndefined();
+  expect(config.BUFFER_TOKEN).toBeUndefined();
+  expect(config.TWITTER_TOKEN).toBeUndefined();
 });
 
 test("ContextEntry interface validation", () => {
@@ -341,8 +341,8 @@ test("WorkflowStep with all valid services", () => {
   });
 });
 
-test("PerformanceMetrics interface validation", () => {
-  const metrics: PerformanceMetrics = {
+test("GitHubPerformanceMetrics interface validation", () => {
+  const metrics: GitHubPerformanceMetrics = {
     github: {
       issuesCreated: 10,
       issuesClosed: 8,
@@ -382,8 +382,8 @@ test("PerformanceMetrics interface validation", () => {
   expect(metrics.buffer?.engagementRate).toBe(0.6);
 });
 
-test("PerformanceMetrics with partial data", () => {
-  const metrics: PerformanceMetrics = {
+test("GitHubPerformanceMetrics with partial data", () => {
+  const metrics: GitHubPerformanceMetrics = {
     github: {
       issuesCreated: 5,
       issuesClosed: 3,

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, mock } from 'bun:test';
 // Dynamic mock for callOpenAIChat
 mock.module("../../../src/services/llm", () => ({
-  callOpenAIChat: async ({ messages }) => {
+  callOpenAIChat: async ({ messages }: { messages: any[] }) => {
     const userContent = messages?.[1]?.content || "";
     if (userContent.includes("Health")) {
       return {

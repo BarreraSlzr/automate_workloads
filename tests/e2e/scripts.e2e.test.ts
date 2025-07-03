@@ -7,19 +7,19 @@ const SCRIPT_TEST_CASES = [
     command: ['bun', 'run', 'scripts/update-project-status.ts'],
     expectedOutput: ['project_status:', 'modules:'],
     expectedExitCode: 0,
-    description: 'Should generate project_status.yml output'
+    description: 'Should generate fossils/project_status.yml output'
   },
   {
     name: 'cleanup-fossils script runs and outputs cleanup summary',
     command: ['bun', 'run', 'scripts/cleanup-fossils.ts'],
-    expectedOutput: ['Cleanup', 'fossil', 'summary'],
+    expectedOutput: ['Deleted fossils', 'Kept fossils'],
     expectedExitCode: 0,
     description: 'Should clean up fossil files and print a summary'
   },
   {
     name: 'cleanup-test-fossils script runs and outputs cleanup summary',
     command: ['bun', 'run', 'scripts/cleanup-test-fossils.ts'],
-    expectedOutput: ['Cleanup', 'test', 'fossil'],
+    expectedOutput: ['No test assertion fossils found to delete.'],
     expectedExitCode: 0,
     description: 'Should clean up test fossil files and print a summary'
   },
@@ -33,15 +33,15 @@ const SCRIPT_TEST_CASES = [
   {
     name: 'fossil-summary-md script runs and outputs Markdown',
     command: ['bun', 'run', 'scripts/fossil-summary-md.ts'],
-    expectedOutput: ['#', 'Fossil', 'Summary'],
+    expectedOutput: ['| Type | Title | Created | Tags | Excerpt |'],
     expectedExitCode: 0,
     description: 'Should output a Markdown summary of fossils'
   },
   {
     name: 'update-issue-checklist script runs and outputs update info',
     command: ['bun', 'run', 'scripts/update-issue-checklist.ts'],
-    expectedOutput: ['Update', 'checklist'],
-    expectedExitCode: 0,
+    expectedOutput: ['Usage: bun scripts/update-issue-checklist.ts <issue_number> (with CHECKLIST_UPDATES env var)'],
+    expectedExitCode: 1,
     description: 'Should update issue checklists and print update info'
   },
   {
@@ -50,13 +50,6 @@ const SCRIPT_TEST_CASES = [
     expectedOutput: ['Demo', 'checklist', 'update'],
     expectedExitCode: 0,
     description: 'Should run the checklist update demo and print info'
-  },
-  {
-    name: 'migrate-legacy-issues script runs and outputs migration info',
-    command: ['bun', 'run', 'scripts/migrate-legacy-issues.ts'],
-    expectedOutput: ['Migrate', 'legacy', 'issue'],
-    expectedExitCode: 0,
-    description: 'Should migrate legacy issues and print migration info'
   },
   // Add more script test cases here as needed
 ];

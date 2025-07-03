@@ -19,7 +19,7 @@ test("repo-orchestrator.sh outputs orchestrator info", async () => {
 test("repo-orchestrator.sh handles unexpected argument", async () => {
   await tester.realMode({
     args: ["unexpected"],
-    expectedOutput: [],
+    expectedOutput: ["orchestrator"],
     expectedExitCode: 1,
     timeoutMs: 5000,
     normalize: output => output.trim(),

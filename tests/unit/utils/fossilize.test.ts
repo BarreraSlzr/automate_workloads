@@ -21,7 +21,7 @@ describe('toFossilEntry', () => {
     expect(entry.source).toBe('terminal');
     expect(entry.metadata.test).toBe(true);
     expect(typeof entry.metadata.contentHash).toBe('string');
-    expect(entry.metadata.contentHash.length).toBeGreaterThan(0);
+    expect((entry.metadata.contentHash as string).length).toBeGreaterThan(0);
     expect((entry.metadata as any).invocation).toBe('test-invocation');
     expect((entry.metadata as any).invocation.length).toBeGreaterThan(0);
     expect(entry).toHaveProperty('createdAt');

@@ -129,7 +129,7 @@ describe("Checklist Updater", () => {
         comment: "Done",
         metadata: undefined
       });
-      expect(updates[1].status).toBe("done");
+      expect(updates[1]?.status).toBe("done");
     });
 
     test("parses object format", () => {
@@ -139,10 +139,10 @@ describe("Checklist Updater", () => {
       }));
       
       expect(updates).toHaveLength(2);
-      expect(updates[0].id).toBe("Task A");
-      expect(updates[0].status).toBe(true);
-      expect(updates[1].id).toBe("Task B");
-      expect(updates[1].status).toBe("done");
+      expect(updates[0]?.id).toBe("Task A");
+      expect(updates[0]?.status).toBe(true);
+      expect(updates[1]?.id).toBe("Task B");
+      expect(updates[1]?.status).toBe("done");
     });
 
     test("throws error for invalid JSON", () => {
@@ -261,8 +261,8 @@ describe("Checklist Updater", () => {
       const results = updateMultipleChecklistFiles(files);
       
       expect(results).toHaveLength(2);
-      expect(results[0].result.success).toBe(true);
-      expect(results[1].result.success).toBe(true);
+      expect(results[0]?.result?.success).toBe(true);
+      expect(results[1]?.result?.success).toBe(true);
     });
   });
 

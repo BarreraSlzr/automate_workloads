@@ -1,7 +1,7 @@
 import { test, expect } from "bun:test";
 import { runScript } from "../integration-base-tester";
 
-function debugOnFailure({ stdout, stderr, exitCode }, label) {
+function debugOnFailure({ stdout, stderr, exitCode }: { stdout: string; stderr: string; exitCode: number | null }, label: string) {
   if (exitCode !== 0 && exitCode !== 127) {
     console.error(`\n[DEBUG] ${label} - Non-zero exit code:`, exitCode);
     console.error(`[DEBUG] STDOUT:\n${stdout}`);
@@ -17,7 +17,7 @@ function debugOnFailure({ stdout, stderr, exitCode }, label) {
 test("repo:analyze command runs successfully", async () => {
   const result = runScript(
     "bun",
-    ["run", "repo:analyze", "test-owner", "test-repo", "--no-fossilize"],
+    ["run", "repo:analyze", "test-owner", "test-repo", "--no-fossilize", "--test"],
     { requiredCmds: ["bun"] }
   );
   debugOnFailure(result, "repo:analyze command runs successfully");
@@ -32,7 +32,7 @@ test("repo:analyze command runs successfully", async () => {
 test("repo:analyze with fossilization disabled skips fossil creation", async () => {
   const result = runScript(
     "bun",
-    ["run", "repo:analyze", "test-owner", "test-repo", "--no-fossilize"],
+    ["run", "repo:analyze", "test-owner", "test-repo", "--no-fossilize", "--test"],
     { requiredCmds: ["bun"] }
   );
   debugOnFailure(result, "repo:analyze with fossilization disabled skips fossil creation");
@@ -49,7 +49,7 @@ test("repo:analyze with fossilization disabled skips fossil creation", async () 
 test("repo:orchestrate analyze workflow fossilizes analysis", async () => {
   const result = runScript(
     "bun",
-    ["run", "repo:orchestrate", "test-owner", "test-repo", "--workflow", "analyze"],
+    ["run", "repo:orchestrate", "test-owner", "test-repo", "--workflow", "analyze", "--test"],
     { requiredCmds: ["bun"] }
   );
   debugOnFailure(result, "repo:orchestrate analyze workflow fossilizes analysis");
@@ -65,7 +65,7 @@ test("repo:orchestrate analyze workflow fossilizes analysis", async () => {
 test("fossilization creates fossil entries that can be queried", async () => {
   const result = runScript(
     "bun",
-    ["run", "repo:analyze", "test-owner", "test-repo"],
+    ["run", "repo:analyze", "test-owner", "test-repo", "--test"],
     { requiredCmds: ["bun"] }
   );
   debugOnFailure(result, "fossilization creates fossil entries that can be queried");
@@ -89,7 +89,7 @@ test("fossilization creates fossil entries that can be queried", async () => {
 test("fossilization handles errors gracefully", async () => {
   const result = runScript(
     "bun",
-    ["run", "repo:analyze", "test-owner", "test-repo"],
+    ["run", "repo:analyze", "test-owner", "test-repo", "--test"],
     { requiredCmds: ["bun"] }
   );
   debugOnFailure(result, "fossilization handles errors gracefully");
@@ -104,7 +104,7 @@ test("fossilization handles errors gracefully", async () => {
 test("fossilization respects --no-fossilize flag in orchestrate", async () => {
   const result = runScript(
     "bun",
-    ["run", "repo:orchestrate", "test-owner", "test-repo", "--workflow", "analyze"],
+    ["run", "repo:orchestrate", "test-owner", "test-repo", "--workflow", "analyze", "--test"],
     { requiredCmds: ["bun"] }
   );
   debugOnFailure(result, "fossilization respects --no-fossilize flag in orchestrate");

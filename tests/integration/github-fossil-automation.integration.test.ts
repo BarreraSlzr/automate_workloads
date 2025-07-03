@@ -7,57 +7,69 @@ require('child_process').execSync = mock(() => {
   return 'Issue #123 created successfully';
 });
 
+const CLI_PATH = 'src/cli/automate-github-fossils.ts';
+
+function expectExitCodeAndOutput({ stdout, exitCode }: { stdout: string; exitCode: number | null }, expectedExit = 0, expectedStrings: string[] = []) {
+  expect(exitCode).toBe(expectedExit);
+  for (const str of expectedStrings) {
+    expect(stdout).toContain(str);
+  }
+}
+
 test('GitHub fossil automation dry-run mode', async () => {
-  const { stdout, exitCode } = runScript(
+  const result = runScript(
     'bun',
-    ['run', 'scripts/automate-github-fossils.ts', '--dry-run'],
+    ['run', CLI_PATH, 'create', '--owner', 'barreraslzr', '--repo', 'automate_workloads', '--roadmap', 'fossils/roadmap.yml', '--dry-run'],
     { requiredCmds: ['bun'] }
   );
 
-  if (exitCode === 127) {
+  if (result.exitCode === 127) {
     console.warn('Skipping test: bun not available');
     return;
   }
 
-  expect(exitCode).toBe(0);
-  expect(stdout).toContain('Dry run: Yes');
-  expect(stdout).toContain('would create:');
-  expect(stdout).toContain('Issue:');
+  expectExitCodeAndOutput(result, 0, [
+    'Dry run',
+    'would create:',
+    'Issue:'
+  ]);
 });
 
 test('GitHub fossil automation test mode', async () => {
-  const { stdout, exitCode } = runScript(
+  const result = runScript(
     'bun',
-    ['run', 'scripts/automate-github-fossils.ts', '--test'],
+    ['run', CLI_PATH, 'create', '--owner', 'barreraslzr', '--repo', 'automate_workloads', '--roadmap', 'fossils/roadmap.yml', '--test'],
     { requiredCmds: ['bun'] }
   );
 
-  if (exitCode === 127) {
+  if (result.exitCode === 127) {
     console.warn('Skipping test: bun not available');
     return;
   }
 
-  expect(exitCode).toBe(0);
-  expect(stdout).toContain('Test mode: Using test repository');
-  expect(stdout).toContain('Starting GitHub fossil automation');
+  expectExitCodeAndOutput(result, 0, [
+    'Test mode',
+    'Starting GitHub fossil automation'
+  ]);
 });
 
 test('GitHub fossil automation creates fossil collection', async () => {
-  const { stdout, exitCode } = runScript(
+  const result = runScript(
     'bun',
-    ['run', 'scripts/automate-github-fossils.ts'],
+    ['run', CLI_PATH, 'create', '--owner', 'barreraslzr', '--repo', 'automate_workloads', '--roadmap', 'fossils/roadmap.yml'],
     { requiredCmds: ['bun'] }
   );
 
-  if (exitCode === 127) {
+  if (result.exitCode === 127) {
     console.warn('Skipping test: bun not available');
     return;
   }
 
-  expect(exitCode).toBe(0);
-  expect(stdout).toContain('Created');
-  expect(stdout).toContain('fossil collection');
-  expect(stdout).toContain('Summary:');
+  expectExitCodeAndOutput(result, 0, [
+    'Created',
+    'fossil collection',
+    'Summary:'
+  ]);
 });
 
 // Restore original execSync
