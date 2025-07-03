@@ -1,4 +1,4 @@
-import { callOpenAIChat } from './llm';
+import { LLMService } from './llm';
 import type { ContextEntry } from '../types';
 
 /**
@@ -7,10 +7,15 @@ import type { ContextEntry } from '../types';
 export class SemanticTaggerService {
   private model: string;
   private apiKey: string;
+  private llmService: LLMService;
 
   constructor(model: string = 'gpt-4', apiKey?: string) {
     this.model = model;
     this.apiKey = apiKey || process.env.OPENAI_API_KEY || '';
+    this.llmService = new LLMService({
+      maxCostPerCall: 0.05, // Lower cost for semantic tagging
+      minValueScore: 0.4, // Moderate value for semantic analysis
+    });
   }
 
   /**
@@ -24,7 +29,7 @@ export class SemanticTaggerService {
 
     try {
       const prompt = this.buildSemanticAnalysisPrompt(entry);
-      const response = await callOpenAIChat({
+      const response = await this.llmService.callLLM({
         model: this.model,
         apiKey: this.apiKey,
         messages: [
@@ -36,7 +41,10 @@ export class SemanticTaggerService {
             role: 'user',
             content: prompt
           }
-        ]
+        ],
+        context: 'semantic-analysis',
+        purpose: 'semantic-tagging',
+        valueScore: this.calculateValueScore(entry)
       });
 
       const content = response.choices?.[0]?.message?.content;
@@ -49,6 +57,35 @@ export class SemanticTaggerService {
       console.warn('LLM semantic tagging failed, using fallback:', error);
       return this.generateBasicSemanticTags(entry);
     }
+  }
+
+  /**
+   * Calculate value score for semantic tagging
+   */
+  private calculateValueScore(entry: ContextEntry): number {
+    let score = 0.5; // Base score
+    
+    // Higher value for important content types
+    if (entry.type === 'action' || entry.type === 'plan') {
+      score += 0.2;
+    }
+    
+    // Higher value for longer content (more to analyze)
+    if (entry.content && entry.content.length > 200) {
+      score += 0.1;
+    }
+    
+    // Higher value for content with existing tags (can improve)
+    if (entry.tags && entry.tags.length > 0) {
+      score += 0.1;
+    }
+    
+    // Lower value for very short content
+    if (entry.content && entry.content.length < 50) {
+      score -= 0.2;
+    }
+    
+    return Math.min(1.0, Math.max(0.1, score));
   }
 
   /**
@@ -282,7 +319,7 @@ Respond only with valid JSON.`;
     }
     try {
       const prompt = `Summarize the following content in one sentence for a quick preview:\n\n${entry.content}`;
-      const response = await callOpenAIChat({
+      const response = await this.llmService.callLLM({
         model: this.model,
         apiKey: this.apiKey,
         messages: [
@@ -290,7 +327,10 @@ Respond only with valid JSON.`;
           { role: 'user', content: prompt }
         ],
         max_tokens: 60,
-        temperature: 0.5
+        temperature: 0.5,
+        context: 'excerpt-generation',
+        purpose: 'excerpt-generation',
+        valueScore: 0.3 // Lower value for excerpts
       });
       const content = response.choices?.[0]?.message?.content;
       if (!content) {

@@ -10,7 +10,7 @@
 import { Command } from 'commander';
 import { z } from 'zod';
 import { getEnv } from '../core/config';
-import { callOpenAIChat } from '../services/llm';
+import { LLMService } from '../services/llm';
 
 // LLM Planning schemas
 const PlanRequestSchema = z.object({
@@ -72,13 +72,16 @@ class LLMPlanningService {
   private config: ReturnType<typeof getEnv>;
   private model: string;
   private apiKey: string;
-  private llmFn: typeof callOpenAIChat;
+  private llmService: LLMService;
 
-  constructor(model: string, apiKey: string, llmFn = callOpenAIChat) {
+  constructor(model: string, apiKey: string) {
     this.config = getEnv();
     this.model = model;
     this.apiKey = apiKey;
-    this.llmFn = llmFn;
+    this.llmService = new LLMService({
+      maxCostPerCall: 0.15, // Higher cost for planning
+      minValueScore: 0.6, // High value for planning tasks
+    });
   }
 
   /**
@@ -97,7 +100,14 @@ class LLMPlanningService {
           : `Break down the following goal into actionable tasks.\nGoal: ${goal}\nContext: ${JSON.stringify(context || {})}`
         },
       ];
-      const response = await this.llmFn({ model: this.model, apiKey: this.apiKey, messages });
+      const response = await this.llmService.callLLM({ 
+        model: this.model, 
+        apiKey: this.apiKey, 
+        messages,
+        context: 'goal-decomposition',
+        purpose: issueMode ? 'issue-checklist' : 'goal-decomposition',
+        valueScore: 0.8 // High value for planning
+      });
       // You may want to parse/validate response. For now, just return the content as a single task.
       const content = response.choices?.[0]?.message?.content || 'No response';
       return {
@@ -261,7 +271,14 @@ class LLMPlanningService {
         { role: 'system' as const, content: `You are an expert ${contentType} writer.` },
         { role: 'user' as const, content: `Generate ${contentType} content about: ${topic}` },
       ];
-      const response = await this.llmFn({ model: this.model, apiKey: this.apiKey, messages });
+      const response = await this.llmService.callLLM({ 
+        model: this.model, 
+        apiKey: this.apiKey, 
+        messages,
+        context: 'content-generation',
+        purpose: 'content-generation',
+        valueScore: 0.7 // High value for content generation
+      });
       return response.choices?.[0]?.message?.content || 'No response';
     }
     // fallback simulation

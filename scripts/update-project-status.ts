@@ -12,7 +12,7 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import * as yaml from 'js-yaml';
-import { callOpenAIChat } from '../src/services/llm';
+import { LLMService } from '../src/services/llm';
 import { 
   UpdateProjectStatusParams,
   UpdateProjectStatusParamsSchema,
@@ -43,12 +43,20 @@ async function generateLLMRecommendationsFromYAML(
   params: UpdateProjectStatusParams
 ): Promise<string[]> {
   try {
+    const llmService = new LLMService({
+      maxCostPerCall: 0.10, // Moderate cost for recommendations
+      minValueScore: 0.5, // Moderate value for project analysis
+    });
+    
     const prompt = `Here is the current project status YAML for my automation codebase:\n\n${yamlContent}\n\nBased on this, generate 3-5 actionable recommendations to improve fossilization, test coverage, and automation quality. Be specific and practical.`;
     
-    const response = await callOpenAIChat({
+    const response = await llmService.callLLM({
       model: 'gpt-4',
       apiKey,
-      messages: [{ role: 'user', content: prompt }]
+      messages: [{ role: 'user', content: prompt }],
+      context: 'project-analysis',
+      purpose: 'project-recommendations',
+      valueScore: 0.6
     });
     
     // Parse response into bullet points (assuming LLM returns a markdown list)
@@ -277,10 +285,9 @@ function toProjectStatusYamlStructure(
         }
       }
       
-      if (fileObj.cli_details && fileObj.cli_details.length > 0) {
-        if (fileEntry[fileName]) {
-          fileEntry[fileName].cli_details = fileObj.cli_details;
-        }
+      // Always set cli_details for CLI files, defaulting to []
+      if (dir.includes('cli') && fileEntry[fileName]) {
+        fileEntry[fileName].cli_details = fileObj.cli_details ?? [];
       }
       
       // Add test mapping if available
@@ -613,14 +620,22 @@ async function main() {
     if (args.enableLLM && !args.dryRun) {
       const apiKey = process.env.OPENAI_API_KEY;
       if (apiKey) {
+        const llmService = new LLMService({
+          maxCostPerCall: 0.15, // Higher cost for developer insights
+          minValueScore: 0.7, // High value for developer analysis
+        });
+        
         const devSummaryYaml = yaml.dump(result.developer_summary);
         const prompt = `Here is a developer summary of our project:\n\n${devSummaryYaml}\n\nPlease provide:\n- The top 3 most urgent and granular test plans (with file/function/class names)\n- Any architectural or documentation gaps you see\n- Suggestions for refactoring or improving code quality\nRespond in markdown.`;
         
         try {
-          const response = await callOpenAIChat({
+          const response = await llmService.callLLM({
             model: 'gpt-4',
             apiKey,
-            messages: [{ role: 'user', content: prompt }]
+            messages: [{ role: 'user', content: prompt }],
+            context: 'developer-analysis',
+            purpose: 'developer-insights',
+            valueScore: 0.8
           });
           console.log('\n🤖 LLM Developer Insights:\n', response.choices[0].message.content);
         } catch (e) {

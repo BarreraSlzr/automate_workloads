@@ -2,87 +2,14 @@
   "type": "github_fossil_collection",
   "source": "roadmap-automation",
   "createdBy": "automation",
-  "createdAt": "2025-07-01T23:23:48.135Z",
+  "createdAt": "2025-07-03T00:56:22.576Z",
   "fossils": {
     "issues": [],
     "milestones": [],
-    "labels": [
-      {
-        "type": "github_label_fossil",
-        "source": "roadmap-automation",
-        "createdBy": "automation",
-        "createdAt": "2025-07-01T23:23:02.280Z",
-        "name": "roadmap",
-        "description": "Roadmap related",
-        "color": "0366d6",
-        "metadata": {
-          "roadmapAutomation": true
-        }
-      },
-      {
-        "type": "github_label_fossil",
-        "source": "roadmap-automation",
-        "createdBy": "automation",
-        "createdAt": "2025-07-01T23:23:02.650Z",
-        "name": "automation",
-        "description": "Automation related",
-        "color": "d73a4a",
-        "metadata": {
-          "roadmapAutomation": true
-        }
-      },
-      {
-        "type": "github_label_fossil",
-        "source": "roadmap-automation",
-        "createdBy": "automation",
-        "createdAt": "2025-07-01T23:23:02.978Z",
-        "name": "e2e",
-        "description": "End-to-end testing",
-        "color": "28a745",
-        "metadata": {
-          "roadmapAutomation": true
-        }
-      },
-      {
-        "type": "github_label_fossil",
-        "source": "roadmap-automation",
-        "createdBy": "automation",
-        "createdAt": "2025-07-01T23:23:03.302Z",
-        "name": "fossil",
-        "description": "Fossil management",
-        "color": "6f42c1",
-        "metadata": {
-          "roadmapAutomation": true
-        }
-      },
-      {
-        "type": "github_label_fossil",
-        "source": "roadmap-automation",
-        "createdBy": "automation",
-        "createdAt": "2025-07-01T23:23:03.681Z",
-        "name": "status:pending",
-        "description": "Pending status",
-        "color": "fef2c0",
-        "metadata": {
-          "roadmapAutomation": true
-        }
-      },
-      {
-        "type": "github_label_fossil",
-        "source": "roadmap-automation",
-        "createdBy": "automation",
-        "createdAt": "2025-07-01T23:23:04.104Z",
-        "name": "status:done",
-        "description": "Completed status",
-        "color": "0e8a16",
-        "metadata": {
-          "roadmapAutomation": true
-        }
-      }
-    ]
+    "labels": []
   },
   "metadata": {
-    "owner": "BarreraSlzr",
+    "owner": "barreraslzr",
     "repo": "automate_workloads",
     "automationType": "roadmap-sync"
   }

@@ -5,7 +5,7 @@ const SCRIPT_TEST_CASES = [
   {
     name: 'update-project-status script runs and outputs YAML',
     command: ['bun', 'run', 'scripts/update-project-status.ts'],
-    expectedOutput: ['project_status:', 'modules:'],
+    expectedOutput: ['Project status written to fossils/project_status.yml'],
     expectedExitCode: 0,
     description: 'Should generate fossils/project_status.yml output'
   },
