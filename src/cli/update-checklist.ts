@@ -232,4 +232,6 @@ if (process.argv.length === 2) {
   program.help();
 }
 
-program.parse(); 
+if (import.meta.main) {
+  program.parse();
+} 

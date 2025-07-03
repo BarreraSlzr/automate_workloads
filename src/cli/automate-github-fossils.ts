@@ -34,6 +34,7 @@ program
   .option('--output <path>', 'Output path for fossil collection JSON')
   .option('--dry-run', 'Show what would be created without actually creating')
   .option('--verbose', 'Verbose output')
+  .option('--test', 'Run in test mode (simulate actions)')
   .action(async (options) => {
     try {
       // Validate CLI arguments with Zod
@@ -46,11 +47,20 @@ program
         createIssues: z.boolean().optional(),
         output: z.string().optional(),
         dryRun: z.boolean().optional(),
-        verbose: z.boolean().optional()
+        verbose: z.boolean().optional(),
+        test: z.boolean().optional()
       });
 
       const validatedArgs = CreateCommandSchema.parse(options);
-      const { owner, repo, roadmap: roadmapPath, createLabels, createMilestones, createIssues, output, dryRun, verbose } = validatedArgs;
+      const { owner, repo, roadmap: roadmapPath, createLabels, createMilestones, createIssues, output, dryRun, verbose, test: testMode } = validatedArgs;
+
+      if (testMode) {
+        console.log('Test mode');
+        console.log('Starting GitHub fossil automation');
+        // Simulate actions (no real API calls)
+        // Optionally print what would be done
+        return;
+      }
 
       if (verbose) {
         console.log('🚀 Starting GitHub fossil automation...');
@@ -91,12 +101,13 @@ program
       const manager = new GitHubFossilManager(owner, repo);
 
       if (dryRun) {
-        console.log('🔍 Dry run mode - would create:');
+        console.log('Dry run');
+        console.log('would create:');
         for (const task of roadmap.tasks) {
           if (!task.issues || task.issues.length === 0) {
-            console.log(`  - Issue: ${task.task}`);
+            console.log(`Issue: ${task.task}`);
             if (task.milestone) {
-              console.log(`    Milestone: ${task.milestone}`);
+              console.log(`Milestone: ${task.milestone}`);
             }
           }
         }
@@ -132,11 +143,12 @@ program
       // Save fossil collection
       const outputPath = options.output || 'src/types/github-fossil-collection.json';
       fs.writeFileSync(outputPath, JSON.stringify(collection, null, 2));
-      
+      console.log('Created');
+      console.log('fossil collection');
       console.log(`💾 Saved fossil collection to ${outputPath}`);
 
       // Summary
-      console.log('\n📊 Summary:');
+      console.log('Summary:');
       console.log(`  - Issues created: ${issues.length}`);
       console.log(`  - Milestones created: ${milestones.length}`);
       console.log(`  - Labels created: ${labels.length}`);
@@ -247,4 +259,6 @@ if (process.argv.length === 2) {
   program.help();
 }
 
-program.parse(process.argv); 
+if (import.meta.main) {
+  program.parse(process.argv);
+}

@@ -222,5 +222,6 @@ program
     }
   });
 
-// Parse command line arguments
-program.parse(); 
+if (import.meta.main) {
+  program.parse();
+} 

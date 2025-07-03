@@ -8,48 +8,14 @@
  */
 
 import { Command } from 'commander';
-import { z } from 'zod';
 import { getEnv } from '../core/config';
 import { promises as fs } from 'fs';
 import path from 'path';
-import { execSync } from 'child_process';
 import type { ContextEntry, ContextQuery } from '@/types';
 import { SemanticTaggerService } from '../services/semantic-tagger';
 import { getFossilSummary } from '../utils/fossilSummary';
 import { extractJsonBlock } from '../utils/markdownChecklist';
-
-// Context fossil schemas
-const ContextEntrySchema = z.object({
-  id: z.string(),
-  type: z.enum(['knowledge', 'decision', 'action', 'observation', 'plan', 'result', 'insight']),
-  title: z.string(),
-  content: z.string(),
-  tags: z.array(z.string()),
-  metadata: z.record(z.unknown()).default({}),
-  source: z.enum(['llm', 'terminal', 'api', 'manual', 'automated']),
-  version: z.number(),
-  parentId: z.string().optional(),
-  children: z.array(z.string()),
-  createdAt: z.string(),
-  updatedAt: z.string(),
-});
-
-const ContextQuerySchema = z.object({
-  limit: z.number().default(100),
-  offset: z.number().default(0),
-  type: z.enum(['knowledge', 'decision', 'action', 'observation', 'plan', 'result', 'insight']).optional(),
-  tags: z.array(z.string()).optional(),
-  source: z.enum(['llm', 'terminal', 'api', 'manual', 'automated']).optional(),
-  dateRange: z.object({
-    start: z.string(),
-    end: z.string(),
-  }).optional(),
-  search: z.string().optional(),
-});
-
-// Use imported types instead of local ones
-// type ContextEntry = z.infer<typeof ContextEntrySchema>;
-// type ContextQuery = z.infer<typeof ContextQuerySchema>;
+import { isTestMode } from '../cli/repo-orchestrator';
 
 /**
  * Context Fossil Storage Service
@@ -61,12 +27,14 @@ export class ContextFossilService {
   private fossilDir: string;
   private indexFile: string;
   private semanticTagger: SemanticTaggerService;
+  private options: any;
 
-  constructor() {
+  constructor(options?: any) {
     this.config = getEnv();
     this.fossilDir = '.context-fossil';
     this.indexFile = path.join(this.fossilDir, 'index.json');
     this.semanticTagger = new SemanticTaggerService();
+    this.options = options || {};
   }
 
   /**
@@ -147,31 +115,35 @@ export class ContextFossilService {
 
     // Generate intelligent tags
     console.log('🧠 Generating intelligent tags...');
-    
-    // Generate semantic tags
-    newEntry.semanticTags = await this.semanticTagger.generateSemanticTags(newEntry);
-    
-    // Get all entries for relationship analysis
-    const allEntries = await this.getAllEntries();
-    
-    // Generate relationship tags
-    newEntry.relationships = await this.semanticTagger.generateRelationshipTags(newEntry, allEntries);
-    
-    // Generate temporal tags
-    newEntry.temporal = this.semanticTagger.generateTemporalTags(newEntry);
-    
+    if (isTestMode(this.options)) {
+      // In test/mock mode, skip semantic tagger and use fast mock tags
+      newEntry.semanticTags = { concepts: ['mocked'], semanticCategory: 'test', contentHash: contentHash };
+      newEntry.relationships = {};
+      newEntry.temporal = {};
+      newEntry.excerpt = (newEntry.content || '').replace(/\s+/g, ' ').slice(0, 80).trim();
+    } else {
+      // Generate semantic tags
+      newEntry.semanticTags = await this.semanticTagger.generateSemanticTags(newEntry);
+      // Get all entries for relationship analysis
+      const allEntries = await this.getAllEntries();
+      // Generate relationship tags
+      newEntry.relationships = await this.semanticTagger.generateRelationshipTags(newEntry, allEntries);
+      // Generate temporal tags
+      newEntry.temporal = this.semanticTagger.generateTemporalTags(newEntry);
+      // Generate LLM-based excerpt
+      try {
+        newEntry.excerpt = await this.semanticTagger.generateExcerpt(newEntry);
+      } catch (err) {
+        newEntry.excerpt = (newEntry.content || '').replace(/\s+/g, ' ').slice(0, 80).trim();
+      }
+    }
+
     // Add semantic tags to regular tags for backward compatibility
     if (newEntry.semanticTags?.concepts) {
       newEntry.tags = [...newEntry.tags, ...newEntry.semanticTags.concepts];
     }
     if (newEntry.semanticTags?.semanticCategory) {
       newEntry.tags.push(newEntry.semanticTags.semanticCategory);
-    }
-    // Generate LLM-based excerpt
-    try {
-      newEntry.excerpt = await this.semanticTagger.generateExcerpt(newEntry);
-    } catch (err) {
-      newEntry.excerpt = (newEntry.content || '').replace(/\s+/g, ' ').slice(0, 80).trim();
     }
 
     // Save entry file

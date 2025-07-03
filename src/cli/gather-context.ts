@@ -62,7 +62,7 @@ class ContextGatheringService {
     };
 
     // Gather GitHub context if available
-    if (this.config.githubToken) {
+    if (this.config.GITHUB_TOKEN) {
       try {
         context.github = await this.gatherGitHubContext();
       } catch (error) {
@@ -78,7 +78,7 @@ class ContextGatheringService {
     }
 
     // Gather Gmail context if available
-    if (this.config.gmailToken) {
+    if (this.config.GMAIL_TOKEN) {
       try {
         context.gmail = await this.gatherGmailContext();
       } catch (error) {
@@ -87,7 +87,7 @@ class ContextGatheringService {
     }
 
     // Gather social media context if available
-    if (this.config.twitterToken || this.config.bufferToken) {
+    if (this.config.TWITTER_TOKEN || this.config.BUFFER_TOKEN) {
       try {
         context.social = await this.gatherSocialContext();
       } catch (error) {
@@ -383,7 +383,7 @@ program
         content: fossilContent,
         tags: fossilTags,
         source: 'terminal',
-        metadata: {},
+        metadata: { invocation: 'gather-context-cli' },
       });
       if (options.output) {
         await writeFossilToFile(fossilEntry, options.output);
@@ -397,5 +397,6 @@ program
     }
   });
 
-// Parse command line arguments
-program.parse(); 
+if (import.meta.main) {
+  program.parse();
+} 
