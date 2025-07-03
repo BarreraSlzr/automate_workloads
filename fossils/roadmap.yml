@@ -283,19 +283,20 @@ tasks:
     milestones: ["Local LLM Integration"]
     labels: ["automation", "llm", "optimization", "local"]
     subtasks:
-      - task: Implement intelligent model management and discovery
+      - task: Implement happy-path local LLM integration and testing (Ollama-first, extensible)
         status: planned
         context: >
-          Create a model management system that can discover, validate, and manage local LLM models (Ollama, LM Studio, etc.)
-          with automatic fallback and performance benchmarking.
+          Scaffold and implement the core abstraction for local LLM usage, starting with Ollama as the default backend, but designed for easy extension to vLLM, llama.cpp, and koboldcpp. Integrate with CLI for local LLM queries, and add integration tests that reference this roadmap task. Ensure all code, CLI, and tests are traceable to this roadmap entry for retrospective validation and future extensibility.
         subtasks:
-          - task: Add model discovery and validation for Ollama, LM Studio, and other local providers
+          - task: Create LocalLLMService abstraction with pluggable backend support
             status: planned
-          - task: Implement model performance benchmarking and quality assessment
+          - task: Integrate local LLM usage into CLI (llm-usage or new command)
             status: planned
-          - task: Add automatic model download and setup for common automation tasks
+          - task: Add integration tests for happy-path (Ollama) and backend switching
             status: planned
-          - task: Create model registry with metadata (size, performance, use cases)
+          - task: Reference roadmap.yml task in test descriptions/comments for traceability
+            status: planned
+          - task: Document setup, usage, and test mapping in onboarding/docs
             status: planned
       - task: Enhance intelligent routing and cost optimization
         status: planned
@@ -380,6 +381,31 @@ tasks:
           - task: Add troubleshooting guide for common local LLM issues
             status: planned
           - task: Create performance optimization guide
+            status: planned
+      - task: Fossilize LLM insights, benchmarks, and model discovery results
+        status: planned
+        context: >
+          Generate, curate, and store LLM insights, benchmarking results, and model discovery metadata as first-class fossil artifacts.
+          Store these outputs in a dedicated directory (e.g., fossils/llm_insights/), and ensure they are referenced in the roadmap for traceability, reproducibility, and retrospective analysis.
+          Each fossil should include:
+            - A clear type: insight, benchmark, or discovery
+            - Timestamp and model/version info
+            - For benchmarks: latency, throughput, accuracy, cost, hardware
+            - For insights: prompt, response, evaluation/notes, user/LLM feedback
+            - For discovery: model list, versions, sizes, features, availability
+          Example files: fossils/llm_insights/benchmark-YYYY-MM-DD.json, fossils/llm_insights/discovery-YYYY-MM-DD.json
+          Ensure no sensitive data is stored; redact as needed.
+          Update onboarding and documentation to describe how to use, audit, and extend these fossils.
+        subtasks:
+          - task: Design schema and storage location for LLM insights/benchmarks fossils
+            status: planned
+          - task: Implement scripts/utilities to generate and curate these fossils
+            status: planned
+          - task: Integrate fossilization of insights/benchmarks into LLM workflows and tests
+            status: planned
+          - task: Reference fossilized insights/benchmarks in roadmap and documentation
+            status: planned
+          - task: Add onboarding/docs section for fossil usage and auditing
             status: planned
     key_points:
       - Current implementation has basic Ollama support but needs enhancement for production automation
