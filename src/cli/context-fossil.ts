@@ -27,13 +27,19 @@ export class ContextFossilService {
   private fossilDir: string;
   private indexFile: string;
   private semanticTagger: SemanticTaggerService;
+  private llmOptions: { enableLocalLLM?: boolean; localBackend?: string; routingPreference?: 'auto' | 'local' | 'cloud' };
   private options: any;
 
   constructor(options?: any) {
     this.config = getEnv();
     this.fossilDir = '.context-fossil';
     this.indexFile = path.join(this.fossilDir, 'index.json');
-    this.semanticTagger = new SemanticTaggerService();
+    this.llmOptions = {
+      enableLocalLLM: options?.enableLocalLLM ?? true,
+      localBackend: options?.localBackend,
+      routingPreference: options?.routingPreference ?? 'auto',
+    };
+    this.semanticTagger = new SemanticTaggerService('gpt-4', undefined, this.llmOptions);
     this.options = options || {};
   }
 

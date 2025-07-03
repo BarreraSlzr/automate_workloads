@@ -2,32 +2,6 @@ import { describe, it, expect, beforeEach, mock } from 'bun:test';
 import { SemanticTaggerService } from '../../../src/services/semantic-tagger';
 import type { ContextEntry } from '../../../src/types';
 
-// Mock the LLMService to return predictable responses
-mock.module("../../../src/services/llm", () => ({
-  LLMService: class MockLLMService {
-    constructor(config: any = {}) {
-      // Mock configuration
-    }
-    
-    async callLLM(options: any) {
-      const userContent = options.messages?.[1]?.content || "";
-      if (userContent.includes("Health")) {
-        return {
-          choices: [{ message: { content: '{"semanticCategory":"repository-health","confidence":0.95,"concepts":["health"],"sentiment":"neutral","priority":"medium","impact":"medium","stakeholders":["developers"]}' } }]
-        };
-      }
-      if (userContent.includes("Automated workflow")) {
-        return {
-          choices: [{ message: { content: '{"semanticCategory":"automation","confidence":0.95,"concepts":["workflow","automated"],"sentiment":"neutral","priority":"medium","impact":"medium","stakeholders":["developers"]}' } }]
-        };
-      }
-      return {
-        choices: [{ message: { content: '{"semanticCategory":"test","confidence":1,"concepts":["mock"],"sentiment":"neutral","priority":"low","impact":"low","stakeholders":["test"]}' } }]
-      };
-    }
-  }
-}));
-
 describe('SemanticTaggerService', () => {
   let service: SemanticTaggerService;
   let mockEntry: ContextEntry;
@@ -55,6 +29,10 @@ describe('SemanticTaggerService', () => {
   describe('generateSemanticTags', () => {
     it('should generate semantic tags with content hash', async () => {
       const serviceWithoutKey = new SemanticTaggerService('gpt-4', '');
+      // Patch callLLM to return predictable result
+      serviceWithoutKey['llmService'].callLLM = async () => ({
+        choices: [{ message: { content: '{"semanticCategory":"repository-health","confidence":0.95,"concepts":["health"],"sentiment":"neutral","priority":"medium","impact":"medium","stakeholders":["developers"]}' } }]
+      });
       const result = await serviceWithoutKey.generateSemanticTags(mockEntry);
       
       expect(result).toBeDefined();
@@ -70,6 +48,9 @@ describe('SemanticTaggerService', () => {
       };
       
       const serviceWithoutKey = new SemanticTaggerService('gpt-4', '');
+      serviceWithoutKey['llmService'].callLLM = async () => ({
+        choices: [{ message: { content: '{"semanticCategory":"repository-health","confidence":0.95,"concepts":["health"],"sentiment":"neutral","priority":"medium","impact":"medium","stakeholders":["developers"]}' } }]
+      });
       const result = await serviceWithoutKey.generateSemanticTags(healthEntry);
       
       expect(result?.semanticCategory).toBe('repository-health');
@@ -84,6 +65,9 @@ describe('SemanticTaggerService', () => {
       };
       
       const serviceWithoutKey = new SemanticTaggerService('gpt-4', '');
+      serviceWithoutKey['llmService'].callLLM = async () => ({
+        choices: [{ message: { content: '{"semanticCategory":"automation","confidence":0.95,"concepts":["workflow","automated"],"sentiment":"neutral","priority":"medium","impact":"medium","stakeholders":["developers"]}' } }]
+      });
       const result = await serviceWithoutKey.generateSemanticTags(automationEntry);
       
       expect(['automation', 'testing']).toContain(result?.semanticCategory);
@@ -219,6 +203,38 @@ describe('SemanticTaggerService', () => {
       const dependencies = (service as any).findDependencies(entryWithoutDeps, allEntries);
       
       expect(dependencies).toHaveLength(0);
+    });
+  });
+
+  describe('Local LLM integration', () => {
+    it('should pass enableLocalLLM and routingPreference to LLMService', async () => {
+      const service = new SemanticTaggerService('gpt-4', undefined, { enableLocalLLM: true, routingPreference: 'local' });
+      expect(service['llmService']['config'].enableLocalLLM).toBe(true);
+      expect(service['llmOptions'].routingPreference).toBe('local');
+    });
+    it('should register a custom local backend if provided', async () => {
+      const service = new SemanticTaggerService('gpt-4', undefined, { enableLocalLLM: true, localBackend: 'llama.cpp' });
+      // Should have a provider named 'llama.cpp'
+      const found = service['llmService']['providers'].some(p => p.name === 'llama.cpp');
+      expect(found).toBe(true);
+    });
+    it('should use routingPreference in callLLM', async () => {
+      const service = new SemanticTaggerService('gpt-4', undefined, { routingPreference: 'cloud' });
+      // Call generateSemanticTags and check config is set
+      await service.generateSemanticTags({
+        id: 'test',
+        type: 'insight',
+        title: 'Test',
+        content: 'Test content',
+        tags: [],
+        metadata: {},
+        source: 'manual',
+        version: 1,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        children: [],
+      });
+      expect(service['llmService']['config'].preferLocalLLM).toBe(false);
     });
   });
 }); 

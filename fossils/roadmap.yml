@@ -408,4 +408,11 @@ tasks:
       Prefer local LLM for cost-sensitive automation tasks, with cloud LLM for complex analysis and generation tasks.
       Implement comprehensive monitoring and automatic provider switching based on performance and cost metrics.
     deadline: 2024-08-15T00:00:00.000Z
+    milestone: Local LLM Integration
+  - task: Remove semantic tag test LLM patching/simulation once local Ollama model is connected
+    status: planned
+    owner: emmanuelbarrera
+    context: >
+      The current semantic tag tests patch callLLM to simulate LLM responses for stable results. Once a local Ollama model is reliably connected and used in CI/tests, remove these patches and use the real local LLM for semantic tagging tests. This will ensure tests reflect actual model behavior and integration.
+    labels: ["testing", "llm", "local-llm", "cleanup"]
     milestone: Local LLM Integration 

@@ -1,5 +1,6 @@
 import { LLMService } from './llm';
 import type { ContextEntry } from '../types';
+import type { LLMOptimizationConfig } from './llm';
 
 /**
  * Semantic tagging service for intelligent fossil tagging
@@ -8,14 +9,31 @@ export class SemanticTaggerService {
   private model: string;
   private apiKey: string;
   private llmService: LLMService;
+  private llmOptions: Partial<LLMOptimizationConfig> & { localBackend?: string; routingPreference?: 'auto' | 'local' | 'cloud' };
 
-  constructor(model: string = 'gpt-4', apiKey?: string) {
+  /**
+   * @param model LLM model name (default: 'gpt-4')
+   * @param apiKey API key (default: process.env.OPENAI_API_KEY)
+   * @param llmOptions LLM options: enableLocalLLM, localBackend, routingPreference, etc.
+   */
+  constructor(model: string = 'gpt-4', apiKey?: string, llmOptions: Partial<LLMOptimizationConfig> & { localBackend?: string; routingPreference?: 'auto' | 'local' | 'cloud' } = {}) {
     this.model = model;
     this.apiKey = apiKey || process.env.OPENAI_API_KEY || '';
+    this.llmOptions = llmOptions;
     this.llmService = new LLMService({
       maxCostPerCall: 0.05, // Lower cost for semantic tagging
       minValueScore: 0.4, // Moderate value for semantic analysis
+      enableLocalLLM: llmOptions.enableLocalLLM ?? true,
+      ...llmOptions
     });
+    if (llmOptions.localBackend && llmOptions.localBackend !== 'ollama') {
+      this.llmService.registerLocalBackend(llmOptions.localBackend, async (options) => {
+        return { choices: [{ message: { content: `[${llmOptions.localBackend}] response: ${options.messages.map(m => m.content).join(' ')}` } }] };
+      });
+    }
+    if (llmOptions.routingPreference) {
+      this.llmService.setRoutingPreference(llmOptions.routingPreference);
+    }
   }
 
   /**
@@ -44,7 +62,8 @@ export class SemanticTaggerService {
         ],
         context: 'semantic-analysis',
         purpose: 'semantic-tagging',
-        valueScore: this.calculateValueScore(entry)
+        valueScore: this.calculateValueScore(entry),
+        routingPreference: this.llmOptions.routingPreference
       });
 
       const content = response.choices?.[0]?.message?.content;
@@ -330,7 +349,8 @@ Respond only with valid JSON.`;
         temperature: 0.5,
         context: 'excerpt-generation',
         purpose: 'excerpt-generation',
-        valueScore: 0.3 // Lower value for excerpts
+        valueScore: 0.3, // Lower value for excerpts
+        routingPreference: this.llmOptions.routingPreference
       });
       const content = response.choices?.[0]?.message?.content;
       if (!content) {
