@@ -311,9 +311,8 @@ This creates a truly self-improving automation ecosystem that gets smarter and m
   // Private helper methods
 
   private async addToFossil(entry: any): Promise<void> {
-    // Simulate adding to fossil storage
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const filename = `fossil-${timestamp}.json`;
+    // For demo purposes only: always overwrite the same file to avoid timestamped fossils
+    const filename = 'demo-fossil.json';
     const filepath = path.join(this.fossilDir, 'entries', filename);
     
     const fossilEntry = {
@@ -325,7 +324,8 @@ This creates a truly self-improving automation ecosystem that gets smarter and m
     };
 
     await fs.writeFile(filepath, JSON.stringify(fossilEntry, null, 2));
-    console.log(`✅ Added to fossil storage: ${fossilEntry.id}`);
+    console.log(`✅ Added to fossil storage: ${fossilEntry.id} (demo-fossil.json)`);
+    // NOTE: This file is for demo/testing only and should not be committed.
   }
 
   private formatMonitoringContent(result: any): string {

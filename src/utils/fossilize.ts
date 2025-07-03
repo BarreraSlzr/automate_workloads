@@ -105,21 +105,21 @@ async function ensureFossilDir() {
 
 export async function fossilizeLLMInsight(fossil: LLMInsightFossil) {
   await ensureFossilDir();
-  const file = path.join(FOSSIL_DIR, `insight-${fossil.timestamp}.json`);
+  const file = path.join(FOSSIL_DIR, 'insight.json');
   await fs.writeFile(file, JSON.stringify(fossil, null, 2));
   return file;
 }
 
 export async function fossilizeLLMBenchmark(fossil: LLMBenchmarkFossil) {
   await ensureFossilDir();
-  const file = path.join(FOSSIL_DIR, `benchmark-${fossil.timestamp}.json`);
+  const file = path.join(FOSSIL_DIR, 'benchmark.json');
   await fs.writeFile(file, JSON.stringify(fossil, null, 2));
   return file;
 }
 
 export async function fossilizeLLMDiscovery(fossil: LLMDiscoveryFossil) {
   await ensureFossilDir();
-  const file = path.join(FOSSIL_DIR, `discovery-${fossil.timestamp}.json`);
+  const file = path.join(FOSSIL_DIR, 'discovery.json');
   await fs.writeFile(file, JSON.stringify(fossil, null, 2));
   return file;
 } 

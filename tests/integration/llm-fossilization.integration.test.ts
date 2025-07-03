@@ -1,4 +1,4 @@
-import { test, expect } from 'bun:test';
+import { test, expect, afterAll } from 'bun:test';
 import { fossilizeLLMInsight, fossilizeLLMBenchmark, fossilizeLLMDiscovery } from '../../src/utils/fossilize';
 import { LLMInsightFossil, LLMBenchmarkFossil, LLMDiscoveryFossil } from '../../src/types/llmFossil';
 import fs from 'fs/promises';
@@ -53,4 +53,30 @@ test('fossilizes an LLM discovery', async () => {
   const data = JSON.parse(await fs.readFile(file, 'utf-8'));
   expect(data.models.length).toBe(2);
   expect(data.models[0].name).toBe('gpt-4');
+});
+
+afterAll(async () => {
+  const dir = path.join(process.cwd(), 'fossils', 'llm_insights');
+  let files: string[] = [];
+  try {
+    files = await fs.readdir(dir);
+  } catch (e) {
+    // Directory may not exist, nothing to clean
+    return;
+  }
+  for (const file of files) {
+    const filePath = path.join(dir, file);
+    try {
+      const content = await fs.readFile(filePath, 'utf-8');
+      if (
+        content.includes('Test insight') ||
+        content.includes('Test benchmark') ||
+        content.includes('Test discovery')
+      ) {
+        await fs.unlink(filePath);
+      }
+    } catch (e) {
+      // Ignore errors for files that may have been deleted already
+    }
+  }
 }); 
