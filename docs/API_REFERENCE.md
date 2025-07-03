@@ -691,4 +691,8 @@ const result = await llmService.callLLM({
 });
 ```
 
-See also: [🦴 LLM Fossilization Utilities](#llm-fossilization-utilities) 
+See also: [🦴 LLM Fossilization Utilities](#llm-fossilization-utilities)
+
+## Public API Outputs
+
+All public JSON outputs (e.g., `fossils/public/api/project_status_public.json`) are generated from curated YAML fossils and can be served as API endpoints for dashboards, integrations, or external tools. See [Fossil Publication Workflow](./FOSSIL_PUBLICATION_WORKFLOW.md) for details. 

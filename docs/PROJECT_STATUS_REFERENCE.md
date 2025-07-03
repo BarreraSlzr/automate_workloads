@@ -86,4 +86,8 @@ modules:
 
 ---
 
+## Fossil Publication Workflow
+
+The `project_status.yml` fossil is the canonical source of truth. All public-facing markdown and JSON outputs (for blogs, docs, and APIs) are generated from this YAML file using the [Fossil Publication Workflow](./FOSSIL_PUBLICATION_WORKFLOW.md). Never edit the public markdown or JSON directly—always update the YAML fossil and regenerate.
+
 For questions or suggestions, update this document or contact the maintainers. 

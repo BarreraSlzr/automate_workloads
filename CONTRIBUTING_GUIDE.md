@@ -1270,3 +1270,11 @@ Contributors will be recognized in:
 ---
 
 **Key Takeaway**: This contributing guide emphasizes LLM-friendly patterns and workflows that enable intelligent automation, planning, execution, and monitoring. By following these guidelines, contributors help build a more intelligent and efficient automation ecosystem! 🤖✨ 
+
+---
+
+## Fossil Publication Workflow Guidelines
+
+- Do not edit public markdown or JSON files in `fossils/public/` directly.
+- Always update the canonical YAML fossil (e.g., `fossils/project_status.yml`) and regenerate outputs using the publication script.
+- See [docs/FOSSIL_PUBLICATION_WORKFLOW.md](docs/FOSSIL_PUBLICATION_WORKFLOW.md) for details on the workflow, folder structure, and automation. 

@@ -114,4 +114,8 @@ tasks:
 }
 ```
 
-- This enables full traceability, reproducibility, and retrospective analysis of LLM usage and results. 
+- This enables full traceability, reproducibility, and retrospective analysis of LLM usage and results.
+
+## Fossil Publication Automation
+
+The roadmap and project status fossils are now automatically published as public-facing markdown and JSON in the `fossils/public/` folder structure. See [Fossil Publication Workflow](./FOSSIL_PUBLICATION_WORKFLOW.md) for details. This process is future-proofed for GitHub Actions/CI integration and public API endpoints. 

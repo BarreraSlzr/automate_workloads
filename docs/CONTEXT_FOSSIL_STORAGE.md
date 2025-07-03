@@ -582,6 +582,10 @@ bun run context:export --format json --output "backup-$(date +%Y-%m-%d).json"
 - [API Reference](./API_REFERENCE.md) - Technical API documentation
 - [Development Guide](./DEVELOPMENT_GUIDE.md) - Development setup
 
+## Prompt/System Message Fossilization
+
+Curated prompts and system messages will be fossilized in `fossils/prompts/` and published as needed for LLM context, automation, and reproducibility. See [Fossil Publication Workflow](./FOSSIL_PUBLICATION_WORKFLOW.md) for the overall publication process and folder structure.
+
 ---
 
 *The Context Fossil Storage system creates a living, breathing knowledge base that evolves with your project, preserving decisions, insights, and context for future reference and AI-powered analysis.* 

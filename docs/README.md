@@ -11,6 +11,7 @@ Welcome to the comprehensive documentation for the Automation Ecosystem. This gu
 5. [Development Guide](#development-guide)
 6. [API Reference](#api-reference)
 7. [Troubleshooting](#troubleshooting)
+8. [Fossil Publication Workflow](#fossil-publication-workflow)
 
 ## 🚀 Getting Started
 
@@ -558,3 +559,15 @@ const result = await llmService.callLLM({
   routingPreference: 'cloud', // override per-call
 });
 ``` 
+
+## 🦴 Fossil Publication Workflow
+
+All public-facing documentation, blog posts, and API outputs are now generated from curated YAML fossils (e.g., `fossils/project_status.yml`).
+See [Fossil Publication Workflow](./FOSSIL_PUBLICATION_WORKFLOW.md) for details on the YAML → JSON → Markdown process, folder structure, and future-proofing for automation and integrations. 
+
+### Fossil File Naming and Curation Policy
+
+- Only stable, curated fossil files (e.g., `insight.json`, `benchmark.json`, `discovery.json`, `fossil-export-latest.json`) should be committed to the repository.
+- Timestamped fossil files and ad-hoc exports (e.g., `fossil-export-2025-07-03T06-51-07-887Z.json`) are for local use only and must not be committed.
+- Test/demo fossil outputs (including any file named `demo-fossil.json`) must be cleaned up after tests or written to a `.gitignore`d directory.
+- The export command now supports a `stable` option to always write to a canonical filename for reporting/automation. 

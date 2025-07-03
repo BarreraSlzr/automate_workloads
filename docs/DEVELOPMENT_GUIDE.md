@@ -762,6 +762,18 @@ refactor(services): extract common service patterns
 
 ---
 
+## 🦴 Fossil Publication and Public Outputs
+
+The project now includes a `fossils/public/` folder structure for all public-facing markdown and JSON outputs, generated from curated YAML fossils. The publication process uses timestamp libraries (e.g., luxon, date-fns) and outputs metadata-rich files for future React/MDX/Next.js/Remix integrations. See [Fossil Publication Workflow](./FOSSIL_PUBLICATION_WORKFLOW.md) for details.
+
+## Fossil File Curation Policy
+
+- Only stable, canonical fossil files (no timestamped names) should be committed.
+- Test/demo fossil outputs must be cleaned up or written to a `.gitignore`d directory.
+- Use the main fossilization utility for all canonical fossil creation to ensure deduplication and traceability.
+
+---
+
 ## 📚 Additional Resources
 
 - [API Reference](API_REFERENCE.md) - Complete API documentation
