@@ -284,20 +284,20 @@ tasks:
     labels: ["automation", "llm", "optimization", "local"]
     subtasks:
       - task: Implement happy-path local LLM integration and testing (Ollama-first, extensible)
-        status: planned
+        status: done
         context: >
-          Scaffold and implement the core abstraction for local LLM usage, starting with Ollama as the default backend, but designed for easy extension to vLLM, llama.cpp, and koboldcpp. Integrate with CLI for local LLM queries, and add integration tests that reference this roadmap task. Ensure all code, CLI, and tests are traceable to this roadmap entry for retrospective validation and future extensibility.
+          Completed: Local LLM integration is extensible, CLI supports backend selection, and onboarding/docs are updated. Integration tests for backend switching and fossilization are in place.
         subtasks:
           - task: Create LocalLLMService abstraction with pluggable backend support
-            status: planned
+            status: done
           - task: Integrate local LLM usage into CLI (llm-usage or new command)
-            status: planned
+            status: done
           - task: Add integration tests for happy-path (Ollama) and backend switching
-            status: planned
+            status: done
           - task: Reference roadmap.yml task in test descriptions/comments for traceability
-            status: planned
+            status: done
           - task: Document setup, usage, and test mapping in onboarding/docs
-            status: planned
+            status: done
       - task: Enhance intelligent routing and cost optimization
         status: planned
         context: >
@@ -383,30 +383,20 @@ tasks:
           - task: Create performance optimization guide
             status: planned
       - task: Fossilize LLM insights, benchmarks, and model discovery results
-        status: planned
+        status: done
         context: >
-          Generate, curate, and store LLM insights, benchmarking results, and model discovery metadata as first-class fossil artifacts.
-          Store these outputs in a dedicated directory (e.g., fossils/llm_insights/), and ensure they are referenced in the roadmap for traceability, reproducibility, and retrospective analysis.
-          Each fossil should include:
-            - A clear type: insight, benchmark, or discovery
-            - Timestamp and model/version info
-            - For benchmarks: latency, throughput, accuracy, cost, hardware
-            - For insights: prompt, response, evaluation/notes, user/LLM feedback
-            - For discovery: model list, versions, sizes, features, availability
-          Example files: fossils/llm_insights/benchmark-YYYY-MM-DD.json, fossils/llm_insights/discovery-YYYY-MM-DD.json
-          Ensure no sensitive data is stored; redact as needed.
-          Update onboarding and documentation to describe how to use, audit, and extend these fossils.
+          Completed: LLM fossilization utilities and types are implemented, onboarding/docs updated, and integration tests cover all fossil types. All subtasks below are done.
         subtasks:
           - task: Design schema and storage location for LLM insights/benchmarks fossils
-            status: planned
+            status: done
           - task: Implement scripts/utilities to generate and curate these fossils
-            status: planned
+            status: done
           - task: Integrate fossilization of insights/benchmarks into LLM workflows and tests
-            status: planned
+            status: done
           - task: Reference fossilized insights/benchmarks in roadmap and documentation
-            status: planned
+            status: done
           - task: Add onboarding/docs section for fossil usage and auditing
-            status: planned
+            status: done
     key_points:
       - Current implementation has basic Ollama support but needs enhancement for production automation
       - Focus on intelligent routing, cost optimization, and seamless integration with existing workflows

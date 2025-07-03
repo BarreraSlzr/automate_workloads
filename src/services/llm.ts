@@ -684,6 +684,20 @@ ${this.generateRecommendations(analytics)}
   private estimateOpenAICost(tokens: number, model: string): number {
     return this.estimateCost(tokens, model);
   }
+
+  /**
+   * Register a new local LLM backend (e.g., vLLM, llama.cpp)
+   * Roadmap reference: Scaffold LocalLLMService abstraction (Ollama-first, extensible)
+   */
+  public registerLocalBackend(name: string, callFn: (options: OpenAIChatOptions) => Promise<any>, isAvailableFn?: () => Promise<boolean>) {
+    this.providers.push({
+      name,
+      isAvailable: isAvailableFn || (async () => true),
+      call: callFn,
+      estimateTokens: this.estimateLocalTokens.bind(this),
+      estimateCost: () => 0
+    });
+  }
 }
 
 // Backward compatibility - keep the original function

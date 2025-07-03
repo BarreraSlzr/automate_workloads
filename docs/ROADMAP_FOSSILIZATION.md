@@ -92,4 +92,26 @@ tasks:
     issues: [123, 124]
     milestones: ["Automation Sync"]
     labels: ["automation", "deduplication"]
-``` 
+```
+
+## LLM Insights, Benchmarks, and Discoveries as Fossils
+
+- All LLM outputs (insights, benchmarks, model discoveries) can now be fossilized using type-safe utilities.
+- Types are defined in `src/types/llmFossil.ts`.
+- Use `fossilizeLLMInsight`, `fossilizeLLMBenchmark`, and `fossilizeLLMDiscovery` from `src/utils/fossilize.ts`.
+- Fossils are stored in `fossils/llm_insights/`.
+
+### Example: LLM Insight Fossil JSON
+```json
+{
+  "type": "insight",
+  "timestamp": "2025-07-03T12:00:00Z",
+  "model": "gpt-4",
+  "provider": "openai",
+  "excerpt": "Short summary of the insight.",
+  "prompt": "What is AI?",
+  "response": "AI is ..."
+}
+```
+
+- This enables full traceability, reproducibility, and retrospective analysis of LLM usage and results. 

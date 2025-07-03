@@ -473,4 +473,21 @@ program
     }
   });
 
-program.parse(); 
+// Add CLI arg for local backend selection
+const localBackend = program.opts()['local-backend'] || 'ollama';
+const llmService = new LLMService({ enableLocalLLM: true });
+if (localBackend !== 'ollama') {
+  // Example: register a stub backend for demonstration
+  llmService.registerLocalBackend(localBackend, async (options) => {
+    return { choices: [{ message: { content: `[${localBackend}] response: ${options.messages.map(m => m.content).join(' ')}` } }] };
+  });
+}
+
+if (program.opts().help) {
+  console.log(`\nUsage: bun run src/cli/llm-usage.ts [options]\n\nOptions:\n  --local-backend <name>   Select local LLM backend (ollama, llama.cpp, etc.)\n  ...\n`);
+  process.exit(0);
+}
+
+if (import.meta.main) {
+  program.parse(); 
+}

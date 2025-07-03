@@ -1,0 +1,9 @@
+{
+  "type": "insight",
+  "timestamp": "2025-07-03T03:02:12.733Z",
+  "model": "gpt-4",
+  "provider": "openai",
+  "excerpt": "Test insight",
+  "prompt": "What is AI?",
+  "response": "AI is ..."
+}

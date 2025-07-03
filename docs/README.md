@@ -496,3 +496,32 @@ This project uses a dedicated issue template for automation/programmatically cre
 ## Programmatic Issue Creation
 
 When scripts create issues automatically, they now read from the automation issue template to populate the issue body. This makes it easy to update the format for all automation issues in one place. 
+
+## 🏠 Local LLM Integration & Fossilization (New)
+
+- The system now supports pluggable local LLM backends (Ollama-first, extensible).
+- Use the CLI option `--local-backend <name>` to select/switch local LLMs.
+- All LLM outputs (insights, benchmarks, discoveries) can be fossilized for traceability using utilities in `src/utils/fossilize.ts`.
+- See `tests/integration/llm-fossilization.integration.test.ts` for working examples.
+
+### Example CLI Usage
+```sh
+bun run src/cli/llm-usage.ts --local-backend ollama
+```
+
+### Example: Fossilizing an LLM Insight
+```typescript
+import { fossilizeLLMInsight } from '../src/utils/fossilize';
+import { LLMInsightFossil } from '../src/types/llmFossil';
+
+const fossil: LLMInsightFossil = {
+  type: 'insight',
+  timestamp: new Date().toISOString(),
+  model: 'gpt-4',
+  provider: 'openai',
+  excerpt: 'Test insight',
+  prompt: 'What is AI?',
+  response: 'AI is ...',
+};
+await fossilizeLLMInsight(fossil);
+``` 

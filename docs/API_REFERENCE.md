@@ -12,6 +12,7 @@ This document provides a comprehensive reference for all services, CLI commands,
 - [Service Response Patterns](#service-response-patterns)
 - [Fossil Entry Schema](#fossil-entry-schema)
 - [🦴 Migration & Issue Update CLI](#migration-issue-update-cli)
+- [🦴 LLM Fossilization Utilities](#llm-fossilization-utilities)
 
 ---
 
@@ -595,4 +596,36 @@ bun run repo-orchestrator orchestrate <owner> <repo> --workflow plan --plan-mode
 - **Canonical Issue Body:** All issues and fossils use a markdown + JSON block format for automation and deduplication.
 
 ### Environment Variables
-- `OPENAI_API_KEY`: Enables LLM-powered extraction for migration and updates. 
+- `OPENAI_API_KEY`: Enables LLM-powered extraction for migration and updates.
+
+## 🦴 LLM Fossilization Utilities
+
+### Types
+- `LLMInsightFossil`, `LLMBenchmarkFossil`, `LLMDiscoveryFossil` (see `src/types/llmFossil.ts`)
+
+### Utility Functions (from `src/utils/fossilize.ts`)
+- `fossilizeLLMInsight(fossil: LLMInsightFossil): Promise<string>`
+- `fossilizeLLMBenchmark(fossil: LLMBenchmarkFossil): Promise<string>`
+- `fossilizeLLMDiscovery(fossil: LLMDiscoveryFossil): Promise<string>`
+
+All fossils are stored in `fossils/llm_insights/`.
+
+#### Example: Fossilizing an LLM Insight
+```typescript
+import { fossilizeLLMInsight } from '../src/utils/fossilize';
+import { LLMInsightFossil } from '../src/types/llmFossil';
+
+const fossil: LLMInsightFossil = {
+  type: 'insight',
+  timestamp: new Date().toISOString(),
+  model: 'gpt-4',
+  provider: 'openai',
+  excerpt: 'Test insight',
+  prompt: 'What is AI?',
+  response: 'AI is ...',
+};
+await fossilizeLLMInsight(fossil);
+```
+
+#### See Also
+- Integration test: `tests/integration/llm-fossilization.integration.test.ts` 

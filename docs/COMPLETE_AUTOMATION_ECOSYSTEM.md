@@ -588,3 +588,58 @@ All test and script output files must serve a clear purpose for fossil curation,
 - Register all curated fossil outputs in the `fossils/` directory and reference them in the roadmap or project status as appropriate.
 
 This policy ensures a clean, meaningful fossil set and maximizes the value of all automation artifacts for future context gathering and reproducibility. 
+
+## 🏠 Local LLM Integration & Extensibility
+
+The automation ecosystem now supports pluggable local LLM backends, with Ollama as the default. You can register additional backends (e.g., llama.cpp, vLLM) for local inference and cost optimization.
+
+### Features
+- Ollama-first, but extensible to any local LLM backend
+- Intelligent routing between cloud and local LLMs
+- CLI option to select/switch local backend
+- Type-safe backend registration in code
+
+### CLI Usage Example
+```sh
+bun run src/cli/llm-usage.ts --local-backend ollama
+bun run src/cli/llm-usage.ts --local-backend llama.cpp
+```
+
+### Extending in Code
+```typescript
+import { LLMService } from '../src/services/llm';
+const llmService = new LLMService({ enableLocalLLM: true });
+llmService.registerLocalBackend('llama.cpp', async (options) => {
+  // Call llama.cpp binary or API
+  return { choices: [{ message: { content: '[llama.cpp] response' } }] };
+});
+```
+
+## 🦴 LLM Fossilization: Insights, Benchmarks, Discoveries
+
+All LLM outputs (insights, benchmarks, model discoveries) can be fossilized for traceability, reproducibility, and retrospective analysis.
+
+- **Types:** See `src/types/llmFossil.ts` for `LLMInsightFossil`, `LLMBenchmarkFossil`, `LLMDiscoveryFossil`.
+- **Utility:** Use `src/utils/fossilize.ts` to store fossils in `fossils/llm_insights/`.
+- **Integration tests:** See `tests/integration/llm-fossilization.integration.test.ts`.
+
+### Example: Fossilizing an LLM Insight
+```typescript
+import { fossilizeLLMInsight } from '../src/utils/fossilize';
+import { LLMInsightFossil } from '../src/types/llmFossil';
+
+const fossil: LLMInsightFossil = {
+  type: 'insight',
+  timestamp: new Date().toISOString(),
+  model: 'gpt-4',
+  provider: 'openai',
+  excerpt: 'Test insight',
+  prompt: 'What is AI?',
+  response: 'AI is ...',
+};
+await fossilizeLLMInsight(fossil);
+```
+
+### Example: CLI/Automation
+- All fossils are stored in `fossils/llm_insights/` for audit and reporting.
+- Use the provided utilities to fossilize benchmarks and discoveries as well. 

@@ -1,6 +1,9 @@
 import type { ContextEntry } from '@/types';
 import { ContextEntrySchema } from '@/types/schemas';
 import { createHash } from 'crypto';
+import fs from 'fs/promises';
+import path from 'path';
+import { LLMInsightFossil, LLMBenchmarkFossil, LLMDiscoveryFossil, AnyLLMFossil } from '../types/llmFossil';
 
 /**
  * Generate a content hash for deduplication
@@ -92,4 +95,31 @@ export async function writeFossilToFile(entry: ContextEntry, filePath: string) {
   }
 }
 
-export type { ContextEntry }; 
+export type { ContextEntry };
+
+const FOSSIL_DIR = path.join(process.cwd(), 'fossils', 'llm_insights');
+
+async function ensureFossilDir() {
+  await fs.mkdir(FOSSIL_DIR, { recursive: true });
+}
+
+export async function fossilizeLLMInsight(fossil: LLMInsightFossil) {
+  await ensureFossilDir();
+  const file = path.join(FOSSIL_DIR, `insight-${fossil.timestamp}.json`);
+  await fs.writeFile(file, JSON.stringify(fossil, null, 2));
+  return file;
+}
+
+export async function fossilizeLLMBenchmark(fossil: LLMBenchmarkFossil) {
+  await ensureFossilDir();
+  const file = path.join(FOSSIL_DIR, `benchmark-${fossil.timestamp}.json`);
+  await fs.writeFile(file, JSON.stringify(fossil, null, 2));
+  return file;
+}
+
+export async function fossilizeLLMDiscovery(fossil: LLMDiscoveryFossil) {
+  await ensureFossilDir();
+  const file = path.join(FOSSIL_DIR, `discovery-${fossil.timestamp}.json`);
+  await fs.writeFile(file, JSON.stringify(fossil, null, 2));
+  return file;
+} 
