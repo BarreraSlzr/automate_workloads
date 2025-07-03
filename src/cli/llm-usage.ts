@@ -39,7 +39,11 @@ const program = new Command();
 program
   .name('llm-usage')
   .description('Manage LLM usage tracking, analytics, and optimization')
-  .version('1.0.0');
+  .version('1.0.0')
+  .option('--local-backend <name>', 'Select local LLM backend (ollama, llama.cpp, etc.)', 'ollama')
+  .option('--prefer-local', 'Prefer local LLM for all tasks')
+  .option('--prefer-cloud', 'Prefer cloud LLM for all tasks')
+  .option('--auto', 'Use intelligent routing (default)');
 
 // Usage report command
 program
@@ -473,9 +477,15 @@ program
     }
   });
 
-// Add CLI arg for local backend selection
-const localBackend = program.opts()['local-backend'] || 'ollama';
+// Add CLI arg for local backend selection and routing preference
+const opts = program.opts();
+const localBackend = opts['local-backend'] || 'ollama';
+let routingPreference: 'auto' | 'local' | 'cloud' = 'auto';
+if (opts['prefer-local']) routingPreference = 'local';
+if (opts['prefer-cloud']) routingPreference = 'cloud';
+if (opts['auto']) routingPreference = 'auto';
 const llmService = new LLMService({ enableLocalLLM: true });
+llmService.setRoutingPreference(routingPreference);
 if (localBackend !== 'ollama') {
   // Example: register a stub backend for demonstration
   llmService.registerLocalBackend(localBackend, async (options) => {
@@ -483,8 +493,8 @@ if (localBackend !== 'ollama') {
   });
 }
 
-if (program.opts().help) {
-  console.log(`\nUsage: bun run src/cli/llm-usage.ts [options]\n\nOptions:\n  --local-backend <name>   Select local LLM backend (ollama, llama.cpp, etc.)\n  ...\n`);
+if (opts.help) {
+  console.log(`\nUsage: bun run src/cli/llm-usage.ts [options]\n\nOptions:\n  --local-backend <name>   Select local LLM backend (ollama, llama.cpp, etc.)\n  --prefer-local           Prefer local LLM for all tasks\n  --prefer-cloud           Prefer cloud LLM for all tasks\n  --auto                   Use intelligent routing (default)\n  ...\n`);
   process.exit(0);
 }
 

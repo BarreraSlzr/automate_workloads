@@ -399,4 +399,35 @@ describe('LLMService', () => {
       expect(recommendations).toContain('Consider increasing minValueScore');
     });
   });
+
+  describe('Intelligent Routing', () => {
+    it('should force local LLM when preferLocalLLM is set', async () => {
+      llmService.setRoutingPreference('local');
+      expect(llmService['config'].preferLocalLLM).toBe(true);
+      expect(llmService['config'].complexityThreshold).toBe(1.0);
+    });
+    it('should force cloud LLM when preferCloud is set', async () => {
+      llmService.setRoutingPreference('cloud');
+      expect(llmService['config'].preferLocalLLM).toBe(false);
+      expect(llmService['config'].complexityThreshold).toBe(0.0);
+    });
+    it('should use auto routing by default', async () => {
+      llmService.setRoutingPreference('auto');
+      expect(llmService['config'].preferLocalLLM).toBe(true);
+      expect(llmService['config'].complexityThreshold).toBe(0.6);
+    });
+    it('should respect routingPreference in callLLM', async () => {
+      await llmService.callLLM({
+        model: 'gpt-3.5-turbo',
+        apiKey: 'test-key',
+        messages: [{ role: 'user' as const, content: 'test' }],
+        context: 'test',
+        purpose: 'test',
+        valueScore: 0.8,
+        routingPreference: 'cloud',
+      });
+      expect(llmService['config'].preferLocalLLM).toBe(false);
+      expect(llmService['config'].complexityThreshold).toBe(0.0);
+    });
+  });
 }); 

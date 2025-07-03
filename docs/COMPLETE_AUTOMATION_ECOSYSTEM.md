@@ -643,3 +643,36 @@ await fossilizeLLMInsight(fossil);
 ### Example: CLI/Automation
 - All fossils are stored in `fossils/llm_insights/` for audit and reporting.
 - Use the provided utilities to fossilize benchmarks and discoveries as well. 
+
+## 🧠 Intelligent LLM Routing
+
+The automation ecosystem supports intelligent routing between local and cloud LLMs. You can control routing with CLI flags:
+
+- `--prefer-local`: Always use local LLM (if available)
+- `--prefer-cloud`: Always use cloud LLM
+- `--auto`: Use intelligent routing (default)
+
+**Examples:**
+```sh
+bun run src/cli/llm-usage.ts --prefer-local
+bun run src/cli/llm-usage.ts --prefer-cloud
+bun run src/cli/llm-usage.ts --auto
+```
+
+You can also select the local backend:
+```sh
+bun run src/cli/llm-usage.ts --local-backend llama.cpp --prefer-local
+```
+
+In code:
+```typescript
+import { LLMService } from '../src/services/llm';
+const llmService = new LLMService();
+llmService.setRoutingPreference('auto'); // or 'local', 'cloud'
+const result = await llmService.callLLM({
+  model: 'gpt-4',
+  apiKey: '...',
+  messages: [...],
+  routingPreference: 'local', // override per-call
+});
+``` 

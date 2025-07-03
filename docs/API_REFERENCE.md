@@ -13,6 +13,7 @@ This document provides a comprehensive reference for all services, CLI commands,
 - [Fossil Entry Schema](#fossil-entry-schema)
 - [🦴 Migration & Issue Update CLI](#migration-issue-update-cli)
 - [🦴 LLM Fossilization Utilities](#llm-fossilization-utilities)
+- [🧠 Intelligent LLM Routing](#intelligent-llm-routing)
 
 ---
 
@@ -628,4 +629,43 @@ await fossilizeLLMInsight(fossil);
 ```
 
 #### See Also
-- Integration test: `tests/integration/llm-fossilization.integration.test.ts` 
+- Integration test: `tests/integration/llm-fossilization.integration.test.ts`
+
+## 🧠 Intelligent LLM Routing
+
+The LLMService supports intelligent routing between local and cloud LLMs based on task complexity, cost, and user preference.
+
+### Routing Modes
+- **auto** (default): Uses intelligent analysis to select the best provider for each task.
+- **local**: Forces use of local LLM for all tasks (if available).
+- **cloud**: Forces use of cloud LLM for all tasks.
+
+### CLI Usage
+
+```sh
+bun run src/cli/llm-usage.ts --prefer-local   # Always use local LLM
+bun run src/cli/llm-usage.ts --prefer-cloud   # Always use cloud LLM
+bun run src/cli/llm-usage.ts --auto           # Use intelligent routing (default)
+```
+
+You can also select the local backend:
+
+```sh
+bun run src/cli/llm-usage.ts --local-backend llama.cpp --prefer-local
+```
+
+### Programmatic Usage
+
+```typescript
+import { LLMService } from '../src/services/llm';
+const llmService = new LLMService();
+llmService.setRoutingPreference('auto'); // or 'local', 'cloud'
+const result = await llmService.callLLM({
+  model: 'gpt-4',
+  apiKey: '...',
+  messages: [...],
+  routingPreference: 'local', // override per-call
+});
+```
+
+See also: [🦴 LLM Fossilization Utilities](#llm-fossilization-utilities) 

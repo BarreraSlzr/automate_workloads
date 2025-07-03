@@ -263,9 +263,13 @@ export class LLMService {
     context?: string; 
     purpose?: string;
     valueScore?: number;
+    routingPreference?: 'auto' | 'local' | 'cloud';
   }): Promise<any> {
     const startTime = Date.now();
-    const { context = 'unknown', purpose = 'general', valueScore = 0.5, ...llmOptions } = options;
+    const { context = 'unknown', purpose = 'general', valueScore = 0.5, routingPreference = 'auto', ...llmOptions } = options;
+
+    // Apply routing preference if provided
+    this.setRoutingPreference(routingPreference);
 
     // Pre-flight checks
     const estimatedTokens = this.estimateTokens(llmOptions.messages);
@@ -274,6 +278,13 @@ export class LLMService {
     // Value assessment
     if (valueScore < this.config.minValueScore) {
       console.warn(`⚠️ Skipping LLM call - low value score (${valueScore}) for: ${purpose}`);
+      return this.getFallbackResponse(purpose);
+    }
+
+    // Intelligent routing
+    const intelligence = this.analyzeCallIntelligence({ ...options, context, purpose, valueScore });
+    const provider = await this.selectProvider(intelligence);
+    if (!provider) {
       return this.getFallbackResponse(purpose);
     }
 
@@ -287,17 +298,6 @@ export class LLMService {
     if (estimatedTokens > this.config.maxTokensPerCall) {
       console.warn(`⚠️ Truncating messages - ${estimatedTokens} tokens exceeds limit ${this.config.maxTokensPerCall}`);
       llmOptions.messages = this.truncateMessages(llmOptions.messages, this.config.maxTokensPerCall);
-    }
-
-    // Analyze call intelligence
-    const intelligence = this.analyzeCallIntelligence(options);
-
-    // Select best provider
-    const provider = await this.selectProvider(intelligence);
-
-    if (!provider) {
-      console.warn(`⚠️ All LLM providers failed, using fallback for: ${purpose}`);
-      return this.getFallbackResponse(purpose);
     }
 
     // Try selected provider
@@ -697,6 +697,23 @@ ${this.generateRecommendations(analytics)}
       estimateTokens: this.estimateLocalTokens.bind(this),
       estimateCost: () => 0
     });
+  }
+
+  /**
+   * Set routing preference: 'auto' (default), 'local', or 'cloud'.
+   */
+  public setRoutingPreference(pref: 'auto' | 'local' | 'cloud') {
+    if (pref === 'local') {
+      this.config.preferLocalLLM = true;
+      this.config.complexityThreshold = 1.0; // Always use local if available
+    } else if (pref === 'cloud') {
+      this.config.preferLocalLLM = false;
+      this.config.complexityThreshold = 0.0; // Always use cloud
+    } else {
+      // auto
+      this.config.preferLocalLLM = true;
+      this.config.complexityThreshold = 0.6;
+    }
   }
 }
 
