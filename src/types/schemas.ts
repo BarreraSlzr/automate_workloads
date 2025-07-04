@@ -310,17 +310,66 @@ export const TaskBreakdownSchema = z.object({
   })),
 });
 
+// Track Progress CLI Schemas
+export const TrackProgressCLIArgsSchema = z.object({
+  owner: z.string().min(1, 'Repository owner is required'),
+  repo: z.string().min(1, 'Repository name is required'),
+  mode: z.enum(['comprehensive', 'action-plan', 'health-only', 'automation-progress']).default('comprehensive'),
+  reportType: z.enum(['daily', 'weekly', 'monthly', 'custom']).default('daily'),
+  outputDir: z.string().default('.orchestration-reports'),
+  trends: z.boolean().default(true),
+  trigger: z.boolean().default(true),
+  output: z.string().optional(),
+});
+
+export const TrackProgressStatusCLIArgsSchema = z.object({
+  owner: z.string().min(1, 'Repository owner is required'),
+  repo: z.string().min(1, 'Repository name is required'),
+});
+
 // Track Progress Schemas
 export const TrackingConfigSchema = z.object({
+  mode: z.enum(['comprehensive', 'action-plan', 'health-only', 'automation-progress']).default('comprehensive'),
+  reportType: z.enum(['daily', 'weekly', 'monthly', 'custom']).default('daily'),
+  outputDir: z.string().default('.orchestration-reports'),
+  includeTrends: z.boolean().default(true),
+  triggerNextSteps: z.boolean().default(true),
+});
+
+export const ProgressMetricsSchema = z.object({
+  healthScore: z.number().min(0).max(100),
+  actionPlanCompletion: z.number().min(0).max(100),
+  automationCompletion: z.number().min(0).max(100),
+  totalActionPlans: z.number(),
+  completedActionPlans: z.number(),
+  openActionPlans: z.number(),
+  totalAutomationIssues: z.number(),
+  completedAutomationIssues: z.number(),
+  openAutomationIssues: z.number(),
+  timestamp: z.string(),
+});
+
+export const TrendAnalysisSchema = z.object({
+  trend: z.enum(['improving', 'declining', 'stable', 'insufficient_data']),
+  firstScore: z.number().optional(),
+  lastScore: z.number().optional(),
+  improvement: z.number().optional(),
+  dataPoints: z.number().optional(),
+});
+
+// Legacy schemas for backward compatibility
+export const LegacyTrackingConfigSchema = z.object({
   interval: z.number(),
   notify: z.boolean().default(false),
 });
-export const ProgressMetricsSchema = z.object({
+
+export const LegacyProgressMetricsSchema = z.object({
   completed: z.number(),
   total: z.number(),
   percent: z.number(),
 });
-export const TrendAnalysisSchema = z.object({
+
+export const LegacyTrendAnalysisSchema = z.object({
   trend: z.string(),
   change: z.number(),
 });
@@ -528,4 +577,37 @@ export const CreateFossilEntryParamsSchema = z.object({
   metadata: z.record(z.any()),
   issueNumber: z.string().optional(),
   parsedFields: z.record(z.any()),
+});
+
+// GitHub Issues CLI Schema
+export const GitHubIssuesCLIArgsSchema = z.object({
+  owner: z.string().min(1, 'Repository owner is required').default('BarreraSlzr'),
+  repo: z.string().min(1, 'Repository name is required').default('automate_workloads'),
+  state: z.enum(['open', 'closed', 'all']).default('open'),
+  format: z.enum(['text', 'json', 'table']).default('text'),
+  verbose: z.boolean().default(false),
+});
+
+// Update Checklist CLI Schemas
+export const UpdateChecklistFileCLIArgsSchema = z.object({
+  filePath: z.string().min(1, 'File path is required'),
+  updates: z.string().optional(),
+  updatesFile: z.string().optional(),
+  dryRun: z.boolean().default(false),
+  backup: z.boolean().default(true),
+});
+
+export const UpdateChecklistBatchCLIArgsSchema = z.object({
+  config: z.string().optional(),
+  updates: z.string().optional(),
+  dryRun: z.boolean().default(false),
+  report: z.string().optional(),
+});
+
+export const UpdateChecklistRoadmapCLIArgsSchema = z.object({
+  filePath: z.string().min(1, 'File path is required'),
+  task: z.string().min(1, 'Task name is required'),
+  status: z.enum(['pending', 'ready', 'partial', 'done']),
+  comment: z.string().optional(),
+  dryRun: z.boolean().default(false),
 }); 
