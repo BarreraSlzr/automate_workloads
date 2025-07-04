@@ -507,6 +507,9 @@ project_status:
       files:
         - fossilIssue.ts:
             functions:
+              - 'IssueBodyFileManager: implemented'
+              - 'GitHubIssueManager: implemented'
+              - 'IssueFossilManager: implemented'
               - 'toSectionLabel: implemented'
               - 'ensureLabel: implemented'
               - 'generateAutomationIssueBody: implemented'
@@ -1288,6 +1291,9 @@ developer_summary:
   utils:
     - file: src/utils/fossilIssue.ts
       functions:
+        - IssueBodyFileManager
+        - GitHubIssueManager
+        - IssueFossilManager
         - toSectionLabel
         - ensureLabel
         - generateAutomationIssueBody
