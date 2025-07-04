@@ -29,7 +29,7 @@ class CLIUsageDemo {
     try {
       // Use CLI command instead of direct import
       const result = await executeCommand(
-        `bun run src/cli/create-fossil-issue.ts create \
+        `bun run src/cli/create-fossil-issue.ts \
           --owner ${this.owner} \
           --repo ${this.repo} \
           --title "CLI Demo Issue" \
@@ -37,9 +37,7 @@ class CLIUsageDemo {
           --labels demo,cli \
           --section demo \
           --type action \
-          --tags demo,automation \
-          --purpose "Demonstrate CLI usage" \
-          --checklist "- [x] Create via CLI\n- [ ] Test deduplication\n- [ ] Verify fossil storage"`
+          --tags demo,automation`
       );
 
       if (result.success) {
@@ -88,7 +86,7 @@ class CLIUsageDemo {
 
       // List fossils via CLI
       const listResult = await executeCommand(
-        `bun run src/cli/context-fossil.ts list --type knowledge --limit 5`
+        `bun run src/cli/context-fossil.ts list --type knowledge`
       );
 
       if (listResult.success) {
@@ -135,10 +133,8 @@ class CLIUsageDemo {
 
       // Update checklist via CLI
       const result = await executeCommand(
-        `bun run src/cli/update-checklist.ts file \
-          --file ${sampleFile} \
-          --updates "Task 1:done,Task 2:done" \
-          --backup`
+        `bun run src/cli/update-checklist.ts file ${sampleFile} \
+          --updates '{"Task 1": "done", "Task 2": "done"}'`
       );
 
       // Clean up
@@ -173,10 +169,7 @@ class CLIUsageDemo {
     try {
       // Analyze repository via CLI
       const result = await executeCommand(
-        `bun run src/cli/repo-orchestrator.ts analyze \
-          --owner ${this.owner} \
-          --repo ${this.repo} \
-          --workflow analyze`
+        `bun run src/cli/repo-orchestrator.ts analyze ${this.owner} ${this.repo}`
       );
 
       if (result.success) {
