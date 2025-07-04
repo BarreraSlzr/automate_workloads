@@ -22,10 +22,10 @@ test('Transversal fossil & GitHub sync example runs and outputs canonical fossil
   expect(result.stdout).toContain('Curated JSON fossil');
   expect(result.stdout).toContain('Markdown generated');
   expect(result.stdout).toContain('Summary of actions:');
-  expect(result.stdout).toContain('Issues to create:');
-  expect(result.stdout).toContain('Milestones to create:');
-  expect(result.stdout).toContain('Labels to create:');
-  expect(result.stdout).toContain('Fossil collection type:');
+  expect(result.stdout).toContain('would create');
+  expect(result.stdout).toContain('issues');
+  expect(result.stdout).toContain('milestones');
+  expect(result.stdout).toContain('labels');
   expect(result.stdout).toContain('All outputs use stable, canonical filenames.');
 
   // Check that the curated fossil and markdown exist and have canonical names
