@@ -736,72 +736,262 @@ tasks:
       3. **Fossil Publication Workflow**: Complete YAML→JSON→Markdown documentation
       4. **CI Integration**: Add documentation validation to CI process
       5. **Validation Processes**: Establish ongoing documentation review and validation
+  - task: Enhanced Fossil Management and Versioning System
+    status: planned
+    owner: emmanuelbarrera
+    tags:
+      - feature-expansion
+      - fossil-management
+      - versioning
+    context: |
+      Implement advanced fossil management capabilities including versioning, history tracking, search/filtering, and export/import functionality. This expands the current fossil system to support enterprise-level fossil management with full traceability and discoverability.
+      
+      **Key Features:**
+      - Fossil versioning with change tracking and metadata
+      - Advanced search and filtering capabilities
+      - Export/import functionality for fossil migration and backup
+      - History tracking with author attribution and timestamps
     subtasks:
-      - task: Document intelligent tagging system and LLM integration patterns
+      - task: Implement Fossil Versioning and History Tracking
         status: planned
         context: |
-          Create comprehensive documentation for the semantic tagging system, including LLM integration, intelligent routing, and fossil-based tagging patterns. Update all relevant docs to reference the intelligent tagging system.
+          Create the FossilVersion interface and related utilities to track fossil versions, timestamps, changes, authors, and metadata. This enables full audit trails and change history for all fossil artifacts.
         subtasks:
-          - task: Add intelligent tagging section to API_REFERENCE.md
+          - task: Design FossilVersion interface with version, timestamp, changes, author, and metadata fields
             status: planned
-          - task: Document semantic tagging CLI commands and patterns
+          - task: Implement version tracking utilities in fossilize.ts
             status: planned
-          - task: Update COMPLETE_AUTOMATION_ECOSYSTEM.md with tagging integration
+          - task: Add version history to all fossil creation and update operations
             status: planned
-          - task: Add tagging examples to DEVELOPMENT_GUIDE.md
+          - task: Create version comparison and diff utilities
             status: planned
-      - task: Create comprehensive local LLM setup and usage documentation
+          - task: Add version rollback capabilities
+            status: planned
+      - task: Implement Fossil Search and Filtering System
         status: planned
         context: |
-          Create comprehensive documentation for local LLM setup, usage, and integration patterns. Update all docs to include local LLM options and best practices.
+          Create the FossilSearchParams interface and search utilities to enable finding fossils based on query, tags, date range, type, status, and filters. This provides powerful discovery capabilities for large fossil collections.
         subtasks:
-          - task: Add local LLM setup guide to API_REFERENCE.md
+          - task: Design FossilSearchParams interface with query, tags, dateRange, type, status, and filters
             status: planned
-          - task: Create local LLM troubleshooting and best practices guide
+          - task: Implement search utilities with full-text and metadata search
             status: planned
-          - task: Update COMPLETE_AUTOMATION_ECOSYSTEM.md with local LLM integration
+          - task: Add CLI commands for fossil search and filtering
             status: planned
-          - task: Add local LLM examples to DEVELOPMENT_GUIDE.md
+          - task: Create search result formatting and export options
             status: planned
-      - task: Complete fossil publication workflow documentation
+          - task: Add search result caching for performance
+            status: planned
+      - task: Implement Fossil Export/Import Capabilities
         status: planned
         context: |
-          Complete documentation of the YAML→JSON→Markdown fossil publication workflow, including folder structure, automation patterns, and future integrations.
+          Create the FossilExportOptions interface and utilities for exporting fossils in various formats with configurable metadata and history inclusion. This enables fossil migration, backup, and integration with external systems.
         subtasks:
-          - task: Update FOSSIL_PUBLICATION_WORKFLOW.md with complete examples
+          - task: Design FossilExportOptions interface with format, metadata, history, and filters
             status: planned
-          - task: Add publication workflow to API_REFERENCE.md
+          - task: Implement export utilities for JSON, YAML, and Markdown formats
             status: planned
-          - task: Document folder structure and naming conventions
+          - task: Add import utilities with validation and conflict resolution
             status: planned
-          - task: Add future integration patterns (React/MDX/Next.js)
+          - task: Create bulk export/import capabilities for fossil collections
             status: planned
-      - task: Implement documentation validation in CI
-        status: planned
-        context: |
-          Add automated documentation validation to the CI process to ensure ongoing coherence and catch inconsistencies early.
-        subtasks:
-          - task: Add documentation validation to CI process
-            status: planned
-          - task: Create documentation update workflow
-            status: planned
-          - task: Add documentation review process
-            status: planned
-          - task: Implement automated coherence checks
+          - task: Add export/import CLI commands with progress tracking
             status: planned
     key_points:
-      - Focus on completing the remaining documentation improvements
-      - Establish automated validation processes for ongoing coherence
-      - Ensure all documentation patterns are consistent and up-to-date
-      - Create processes to maintain documentation quality going forward
+      - Versioning enables full audit trails and change history
+      - Search/filtering provides powerful discovery capabilities
+      - Export/import supports fossil migration and backup
+      - All features must integrate with existing fossil workflows
     recommendation: |
-      Prioritize intelligent tagging and local LLM documentation as they are key features.
-      Then complete fossil publication workflow documentation.
-      Finally, implement CI validation to prevent future inconsistencies.
+      Implement versioning first as it's foundational for other features.
+      Then add search/filtering for discovery capabilities.
+      Finally implement export/import for integration and backup.
     preference: |
-      Prefer comprehensive, practical documentation over theoretical guides.
-      Focus on examples and patterns that developers can immediately apply.
-      Ensure all validation processes are automated and integrated into CI.
-    deadline: 2024-07-25T00:00:00.000Z
-    milestone: Documentation Coherence
+      Prefer incremental versioning with minimal storage overhead.
+      Focus on search performance and relevance ranking.
+      Ensure export/import maintains fossil integrity and relationships.
+    deadline: 2024-09-15T00:00:00.000Z
+    milestone: Enhanced Fossil Management
+  - task: Advanced Automation and Workflow Scheduling
+    status: planned
+    owner: emmanuelbarrera
+    tags:
+      - feature-expansion
+      - automation
+      - scheduling
+    context: |
+      Implement advanced automation capabilities including scheduled workflows, conditional triggers, and comprehensive analytics. This expands the current automation system to support complex, time-based, and event-driven automation scenarios.
+      
+      **Key Features:**
+      - Scheduled automation workflows with cron expressions
+      - Conditional automation triggers based on events and conditions
+      - Automation analytics and reporting with metrics and cost analysis
+      - Workflow orchestration and dependency management
+    subtasks:
+      - task: Implement Scheduled Automation Workflows
+        status: planned
+        context: |
+          Create the ScheduledWorkflow interface and scheduler to enable time-based automation with cron expressions, triggers, actions, and enabled status. This supports recurring automation tasks and scheduled fossil operations.
+        subtasks:
+          - task: Design ScheduledWorkflow interface with id, name, schedule, cronExpression, triggers, actions, and enabled
+            status: planned
+          - task: Implement workflow scheduler with cron parsing and execution
+            status: planned
+          - task: Add workflow persistence and state management
+            status: planned
+          - task: Create workflow validation and conflict detection
+            status: planned
+          - task: Add CLI commands for workflow management
+            status: planned
+      - task: Implement Conditional Automation Triggers
+        status: planned
+        context: |
+          Create the AutomationTrigger interface to support event-driven automation based on conditions, metadata, and triggers. This enables reactive automation based on fossil changes, GitHub events, and other conditions.
+        subtasks:
+          - task: Design AutomationTrigger interface with type, conditions, metadata, and enabled
+            status: planned
+          - task: Implement trigger evaluation engine with condition parsing
+            status: planned
+          - task: Add GitHub webhook integration for event triggers
+            status: planned
+          - task: Create trigger chaining and dependency management
+            status: planned
+          - task: Add trigger testing and validation utilities
+            status: planned
+      - task: Implement Automation Analytics and Reporting
+        status: planned
+        context: |
+          Create the AutomationMetrics interface and analytics system to track success rates, execution times, error rates, cost analysis, and other performance metrics. This provides insights into automation effectiveness and optimization opportunities.
+        subtasks:
+          - task: Design AutomationMetrics interface with successRate, avgExecutionTime, errorRate, lastExecution, totalExecutions, costAnalysis
+            status: planned
+          - task: Implement metrics collection and storage
+            status: planned
+          - task: Create analytics dashboard and reporting utilities
+            status: planned
+          - task: Add cost analysis and optimization recommendations
+            status: planned
+          - task: Create performance monitoring and alerting
+            status: planned
+    key_points:
+      - Scheduled workflows enable time-based automation
+      - Conditional triggers support event-driven automation
+      - Analytics provide insights for optimization
+      - All features must integrate with existing fossil workflows
+    recommendation: |
+      Implement scheduled workflows first as they're most commonly needed.
+      Then add conditional triggers for event-driven scenarios.
+      Finally implement analytics for optimization and monitoring.
+    preference: |
+      Prefer simple cron expressions for scheduling.
+      Focus on reliable trigger evaluation and execution.
+      Ensure analytics provide actionable insights.
+    deadline: 2024-09-30T00:00:00.000Z
+    milestone: Advanced Automation
+  - task: Enhanced User Experience and Developer Tools
+    status: planned
+    owner: emmanuelbarrera
+    tags:
+      - feature-expansion
+      - ux
+      - developer-tools
+    context: |
+      Implement enhanced user experience features including interactive tutorials, guided setup wizards, and comprehensive developer tools. This focuses on improving onboarding, usability, and developer productivity.
+      
+      **Key Features:**
+      - Interactive tutorials and guided setup wizards
+      - Enhanced CLI with suggestions and auto-completion
+      - VSCode extension for fossil management
+      - Developer templates and debugging tools
+    subtasks:
+      - task: Implement Interactive Tutorials and Setup Wizards
+        status: planned
+        context: |
+          Create guided setup wizards and interactive tutorials to improve onboarding experience. This includes step-by-step guidance, validation, and help text for new users.
+        subtasks:
+          - task: Design GuidedSetupWizard interface with steps, currentStep, progress, and validation
+            status: planned
+          - task: Design SetupStep interface with id, title, description, type, required, validation, helpText, and examples
+            status: planned
+          - task: Implement interactive CLI with mode, suggestions, autoComplete, and helpContext
+            status: planned
+          - task: Create tutorial content for common workflows
+            status: planned
+          - task: Add progress tracking and resume capabilities
+            status: planned
+      - task: Implement VSCode Extension
+        status: planned
+        context: |
+          Create a VSCode extension to provide fossil management capabilities directly in the editor, including commands, snippets, diagnostics, and completion providers.
+          
+          **Remote Repository & Edge Case Support:**
+          The extension must support not only local development, but also remote repository analysis and auditing scenarios. This includes:
+            - Opening, analyzing, and curating fossils in remote repositories (e.g., via SSH, Codespaces, remote containers)
+            - Handling read-only, large, or non-standard repo structures
+            - Integration with remote development environments
+            - Ensuring all features work for both local and remote/hybrid use cases
+          
+          Document intended use cases (local, remote, hybrid) to avoid local-only bias and maximize value for audit/consulting scenarios.
+        subtasks:
+          - task: Design VSCodeExtension interface with commands, snippets, diagnostics, hoverProviders, and completionProviders
+            status: planned
+          - task: Implement fossil creation and management commands
+            status: planned
+          - task: Add fossil syntax highlighting and validation
+            status: planned
+          - task: Create fossil templates and snippets
+            status: planned
+          - task: Add fossil search and navigation features
+            status: planned
+          - task: Add support for remote repository analysis and curation (Codespaces, SSH, remote containers)
+            status: planned
+          - task: Test extension in remote and hybrid environments
+            status: planned
+          - task: Document remote use cases and edge case handling
+            status: planned
+      - task: Reinforce YAML→JSON→Markdown→Frontend Pipeline
+        status: planned
+        context: |
+          Ensure the canonical pipeline from YAML fossils to JSON, Markdown, and modern frontend frameworks (React/MDX/Next.js/Remix/Tanstack) is fully documented and implemented. Avoid scope creep by keeping the pipeline modular, but document all integration points and technical requirements.
+        subtasks:
+          - task: Implement YAML→JSON transformation utility
+            status: planned
+          - task: Implement JSON→Markdown generator with frontmatter
+            status: planned
+          - task: Document and prototype Markdown→MDX/React integration
+            status: planned
+          - task: Add examples for Next.js/Remix/Tanstack Table consumption of fossil data
+            status: planned
+          - task: Create a "future integration" section listing possible frontend approaches
+            status: planned
+          - task: Document all integration points and revisit/prioritize as project evolves
+            status: planned
+      - task: Cohesion & Integration
+        status: planned
+        context: |
+          Maintain project cohesion and avoid scope creep as new features are added. Explicitly link new features (VSCode extension, advanced automation, etc.) back to the core fossilization and publication workflow. Document dependencies, integration points, and review the roadmap regularly for overlap, gaps, and opportunities to consolidate or clarify.
+        subtasks:
+          - task: Map dependencies and integration points between all major features
+            status: planned
+          - task: Add regular roadmap review for cohesion and scope
+            status: planned
+          - task: Document how each feature supports the core fossilization/publication workflow
+            status: planned
+          - task: Consolidate or clarify overlapping features as needed
+            status: planned
+    key_points:
+      - Interactive tutorials improve onboarding experience
+      - VSCode extension provides editor integration
+      - Developer tools enhance productivity
+      - All features must integrate with existing fossil workflows
+    recommendation: |
+      Implement interactive tutorials first to improve onboarding.
+      Then create VSCode extension for editor integration.
+      Finally add developer templates and debugging tools.
+    preference: |
+      Prefer simple, guided tutorials over complex documentation.
+      Focus on editor integration and developer productivity.
+      Ensure tools provide immediate value and feedback.
+    deadline: 2024-10-15T00:00:00.000Z
+    milestone: Enhanced UX and Developer Tools
  
