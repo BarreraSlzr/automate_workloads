@@ -472,3 +472,5 @@ The systematic thinking patterns applied here demonstrate how to transform disco
 ---
 
 *See the top of this document for code examples and best practices for each new pattern.* 
+
+> **Note:** All commit messages must use the Conventional Commits format. See [Development Guide](DEVELOPMENT_GUIDE.md#commit-message-format) and [Contributing Guide](CONTRIBUTING_GUIDE.md#conventional-commits-format) for details and examples. 

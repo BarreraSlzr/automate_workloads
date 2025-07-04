@@ -50,8 +50,9 @@ bun run cli:curate --validate fossils/project_status.yml
 ### 3. **Commit & Version**
 ```bash
 # Commit canonical fossils after meaningful changes
+# Use Conventional Commits format (see docs/DEVELOPMENT_GUIDE.md)
 git add fossils/project_status.yml fossils/roadmap.yml
-git commit -m "feat: update canonical fossils - [description]"
+git commit -m "feat(fossils): update canonical fossils after roadmap sync"
 ```
 
 ### 4. **Automation Integration**

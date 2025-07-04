@@ -315,6 +315,25 @@ describe('Service Integration', () => {
 });
 ```
 
+#### 5. **Use conventional commits**: Follow the Conventional Commits message format for all commits. See the section below for details.
+
+---
+
+### Conventional Commits Format
+
+We use [Conventional Commits](https://www.conventionalcommits.org/) for all commit messages. This ensures clarity, traceability, and automation compatibility.
+
+**Format:**
+```
+type(scope): description
+
+[optional body]
+
+[optional footer]
+```
+
+> For more details and rationale, see [docs/DEVELOPMENT_GUIDE.md](docs/DEVELOPMENT_GUIDE.md#commit-message-format).
+
 ---
 
 ## 🤖 LLM Integration Patterns
@@ -1256,7 +1275,7 @@ gh project item-add <project-id> --number <issue-number>
 1. **Follow LLM-friendly patterns**: Use clear, structured code and documentation
 2. **Test thoroughly**: Ensure all changes are properly tested
 3. **Document changes**: Update documentation for any new features
-4. **Use conventional commits**: Follow conventional commit message format
+4. **Use conventional commits**: Follow the Conventional Commits message format for all commits. See the section below for details.
 5. **Request reviews**: Get feedback from maintainers and community
 
 ### Recognition

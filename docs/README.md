@@ -351,7 +351,11 @@ bun run src/cli/github-issues.ts --verbose
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see the [Contributing Guide](../CONTRIBUTING.md) for details.
+We welcome contributions! **All commits must use the Conventional Commits format.**
+
+See [Development Guide](docs/DEVELOPMENT_GUIDE.md#commit-message-format) and [Contributing Guide](CONTRIBUTING_GUIDE.md#conventional-commits-format) for details and examples.
+
+Please see the [Contributing Guide](../CONTRIBUTING_GUIDE.md) for details.
 
 ## 📄 License
 

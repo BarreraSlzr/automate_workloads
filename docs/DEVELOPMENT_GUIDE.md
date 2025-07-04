@@ -839,8 +839,11 @@ export class CLIError extends Error {
 
 ### Commit Message Format
 
-We use [Conventional Commits](https://www.conventionalcommits.org/) format:
+We use [Conventional Commits](https://www.conventionalcommits.org/) format for all commits. This is strictly enforced for clarity, automation, and traceability.
 
+> **See also:** [CONTRIBUTING_GUIDE.md](../CONTRIBUTING_GUIDE.md#conventional-commits-format) for contributor workflow and more examples.
+
+**Format:**
 ```
 type(scope): description
 
@@ -859,6 +862,12 @@ type(scope): description
 - `chore`: Maintenance tasks
 - `perf`: Performance improvements
 
+**Scope Guidelines:**
+- Use specific scopes like `github`, `cli`, `api`, `docs`, `test`
+- For utilities, use `utils` scope
+- For core functionality, use `core` scope
+- For automation scripts, use `automation` scope
+
 **Examples:**
 ```bash
 feat(github): add issue creation functionality
@@ -868,11 +877,7 @@ test(github): add integration tests for issue management
 refactor(services): extract common service patterns
 ```
 
-**Scope Guidelines:**
-- Use specific scopes like `github`, `cli`, `api`, `docs`, `test`
-- For utilities, use `utils` scope
-- For core functionality, use `core` scope
-- For automation scripts, use `automation` scope
+**All commit examples in documentation and code must follow this format.**
 
 ---
 
