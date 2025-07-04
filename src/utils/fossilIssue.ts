@@ -3,10 +3,10 @@ import { ContextFossilService } from '../cli/context-fossil';
 import type { ContextEntry } from '../types';
 import * as fs from 'fs';
 import { extractJsonBlock } from './markdownChecklist';
-import type { CreateFossilIssueParams } from '../types/cli';
-import { CreateFossilIssueParamsSchema } from '../types';
-import { z } from 'zod';
+import type { CreateFossilIssueParams, CheckExistingFossilParams, CreateFossilEntryParams } from '../types/cli';
+import { CreateFossilIssueParamsSchema, CheckExistingFossilParamsSchema, CreateFossilEntryParamsSchema } from '../types';
 import { isTestMode } from '../cli/repo-orchestrator';
+import { GitHubCLICommands } from './githubCliCommands';
 
 /**
  * Preferred utility for fossil-backed, deduplicated GitHub issue creation.
@@ -29,22 +29,37 @@ function toSectionLabel(section: string): string {
 /**
  * Ensure a label exists in the repo, create if missing
  */
-function ensureLabel(owner: string, repo: string, label: string, options?: any) {
+async function ensureLabel(owner: string, repo: string, label: string, options?: any) {
   if (isTestMode(options)) return;
   try {
-    const out = execSync(`gh label list --repo ${owner}/${repo} --json name`, { encoding: 'utf8' });
-    const arr = JSON.parse(out);
-    if (arr.some((l: any) => l.name === label)) {
-      // Label exists, do nothing
-      return;
+    const commands = new GitHubCLICommands(owner, repo);
+    
+    // Check if label exists
+    const listResult = await commands.listLabels();
+    if (listResult.success) {
+      const labels = JSON.parse(listResult.stdout);
+      if (labels.some((l: any) => l.name === label)) {
+        // Label exists, do nothing
+        return;
+      }
     }
-    execSync(`gh label create "${label}" --repo ${owner}/${repo} --color "ededed" --description "Auto-created section label"`, { encoding: 'utf8' });
-    console.log(`🆕 Created label: ${label}`);
-  } catch (e: any) {
-    if (e.message && e.message.includes('already exists')) {
+    
+    // Create label if it doesn't exist
+    const createResult = await commands.createLabel({
+      name: label,
+      description: 'Auto-created section label',
+      color: 'ededed'
+    });
+    
+    if (createResult.success) {
+      console.log(`🆕 Created label: ${label}`);
+    } else if (createResult.message?.includes('already exists')) {
       // Label already exists, ignore
       return;
+    } else {
+      console.warn(`⚠️ Could not ensure label '${label}':`, createResult.message);
     }
+  } catch (e: any) {
     console.warn(`⚠️ Could not ensure label '${label}':`, e && e.message ? e.message : e);
   }
 }
@@ -74,12 +89,162 @@ function generateAutomationIssueBody({
   ].filter(Boolean).join('\n');
 }
 
+/**
+ * File operations for issue body management
+ */
+class IssueBodyFileManager {
+  public static readonly TEMP_FILE = 'issue_body.md';
+  
+  /**
+   * Write issue body to temporary file for GitHub CLI
+   */
+  static writeTempFile(body: string): void {
+    fs.writeFileSync(this.TEMP_FILE, body);
+  }
+  
+  /**
+   * Clean up temporary file
+   */
+  static cleanupTempFile(): void {
+    try {
+      fs.unlinkSync(this.TEMP_FILE);
+    } catch (cleanupError) {
+      console.warn(`⚠️ Could not clean up temporary file ${this.TEMP_FILE}:`, cleanupError);
+    }
+  }
+  
+  /**
+   * Save issue fossil to fossils/issues/<number>.md
+   */
+  static saveIssueFossil(issueNumber: string, body: string): void {
+    try {
+      const fossilsDir = 'fossils/issues';
+      if (!fs.existsSync(fossilsDir)) {
+        fs.mkdirSync(fossilsDir, { recursive: true });
+      }
+      const fossilPath = `${fossilsDir}/${issueNumber}.md`;
+      fs.writeFileSync(fossilPath, body);
+      console.log(`🗿 Issue fossil saved: ${fossilPath}`);
+    } catch (fossilError) {
+      console.warn(`⚠️ Could not save issue fossil:`, fossilError);
+    }
+  }
+}
+
+/**
+ * GitHub CLI operations for issue creation
+ */
+class GitHubIssueManager {
+  /**
+   * Create GitHub issue using CLI
+   */
+  static async createIssue(params: {
+    owner: string;
+    repo: string;
+    title: string;
+    tempFile: string;
+    labels: string[];
+    milestone?: string;
+  }): Promise<{ issueNumber?: string; output: string }> {
+    const { owner, repo, title, tempFile, labels, milestone } = params;
+    
+    // Read the body from the temp file
+    const body = fs.readFileSync(tempFile, 'utf8');
+    
+    const commands = new GitHubCLICommands(owner, repo);
+    const result = await commands.createIssue({
+      title,
+      body,
+      labels,
+      milestone
+    });
+    
+    let issueNumber = undefined;
+    if (result.success && result.stdout) {
+      const match = result.stdout.match(/#(\d+)/);
+      if (match) issueNumber = match[1];
+    }
+    
+    return { issueNumber, output: result.stdout || '' };
+  }
+  
+  /**
+   * Fetch issue body from GitHub
+   */
+  static async fetchIssueBody(owner: string, repo: string, issueNumber: string): Promise<string> {
+    try {
+      const commands = new GitHubCLICommands(owner, repo);
+      const result = await commands.executeCommand(`gh issue view ${issueNumber} --repo ${owner}/${repo} --json body -q ".body"`);
+      return result.success ? result.stdout : '';
+    } catch {
+      return '';
+    }
+  }
+}
+
+/**
+ * Fossil management operations
+ */
+class IssueFossilManager {
+  /**
+   * Check for existing fossil by content hash or similarity
+   */
+  static async checkExistingFossil(params: CheckExistingFossilParams): Promise<ContextEntry | null> {
+    CheckExistingFossilParamsSchema.parse(params);
+    
+    const { fossilService, contentHash, title, content, type } = params;
+    
+    // First check for exact content hash match (fastest)
+    if (contentHash) {
+      const byHash = await fossilService.queryEntries({ search: contentHash, type, limit: 1, offset: 0 });
+      if (byHash && byHash.length > 0 && byHash[0]) {
+        return byHash[0];
+      }
+    }
+    
+    // Then check for similar fossils using the more sophisticated similarity algorithm
+    // Note: We need to access the private method through a workaround since it's not public
+    const similarFossils = await fossilService['findSimilarFossils'](title, content, 60);
+    if (similarFossils.length > 0) {
+      const mostSimilar = similarFossils[0]!;
+      console.log(`🔍 Found similar fossil (${mostSimilar.similarity}% similarity): ${mostSimilar.fossil.id}`);
+      return mostSimilar.fossil;
+    }
+    
+    return null;
+  }
+  
+  /**
+   * Create fossil entry for the issue
+   */
+  static async createFossilEntry(params: CreateFossilEntryParams): Promise<ContextEntry> {
+    CreateFossilEntryParamsSchema.parse(params);
+    
+    const { fossilService, type, title, body, section, tags, metadata, issueNumber, parsedFields } = params;
+    
+    const fossilEntry: Omit<ContextEntry, 'id' | 'createdAt' | 'updatedAt'> = {
+      type,
+      title,
+      content: body,
+      tags: ['github', 'issue', section, ...tags],
+      source: 'automated',
+      metadata: { ...metadata, ...parsedFields, issueNumber },
+      version: 1,
+      children: [],
+    };
+    
+    return await fossilService.addEntry(fossilEntry);
+  }
+}
+
 export async function createFossilIssue(params: CreateFossilIssueParams): Promise<{ issueNumber?: string; fossilId: string; fossilHash: string; deduplicated: boolean }> {
   if (isTestMode(params)) {
     console.log(`[MOCK] createFossilIssue: ${params.title}`);
     return { deduplicated: false, issueNumber: '1', fossilId: 'mock-fossil-id', fossilHash: 'mock-fossil-hash' };
   }
+  
   CreateFossilIssueParamsSchema.parse(params);
+  
   const {
     owner,
     repo,
@@ -96,31 +261,26 @@ export async function createFossilIssue(params: CreateFossilIssueParams): Promis
     automationMetadata,
     extraBody,
   } = params;
+  
+  // Initialize fossil service
   const fossilService = new ContextFossilService();
   await fossilService.initialize();
-  // Check for existing fossil by content hash or title
+  
+  // Check for existing fossil
   const contentHash = typeof metadata?.contentHash === 'string' ? metadata.contentHash : undefined;
-  let existingFossil: ContextEntry | null = null;
-  if (contentHash) {
-    const byHash = await fossilService.queryEntries({ search: contentHash, type, limit: 1, offset: 0 });
-    if (byHash && byHash.length > 0 && byHash[0]) {
-      existingFossil = byHash[0];
-    } else {
-      existingFossil = null;
-    }
-  }
-  if (!existingFossil) {
-    const byTitle = await fossilService.queryEntries({ search: title, type, limit: 1, offset: 0 });
-    if (byTitle && byTitle.length > 0 && byTitle[0]) {
-      existingFossil = byTitle[0];
-    } else {
-      existingFossil = null;
-    }
-  }
+  const existingFossil = await IssueFossilManager.checkExistingFossil({
+    fossilService,
+    contentHash,
+    title,
+    content: body || title,
+    type,
+  });
+  
   if (existingFossil) {
     return { fossilId: existingFossil.id, fossilHash: contentHash || '', deduplicated: true };
   }
-  // Compose detailed body using template-aligned helper
+  
+  // Generate issue body
   const detailedBody = generateAutomationIssueBody({
     purpose: purpose || body || title,
     checklist,
@@ -128,47 +288,58 @@ export async function createFossilIssue(params: CreateFossilIssueParams): Promis
     extra: extraBody,
   });
   const bodyWithFossil = `${detailedBody}\n\n---\nFossil Content Hash: ${contentHash || ''}`;
-  const tempFile = `.temp-issue-body-${Date.now()}.md`;
-  fs.writeFileSync(tempFile, bodyWithFossil);
+  
+  // Prepare labels
   let sectionLabel = '';
   if (typeof section === 'string' && section.trim().length > 0) {
     sectionLabel = toSectionLabel(section);
-    ensureLabel(owner, repo, sectionLabel, params);
+    await ensureLabel(owner, repo, sectionLabel, params);
   }
   const traceLabel = `${type}-${contentHash || ''}`;
-  ensureLabel(owner, repo, traceLabel, params);
+  await ensureLabel(owner, repo, traceLabel, params);
   const filteredLabels = labels.filter(l => l && l !== section);
   const validLabels = [...filteredLabels, sectionLabel, traceLabel].filter(Boolean);
-  let createCmd = `gh issue create --repo ${owner}/${repo} --title "${title}" --body-file "${tempFile}"`;
-  if (validLabels.length > 0) createCmd += ` --label "${validLabels.join(',')}"`;
-  if (milestone) createCmd += ` --milestone "${milestone}"`;
-  const createOut = execSync(createCmd, { encoding: 'utf8' });
-  fs.unlinkSync(tempFile);
-  let issueNumber = undefined;
-  if (createOut) {
-    const match = createOut.match(/#(\d+)/);
-    if (match) issueNumber = match[1];
+  
+  // Create issue using GitHub CLI
+  IssueBodyFileManager.writeTempFile(bodyWithFossil);
+  
+  const { issueNumber, output } = await GitHubIssueManager.createIssue({
+    owner,
+    repo,
+    title,
+    tempFile: IssueBodyFileManager.TEMP_FILE,
+    labels: validLabels,
+    milestone,
+  });
+  
+  // Clean up temp file
+  IssueBodyFileManager.cleanupTempFile();
+  
+  // Save fossil copy if issue was created
+  if (issueNumber) {
+    IssueBodyFileManager.saveIssueFossil(issueNumber, bodyWithFossil);
   }
-  // After creation, fetch the issue body and parse JSON block for metadata
+  
+  // Fetch and parse issue metadata
   let parsedFields = {};
   if (issueNumber) {
-    try {
-      const ghBody = execSync(`gh issue view ${issueNumber} --repo ${owner}/${repo} --json body -q ".body"`).toString();
-      const jsonBlock = extractJsonBlock(ghBody);
-      if (jsonBlock) parsedFields = jsonBlock;
-    } catch {}
+    const ghBody = await GitHubIssueManager.fetchIssueBody(owner, repo, issueNumber);
+    const jsonBlock = extractJsonBlock(ghBody);
+    if (jsonBlock) parsedFields = jsonBlock;
   }
-  // Store parsed fields in fossil metadata
-  const fossilEntry: Omit<ContextEntry, 'id' | 'createdAt' | 'updatedAt'> = {
+  
+  // Create fossil entry
+  const fossil = await IssueFossilManager.createFossilEntry({
+    fossilService,
     type,
     title,
-    content: bodyWithFossil,
-    tags: ['github', 'issue', section, ...tags],
-    source: 'automated',
-    metadata: { ...metadata, ...parsedFields, issueNumber },
-    version: 1,
-    children: [],
-  };
-  const fossil = await fossilService.addEntry(fossilEntry);
+    body: bodyWithFossil,
+    section,
+    tags,
+    metadata,
+    issueNumber,
+    parsedFields,
+  });
+  
   return { issueNumber, fossilId: fossil.id, fossilHash: contentHash || '', deduplicated: false };
 } 

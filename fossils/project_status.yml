@@ -93,6 +93,11 @@ project_status:
               - 'main: implemented'
             fossilized_output: false
             cli_details: []
+        - githubFossilSyncCore.ts:
+            functions:
+              - 'githubFossilSync: implemented'
+            fossilized_output: false
+            cli_details: []
         - context-fossil.ts:
             functions:
               - 'ContextFossilService: implemented'
@@ -344,7 +349,6 @@ project_status:
             cli_commands:
               - 'create: implemented'
               - 'validate: implemented'
-              - 'list: implemented'
             cli_details:
               - name: create
                 options: &ref_12
@@ -356,20 +360,12 @@ project_status:
                   - '--verbose'
                   - '--test'
                   - '--verbose'
-                  - '--type <type>'
-                  - '--format <format>'
-                  - '--verbose'
                 required: &ref_13
                   - '--owner <owner>'
                   - '--repo <repo>'
                   - '--roadmap <path>'
                   - '--roadmap <path>'
-                  - '--owner <owner>'
-                  - '--repo <repo>'
               - name: validate
-                options: *ref_12
-                required: *ref_13
-              - name: list
                 options: *ref_12
                 required: *ref_13
             tests: &ref_23
@@ -476,6 +472,8 @@ project_status:
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/setup.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-issues.integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/transversal-fossil-github-sync.integration.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-fossil-automation.integration.test.ts
               - >-
@@ -697,6 +695,8 @@ project_status:
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-issues.integration.test.ts
               - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/transversal-fossil-github-sync.integration.test.ts
+              - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-fossil-automation.integration.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-projects-integration.integration.test.ts
@@ -716,6 +716,14 @@ project_status:
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/services/semantic-tagger.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/repo-orchestrator-fossilization.integration.test.ts
+        - examples.ts:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/transversal-fossil-github-sync.integration.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/examples.e2e.test.ts
         - cli.ts:
             functions:
               - 'with: implemented'
@@ -743,6 +751,28 @@ project_status:
         - schemas.ts:
             functions: []
             fossilized_output: true
+        - llm.ts:
+            functions: []
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/types/index.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/llm-plan.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-workflow.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-content-automation.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-plan.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-issue-manager.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/services/llm.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/services/semantic-tagger.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/llm-fossilization.integration.test.ts
         - core.ts:
             functions: []
             fossilized_output: false
@@ -775,10 +805,6 @@ project_status:
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/setup.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/base-tester.ts
-        - curate-test-outputs.ts:
-            functions:
-              - 'scanAndCurate: implemented'
-            fossilized_output: false
         - 001-improve-project-structure.sh:
             functions: []
             fossilized_output: false
@@ -1155,6 +1181,12 @@ developer_summary:
         - main
       hasTests: false
       testFiles: []
+    - file: src/cli/githubFossilSyncCore.ts
+      commands: []
+      functions:
+        - githubFossilSync
+      hasTests: false
+      testFiles: []
     - file: src/cli/context-fossil.ts
       commands:
         - init
@@ -1216,7 +1248,6 @@ developer_summary:
       commands:
         - create
         - validate
-        - list
       functions: []
       hasTests: true
       testFiles: *ref_23
@@ -1392,14 +1423,14 @@ developer_summary:
       testFiles: *ref_33
   examples: []
   summary:
-    totalCLI: 18
+    totalCLI: 19
     totalUtils: 15
     totalServices: 3
     totalExamples: 0
     testedCLI: 10
     testedUtils: 5
     testedServices: 3
-    coverage: 50
+    coverage: 49
   recommendations:
     - 'Priority 1: Test CLI commands'
     - '- src/cli/create-fossil-issue.ts (0 commands)'

@@ -634,6 +634,114 @@ if (response.success && response.data) {
 }
 ```
 
+### Fossil-Backed Error Handling
+```typescript
+// Fossil creation with comprehensive error handling
+try {
+  const result = await createFossilIssue(params);
+  
+  if (result.deduplicated) {
+    console.log(`⚠️ Issue already exists (Fossil ID: ${result.fossilId})`);
+    return result;
+  }
+  
+  if (result.success) {
+    console.log(`✅ Created issue #${result.issueNumber} (Fossil ID: ${result.fossilId})`);
+    return result;
+  } else {
+    console.error(`❌ Failed to create issue: ${result.error}`);
+    throw new Error(result.error);
+  }
+} catch (error) {
+  if (error instanceof z.ZodError) {
+    console.error('❌ Validation error:');
+    error.errors.forEach(err => {
+      console.error(`  - ${err.path.join('.')}: ${err.message}`);
+    });
+  } else if (error instanceof Error) {
+    console.error(`❌ Unexpected error: ${error.message}`);
+  } else {
+    console.error('❌ Unknown error occurred');
+  }
+  throw error;
+}
+```
+
+### CLI Error Handling
+```typescript
+// CLI command with comprehensive error handling
+async function main() {
+  try {
+    // Validate arguments
+    const validatedParams = CreateFossilIssueParamsSchema.parse(args);
+    
+    // Execute with retry logic
+    const result = await executeWithRetry(
+      () => createFossilIssue(validatedParams),
+      { maxRetries: 3, delayMs: 1000 }
+    );
+    
+    // Handle result
+    if (result.success) {
+      console.log('✅ Operation successful');
+      process.exit(0);
+    } else {
+      console.error(`❌ Operation failed: ${result.error}`);
+      process.exit(1);
+    }
+  } catch (error) {
+    handleCLIError(error);
+    process.exit(1);
+  }
+}
+
+function handleCLIError(error: unknown) {
+  if (error instanceof z.ZodError) {
+    console.error('❌ Validation error:');
+    error.errors.forEach(err => {
+      console.error(`  - ${err.path.join('.')}: ${err.message}`);
+    });
+  } else if (error instanceof Error) {
+    console.error(`❌ Error: ${error.message}`);
+  } else {
+    console.error('❌ Unknown error occurred');
+  }
+}
+```
+
+### LLM Error Handling
+```typescript
+// LLM calls with fallback and retry
+async function callLLMWithFallback(prompt: string) {
+  try {
+    // Try local LLM first
+    const result = await llmService.callLLM({
+      model: 'llama2',
+      messages: [{ role: 'user', content: prompt }],
+      routingPreference: 'local'
+    });
+    
+    return result;
+  } catch (error) {
+    console.log('⚠️ Local LLM failed, falling back to cloud...');
+    
+    try {
+      // Fallback to cloud LLM
+      const cloudResult = await llmService.callLLM({
+        model: 'gpt-4',
+        messages: [{ role: 'user', content: prompt }],
+        routingPreference: 'cloud'
+      });
+      
+      return cloudResult;
+    } catch (cloudError) {
+      console.error('❌ Both local and cloud LLM failed');
+      throw new Error('LLM service unavailable');
+    }
+  }
+}
+```
+
 **Try-Catch with Specific Error Types:**
 ```typescript
 try {
@@ -760,11 +868,72 @@ test(github): add integration tests for issue management
 refactor(services): extract common service patterns
 ```
 
+**Scope Guidelines:**
+- Use specific scopes like `github`, `cli`, `api`, `docs`, `test`
+- For utilities, use `utils` scope
+- For core functionality, use `core` scope
+- For automation scripts, use `automation` scope
+
 ---
 
 ## 🦴 Fossil Publication and Public Outputs
 
 The project now includes a `fossils/public/` folder structure for all public-facing markdown and JSON outputs, generated from curated YAML fossils. The publication process uses timestamp libraries (e.g., luxon, date-fns) and outputs metadata-rich files for future React/MDX/Next.js/Remix integrations. See [Fossil Publication Workflow](./FOSSIL_PUBLICATION_WORKFLOW.md) for details.
+
+## 🧪 Fossil-First Test Output Policy
+
+All test and script output files must serve a clear purpose for fossil curation, automation, or traceability.
+
+### Policy Requirements
+- **Only write files that are curated fossils** or referenced artifacts
+- **Use stable, canonical filenames** (no timestamped names)
+- **Clean up temporary files** after tests complete
+- **Reference outputs in roadmap or project status** if they're fossils
+
+### Allowed Test Outputs
+```typescript
+// ✅ GOOD: Curated fossil output
+const fossil = await createFossilIssue(params);
+await writeFile('fossils/test_issue.json', JSON.stringify(fossil, null, 2));
+
+// ✅ GOOD: Referenced artifact
+await writeFile('fossils/roadmap_demo.json', roadmapData);
+
+// ❌ BAD: Temporary timestamped file
+await writeFile(`temp-${Date.now()}.json`, data);
+
+// ❌ BAD: Unreferenced demo file
+await writeFile('demo_output.json', data);
+```
+
+### Test Output Patterns
+```typescript
+// Fossil-backed test output
+describe('Issue Creation', () => {
+  it('should create fossil-backed issue', async () => {
+    const result = await createFossilIssue(params);
+    
+    // Only write if it's a curated fossil
+    if (result.fossilId) {
+      await writeFile('fossils/test_issue_fossil.json', JSON.stringify(result, null, 2));
+    }
+    
+    expect(result.success).toBe(true);
+  });
+});
+```
+
+### Cleanup Requirements
+```typescript
+// Always clean up after tests
+afterEach(async () => {
+  // Remove temporary files
+  await cleanupTempFiles();
+  
+  // Keep only curated fossils
+  await cleanupNonFossilOutputs();
+});
+```
 
 ## Fossil File Curation Policy
 

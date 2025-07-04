@@ -8,31 +8,12 @@
  */
 
 import { Command } from 'commander';
-import { z } from 'zod';
 import { LLMService, LLMOptimizationConfig } from '../services/llm';
+import { UsageReportSchema, OptimizationConfigSchema } from '@/types/schemas';
 
-// CLI schemas
-const UsageReportSchema = z.object({
-  format: z.enum(['text', 'json', 'csv']).optional(),
-  days: z.number().min(1).max(365).optional(),
-  purpose: z.string().optional(),
-  provider: z.string().optional(),
-});
-
-const OptimizationConfigSchema = z.object({
-  maxTokensPerCall: z.number().min(100).max(32000).optional(),
-  maxCostPerCall: z.number().min(0.01).max(10).optional(),
-  minValueScore: z.number().min(0).max(1).optional(),
-  enableLocalLLM: z.boolean().optional(),
-  enableCaching: z.boolean().optional(),
-  cacheExpiryHours: z.number().min(1).max(168).optional(),
-  retryAttempts: z.number().min(1).max(10).optional(),
-  retryDelayMs: z.number().min(100).max(10000).optional(),
-  rateLimitDelayMs: z.number().min(1000).max(300000).optional(),
-});
-
-type UsageReportOptions = z.infer<typeof UsageReportSchema>;
-type OptimizationConfigOptions = z.infer<typeof OptimizationConfigSchema>;
+// For type inference:
+type UsageReportOptions = typeof UsageReportSchema._type;
+type OptimizationConfigOptions = typeof OptimizationConfigSchema._type;
 
 const program = new Command();
 

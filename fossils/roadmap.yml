@@ -35,9 +35,11 @@ source: e2e-pre-commit
 createdBy: llm-human-collab
 createdAt: 2024-07-01T12:00:00.000Z
 tasks:
-  - task: Immediate Actions: Project Setup, Onboarding, and Audit Readiness
+  - task: Project Setup, Onboarding, and Audit Readiness
     status: planned
     owner: emmanuelbarrera
+    tags:
+      - immediate-actions
     context: |
       Consolidate all urgent setup, onboarding, and audit-related actions into a single, trackable task. This parent task ensures the project is easy to set up, audit, and onboard new contributors, and that all automation and fossilization patterns are followed from the start.
       The setup shell script (scripts/setup.sh), the curated setup_status.yml fossil, and their related tests are tightly coupled:
@@ -49,6 +51,7 @@ tasks:
       - task: Provide comprehensive setup script and onboarding documentation for local development
         status: in progress
         owner: emmanuelbarrera
+        tags: []
         context: |
           Create a shell script (scripts/setup.sh) that automates installation of all required dependencies for local development and CI:
             - Install Bun (if missing)
@@ -68,14 +71,18 @@ tasks:
         subtasks:
           - task: Implement scripts/setup.sh with all required installation and setup steps, including platform detection, model download, and updating setup_status.yml
             status: in progress
+            tags: []
           - task: Update README.md and API_REFERENCE.md with quick setup and troubleshooting instructions for all platforms, referencing setup_status.yml
             status: in progress
+            tags: []
           - task: Test script on clean Mac, Linux, and Windows environments; ensure setup_status.yml is correctly updated and validated
             status: planned
+            tags: []
         milestone: Immediate Actions
       - task: Document and promote setup_status.yml as canonical, programmatic, and auditable project setup fossil
         status: in progress
         owner: emmanuelbarrera
+        tags: []
         context: |
           Create and maintain fossils/setup_status.yml as the single source of truth for project setup and onboarding state. This file should:
             - Track the installation, configuration, and validation status of all required tools, dependencies, and onboarding steps (e.g., Bun, GitHub CLI, Ollama, model downloads, fossil storage, .env setup)
@@ -85,10 +92,13 @@ tasks:
         subtasks:
           - task: Create fossils/setup_status.yml with a clear, extensible schema for setup/onboarding state, supporting automation from the setup script
             status: in progress
+            tags: []
           - task: Integrate automation/scripts to update and validate setup_status.yml as part of setup and CI
             status: planned
+            tags: []
           - task: Update onboarding and documentation to reference setup_status.yml for setup tracking and validation
             status: planned
+            tags: []
         milestone: Immediate Actions
     milestone: Immediate Actions
   - task: Update integration tests to use real repo
@@ -487,7 +497,9 @@ tasks:
       The current semantic tag tests patch callLLM to simulate LLM responses for stable results. Once a local Ollama model is reliably connected and used in CI/tests, remove these patches and use the real local LLM for semantic tagging tests. This will ensure tests reflect actual model behavior and integration.
     labels: ["testing", "llm", "local-llm", "cleanup"]
     milestone: Local LLM Integration
-  - task: Immediate Action: Enforce Canonical Fossil Artifact Policy and Curation Workflow
+  - task: Enforce Canonical Fossil Artifact Policy and Curation Workflow
+    tags:
+      - immediate-actions
     status: planned
     owner: emmanuelbarrera
     context: |
@@ -535,4 +547,261 @@ tasks:
     context: |
       Design and implement a process to curate, version, and store prompts/system messages as fossils in fossils/prompts/.
       Automate publication of these prompts for LLM context, automation, and reproducibility, supporting future integrations and audits.
-    milestone: Immediate Actions 
+    milestone: Immediate Actions
+  - task: Integrate local LLM for context gathering and fossilization
+    status: planned
+    owner: emmanuelbarrera
+    context: |
+      Implement a script that uses a local LLM to:
+        - Summarize and extract insights from project_status.yml and roadmap.yml
+        - Generate public-facing markdown/blog posts from fossil data
+        - Suggest or automate updates to GitHub issues and project status
+        - Keep all outputs in sync with the canonical fossil workflow
+  - task: Close Documentation Gaps and Improve Coherence Across All Docs
+    status: in progress
+    owner: emmanuelbarrera
+    tags:
+      - immediate-actions
+      - documentation
+      - coherence
+    context: |
+      Address critical gaps identified in documentation analysis to ensure all docs are cohesive, coherent, and aligned with current implementation patterns. This task consolidates all documentation improvements needed to close gaps between documented patterns and actual implementation, ensuring consistency across all onboarding, API, and development guides.
+      
+      **Critical Gaps Identified:**
+      1. **Fossil-Backed Creation**: Docs mention deprecated patterns but don't clearly promote fossil-backed utilities
+      2. **Intelligent Tagging**: Missing documentation of semantic tagging system and LLM integration
+      3. **Centralized CLI Commands**: Inconsistent documentation of GitHubCLICommands utility
+      4. **Validation Patterns**: Incomplete documentation of Zod validation and Params object patterns
+      5. **Local LLM Integration**: Missing comprehensive local LLM setup and usage documentation
+      6. **Fossil Publication Workflow**: Incomplete documentation of YAML→JSON→Markdown workflow
+      7. **Error Handling**: Inconsistent documentation of error handling patterns
+      8. **Testing Patterns**: Missing documentation of fossil-first test output policy
+      
+      **Immediate Actions Completed:**
+      ✅ **GitHubService.createIssue() Fixed** - Restored functionality while maintaining backward compatibility
+      ✅ **Direct execSync Calls Eliminated** - All GitHub CLI calls now use centralized `GitHubCLICommands`
+      ✅ **Async/Await Patterns Standardized** - Fixed all async/await inconsistencies across codebase
+      ✅ **GitHubCLICommands Enhanced** - Added API call support and improved error handling
+      ✅ **Documentation Updated** - Key docs updated to promote fossil-backed creation and consistent patterns
+    subtasks:
+      - task: Update API_REFERENCE.md to promote fossil-backed creation and deprecate direct CLI calls
+        status: done
+        context: |
+          Update API_REFERENCE.md to clearly promote fossil-backed utilities (createFossilIssue, createFossilLabel, createFossilMilestone) as the primary pattern and clearly mark direct GitHub CLI calls as deprecated. Add comprehensive examples of fossil-backed creation, deduplication, and progress tracking.
+        subtasks:
+          - task: Add prominent fossil-backed creation section with examples
+            status: done
+          - task: Mark GitHubService.createIssue as deprecated with migration guide
+            status: done
+          - task: Add fossil deduplication and progress tracking documentation
+            status: done
+          - task: Update all CLI examples to use fossil-backed utilities
+            status: done
+      - task: Document intelligent tagging system and LLM integration patterns
+        status: planned
+        context: |
+          Create comprehensive documentation for the semantic tagging system, including LLM integration, intelligent routing, and fossil-based tagging patterns. Update all relevant docs to reference the intelligent tagging system.
+        subtasks:
+          - task: Add intelligent tagging section to API_REFERENCE.md
+            status: planned
+          - task: Document semantic tagging CLI commands and patterns
+            status: planned
+          - task: Update COMPLETE_AUTOMATION_ECOSYSTEM.md with tagging integration
+            status: planned
+          - task: Add tagging examples to DEVELOPMENT_GUIDE.md
+            status: planned
+      - task: Centralize and document GitHubCLICommands utility patterns
+        status: done
+        context: |
+          Ensure all documentation consistently references and documents the GitHubCLICommands utility as the centralized pattern for all GitHub CLI operations. Update CLI_COMMAND_INSIGHTS.md and other docs to reflect this pattern.
+        subtasks:
+          - task: Update CLI_COMMAND_INSIGHTS.md with GitHubCLICommands examples
+            status: done
+          - task: Add GitHubCLICommands section to API_REFERENCE.md
+            status: done
+          - task: Update DEVELOPMENT_GUIDE.md with centralized CLI patterns
+            status: done
+          - task: Ensure all CLI examples use GitHubCLICommands
+            status: done
+      - task: Document comprehensive validation patterns with Zod schemas
+        status: done
+        context: |
+          Update all documentation to comprehensively cover Zod validation patterns, Params object patterns, and runtime validation. Ensure all docs reference the centralized schemas in src/types/schemas.ts.
+        subtasks:
+          - task: Add validation patterns section to API_REFERENCE.md
+            status: done
+          - task: Update DEVELOPMENT_GUIDE.md with Zod validation examples
+            status: done
+          - task: Document Params object pattern in all relevant docs
+            status: done
+          - task: Add validation error handling documentation
+            status: done
+      - task: Create comprehensive local LLM setup and usage documentation
+        status: planned
+        context: |
+          Create comprehensive documentation for local LLM setup, usage, and integration patterns. Update all docs to include local LLM options and best practices.
+        subtasks:
+          - task: Add local LLM setup guide to API_REFERENCE.md
+            status: planned
+          - task: Create local LLM troubleshooting and best practices guide
+            status: planned
+          - task: Update COMPLETE_AUTOMATION_ECOSYSTEM.md with local LLM integration
+            status: planned
+          - task: Add local LLM examples to DEVELOPMENT_GUIDE.md
+            status: planned
+      - task: Complete fossil publication workflow documentation
+        status: planned
+        context: |
+          Complete documentation of the YAML→JSON→Markdown fossil publication workflow, including folder structure, automation patterns, and future integrations.
+        subtasks:
+          - task: Update FOSSIL_PUBLICATION_WORKFLOW.md with complete examples
+            status: planned
+          - task: Add publication workflow to API_REFERENCE.md
+            status: planned
+          - task: Document folder structure and naming conventions
+            status: planned
+          - task: Add future integration patterns (React/MDX/Next.js)
+            status: planned
+      - task: Standardize error handling documentation across all docs
+        status: done
+        context: |
+          Ensure all documentation consistently covers error handling patterns, including service response patterns, CLI error handling, and fossil error handling.
+        subtasks:
+          - task: Add comprehensive error handling section to API_REFERENCE.md
+            status: done
+          - task: Update DEVELOPMENT_GUIDE.md with error handling patterns
+            status: done
+          - task: Document error handling in CLI_COMMAND_INSIGHTS.md
+            status: done
+          - task: Add error handling examples to all relevant docs
+            status: done
+      - task: Document fossil-first test output policy and patterns
+        status: done
+        context: |
+          Create comprehensive documentation of the fossil-first test output policy, including what files can be written, naming conventions, and cleanup requirements.
+        subtasks:
+          - task: Add fossil-first test policy to DEVELOPMENT_GUIDE.md
+            status: done
+          - task: Document test output patterns in TESTING_LEARNINGS.md
+            status: done
+          - task: Add test output examples and best practices
+            status: done
+          - task: Update CONTRIBUTING_GUIDE.md with test output requirements
+            status: done
+      - task: Create documentation coherence checklist and validation
+        status: done
+        context: |
+          Create a documentation coherence checklist and validation process to ensure all docs remain aligned and consistent.
+        subtasks:
+          - task: Create documentation coherence checklist
+            status: done
+          - task: Add documentation validation to CI process
+            status: planned
+          - task: Create documentation update workflow
+            status: planned
+          - task: Add documentation review process
+            status: planned
+    key_points:
+      - All documentation must promote fossil-backed creation as the primary pattern
+      - Intelligent tagging and LLM integration must be comprehensively documented
+      - Centralized CLI patterns must be consistently referenced
+      - Validation patterns must be clearly documented with examples
+      - Local LLM integration must be fully documented with setup guides
+      - Fossil publication workflow must be complete and future-proof
+      - Error handling must be standardized across all docs
+      - Test output policy must be clearly documented and enforced
+    recommendation: |
+      Prioritize updating API_REFERENCE.md and DEVELOPMENT_GUIDE.md first as they are the primary onboarding documents.
+      Then update specialized docs (CLI_COMMAND_INSIGHTS.md, COMPLETE_AUTOMATION_ECOSYSTEM.md) to ensure consistency.
+      Finally, create validation processes to maintain coherence going forward.
+    preference: |
+      Prefer comprehensive examples and clear migration paths over theoretical documentation.
+      Focus on practical patterns that developers can immediately apply.
+      Ensure all docs reference the same patterns and examples for consistency.
+    deadline: 2024-07-20T00:00:00.000Z
+    milestone: Documentation Coherence
+  - task: Complete Remaining Documentation Improvements and Validation
+    status: planned
+    owner: emmanuelbarrera
+    tags:
+      - immediate-actions
+      - documentation
+      - validation
+    context: |
+      Complete the remaining documentation improvements and implement validation processes to ensure ongoing coherence. This task focuses on the remaining subtasks from the documentation coherence effort and establishing processes to maintain consistency going forward.
+      
+      **Remaining Work:**
+      1. **Intelligent Tagging Documentation**: Complete documentation of semantic tagging system
+      2. **Local LLM Documentation**: Comprehensive setup and usage guides
+      3. **Fossil Publication Workflow**: Complete YAML→JSON→Markdown documentation
+      4. **CI Integration**: Add documentation validation to CI process
+      5. **Validation Processes**: Establish ongoing documentation review and validation
+    subtasks:
+      - task: Document intelligent tagging system and LLM integration patterns
+        status: planned
+        context: |
+          Create comprehensive documentation for the semantic tagging system, including LLM integration, intelligent routing, and fossil-based tagging patterns. Update all relevant docs to reference the intelligent tagging system.
+        subtasks:
+          - task: Add intelligent tagging section to API_REFERENCE.md
+            status: planned
+          - task: Document semantic tagging CLI commands and patterns
+            status: planned
+          - task: Update COMPLETE_AUTOMATION_ECOSYSTEM.md with tagging integration
+            status: planned
+          - task: Add tagging examples to DEVELOPMENT_GUIDE.md
+            status: planned
+      - task: Create comprehensive local LLM setup and usage documentation
+        status: planned
+        context: |
+          Create comprehensive documentation for local LLM setup, usage, and integration patterns. Update all docs to include local LLM options and best practices.
+        subtasks:
+          - task: Add local LLM setup guide to API_REFERENCE.md
+            status: planned
+          - task: Create local LLM troubleshooting and best practices guide
+            status: planned
+          - task: Update COMPLETE_AUTOMATION_ECOSYSTEM.md with local LLM integration
+            status: planned
+          - task: Add local LLM examples to DEVELOPMENT_GUIDE.md
+            status: planned
+      - task: Complete fossil publication workflow documentation
+        status: planned
+        context: |
+          Complete documentation of the YAML→JSON→Markdown fossil publication workflow, including folder structure, automation patterns, and future integrations.
+        subtasks:
+          - task: Update FOSSIL_PUBLICATION_WORKFLOW.md with complete examples
+            status: planned
+          - task: Add publication workflow to API_REFERENCE.md
+            status: planned
+          - task: Document folder structure and naming conventions
+            status: planned
+          - task: Add future integration patterns (React/MDX/Next.js)
+            status: planned
+      - task: Implement documentation validation in CI
+        status: planned
+        context: |
+          Add automated documentation validation to the CI process to ensure ongoing coherence and catch inconsistencies early.
+        subtasks:
+          - task: Add documentation validation to CI process
+            status: planned
+          - task: Create documentation update workflow
+            status: planned
+          - task: Add documentation review process
+            status: planned
+          - task: Implement automated coherence checks
+            status: planned
+    key_points:
+      - Focus on completing the remaining documentation improvements
+      - Establish automated validation processes for ongoing coherence
+      - Ensure all documentation patterns are consistent and up-to-date
+      - Create processes to maintain documentation quality going forward
+    recommendation: |
+      Prioritize intelligent tagging and local LLM documentation as they are key features.
+      Then complete fossil publication workflow documentation.
+      Finally, implement CI validation to prevent future inconsistencies.
+    preference: |
+      Prefer comprehensive, practical documentation over theoretical guides.
+      Focus on examples and patterns that developers can immediately apply.
+      Ensure all validation processes are automated and integrated into CI.
+    deadline: 2024-07-25T00:00:00.000Z
+    milestone: Documentation Coherence
+ 

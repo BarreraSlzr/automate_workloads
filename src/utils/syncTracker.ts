@@ -4,32 +4,35 @@ import { execSync } from "child_process";
 import { issueExists } from './cli';
 import { createFossilIssue } from './fossilIssue';
 import { isTestMode } from '../cli/repo-orchestrator';
+import { GitHubCLICommands } from './githubCliCommands';
 
-function runGh(cmd: string) {
+async function runGh(cmd: string) {
   try {
-    return execSync(cmd, { encoding: "utf8" }).trim();
+    const commands = new GitHubCLICommands('barreraslzr', 'automate_workloads');
+    const result = await commands.executeCommand(cmd);
+    return result.success ? result.stdout.trim() : null;
   } catch (e) {
     return null;
   }
 }
 
-function getMilestoneIdByTitle(owner: string, repo: string, title: string): string | null {
+async function getMilestoneIdByTitle(owner: string, repo: string, title: string): Promise<string | null> {
   if (isTestMode({ owner, repo, title })) return null;
-  const out = runGh(`gh api repos/${owner}/${repo}/milestones --jq '.[] | select(.title=="${title}") | .number'`);
+  const out = await runGh(`gh api repos/${owner}/${repo}/milestones --jq '.[] | select(.title=="${title}") | .number'`);
   if (typeof out === "undefined" || out === null) return null;
   const first = out.split("\n")[0];
   return typeof first === "string" && first.length > 0 ? first : null;
 }
 
-function ensureMilestone(owner: string, repo: string, name: string): string | null {
+async function ensureMilestone(owner: string, repo: string, name: string): Promise<string | null> {
   if (isTestMode({ owner, repo, name })) return null;
-  let milestoneId: string | null = getMilestoneIdByTitle(owner, repo, name);
+  let milestoneId: string | null = await getMilestoneIdByTitle(owner, repo, name);
   if (milestoneId) {
     console.log(`✅ Milestone exists: ${name}`);
     return milestoneId;
   }
-  runGh(`gh api repos/${owner}/${repo}/milestones -f title='${name}' -f description='Auto-created from tracker'`);
-  milestoneId = getMilestoneIdByTitle(owner, repo, name);
+  await runGh(`gh api repos/${owner}/${repo}/milestones -f title='${name}' -f description='Auto-created from tracker'`);
+  milestoneId = await getMilestoneIdByTitle(owner, repo, name);
   if (milestoneId) {
     console.log(`🆕 Created milestone: ${name}`);
     return milestoneId;
@@ -39,10 +42,10 @@ function ensureMilestone(owner: string, repo: string, name: string): string | nu
   }
 }
 
-function getIssueByTitle(owner: string, repo: string, title: string): {number: string, state: string} | null {
+async function getIssueByTitle(owner: string, repo: string, title: string): Promise<{number: string, state: string} | null> {
   if (isTestMode({ owner, repo, title })) return null;
   if (!issueExists(owner, repo, title, 'all')) return null;
-  const out = runGh(`gh issue list --repo ${owner}/${repo} --state all --search "${title}" --json number,title,state`);
+  const out = await runGh(`gh issue list --repo ${owner}/${repo} --state all --search "${title}" --json number,title,state`);
   if (!out) return null;
   try {
     const arr = JSON.parse(out);
@@ -58,14 +61,14 @@ function getIssueByTitle(owner: string, repo: string, title: string): {number: s
 async function ensureIssue(task: { section: string; text: string }, milestoneId: string | undefined, owner: string, repo: string, projectNumber: number) {
   if (isTestMode({ owner, repo, milestoneId, projectNumber })) return;
   if (!milestoneId || milestoneId === "") return;
-  let issue = getIssueByTitle(owner, repo, task.text);
+  let issue = await getIssueByTitle(owner, repo, task.text);
   if (issue) {
     console.log(`✅ Issue exists: #${String(issue.number ?? "")} - ${task.text}`);
     if (issue.state === "closed") {
-      runGh(`gh issue reopen ${String(issue.number ?? "")} --repo ${owner}/${repo}`);
+      await runGh(`gh issue reopen ${String(issue.number ?? "")} --repo ${owner}/${repo}`);
       console.log(`🔄 Reopened issue #${String(issue.number ?? "")}`);
     }
-    addIssueToProject(String(issue.number ?? ""), owner, repo, projectNumber);
+    await addIssueToProject(String(issue.number ?? ""), owner, repo, projectNumber);
     return;
   }
   // Use fossil-backed issue creation
@@ -88,10 +91,10 @@ async function ensureIssue(task: { section: string; text: string }, milestoneId:
   }
 }
 
-function addIssueToProject(issueNumber: string | undefined, owner: string, repo: string, projectNumber: number) {
+async function addIssueToProject(issueNumber: string | undefined, owner: string, repo: string, projectNumber: number) {
   if (isTestMode({ owner, repo, issueNumber, projectNumber })) return;
   if (!issueNumber || issueNumber === "") return;
-  const addResult = runGh(`gh project item-add ${projectNumber} --owner ${owner} --issue ${String(issueNumber ?? "")}`);
+  const addResult = await runGh(`gh project item-add ${projectNumber} --owner ${owner} --issue ${String(issueNumber ?? "")}`);
   if (addResult && !addResult.includes("already exists")) {
     console.log(`📋 Added issue #${String(issueNumber ?? "") } to project board`);
   } else {
@@ -99,11 +102,11 @@ function addIssueToProject(issueNumber: string | undefined, owner: string, repo:
   }
 }
 
-function closeIssueByTitle(title: string, owner: string, repo: string) {
+async function closeIssueByTitle(title: string, owner: string, repo: string) {
   if (isTestMode({ owner, repo, title })) return;
-  const issue = getIssueByTitle(owner, repo, title);
+  const issue = await getIssueByTitle(owner, repo, title);
   if (issue && issue.state === "open") {
-    runGh(`gh issue close ${String(issue.number ?? "")} --repo ${owner}/${repo}`);
+    await runGh(`gh issue close ${String(issue.number ?? "")} --repo ${owner}/${repo}`);
     console.log(`✅ Closed issue #${String(issue.number ?? "")} for checked-off item: ${title}`);
   }
 }
@@ -112,12 +115,12 @@ async function ensureTestOrFossilIssue(item: { type: string; name: string; file:
   if (isTestMode({ owner, repo, milestoneId, projectNumber })) return;
   if (!milestoneId || milestoneId === "") return;
   const title = `Add ${item.type} for ${item.name} in ${item.file}`;
-  let issue = getIssueByTitle(owner, repo, title);
+  let issue = await getIssueByTitle(owner, repo, title);
   if (issue) {
     if (issue.state === "closed") {
-      runGh(`gh issue reopen ${String(issue.number ?? "")} --repo ${owner}/${repo}`);
+      await runGh(`gh issue reopen ${String(issue.number ?? "")} --repo ${owner}/${repo}`);
     }
-    addIssueToProject(String(issue.number ?? ""), owner, repo, projectNumber);
+    await addIssueToProject(String(issue.number ?? ""), owner, repo, projectNumber);
     return;
   }
   // Use fossil-backed issue creation
@@ -182,7 +185,7 @@ export async function syncTrackerWithGitHub(options: {
   const milestoneIds: Record<string, string> = {};
   for (const section of uniqueSections) {
     if (section) {
-      const msId = ensureMilestone(options.owner, options.repo, section);
+      const msId = await ensureMilestone(options.owner, options.repo, section);
       if (typeof msId === "string" && msId.length > 0) milestoneIds[section] = msId;
     }
   }
@@ -193,7 +196,7 @@ export async function syncTrackerWithGitHub(options: {
       await ensureIssue(task, msId, options.owner, options.repo, options.projectNumber);
     }
     if (options.autoClose && task.checked) {
-      closeIssueByTitle(task.text, options.owner, options.repo);
+      await closeIssueByTitle(task.text, options.owner, options.repo);
     }
   }
   // --- 5. Sync missing tests/fossils from fossils/project_status.yml ---

@@ -1,7 +1,9 @@
 // Central Zod schema registry for the automation ecosystem
 // All Zod schemas for Params, CLI, core types, and utilities should be defined and exported here.
 
-import { z } from 'zod';
+import { z, ZodError } from 'zod';
+export { ZodError };
+export { z };
 
 // CLI Schemas
 // Used in: docs/TYPE_AND_SCHEMA_PATTERNS.md
@@ -274,13 +276,38 @@ export const RepoAnalysisSchema = z.object({
 
 // LLM Plan Schemas
 export const PlanRequestSchema = z.object({
-  prompt: z.string(),
-  context: z.string().optional(),
-  goals: z.array(z.string()),
+  goal: z.string().min(1, 'Goal is required'),
+  context: z.record(z.unknown()).optional(),
+  constraints: z.array(z.string()).optional(),
+  timeline: z.string().optional(),
 });
+
 export const TaskBreakdownSchema = z.object({
-  task: z.string(),
-  subtasks: z.array(z.string()),
+  tasks: z.array(z.object({
+    id: z.string(),
+    title: z.string(),
+    description: z.string(),
+    acceptanceCriteria: z.array(z.string()),
+    dependencies: z.array(z.string()),
+    estimatedEffort: z.string(),
+    priority: z.enum(['low', 'medium', 'high', 'critical']),
+    assignee: z.string().optional(),
+  })),
+  timeline: z.object({
+    startDate: z.string(),
+    endDate: z.string(),
+    milestones: z.array(z.object({
+      date: z.string(),
+      description: z.string(),
+      tasks: z.array(z.string()),
+    })),
+  }),
+  risks: z.array(z.object({
+    description: z.string(),
+    probability: z.enum(['low', 'medium', 'high']),
+    impact: z.enum(['low', 'medium', 'high']),
+    mitigation: z.string(),
+  })),
 });
 
 // Track Progress Schemas
@@ -300,10 +327,16 @@ export const TrendAnalysisSchema = z.object({
 
 // Automate GitHub Fossils CLI Schema
 export const CreateCommandSchema = z.object({
-  fossilType: z.string(),
-  input: z.string(),
+  owner: z.string(),
+  repo: z.string(),
+  roadmap: z.string(),
+  createLabels: z.boolean().default(true),
+  createMilestones: z.boolean().default(true),
+  createIssues: z.boolean().default(true),
   output: z.string().optional(),
   dryRun: z.boolean().default(false),
+  verbose: z.boolean().default(false),
+  test: z.boolean().default(false)
 });
 
 // Project Status Update Schemas
@@ -454,4 +487,45 @@ export const ProjectStatusSchema = z.object({
     recommendations: z.array(z.string()).optional(),
   }),
   developer_summary: DeveloperSummarySchema.optional(),
+});
+
+export const UsageReportSchema = z.object({
+  format: z.enum(['text', 'json', 'csv']).optional(),
+  days: z.number().min(1).max(365).optional(),
+  purpose: z.string().optional(),
+  provider: z.string().optional(),
+});
+
+export const OptimizationConfigSchema = z.object({
+  maxTokensPerCall: z.number().min(100).max(32000).optional(),
+  maxCostPerCall: z.number().min(0.01).max(10).optional(),
+  minValueScore: z.number().min(0).max(1).optional(),
+  enableLocalLLM: z.boolean().optional(),
+  enableCaching: z.boolean().optional(),
+  cacheExpiryHours: z.number().min(1).max(168).optional(),
+  retryAttempts: z.number().min(1).max(10).optional(),
+  retryDelayMs: z.number().min(100).max(10000).optional(),
+  rateLimitDelayMs: z.number().min(1000).max(300000).optional(),
+});
+
+// Issue Fossil Manager Params Schemas
+// Used in: src/utils/fossilIssue.ts
+export const CheckExistingFossilParamsSchema = z.object({
+  fossilService: z.any(), // ContextFossilService instance
+  contentHash: z.string().optional(),
+  title: z.string(),
+  content: z.string(),
+  type: z.enum(["knowledge", "decision", "action", "observation", "plan", "result", "insight"]),
+});
+
+export const CreateFossilEntryParamsSchema = z.object({
+  fossilService: z.any(), // ContextFossilService instance
+  type: z.enum(["knowledge", "decision", "action", "observation", "plan", "result", "insight"]),
+  title: z.string(),
+  body: z.string(),
+  section: z.string(),
+  tags: z.array(z.string()),
+  metadata: z.record(z.any()),
+  issueNumber: z.string().optional(),
+  parsedFields: z.record(z.any()),
 }); 

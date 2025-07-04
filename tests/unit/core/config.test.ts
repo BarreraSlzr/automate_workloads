@@ -5,9 +5,9 @@ import {
   hasServiceToken,
   getServiceToken,
   validateConfig,
-  envSchema,
-  type ConfigValidationResult
+  envSchema
 } from "../../../src/core/config";
+import type { ConfigValidationResult } from '../../../src/types/core';
 
 // Mock process.env
 const originalEnv = process.env;

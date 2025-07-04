@@ -3,7 +3,7 @@
  * @module types/cli
  */
 
-import { z } from 'zod';
+import { z } from './schemas';
 import {
   BaseCLIArgsSchema,
   FossilCLIArgsSchema,
@@ -24,6 +24,8 @@ import {
   CreateFossilLabelParamsSchema,
   CreateFossilMilestoneParamsSchema,
   UpdateProjectStatusParamsSchema,
+  CheckExistingFossilParamsSchema,
+  CreateFossilEntryParamsSchema,
   ClassInfoSchema,
   FunctionInfoSchema,
   CliCommandSchema,
@@ -148,6 +150,8 @@ export type CurateFossilParams = z.infer<typeof CurateFossilParamsSchema>;
 export type CreateFossilIssueParams = z.infer<typeof CreateFossilIssueParamsSchema>;
 export type CreateFossilLabelParams = z.infer<typeof CreateFossilLabelParamsSchema>;
 export type CreateFossilMilestoneParams = z.infer<typeof CreateFossilMilestoneParamsSchema>;
+export type CheckExistingFossilParams = z.infer<typeof CheckExistingFossilParamsSchema>;
+export type CreateFossilEntryParams = z.infer<typeof CreateFossilEntryParamsSchema>;
 
 export type UpdateProjectStatusParams = z.infer<typeof UpdateProjectStatusParamsSchema>;
 export type ClassInfo = z.infer<typeof ClassInfoSchema>;
@@ -172,6 +176,8 @@ export type ProjectStatus = z.infer<typeof ProjectStatusSchema>;
 // Schema Exports
 export {
   UpdateProjectStatusParamsSchema,
+  CheckExistingFossilParamsSchema,
+  CreateFossilEntryParamsSchema,
   ClassInfoSchema,
   FunctionInfoSchema,
   CliCommandSchema,

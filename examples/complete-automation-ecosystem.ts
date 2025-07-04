@@ -15,36 +15,7 @@
 import { execSync } from 'child_process';
 import { writeFileSync, readFileSync, existsSync } from 'fs';
 import { join } from 'path';
-
-interface AutomationEcosystem {
-  repository: {
-    owner: string;
-    repo: string;
-  };
-  projectId?: string;
-  goals: string[];
-  context: {
-    decisions: Array<{
-      title: string;
-      content: string;
-      tags: string[];
-      timestamp: string;
-    }>;
-    insights: Array<{
-      title: string;
-      content: string;
-      tags: string[];
-      timestamp: string;
-    }>;
-  };
-  progress: {
-    healthScore: number;
-    actionPlanCompletion: number;
-    automationCompletion: number;
-    totalIssues: number;
-    completedIssues: number;
-  };
-}
+import type { AutomationEcosystem } from '../src/types/examples';
 
 class CompleteAutomationEcosystem {
   private ecosystem: AutomationEcosystem;

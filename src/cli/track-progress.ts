@@ -8,11 +8,11 @@
  */
 
 import { Command } from 'commander';
-import { z } from 'zod';
 import { getEnv } from '../core/config';
 import { execSync } from 'child_process';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { z } from '@/types/schemas';
 
 // Progress tracking schemas
 const TrackingConfigSchema = z.object({

@@ -9,12 +9,7 @@
 
 import { executeCommand, executeCommandJSON } from '../src/utils/cli';
 import { promises as fs } from 'fs';
-
-interface DemoResult {
-  success: boolean;
-  message: string;
-  data?: any;
-}
+import type { DemoResult } from '../src/types/examples';
 
 class CLIUsageDemo {
   private owner: string;

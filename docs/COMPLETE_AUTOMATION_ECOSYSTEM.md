@@ -346,6 +346,57 @@ Knowledge Learning enables tools to learn from every interaction and outcome, cr
 - **Self-Optimization**: Automatically optimize processes
 - **Adaptive Workflows**: Adjust workflows based on historical data
 
+## 🏷️ Intelligent Tagging System
+
+### Purpose
+The Intelligent Tagging System uses LLM-powered semantic analysis to automatically tag and categorize content, enabling better organization and discovery.
+
+### Features
+- **Semantic Analysis**: LLM-powered content understanding
+- **Automatic Tagging**: Intelligent tag generation and assignment
+- **Fossil Integration**: Tags stored in fossil system for traceability
+- **Local LLM Support**: Prefers local LLM with cloud fallback
+
+### Usage
+```bash
+# Semantic tagging with local LLM
+bun run src/cli/semantic-tagger.ts \
+  --content "Fix authentication bug in login flow" \
+  --prefer-local \
+  --local-backend ollama
+
+# Tag existing fossils
+bun run src/cli/semantic-tagger.ts \
+  --fossil-id fossil_1234567890_abc123def \
+  --auto
+
+# Batch tag multiple items
+bun run src/cli/semantic-tagger.ts \
+  --batch-file items.json \
+  --output-tags tags.json
+```
+
+### Integration with Fossil System
+```typescript
+import { SemanticTaggerService } from '../src/services/semantic-tagger';
+
+const tagger = new SemanticTaggerService();
+
+// Tag content and create fossil
+const tags = await tagger.analyzeContent({
+  content: 'Fix authentication bug in login flow',
+  routingPreference: 'local'
+});
+
+const fossil = await createFossilIssue({
+  title: 'Fix authentication bug',
+  body: 'Fix authentication bug in login flow',
+  tags: tags, // Automatically generated tags
+  type: 'action',
+  metadata: { semanticTags: tags }
+});
+```
+
 ### Usage
 
 ```bash

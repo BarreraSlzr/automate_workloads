@@ -268,3 +268,15 @@ export interface CuratedFossilMetadata extends BaseFossil {
   outputJson: string;
   diff?: string; 
 }
+
+/**
+ * Configuration validation result
+ */
+export interface ConfigValidationResult {
+  /** Whether the configuration is valid */
+  isValid: boolean;
+  /** List of missing required services */
+  missingServices: string[];
+  /** List of available services */
+  availableServices: string[];
+}

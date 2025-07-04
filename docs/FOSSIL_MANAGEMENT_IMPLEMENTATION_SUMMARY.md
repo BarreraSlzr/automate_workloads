@@ -349,3 +349,24 @@ The fossil management system has been successfully implemented with systematic t
 This approach creates robust, maintainable, and scalable systems that can handle complex automation scenarios while maintaining traceability and preventing duplication.
 
 The E2E roadmap serves as an excellent test case, demonstrating how systematic thinking can transform a collection of disconnected utilities into a cohesive, powerful automation ecosystem. 
+
+## 🦴 Migration Checklist & Deprecated Patterns
+
+### Migration Checklist
+- [ ] Use fossil-backed utilities for all GitHub object creation (issues, labels, milestones)
+- [ ] Use `GitHubCLICommands` for all CLI command construction/execution
+- [ ] Validate all CLI arguments with Zod schemas from `@/types`
+- [ ] Use centralized error handling (`ErrorHandler`)
+- [ ] Check for existing fossils before creating new objects
+- [ ] Centralize all types and schemas in `src/types/`
+- [ ] Update/add tests for validation, deduplication, error handling
+- [ ] Update documentation and code comments
+- [ ] Remove or mark deprecated code/patterns
+
+### Deprecated Patterns (Do NOT Use)
+- Direct `execSync` or manual string building for GitHub CLI commands
+- Ad-hoc error handling or validation
+- Duplicated command logic in multiple files
+- Unvalidated CLI argument parsing
+
+For a full migration guide and code examples, see [CLI_COMMAND_INSIGHTS.md](./CLI_COMMAND_INSIGHTS.md). 

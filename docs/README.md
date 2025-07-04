@@ -88,6 +88,34 @@ src/
 4. **Modularity**: Each service is independent and composable
 5. **Documentation**: Comprehensive JSDoc comments throughout
 
+## 🏷️ Labels vs Tags: Important Distinction
+
+**Important**: GitHub **labels** and fossil **tags** are **NOT the same** and serve different purposes:
+
+### **GitHub Labels** 
+- **Purpose**: GitHub-specific metadata for issues, PRs, and other GitHub objects
+- **Storage**: GitHub's database
+- **Usage**: Visual filtering and organization in GitHub interface
+- **Example**: `['automation', 'bug', 'status:pending']`
+
+### **Fossil Tags**
+- **Purpose**: Local content organization and semantic search
+- **Storage**: Local fossil system (`fossils/` directory)
+- **Usage**: Intelligent categorization, relationship mapping, semantic search
+- **Example**: `['github', 'issue', 'automation', 'roadmap']`
+
+### **How They Work Together**
+
+```typescript
+const result = await createFossilIssue({
+  labels: ['automation', 'bug'],        // GitHub labels
+  tags: ['automation', 'bug'],          // Fossil tags
+  // ... other parameters
+});
+```
+
+> **📖 For detailed explanation**: See [Intelligent Tagging System](INTELLIGENT_TAGGING_SYSTEM.md#labels-vs-tags-understanding-the-distinction)
+
 ## 🔌 Service Integrations
 
 ### GitHub Integration
@@ -571,3 +599,19 @@ See [Fossil Publication Workflow](./FOSSIL_PUBLICATION_WORKFLOW.md) for details 
 - Timestamped fossil files and ad-hoc exports (e.g., `fossil-export-2025-07-03T06-51-07-887Z.json`) are for local use only and must not be committed.
 - Test/demo fossil outputs (including any file named `demo-fossil.json`) must be cleaned up after tests or written to a `.gitignore`d directory.
 - The export command now supports a `stable` option to always write to a canonical filename for reporting/automation. 
+
+## 🦴 Migration Guide: CLI & Fossil Automation Patterns
+
+To ensure robust, maintainable, and testable automation, follow these migration steps:
+
+- Use fossil-backed utilities (`createFossilIssue`, `createFossilLabel`, `createFossilMilestone`) for all GitHub object creation.
+- Use the `GitHubCLICommands` utility for all GitHub CLI command construction and execution.
+- Validate all CLI arguments using Zod schemas from `@/types`.
+- Use centralized error handling (e.g., `ErrorHandler`).
+- Always check for existing fossils before creating new issues, labels, or milestones.
+- Define all types and Zod schemas in `src/types/`.
+- Test all CLI commands and fossil utilities for validation, deduplication, and error handling.
+- Update documentation and code examples to use the new patterns.
+- Remove or clearly mark deprecated code and patterns (e.g., direct `execSync`, manual string building, ad-hoc validation).
+
+See [CLI_COMMAND_INSIGHTS.md](./CLI_COMMAND_INSIGHTS.md) for the full migration guide, checklist, and code examples. 

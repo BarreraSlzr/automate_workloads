@@ -3,8 +3,8 @@
  * @module core/config
  */
 
-import { z } from "zod";
-import type { EnvironmentConfig } from "../types";
+import { ZodError } from '@/types/schemas';
+import type { EnvironmentConfig, ConfigValidationResult } from "../types";
 import { envSchema } from '@/types/schemas';
 
 /**
@@ -49,7 +49,7 @@ export function getEnv(): EnvironmentConfig {
   try {
     return envSchema.parse(raw);
   } catch (error) {
-    if (error instanceof z.ZodError) {
+    if (error instanceof ZodError) {
       const missingVars = error.errors.map(err => err.path.join('.')).join(', ');
       throw new Error(`Invalid environment configuration: ${missingVars}`);
     }
@@ -88,18 +88,6 @@ export function getServiceToken(service: keyof EnvironmentConfig, getEnvFn: type
     throw new Error(`Service token for ${service} is not configured`);
   }
   return token;
-}
-
-/**
- * Configuration validation result
- */
-export interface ConfigValidationResult {
-  /** Whether the configuration is valid */
-  isValid: boolean;
-  /** List of missing required services */
-  missingServices: string[];
-  /** List of available services */
-  availableServices: string[];
 }
 
 /**

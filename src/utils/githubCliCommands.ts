@@ -89,6 +89,24 @@ export class GitHubCLICommands {
   }
   
   /**
+   * Execute GitHub API call
+   */
+  async apiCall(endpoint: string, options: { method?: string; fields?: Record<string, string> } = {}): Promise<CommandResult> {
+    const { method = 'GET', fields = {} } = options;
+    let cmd = `gh api repos/${this.owner}/${this.repo}/${endpoint}`;
+    
+    if (method !== 'GET') {
+      cmd += ` --method ${method}`;
+    }
+    
+    for (const [key, value] of Object.entries(fields)) {
+      cmd += ` --field ${key}="${this.escapeString(value)}"`;
+    }
+    
+    return this.executeCommand(cmd);
+  }
+  
+  /**
    * Build issue creation command with proper escaping
    */
   private buildIssueCreateCommand(params: IssueParams): string {
@@ -172,7 +190,7 @@ export class GitHubCLICommands {
   /**
    * Execute a command with comprehensive error handling
    */
-  private async executeCommand(cmd: string): Promise<CommandResult> {
+  async executeCommand(cmd: string): Promise<CommandResult> {
     try {
       const result = execSync(cmd, { encoding: 'utf8' });
       return { 

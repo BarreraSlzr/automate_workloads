@@ -2,20 +2,12 @@
 
 import { promises as fs } from 'fs';
 import path from 'path';
+import type { OpenAIChatOptions, LLMProvider } from '../types/llm';
 
 // Define a minimal local type for OpenAI chat messages
 export interface ChatCompletionRequestMessage {
   role: 'system' | 'user' | 'assistant';
   content: string;
-}
-
-export interface OpenAIChatOptions {
-  model: string;
-  apiKey: string;
-  messages: ChatCompletionRequestMessage[];
-  temperature?: number;
-  max_tokens?: number;
-  [key: string]: any;
 }
 
 export interface LLMUsageMetrics {
@@ -32,14 +24,6 @@ export interface LLMUsageMetrics {
   context: string;
   purpose: string;
   valueScore: number; // 0-1 score of how valuable this call was
-}
-
-export interface LLMProvider {
-  name: string;
-  isAvailable: () => Promise<boolean>;
-  call: (options: OpenAIChatOptions) => Promise<any>;
-  estimateTokens: (messages: ChatCompletionRequestMessage[]) => number;
-  estimateCost: (tokens: number, model: string) => number;
 }
 
 export interface LLMOptimizationConfig {

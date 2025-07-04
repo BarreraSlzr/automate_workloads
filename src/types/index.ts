@@ -24,7 +24,8 @@ export type {
   FossilQuery,
   FossilResult,
   FossilValidation,
-  FossilCollection
+  FossilCollection,
+  ConfigValidationResult
 } from './core';
 
 // GitHub types - all GitHub-related interfaces
@@ -192,5 +193,22 @@ export {
   CurateFossilParamsSchema,
   CreateFossilIssueParamsSchema,
   CreateFossilLabelParamsSchema,
-  CreateFossilMilestoneParamsSchema
+  CreateFossilMilestoneParamsSchema,
+  CheckExistingFossilParamsSchema,
+  CreateFossilEntryParamsSchema,
 } from './schemas';
+
+// LLM types - language model interfaces
+export type {
+  ChatCompletionRequestMessage,
+  OpenAIChatOptions,
+  LLMProvider
+} from './llm';
+
+// Example/demo types
+export type {
+  DemoResult,
+  AutomationEcosystem,
+  ToolUsage,
+  ToolImprovement
+} from './examples';

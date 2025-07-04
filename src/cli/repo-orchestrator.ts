@@ -8,7 +8,6 @@
  */
 
 import { Command } from 'commander';
-import { z } from 'zod';
 import { getEnv } from '../core/config';
 import { execSync } from 'child_process';
 const fs = await import('fs/promises');
@@ -19,75 +18,10 @@ import type { GitHubIssue } from '../types/index';
 import { createFossilIssue } from '../utils/fossilIssue';
 import { syncTrackerWithGitHub } from '../utils/syncTracker';
 import type { ContextEntry } from '@/types';
-
-// Repository orchestration schemas
-const RepoConfigSchema = z.object({
-  owner: z.string().min(1, 'Repository owner is required'),
-  repo: z.string().min(1, 'Repository name is required'),
-  branch: z.string().default('main'),
-  workflow: z.enum(['plan', 'analyze', 'execute', 'monitor', 'full']).default('full'),
-  context: z.record(z.unknown()).optional(),
-  options: z.object({
-    createIssues: z.boolean().default(true),
-    createPRs: z.boolean().default(false),
-    autoMerge: z.boolean().default(false),
-    notifications: z.boolean().default(true),
-    fossilize: z.boolean().default(true),
-    test: z.boolean().default(false),
-    mock: z.boolean().default(false),
-  }).optional(),
-});
-
-const RepoAnalysisSchema = z.object({
-  repository: z.object({
-    name: z.string(),
-    owner: z.string(),
-    description: z.string().optional(),
-    language: z.string().optional(),
-    stars: z.number(),
-    forks: z.number(),
-    openIssues: z.number(),
-    openPRs: z.number(),
-    lastCommit: z.string(),
-    defaultBranch: z.string(),
-    issues: z.array(z.object({
-      number: z.number(),
-      title: z.string(),
-      labels: z.array(z.object({
-        name: z.string(),
-        color: z.string(),
-      })),
-      updatedAt: z.string(),
-    })).optional(),
-  }),
-  health: z.object({
-    score: z.number().min(0).max(100),
-    issues: z.array(z.string()),
-    recommendations: z.array(z.string()),
-    actions: z.object({
-      createIssues: z.boolean(),
-    }).optional(),
-  }),
-  workflows: z.array(z.object({
-    name: z.string(),
-    status: z.enum(['active', 'inactive', 'error']),
-    lastRun: z.string().optional(),
-    successRate: z.number().optional(),
-  })),
-  automation: z.object({
-    opportunities: z.array(z.object({
-      type: z.string(),
-      description: z.string(),
-      impact: z.enum(['low', 'medium', 'high']),
-      effort: z.enum(['low', 'medium', 'high']),
-      priority: z.number(),
-    })),
-    currentAutomation: z.array(z.string()),
-  }),
-});
-
-type RepoConfig = z.infer<typeof RepoConfigSchema>;
-type RepoAnalysis = z.infer<typeof RepoAnalysisSchema>;
+import { RepoConfigSchema, RepoAnalysisSchema } from '@/types/schemas';
+import { GitHubCLICommands } from '../utils/githubCliCommands';
+type RepoConfig = typeof RepoConfigSchema extends { parse: any } ? ReturnType<typeof RepoConfigSchema['parse']> : never;
+type RepoAnalysis = typeof RepoAnalysisSchema extends { parse: any } ? ReturnType<typeof RepoAnalysisSchema['parse']> : never;
 
 // Shared utility to check for test/mock mode
 export function isTestMode(options?: any) {
@@ -106,21 +40,26 @@ export function isTestMode(options?: any) {
 }
 
 // Helper: Ensure a label exists in the repo
-function ensureLabelExists(repo: string, label: string, color: string = 'ededed', options?: any) {
+async function ensureLabelExists(repo: string, label: string, color: string = 'ededed', options?: any) {
   if (isTestMode(options)) return; // skip in test/mock mode
   try {
-    const result = execSync(`gh label list --repo ${repo} --json name`, { encoding: 'utf8' });
-    const labels = JSON.parse(result);
-    if (!labels.some((l: any) => l.name === label)) {
-      execSync(`gh label create "${label}" --repo ${repo} --color ${color}`);
+    const [owner, repoName] = repo.split('/');
+    if (!owner || !repoName) return;
+    const commands = new GitHubCLICommands(owner, repoName);
+    const labelResult = await commands.listLabels();
+    if (labelResult.success) {
+      const labels = JSON.parse(labelResult.stdout);
+      if (!labels.some((l: any) => l.name === label)) {
+        await commands.createLabel({ name: label, description: 'Auto-created label', color });
+      }
     }
   } catch {}
 }
 
 // Helper: Add a label to an issue
-function addLabelToIssue(repo: string, issueNumber: number, label: string, options?: any) {
+async function addLabelToIssue(repo: string, issueNumber: number, label: string, options?: any) {
   if (isTestMode(options)) return; // skip in test/mock mode
-  ensureLabelExists(repo, label, 'ededed', options);
+  await ensureLabelExists(repo, label, 'ededed', options);
   // Would call gh CLI to add label, but skip in test/mock mode
 }
 
@@ -173,7 +112,7 @@ async function fossilizeEntry(entry: {
     const invocation = getInvocation();
     const metadata = { ...(entry.metadata || {}), invocation };
     const command = `bun run context:add --type ${entry.type} --title "${entry.title}" --content "$(cat ${tempFile})" --tags "${entry.tags.join(',')}" --source ${entry.source} --metadata '${JSON.stringify(metadata)}'`;
-    require('child_process').execSync(command, { encoding: 'utf8' });
+    execSync(command, { encoding: 'utf8' });
     await fs.unlink(tempFile);
     console.log(`🗿 Fossilized: ${entry.title}`);
   } catch (error) {
@@ -542,8 +481,13 @@ class RepoOrchestratorService {
 
     // Check for README
     try {
-      execSync(`gh api repos/${repoConfig.owner}/${repoConfig.repo}/contents/README.md`);
-      checksPerformed++;
+      const commands = new GitHubCLICommands(repoConfig.owner, repoConfig.repo);
+      const readmeResult = await commands.apiCall('contents/README.md');
+      if (readmeResult.success) {
+        checksPerformed++;
+      } else {
+        throw new Error('README not found');
+      }
     } catch (error) {
       checksFailed++;
       issues.push('No README.md found');
@@ -553,18 +497,20 @@ class RepoOrchestratorService {
 
     // Check for CI/CD workflows
     try {
-      const workflows = execSync(
-        `gh api repos/${repoConfig.owner}/${repoConfig.repo}/actions/workflows`,
-        { encoding: 'utf8' }
-      );
+      const commands = new GitHubCLICommands(repoConfig.owner, repoConfig.repo);
+      const workflowsResult = await commands.apiCall('actions/workflows');
       
-      const workflowsData = JSON.parse(workflows);
-      checksPerformed++;
-      
-      if (workflowsData.total_count === 0) {
-        issues.push('No CI/CD workflows found');
-        score -= 25;
-        recommendations.push('Add GitHub Actions workflows for automated testing and deployment');
+      if (workflowsResult.success) {
+        const workflowsData = JSON.parse(workflowsResult.stdout);
+        checksPerformed++;
+        
+        if (workflowsData.total_count === 0) {
+          issues.push('No CI/CD workflows found');
+          score -= 25;
+          recommendations.push('Add GitHub Actions workflows for automated testing and deployment');
+        }
+      } else {
+        throw new Error('Could not fetch workflows');
       }
     } catch (error) {
       checksFailed++;
@@ -601,20 +547,20 @@ class RepoOrchestratorService {
     const workflows: RepoAnalysis['workflows'] = [];
 
     try {
-      const workflowsData = execSync(
-        `gh api repos/${repoConfig.owner}/${repoConfig.repo}/actions/workflows`,
-        { encoding: 'utf8' }
-      );
+      const commands = new GitHubCLICommands(repoConfig.owner, repoConfig.repo);
+      const workflowsResult = await commands.apiCall('actions/workflows');
       
-      const data = JSON.parse(workflowsData);
-      
-      for (const workflow of data.workflows) {
-        workflows.push({
-          name: workflow.name,
-          status: workflow.state === 'active' ? 'active' : 'inactive',
-          lastRun: workflow.updated_at,
-          successRate: 0, // Would need to calculate from runs
-        });
+      if (workflowsResult.success) {
+        const data = JSON.parse(workflowsResult.stdout);
+        
+        for (const workflow of data.workflows) {
+          workflows.push({
+            name: workflow.name,
+            status: workflow.state === 'active' ? 'active' : 'inactive',
+            lastRun: workflow.updated_at,
+            successRate: 0, // Would need to calculate from runs
+          });
+        }
       }
     } catch (error) {
       console.warn('⚠️  Could not analyze workflows');
@@ -677,21 +623,21 @@ class RepoOrchestratorService {
 
     // Check for existing automation
     try {
-      const workflows = execSync(
-        `gh api repos/${repoConfig.owner}/${repoConfig.repo}/actions/workflows`,
-        { encoding: 'utf8' }
-      );
+      const commands = new GitHubCLICommands(repoConfig.owner, repoConfig.repo);
+      const workflowsResult = await commands.apiCall('actions/workflows');
       
-      const data = JSON.parse(workflows);
-      data.workflows.forEach((workflow: any) => {
-        currentAutomation.push(workflow.name);
-      });
+      if (workflowsResult.success) {
+        const data = JSON.parse(workflowsResult.stdout);
+        data.workflows.forEach((workflow: any) => {
+          currentAutomation.push(workflow.name);
+        });
+      }
     } catch (error) {
       // No workflows found
     }
 
     return {
-      opportunities: opportunities.sort((a, b) => a.priority - b.priority),
+      opportunities: opportunities.sort((a: any, b: any) => a.priority - b.priority),
       currentAutomation,
     };
   }

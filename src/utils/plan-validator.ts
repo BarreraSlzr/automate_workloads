@@ -7,47 +7,17 @@
  * Supports flexible validation of structure, content, and tags.
  */
 
-import { z } from 'zod';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
+import { z, ZodError, TaskBreakdownSchema } from '@/types/schemas';
 
-// Validation schemas
-const TaskSchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  description: z.string(),
-  acceptanceCriteria: z.array(z.string()),
-  dependencies: z.array(z.string()),
-  estimatedEffort: z.string(),
-  priority: z.enum(['low', 'medium', 'high', 'critical']),
-  assignee: z.string().optional(),
-  tags: z.array(z.string()).optional(),
-});
-
-const MilestoneSchema = z.object({
-  date: z.string(),
-  description: z.string(),
-  tasks: z.array(z.string()),
-});
-
-const RiskSchema = z.object({
-  description: z.string(),
-  probability: z.enum(['low', 'medium', 'high']),
-  impact: z.enum(['low', 'medium', 'high']),
-  mitigation: z.string(),
-});
-
-const TimelineSchema = z.object({
-  startDate: z.string(),
-  endDate: z.string(),
-  milestones: z.array(MilestoneSchema),
-});
-
-const PlanSchema = z.object({
-  tasks: z.array(TaskSchema),
-  timeline: TimelineSchema,
-  risks: z.array(RiskSchema),
-});
+// Remove inline validation schemas
+// Use TaskBreakdownSchema and its nested schemas from src/types/schemas.ts
+const TaskSchema = TaskBreakdownSchema.shape.tasks.element;
+const MilestoneSchema = TaskBreakdownSchema.shape.timeline.shape.milestones.element;
+const RiskSchema = TaskBreakdownSchema.shape.risks.element;
+const TimelineSchema = TaskBreakdownSchema.shape.timeline;
+const PlanSchema = TaskBreakdownSchema;
 
 // Validation result types
 export interface ValidationResult {

@@ -100,11 +100,17 @@ if (!validation.isValid) {
 
 ## 🔗 GitHub Service
 
-### Fossil-Backed Issue Creation (Preferred)
+### Fossil-Backed Creation (Primary Pattern)
 
-All new issues should be created using the fossil-backed utility or CLI. This ensures deduplication, traceability, and robust automation.
+All GitHub objects (issues, labels, milestones) should be created using fossil-backed utilities. This ensures deduplication, traceability, and robust automation.
 
-#### Utility Usage
+> **📝 Note on Labels vs Tags**: In the examples below, you'll see both `labels` and `tags` parameters. These are **different systems**:
+> - **`labels`**: GitHub-specific metadata stored in GitHub's database for filtering and organization
+> - **`tags`**: Fossil system metadata stored locally for semantic search and content relationships
+> 
+> See [Intelligent Tagging System](../docs/INTELLIGENT_TAGGING_SYSTEM.md#labels-vs-tags-understanding-the-distinction) for detailed explanation.
+
+#### Fossil-Backed Issue Creation
 ```typescript
 import { createFossilIssue } from '../src/utils/fossilIssue';
 const result = await createFossilIssue({
@@ -114,21 +120,90 @@ const result = await createFossilIssue({
   body: 'My issue body',
   labels: ['automation', 'bug'],
   milestone: 'Sprint 1',
+  type: 'action',
+  tags: ['automation', 'bug'],
+  purpose: 'Fix critical bug in authentication flow',
+  checklist: '- [ ] Reproduce the bug\n- [ ] Write failing test\n- [ ] Implement fix\n- [ ] Add regression test',
+  metadata: { priority: 'high', component: 'auth' }
+});
+
+if (result.deduplicated) {
+  console.log(`⚠️ Issue already exists (Fossil ID: ${result.fossilId})`);
+} else {
+  console.log(`✅ Created issue #${result.issueNumber} (Fossil ID: ${result.fossilId})`);
+}
+```
+
+#### Fossil-Backed Label Creation
+```typescript
+import { createFossilLabel } from '../src/utils/fossilLabel';
+const result = await createFossilLabel({
+  owner: 'barreraslzr',
+  repo: 'automate_workloads',
+  name: 'high-priority',
+  description: 'High priority issues requiring immediate attention',
+  color: 'ff0000',
+  type: 'label',
+  tags: ['priority', 'automation'],
+  metadata: { category: 'priority' }
+});
+```
+
+#### Fossil-Backed Milestone Creation
+```typescript
+import { createFossilMilestone } from '../src/utils/fossilMilestone';
+const result = await createFossilMilestone({
+  owner: 'barreraslzr',
+  repo: 'automate_workloads',
+  title: 'Sprint 1',
+  description: 'First sprint focusing on core functionality',
+  dueOn: '2024-08-01',
+  type: 'milestone',
+  tags: ['sprint', 'planning'],
+  metadata: { sprintNumber: 1, team: 'core' }
 });
 ```
 
 #### CLI Usage
 ```sh
+# Create fossil-backed issue
 bun run src/cli/create-fossil-issue.ts \
   --owner barreraslzr \
   --repo automate_workloads \
   --title "My Issue Title" \
   --body "My issue body" \
   --labels "automation,bug" \
-  --milestone "Sprint 1"
+  --milestone "Sprint 1" \
+  --type "action" \
+  --tags "automation,bug" \
+  --purpose "Fix critical bug in authentication flow"
+
+# Create fossil-backed label
+bun run src/cli/create-fossil-label.ts \
+  --owner barreraslzr \
+  --repo automate_workloads \
+  --name "high-priority" \
+  --description "High priority issues" \
+  --color "ff0000"
+
+# Create fossil-backed milestone
+bun run src/cli/create-fossil-milestone.ts \
+  --owner barreraslzr \
+  --repo automate_workloads \
+  --title "Sprint 1" \
+  --description "First sprint" \
+  --due-on "2024-08-01"
 ```
 
-> **Warning:** `GitHubService.createIssue` is deprecated. Do NOT use direct `gh issue create` for new issues.
+#### Benefits of Fossil-Backed Creation
+- ✅ **Deduplication**: Prevents duplicate objects by content hash and title
+- ✅ **Traceability**: Links GitHub objects to fossil system for progress tracking
+- ✅ **Consistent Formatting**: Uses standardized templates and metadata
+- ✅ **Progress Tracking**: Enables programmatic monitoring and reporting
+- ✅ **Metadata Storage**: Stores rich metadata in fossil system
+- ✅ **Automation-Friendly**: Supports automated workflows and CI/CD
+
+> **Warning:** Direct `gh` CLI calls and `GitHubService.createIssue` are deprecated. Always use fossil-backed utilities for new objects.
 
 ### GitHubService Class
 
@@ -258,6 +333,72 @@ console.log(formatted);
 
 ## 🖥️ CLI Utilities
 
+### Centralized GitHub CLI Commands
+
+Use the `GitHubCLICommands` utility for all GitHub operations to ensure type safety, consistent error handling, and proper escaping.
+
+#### Basic Usage
+```typescript
+import { GitHubCLICommands } from '../src/utils/githubCliCommands';
+
+const commands = new GitHubCLICommands('barreraslzr', 'automate_workloads');
+
+// Create issue with type-safe parameters
+const result = await commands.createIssue({
+  title: 'My Issue Title',
+  body: 'Issue body content',
+  labels: ['automation', 'bug'],
+  milestone: 'Sprint 1'
+});
+
+if (result.success) {
+  console.log('✅ Issue created successfully');
+} else {
+  console.error(`❌ Failed: ${result.message}`);
+}
+```
+
+#### Available Commands
+```typescript
+// Issue operations
+await commands.createIssue(params);
+await commands.listIssues(options);
+await commands.viewIssue(number);
+
+// Label operations
+await commands.createLabel(params);
+await commands.listLabels();
+await commands.deleteLabel(name);
+
+// Milestone operations
+await commands.createMilestone(params);
+await commands.listMilestones();
+await commands.viewMilestone(number);
+
+// Repository operations
+await commands.getRepoInfo();
+await commands.listBranches();
+```
+
+#### Error Handling
+```typescript
+const result = await commands.createIssue(params);
+
+if (result.success) {
+  console.log('✅ Operation successful');
+  console.log('Output:', result.output);
+} else {
+  console.error('❌ Operation failed');
+  console.error('Error:', result.message);
+  console.error('Exit code:', result.exitCode);
+  
+  // Handle specific error types
+  if (result.message.includes('already exists')) {
+    console.log('⚠️ Resource already exists, skipping...');
+  }
+}
+```
+
 ### Command Execution
 
 #### `executeCommand(command, options)`
@@ -358,6 +499,90 @@ console.log(formatted);
 ---
 
 ## 📝 Type Definitions
+
+### Validation Patterns
+
+All CLI arguments and function parameters use Zod schemas for runtime validation and type safety.
+
+#### Params Object Pattern
+```typescript
+import { z } from 'zod';
+import { CreateFossilIssueParamsSchema } from '../src/types/schemas';
+
+// Define validation schema
+const IssueParamsSchema = z.object({
+  title: z.string().min(1).max(256),
+  body: z.string().optional(),
+  labels: z.array(z.string().max(50)).max(100),
+  milestone: z.string().optional(),
+  type: z.enum(['action', 'observation', 'plan']).default('action'),
+  tags: z.array(z.string()).default([]),
+  metadata: z.record(z.any()).optional()
+});
+
+// Use in function
+async function createIssue(params: z.infer<typeof IssueParamsSchema>) {
+  // Validate at runtime
+  const validatedParams = IssueParamsSchema.parse(params);
+  
+  // Use validated params
+  const result = await createFossilIssue(validatedParams);
+  return result;
+}
+```
+
+#### CLI Argument Validation
+```typescript
+// In CLI script
+import { parseArgs } from '../src/utils/cli';
+import { CreateFossilIssueParamsSchema } from '../src/types/schemas';
+
+async function main() {
+  try {
+    // Parse and validate CLI arguments
+    const args = parseArgs(CreateFossilIssueParamsSchema, {
+      type: 'action',
+      tags: ['automation']
+    });
+    
+    // Arguments are now type-safe and validated
+    const result = await createFossilIssue(args);
+    
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      console.error('❌ Validation error:');
+      error.errors.forEach(err => {
+        console.error(`  - ${err.path.join('.')}: ${err.message}`);
+      });
+      process.exit(1);
+    }
+    throw error;
+  }
+}
+```
+
+#### Validation Error Handling
+```typescript
+// Comprehensive error handling for validation
+try {
+  const validatedParams = schema.parse(params);
+  // Use validated params
+} catch (error) {
+  if (error instanceof z.ZodError) {
+    // Handle validation errors
+    console.error('Validation failed:');
+    error.errors.forEach(err => {
+      console.error(`  ${err.path.join('.')}: ${err.message}`);
+    });
+  } else if (error instanceof Error) {
+    // Handle other errors
+    console.error('Unexpected error:', error.message);
+  } else {
+    // Handle unknown errors
+    console.error('Unknown error occurred');
+  }
+}
+```
 
 ### Core Types
 
@@ -658,6 +883,155 @@ await fossilizeLLMInsight(fossil);
 
 The LLMService supports intelligent routing between local and cloud LLMs based on task complexity, cost, and user preference.
 
+### Local LLM Setup
+
+#### Prerequisites
+```bash
+# Install Ollama (recommended local LLM)
+curl -fsSL https://ollama.ai/install.sh | sh
+
+# Download models
+ollama pull llama2
+ollama pull mistral
+ollama pull codellama
+
+# Start Ollama service
+ollama serve
+```
+
+#### Environment Configuration
+```bash
+# .env file
+OPENAI_API_KEY=your_openai_key  # Fallback for complex tasks
+OLLAMA_BASE_URL=http://localhost:11434  # Local LLM endpoint
+PREFER_LOCAL_LLM=true  # Default preference
+```
+
+### Usage Patterns
+
+#### Basic Local LLM Usage
+```typescript
+import { LLMService } from '../src/services/llm';
+
+const llmService = new LLMService();
+
+// Use local LLM for simple tasks
+const result = await llmService.callLLM({
+  model: 'llama2',
+  messages: [{ role: 'user', content: 'Explain TypeScript' }],
+  routingPreference: 'local'
+});
+```
+
+#### Intelligent Routing
+```typescript
+// Automatic routing based on task complexity
+const result = await llmService.callLLM({
+  model: 'gpt-4',
+  messages: [{ role: 'user', content: 'Complex analysis task' }],
+  routingPreference: 'auto'  // Automatically chooses best provider
+});
+
+// Force local LLM
+const localResult = await llmService.callLLM({
+  model: 'llama2',
+  messages: [{ role: 'user', content: 'Simple question' }],
+  routingPreference: 'local'
+});
+
+// Force cloud LLM
+const cloudResult = await llmService.callLLM({
+  model: 'gpt-4',
+  messages: [{ role: 'user', content: 'Complex task' }],
+  routingPreference: 'cloud'
+});
+```
+
+#### CLI Usage
+```bash
+# Use local LLM
+bun run src/cli/llm-usage.ts --prefer-local --local-backend ollama
+
+# Use cloud LLM
+bun run src/cli/llm-usage.ts --prefer-cloud
+
+# Intelligent routing (default)
+bun run src/cli/llm-usage.ts --auto
+
+# Select specific local backend
+bun run src/cli/llm-usage.ts --local-backend llama.cpp --prefer-local
+```
+
+#### Fossilization with Local LLM
+```typescript
+// Local LLM for fossil generation
+const fossil = await fossilizeLLMInsight({
+  type: 'insight',
+  timestamp: new Date().toISOString(),
+  model: 'llama2',
+  provider: 'ollama',
+  excerpt: 'Local LLM generated insight',
+  prompt: 'Analyze this code',
+  response: 'Analysis result...',
+  routingPreference: 'local'
+});
+```
+
+### Performance Optimization
+
+#### Caching
+```typescript
+// Enable response caching
+const llmService = new LLMService({ enableCaching: true });
+
+// Cached responses for repeated queries
+const result1 = await llmService.callLLM({ /* params */ });
+const result2 = await llmService.callLLM({ /* same params */ }); // Uses cache
+```
+
+#### Batch Processing
+```typescript
+// Process multiple queries efficiently
+const queries = [
+  { content: 'Query 1' },
+  { content: 'Query 2' },
+  { content: 'Query 3' }
+];
+
+const results = await llmService.batchProcess(queries, {
+  routingPreference: 'local',
+  batchSize: 5
+});
+```
+
+### Troubleshooting
+
+#### Common Issues
+```bash
+# Check Ollama status
+ollama list
+ollama ps
+
+# Test local LLM
+curl -X POST http://localhost:11434/api/generate \
+  -H "Content-Type: application/json" \
+  -d '{"model": "llama2", "prompt": "Hello"}'
+
+# Check logs
+ollama logs
+```
+
+#### Fallback Strategy
+```typescript
+// Automatic fallback to cloud LLM if local fails
+const result = await llmService.callLLM({
+  model: 'llama2',
+  messages: [{ role: 'user', content: 'Task' }],
+  routingPreference: 'local',
+  fallbackToCloud: true  // Falls back to OpenAI if Ollama fails
+});
+```
+
 ### Routing Modes
 - **auto** (default): Uses intelligent analysis to select the best provider for each task.
 - **local**: Forces use of local LLM for all tasks (if available).
@@ -695,4 +1069,108 @@ See also: [🦴 LLM Fossilization Utilities](#llm-fossilization-utilities)
 
 ## Public API Outputs
 
-All public JSON outputs (e.g., `fossils/public/api/project_status_public.json`) are generated from curated YAML fossils and can be served as API endpoints for dashboards, integrations, or external tools. See [Fossil Publication Workflow](./FOSSIL_PUBLICATION_WORKFLOW.md) for details. 
+All public JSON outputs (e.g., `fossils/public/api/project_status_public.json`) are generated from curated YAML fossils and can be served as API endpoints for dashboards, integrations, or external tools. See [Fossil Publication Workflow](./FOSSIL_PUBLICATION_WORKFLOW.md) for details.
+
+## 🦴 Fossil Publication Workflow
+
+The fossil publication workflow converts curated YAML fossils into public-facing markdown and JSON for blogs, APIs, and automation.
+
+### Workflow: YAML → JSON → Markdown
+
+```typescript
+import { publishFossil } from '../src/utils/fossilPublication';
+
+// Publish project status fossil
+await publishFossil({
+  source: 'fossils/project_status.yml',
+  outputs: {
+    markdown: 'fossils/public/blog/project_status.post.md',
+    json: 'fossils/public/api/project_status_public.json'
+  },
+  metadata: {
+    audience: 'public',
+    category: 'project-status',
+    tags: ['automation', 'status']
+  }
+});
+```
+
+### Folder Structure
+```
+fossils/
+  project_status.yml              # Canonical YAML fossil
+  roadmap.yml
+  setup_status.yml
+  public/
+    blog/
+      project_status.post.md      # Public markdown with frontmatter
+      roadmap.post.md
+    api/
+      project_status_public.json  # Public JSON with metadata
+      roadmap_public.json
+```
+
+### CLI Usage
+```bash
+# Publish single fossil
+bun run src/cli/publish-fossil.ts \
+  --source fossils/project_status.yml \
+  --output-markdown fossils/public/blog/project_status.post.md \
+  --output-json fossils/public/api/project_status_public.json
+
+# Publish all fossils
+bun run src/cli/publish-all-fossils.ts
+
+# Validate publication
+bun run src/cli/validate-publication.ts
+```
+
+### Markdown Output Format
+```markdown
+---
+title: "Project Status Update"
+date: "2024-07-15T10:30:00Z"
+audience: "public"
+category: "project-status"
+tags: ["automation", "status", "progress"]
+source: "fossils/project_status.yml"
+---
+
+# Project Status Update
+
+Generated from canonical fossil data...
+
+## Key Metrics
+- Health Score: 85/100
+- Automation Progress: 75%
+- Test Coverage: 92%
+
+## Recent Achievements
+...
+```
+
+### JSON Output Format
+```json
+{
+  "metadata": {
+    "title": "Project Status Update",
+    "timestamp": "2024-07-15T10:30:00Z",
+    "audience": "public",
+    "category": "project-status",
+    "source": "fossils/project_status.yml"
+  },
+  "data": {
+    "healthScore": 85,
+    "automationProgress": 75,
+    "testCoverage": 92,
+    "recentAchievements": [...]
+  }
+}
+```
+
+### Future Integrations
+The publication workflow supports future integrations with:
+- **React/MDX**: Frontmatter metadata enables MDX processing
+- **Next.js/Remix**: Structured data for dynamic rendering
+- **API Endpoints**: JSON outputs serve as REST API responses
+- **Automation**: CI/CD integration for automatic publication 

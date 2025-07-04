@@ -10,22 +10,7 @@
 import { execSync } from 'child_process';
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
-
-interface ToolUsage {
-  tool: string;
-  action: string;
-  timestamp: string;
-  result: string;
-  context?: string;
-}
-
-interface ToolImprovement {
-  tool: string;
-  improvement: string;
-  rationale: string;
-  impact: 'low' | 'medium' | 'high';
-  source: 'usage-pattern' | 'performance-analysis' | 'user-feedback' | 'llm-insight';
-}
+import type { ToolUsage, ToolImprovement } from '../src/types/examples';
 
 class ToolCentricDemo {
   private usageLog: ToolUsage[] = [];

@@ -8,59 +8,14 @@
  */
 
 import { Command } from 'commander';
-import { z } from 'zod';
 import { getEnv } from '../core/config';
 import { LLMService } from '../services/llm';
+import { PlanRequestSchema, TaskBreakdownSchema } from '@/types/schemas';
+import type { Task } from '../types/workflow';
 
-// LLM Planning schemas
-const PlanRequestSchema = z.object({
-  goal: z.string().min(1, 'Goal is required'),
-  context: z.record(z.unknown()).optional(),
-  constraints: z.array(z.string()).optional(),
-  timeline: z.string().optional(),
-});
-
-const TaskBreakdownSchema = z.object({
-  tasks: z.array(z.object({
-    id: z.string(),
-    title: z.string(),
-    description: z.string(),
-    acceptanceCriteria: z.array(z.string()),
-    dependencies: z.array(z.string()),
-    estimatedEffort: z.string(),
-    priority: z.enum(['low', 'medium', 'high', 'critical']),
-    assignee: z.string().optional(),
-  })),
-  timeline: z.object({
-    startDate: z.string(),
-    endDate: z.string(),
-    milestones: z.array(z.object({
-      date: z.string(),
-      description: z.string(),
-      tasks: z.array(z.string()),
-    })),
-  }),
-  risks: z.array(z.object({
-    description: z.string(),
-    probability: z.enum(['low', 'medium', 'high']),
-    impact: z.enum(['low', 'medium', 'high']),
-    mitigation: z.string(),
-  })),
-});
-
-type PlanRequest = z.infer<typeof PlanRequestSchema>;
-type TaskBreakdown = z.infer<typeof TaskBreakdownSchema>;
-
-interface Task {
-  id: string;
-  title: string;
-  description: string;
-  acceptanceCriteria: string[];
-  dependencies: string[];
-  estimatedEffort: string;
-  priority: 'low' | 'medium' | 'high' | 'critical';
-  assignee?: string;
-}
+// For type inference:
+type PlanRequest = typeof PlanRequestSchema._type;
+type TaskBreakdown = typeof TaskBreakdownSchema._type;
 
 /**
  * LLM Planning Service
