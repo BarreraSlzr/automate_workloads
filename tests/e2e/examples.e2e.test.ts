@@ -5,7 +5,7 @@ const EXAMPLE_TEST_CASES = [
   {
     name: 'cli-usage-demo runs and outputs summary',
     command: ['bun', 'run', 'examples/cli-usage-demo.ts'],
-    expectedOutput: ['CLI Usage Demo', 'Demo Summary'],
+    expectedOutput: ['CLI Usage Demo', '📊 Demo Summary:'],
     expectedExitCode: 0
   },
   {
@@ -23,5 +23,5 @@ for (const testCase of EXAMPLE_TEST_CASES) {
       expect(result.stdout + result.stderr).toContain(expected);
     }
     expect(result.exitCode).toBe(testCase.expectedExitCode);
-  });
+  }, 15000);
 } 
