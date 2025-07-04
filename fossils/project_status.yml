@@ -70,6 +70,11 @@ project_status:
               - name: status
                 options: *ref_2
                 required: *ref_3
+        - timestamp-filter.ts:
+            functions:
+              - 'main: implemented'
+            fossilized_output: false
+            cli_details: []
         - issues-create.ts:
             functions:
               - 'runIssuesCreate: implemented'
@@ -614,6 +619,11 @@ project_status:
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/repo-orchestrator-fossilization.integration.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/fossilization-workflow.e2e.test.ts
+        - timestampFilter.ts:
+            functions:
+              - 'TimestampFilter: implemented'
+              - 'main: implemented'
+            fossilized_output: false
         - checklistUpdater.ts:
             functions:
               - 'detectFileType: implemented'
@@ -836,6 +846,9 @@ project_status:
               - 'migrate: implemented'
             fossilized_output: false
         - fossilize-roadmap.ts:
+            functions: []
+            fossilized_output: false
+        - reset-timestamp-changes.sh:
             functions: []
             fossilized_output: false
         - cleanup-test-fossils.ts:
@@ -1164,6 +1177,12 @@ developer_summary:
         - ProgressTrackingService
       hasTests: false
       testFiles: []
+    - file: src/cli/timestamp-filter.ts
+      commands: []
+      functions:
+        - main
+      hasTests: false
+      testFiles: []
     - file: src/cli/issues-create.ts
       commands: []
       functions:
@@ -1372,6 +1391,12 @@ developer_summary:
         - fossilizeLLMDiscovery
       hasTests: true
       testFiles: *ref_29
+    - file: src/utils/timestampFilter.ts
+      functions:
+        - TimestampFilter
+        - main
+      hasTests: false
+      testFiles: []
     - file: src/utils/checklistUpdater.ts
       functions:
         - detectFileType
@@ -1429,14 +1454,14 @@ developer_summary:
       testFiles: *ref_33
   examples: []
   summary:
-    totalCLI: 19
-    totalUtils: 15
+    totalCLI: 20
+    totalUtils: 16
     totalServices: 3
     totalExamples: 0
     testedCLI: 10
     testedUtils: 5
     testedServices: 3
-    coverage: 49
+    coverage: 46
   recommendations:
     - 'Priority 1: Test CLI commands'
     - '- src/cli/create-fossil-issue.ts (0 commands)'
