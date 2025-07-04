@@ -1,0 +1,27 @@
+{
+  "type": "project_checklist",
+  "title": "Feature Implementation",
+  "checklist": [
+    {
+      "task": "Design API endpoints",
+      "checked": true,
+      "priority": "high"
+    },
+    {
+      "task": "Implement database schema",
+      "checked": true,
+      "priority": "high"
+    },
+    {
+      "task": "Write API documentation",
+      "checked": true,
+      "priority": "medium"
+    },
+    {
+      "task": "Add error handling",
+      "checked": false,
+      "priority": "high",
+      "status": "partial"
+    }
+  ]
+}

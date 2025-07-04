@@ -1,0 +1,28 @@
+type: project_roadmap
+title: Q1 2024 Goals
+tasks:
+  - task: Improve test coverage
+    status: pending
+    owner: team
+    context: Target 90% coverage across all modules
+    deadline: 2024-03-31T00:00:00.000Z
+    subtasks:
+      - task: Add unit tests for core modules
+        status: done
+        context: All core modules now have comprehensive test coverage
+      - task: Add integration tests
+        status: done
+        context: Integration test suite completed with edge case coverage
+      - task: Add E2E tests
+        status: pending
+        context: Framework selected, implementation pending
+  - task: Refactor legacy code
+    status: partial
+    owner: senior-dev
+    context: Started refactoring, 60% complete
+    deadline: 2024-04-15T00:00:00.000Z
+  - task: Update documentation
+    status: partial
+    owner: tech-writer
+    context: Keep docs in sync with code changes
+    deadline: 2024-04-30T00:00:00.000Z
