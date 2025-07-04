@@ -955,3 +955,54 @@ afterEach(async () => {
 - [Contributing Guide](CONTRIBUTING_GUIDE.md) - How to contribute
 - [Bun Documentation](https://bun.sh/docs) - Bun runtime documentation
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/) - TypeScript guide 
+
+## 🤖 Supervised LLM Calls in CI/CD
+
+### Policy: Valuable, Supervised Operations Only
+LLM calls in CI/CD are allowed when they provide clear value and are properly supervised.
+
+### ✅ Allowed Patterns
+- **GitHub-Authenticated Operations:** `repo:orchestration` and similar GitHub-integrated workflows
+- **Supervised External LLMs:** Cloud LLM calls with explicit permission and approval
+- **Valuable CI/CD Automation:** LLM calls that provide actionable results during CI/CD
+- **Pre-Validated Workflows:** LLM operations that have been tested and proven valuable
+
+### 🤖 Valuable CI/CD LLM Use Cases
+
+#### 1. Repository Orchestration
+- **Purpose:** Analyze repository health, generate action plans
+- **Supervision:** GitHub authentication provides built-in supervision
+- **Value:** Automated repository improvement and maintenance
+
+#### 2. Code Review & Quality Analysis
+- **Purpose:** Analyze PR changes, suggest improvements
+- **Supervision:** Manual PR review process
+- **Value:** Improved code quality and consistency
+
+#### 3. Documentation Generation
+- **Purpose:** Auto-generate/update documentation based on code changes
+- **Supervision:** Commit message triggers (`[docs]`)
+- **Value:** Keep documentation in sync with code
+
+#### 4. Security & Compliance Analysis
+- **Purpose:** Check for security issues, compliance violations
+- **Supervision:** Security team review process
+- **Value:** Proactive security and compliance
+
+#### 5. Performance & Optimization Suggestions
+- **Purpose:** Analyze code for performance improvements
+- **Supervision:** Performance team review
+- **Value:** Continuous performance optimization
+
+### Implementation Guidelines
+- **Rate Limiting:** Implement proper rate limiting for all LLM calls
+- **Cost Monitoring:** Track and monitor LLM API costs
+- **Error Handling:** Graceful fallback when LLM services are unavailable
+- **Result Validation:** Ensure LLM outputs are actionable and valuable
+- **Human Review:** All LLM-generated content should be reviewed by humans
+
+### Future Exploration
+- **Automated Testing:** LLM-generated test cases
+- **Deployment Optimization:** LLM-suggested deployment strategies
+- **Monitoring & Alerting:** LLM-powered monitoring insights
+- **Team Collaboration:** LLM-assisted team coordination 

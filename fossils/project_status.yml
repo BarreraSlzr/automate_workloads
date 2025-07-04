@@ -348,6 +348,14 @@ project_status:
               - name: create-expected
                 options: *ref_10
                 required: *ref_11
+        - analyze-git-diff.ts:
+            functions:
+              - 'showHelp: implemented'
+              - 'main: implemented'
+              - 'displayAnalysisResults: implemented'
+              - 'displayBatchResults: implemented'
+            fossilized_output: false
+            cli_details: []
         - automate-github-fossils.ts:
             functions: []
             fossilized_output: false
@@ -494,6 +502,8 @@ project_status:
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/llm-plan.test.ts
               - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/add-llm-insights-to-roadmap.newline.test.ts
+              - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-workflow.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-content-automation.test.ts
@@ -582,6 +592,10 @@ project_status:
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/examples.e2e.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/fossilization-workflow.e2e.test.ts
+        - gitDiffAnalyzer.ts:
+            functions:
+              - 'GitDiffAnalyzer: implemented'
+            fossilized_output: false
         - markdownChecklist.ts:
             functions:
               - 'updateMarkdownChecklist: implemented'
@@ -595,6 +609,17 @@ project_status:
         - yamlToJson.ts:
             functions:
               - 'yamlToJson: implemented'
+            fossilized_output: false
+        - fossilManager.ts:
+            functions:
+              - 'FossilManager: implemented'
+              - 'createFossilManager: implemented'
+              - 'for: implemented'
+              - 'createFossilIssue: implemented'
+              - 'for: implemented'
+              - 'createFossilLabel: implemented'
+              - 'for: implemented'
+              - 'createFossilMilestone: implemented'
             fossilized_output: false
         - fossilize.ts:
             functions:
@@ -773,6 +798,8 @@ project_status:
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/llm-plan.test.ts
               - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/add-llm-insights-to-roadmap.newline.test.ts
+              - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-workflow.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-content-automation.test.ts
@@ -851,6 +878,9 @@ project_status:
         - reset-timestamp-changes.sh:
             functions: []
             fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/reset-timestamp-changes.test.ts
         - cleanup-test-fossils.ts:
             functions:
               - 'main: implemented'
@@ -888,12 +918,30 @@ project_status:
             tests:
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/scripts.e2e.test.ts
+        - precommit-llm-insight.ts:
+            functions:
+              - 'getStagedFiles: implemented'
+              - 'getFileDiff: implemented'
+              - 'getFileContent: implemented'
+              - 'hashInput: implemented'
+              - 'promptForApproval: implemented'
+              - 'findMatchingRoadmapTasks: implemented'
+              - 'searchTasks: implemented'
+              - 'updateRoadmapWithInsight: implemented'
+              - 'advancedReviewCLI: implemented'
+              - 'main: implemented'
+            fossilized_output: false
         - update-issue-checklist.ts:
             functions: []
             fossilized_output: false
             tests:
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/scripts.e2e.test.ts
+        - add-llm-insights-to-roadmap.ts:
+            functions:
+              - 'ensureInsights: implemented'
+              - 'main: implemented'
+            fossilized_output: false
         - update-project-status.ts:
             functions:
               - 'names: implemented'
@@ -922,6 +970,17 @@ project_status:
             tests:
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/scripts.e2e.test.ts
+        - publish-roadmap-insights.ts:
+            functions:
+              - 'collectCompletedTasks: implemented'
+              - 'main: implemented'
+            fossilized_output: false
+        - generate-llm-insights.ts:
+            functions:
+              - 'isPlaceholder: implemented'
+              - 'generateLLMInsight: implemented'
+              - 'main: implemented'
+            fossilized_output: false
         - llm-issue-manager.sh:
             functions: []
             fossilized_output: false
@@ -1048,6 +1107,10 @@ project_status:
             tests:
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/monitoring/check-issues.test.ts
+        - publish-project-status.ts:
+            functions:
+              - 'main: implemented'
+            fossilized_output: false
   overall_summary:
     modules_total: 6
     files_total: 74
@@ -1266,6 +1329,15 @@ developer_summary:
       functions: []
       hasTests: false
       testFiles: []
+    - file: src/cli/analyze-git-diff.ts
+      commands: []
+      functions:
+        - showHelp
+        - main
+        - displayAnalysisResults
+        - displayBatchResults
+      hasTests: false
+      testFiles: []
     - file: src/cli/automate-github-fossils.ts
       commands:
         - create
@@ -1365,6 +1437,11 @@ developer_summary:
         - issueExists
       hasTests: true
       testFiles: *ref_27
+    - file: src/utils/gitDiffAnalyzer.ts
+      functions:
+        - GitDiffAnalyzer
+      hasTests: false
+      testFiles: []
     - file: src/utils/markdownChecklist.ts
       functions:
         - updateMarkdownChecklist
@@ -1376,6 +1453,18 @@ developer_summary:
     - file: src/utils/yamlToJson.ts
       functions:
         - yamlToJson
+      hasTests: false
+      testFiles: []
+    - file: src/utils/fossilManager.ts
+      functions:
+        - FossilManager
+        - createFossilManager
+        - for
+        - createFossilIssue
+        - for
+        - createFossilLabel
+        - for
+        - createFossilMilestone
       hasTests: false
       testFiles: []
     - file: src/utils/fossilize.ts
@@ -1454,14 +1543,14 @@ developer_summary:
       testFiles: *ref_33
   examples: []
   summary:
-    totalCLI: 20
-    totalUtils: 16
+    totalCLI: 21
+    totalUtils: 18
     totalServices: 3
     totalExamples: 0
     testedCLI: 10
     testedUtils: 5
     testedServices: 3
-    coverage: 46
+    coverage: 43
   recommendations:
     - 'Priority 1: Test CLI commands'
     - '- src/cli/create-fossil-issue.ts (0 commands)'

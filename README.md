@@ -925,4 +925,14 @@ This project uses a robust, auditable onboarding workflow powered by the `script
 - If onboarding fails, see `fossils/setup_status.yml` for detailed step status and notes.
 - For LLM issues, ensure Ollama is running and models are available, or provide a valid cloud LLM API key in `.env`.
 
+## LLM Insight Workflow (Experimental)
+
+- **Pre-commit/CI always starts with Bun TypeScript type check (`bun run tsc --noEmit`) to validate types.**
+- **Git diff is analyzed to find changed files before commit.**
+- **For each changed file, a new LLM insight artifact is generated and validated.**
+- **Artifacts are stored in `fossils/llm_insights/` and referenced in the roadmap.**
+- **All prompts and system messages are versioned and managed in `src/prompts.ts`.**
+- **Artifacts are validated with Zod schemas.**
+- **Optional CLI/UI tools can be used to review and approve new insights before commit.**
+
 ---

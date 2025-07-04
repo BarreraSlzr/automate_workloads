@@ -1,0 +1,17 @@
+[
+  {
+    "timestamp": "2025-07-04T21:29:49.867Z",
+    "model": "llama2",
+    "provider": "openai",
+    "inputTokens": 97,
+    "outputTokens": 0,
+    "totalTokens": 97,
+    "cost": 0.00014549999999999999,
+    "duration": 3647,
+    "success": false,
+    "error": "OpenAI API error: 401 {\n    \"error\": {\n        \"message\": \"Incorrect API key provided: undefined. You can find your API key at https://platform.openai.com/account/api-keys.\",\n        \"type\": \"invalid_request_error\",\n        \"param\": null,\n        \"code\": \"invalid_api_key\"\n    }\n}\n",
+    "context": "roadmap-llm-insight",
+    "purpose": "roadmap-insight",
+    "valueScore": 0.7
+  }
+]

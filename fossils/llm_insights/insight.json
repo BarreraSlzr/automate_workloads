@@ -1,0 +1,14 @@
+{
+  "type": "insight",
+  "timestamp": "2025-07-04T15:29:49-06:00",
+  "model": "llama2",
+  "provider": "ollama",
+  "excerpt": "Provide comprehensive setup script and onboarding documentation for local develo",
+  "prompt": "Summarize completed roadmap task: Provide comprehensive setup script and onboarding documentation for local development",
+  "response": "{\n  \"summary\": \"Provide comprehensive setup script and onboarding documentation for local develo\",\n  \"blockers\": \"\",\n  \"recommendations\": \"\",\n  \"impact\": \"\",\n  \"excerpt\": \"Provide comprehensive setup script and onboarding documentation for local develo\"\n}",
+  "promptId": "roadmap-insight-v1",
+  "promptVersion": "v1",
+  "systemMessage": "You are an expert project automation assistant.",
+  "inputHash": "task-Provide comprehensive setup script and onboarding documentation for local development",
+  "commitRef": "HEAD"
+}
