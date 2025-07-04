@@ -1,7 +1,7 @@
 # ============================================================================
 # CANONICAL ROADMAP FOSSIL
 # ============================================================================
-# 
+#
 # This is the canonical roadmap fossil - the authoritative source of truth for
 # all project planning, automation targets, and milestone tracking.
 #
@@ -38,187 +38,554 @@ tasks:
   - task: Project Setup, Onboarding, and Audit Readiness
     status: done
     owner: emmanuelbarrera
-    tags: [immediate-actions, onboarding, setup]
+    tags: [ immediate-actions, onboarding, setup ]
     context: |
       All setup, onboarding, and audit readiness tasks are complete and validated. See README.md and API_REFERENCE.md for up-to-date instructions.
     subtasks:
-      - task: Provide comprehensive setup script and onboarding documentation for local development
+      - task: Provide comprehensive setup script and onboarding documentation for local
+          development
         status: done
         owner: emmanuelbarrera
-        tags: [setup, onboarding]
+        tags: [ setup, onboarding ]
         deadline: 2024-07-10
-      - task: Document and promote setup_status.yml as canonical, programmatic, and auditable project setup fossil
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
+      - task: Document and promote setup_status.yml as canonical, programmatic, and
+          auditable project setup fossil
         status: done
         owner: emmanuelbarrera
-        tags: [setup, fossil]
+        tags: [ setup, fossil ]
         deadline: 2024-07-10
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
     milestone: Immediate Actions
-    issues: [201]
-    milestones: ["Immediate Actions"]
-    labels: ["automation", "onboarding"]
+    issues: [ 201 ]
+    milestones: [ "Immediate Actions" ]
+    labels: [ "automation", "onboarding" ]
     llmInsights:
-      - summary: "Onboarding is now idempotent and CI-validated; cross-platform support was a key challenge."
-      - blockers: "Platform detection and model download were the main blockers, resolved by adding robust checks."
+      - summary: "Onboarding is now idempotent and CI-validated; cross-platform support
+          was a key challenge."
+      - blockers: "Platform detection and model download were the main blockers,
+          resolved by adding robust checks."
       - recommendations: "Review onboarding quarterly; automate model version checks."
       - impact: "Reduced onboarding time by 50%, improved auditability."
       - completedAt: "2024-07-15"
   - task: Update integration tests to use real repo
     status: done
-    issues: [101, 102]
-    milestones: ["E2E Test Refactor"]
-    labels: ["automation", "roadmap"]
+    issues: [ 101, 102 ]
+    milestones: [ "E2E Test Refactor" ]
+    labels: [ "automation", "roadmap" ]
     owner: emmanuelbarrera
-    context: Refactor E2E tests to use barreraslzr/automate_workloads and test branch.
+    context: |-
+      Refactor E2E tests to use barreraslzr/automate_workloads and test branch.
     subtasks:
       - task: Replace all test-owner/test-repo references
         status: done
-        issues: [101]
-        context: All references updated in integration tests.
+        issues: [ 101 ]
+        context: |-
+          All references updated in integration tests.
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
       - task: Add GitHub CLI auth check
         status: pending
-        issues: [102]
-        context: Automate gh auth status pre-check in test runner.
+        issues: [ 102 ]
+        context: |-
+          Automate gh auth status pre-check in test runner.
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
     deadline: 2024-07-10T00:00:00.000Z
     milestone: E2E Test Refactor
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
+      done:
+        retrospective: No retrospective provided yet.
+        insights: No insights provided yet.
+        completedAt: 2025-07-04T02:33:43-06:00
   - task: Document fossilization workflow
     status: done
     owner: llm+human
-    context: Ensure all contributors understand YAML→JSON→Markdown fossil workflow.
-    issues: [103]
-    milestones: ["Documentation Update"]
-    labels: ["documentation", "fossilization"]
+    context: |-
+      Ensure all contributors understand YAML→JSON→Markdown fossil workflow.
+    issues: [ 103 ]
+    milestones: [ "Documentation Update" ]
+    labels: [ "documentation", "fossilization" ]
     deadline: 2024-07-05T00:00:00.000Z
     milestone: Documentation Update
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
+      done:
+        retrospective: No retrospective provided yet.
+        insights: No insights provided yet.
+        completedAt: 2025-07-04T02:33:43-06:00
   - task: Automate roadmap to GitHub issue/project sync
     status: done
     owner: emmanuelbarrera
-    context: Script to create/update GitHub issues and milestones from roadmap YAML.
-    issues: [104, 105]
-    milestones: ["Automation Sync"]
-    labels: ["automation", "sync"]
+    context: |-
+      Script to create/update GitHub issues and milestones from roadmap YAML.
+    issues: [ 104, 105 ]
+    milestones: [ "Automation Sync" ]
+    labels: [ "automation", "sync" ]
     subtasks:
       - task: Generate Markdown from YAML for GitHub issue body
         status: done
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
       - task: Create/update issues for each roadmap task
         status: partial
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Sync milestones with roadmap deadlines
         status: pending
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
     milestone: Automation Sync
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
+      done:
+        retrospective: No retrospective provided yet.
+        insights: No insights provided yet.
+        completedAt: 2025-07-04T02:33:43-06:00
   - task: Prototype Gist-based fossilization for account-level fossils
     status: planned
     owner: emmanuelbarrera
-    context: Design and implement a script to fossilize data to GitHub Gist for account-wide context and vector of changes.
+    context: |-
+      Design and implement a script to fossilize data to GitHub Gist for account-wide context and vector of changes.
     subtasks:
       - task: Research Gist API and authentication
         status: planned
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Implement Gist fossilization utility
         status: planned
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: E2E test for Gist-based fossilization
         status: planned
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
     milestone: Gist Integration
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
   - task: Tag all test-created issues/labels for cleanup
     status: done
     owner: emmanuelbarrera
     recommendation: Use unique tags/labels
     preference: Automate cleanup
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
+      done:
+        retrospective: No retrospective provided yet.
+        insights: No insights provided yet.
+        completedAt: 2025-07-04T02:33:43-06:00
   - task: Add reporting/cleanup scripts for test artifacts
     status: done
     owner: emmanuelbarrera
     recommendation: Run post-test in CI
     preference: Summarize repo changes
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
+      done:
+        retrospective: No retrospective provided yet.
+        insights: No insights provided yet.
+        completedAt: 2025-07-04T02:33:43-06:00
   - task: Set up script to automatically curate test outputs as fossils
     status: in progress
     owner: emmanuelbarrera
-    context: >
-      Create a script that scans for test-generated output files (especially .temp-fossil-content-*.json, .temp-issue-body-*.md, fossils/curated_roadmap_demo_*.json) and curates them as versioned fossils. Prioritize handling these specific patterns first, as they are the most common untracked outputs after running tests. Only files with a valuable fossil curation or automation use case (referenced in roadmap.yml, project_status.yml, or onboarding/docs) should be written by tests/scripts. All other temp/test output files should be removed or refactored to avoid unnecessary file creation. This will enable future context gathering, automation, and traceability of test artifacts. The script should be integrated into the test or CI workflow and optionally summarize curated outputs.
-      **New requirements:**
-      - The curation logic must refuse or clean up any output files with timestamped filenames, unless explicitly archived outside the main repo.
-      - Only stable, canonical filenames are allowed for curated fossils.
-      - Document this policy and update onboarding/CONTRIBUTING docs to reflect the new filename and curation rules.
+    context: |
+      Create a script that scans for test-generated output files (especially .temp-fossil-content-*.json, .temp-issue-body-*.md, fossils/curated_roadmap_demo_*.json) and curates them as versioned fossils. Prioritize handling these specific patterns first, as they are the most common untracked outputs after running tests. Only files with a valuable fossil curation or automation use case (referenced in roadmap.yml, project_status.yml, or onboarding/docs) should be written by tests/scripts. All other temp/test output files should be removed or refactored to avoid unnecessary file creation. This will enable future context gathering, automation, and traceability of test artifacts. The script should be integrated into the test or CI workflow and optionally summarize curated outputs. **New requirements:** - The curation logic must refuse or clean up any output files with timestamped filenames, unless explicitly archived outside the main repo. - Only stable, canonical filenames are allowed for curated fossils. - Document this policy and update onboarding/CONTRIBUTING docs to reflect the new filename and curation rules.
     subtasks:
-      - task: Handle .temp-fossil-content-*.json, .temp-issue-body-*.md, fossils/curated_roadmap_demo_*.json as first-class curated fossils
+      - task: Handle .temp-fossil-content-*.json, .temp-issue-body-*.md,
+          fossils/curated_roadmap_demo_*.json as first-class curated fossils
         status: in progress
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Identify all other test output file patterns and locations
         status: in progress
-      - task: Audit all test output files and stop writing any that are not used for fossil curation, context gathering, or traceability
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+      - task: Audit all test output files and stop writing any that are not used for
+          fossil curation, context gathering, or traceability
         status: planned
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Implement script to collect and curate outputs as fossils
         status: planned
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Integrate script into test/CI workflow
         status: planned
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Document the workflow and update onboarding/CONTRIBUTING docs
         status: planned
-      - task: Refuse or clean up any output files with timestamped filenames; only allow stable, canonical filenames for curated fossils
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+      - task: Refuse or clean up any output files with timestamped filenames; only allow
+          stable, canonical filenames for curated fossils
         status: planned
-    recommendation: Automate curation post-test; only write files that are curated fossils or referenced artifacts
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+    recommendation: Automate curation post-test; only write files that are curated
+      fossils or referenced artifacts
     preference: Store curated outputs in fossils/ or a dedicated directory
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
   - task: Integrate E2E tests into CI pipeline
     status: done
     owner: emmanuelbarrera
     recommendation: Fail fast on setup/auth errors
     preference: Run on PRs to main/test
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
+      done:
+        retrospective: No retrospective provided yet.
+        insights: No insights provided yet.
+        completedAt: 2025-07-04T02:33:43-06:00
   - task: Save this roadmap as a fossil or issue for LLM/human reference
     status: done
     owner: emmanuelbarrera
     recommendation: Use e2e-roadmap tag/type
     preference: Store in /src/types or as .md/.json
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
+      done:
+        retrospective: No retrospective provided yet.
+        insights: No insights provided yet.
+        completedAt: 2025-07-04T02:33:43-06:00
   - task: Document all E2E insights, code preferences, and automation patterns
     status: done
     owner: emmanuelbarrera
     recommendation: Add to project docs and reference in fossil
     preference: Keep docs up to date with codebase changes
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
+      done:
+        retrospective: No retrospective provided yet.
+        insights: No insights provided yet.
+        completedAt: 2025-07-04T02:33:43-06:00
   - task: Enforce schema-driven Params and runtime validation in all utilities
     status: in progress
     owner: emmanuelbarrera
-    context: Refactor all utility and CLI functions to use Zod schemas for Params objects, with runtime validation and type safety.
+    context: |-
+      Refactor all utility and CLI functions to use Zod schemas for Params objects, with runtime validation and type safety.
     subtasks:
       - task: Add PARAMS OBJECT PATTERN docs to cli.ts and CONTRIBUTING_GUIDE.md
         status: done
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
       - task: Add Zod schema and runtime validation to curateAndCheck
         status: done
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
       - task: Add Zod schema and runtime validation to createFossilIssue
         status: done
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
       - task: Add Zod schema and runtime validation to createFossilLabel
         status: done
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
       - task: Add Zod schema and runtime validation to createFossilMilestone
         status: done
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
       - task: Add Zod schema and runtime validation to toFossilEntry (fossilize.ts)
         status: in progress
-      - task: Add Zod schema and runtime validation to syncTrackerWithGitHub (syncTracker.ts)
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+      - task: Add Zod schema and runtime validation to syncTrackerWithGitHub
+          (syncTracker.ts)
         status: planned
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Audit and refactor other utilities for Params/schema pattern
         status: in progress
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Refactor all CLI/scripts/examples to use new Params types
         status: in progress
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Add/extend unit tests for runtime validation (invalid/valid params)
         status: in progress
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Add/extend integration/E2E tests for CLI/scripts
         status: planned
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Document the pattern in code comments and onboarding docs
         status: done
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
     deadline: 2024-07-15T00:00:00.000Z
     milestone: Type-Safe Automation Refactor
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
   - task: Audit and enforce schema-driven, object params pattern in all utilities
     status: done
     owner: emmanuelbarrera
-    context: All major utilities in src/utils (curateAndCheck, toFossilEntry, createFossilIssue, createFossilLabel, createFossilMilestone, PlanValidator, githubCliCommands) use Zod schemas and object params.
+    context: |-
+      All major utilities in src/utils (curateAndCheck, toFossilEntry, createFossilIssue, createFossilLabel, createFossilMilestone, PlanValidator, githubCliCommands) use Zod schemas and object params.
     issues: []
-    milestones: ["Type-Safe Automation Refactor"]
-    labels: ["automation", "schema", "refactor"]
+    milestones: [ "Type-Safe Automation Refactor" ]
+    labels: [ "automation", "schema", "refactor" ]
     subtasks:
       - task: Centralize all schemas in src/types/schemas.ts
         status: done
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
       - task: Refactor all CLI/scripts/examples to use new Params types
         status: in progress
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Add/extend unit and E2E tests for runtime validation
         status: in progress
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Document the pattern in code comments and onboarding docs
         status: done
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
     milestone: Type-Safe Automation Refactor
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
+      done:
+        retrospective: No retrospective provided yet.
+        insights: No insights provided yet.
+        completedAt: 2025-07-04T02:33:43-06:00
   - task: Canonical fossilization of roadmap.yml and project_status.yml
     status: done
     owner: emmanuelbarrera
-    context: >
+    context: |
       ✅ COMPLETED: Move roadmap.yml and project_status.yml into fossils/ as the canonical, versioned artifacts.
       ✅ COMPLETED: Update all automation, CI, and documentation to reference these files.
       ✅ COMPLETED: Remove demo fossils and update the roadmap to reflect this transition.
@@ -226,32 +593,129 @@ tasks:
       ✅ COMPLETED: Validate the new fossils in CI/E2E
       ✅ COMPLETED: Update onboarding docs and recommendations as needed
     subtasks:
-      - task: Validate current roadmap.yml and project_status.yml for schema and completeness
+      - task: Validate current roadmap.yml and project_status.yml for schema and
+          completeness
         status: done
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
       - task: Move roadmap.yml and project_status.yml to fossils/ (use mv, not cp)
         status: done
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
       - task: Update fossils/README.md and add doc comments to the YAMLs
         status: done
-      - task: Update all scripts, tests, and CI to use fossils/roadmap.yml and fossils/project_status.yml
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
+      - task: Update all scripts, tests, and CI to use fossils/roadmap.yml and
+          fossils/project_status.yml
         status: done
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
       - task: Remove or archive demo/test fossils (curated_roadmap_demo_*.json)
         status: done
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
       - task: Mark this transition as done in roadmap.yml
         status: done
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
       - task: Validate the new fossils in CI/E2E
         status: done
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
       - task: Update onboarding docs and recommendations as needed
         status: done
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
     key_points:
-      - project_status.yml is generated/updated by scripts/update-project-status.ts and is a canonical, curated fossil artifact.
-      - roadmap.yml should be treated the same way: a living, curated, versioned fossil, updated by automation and committed as a source of truth.
-      - Both files enable traceability, automation, and reproducibility for the project.
-      - Automate updates, curate and commit, integrate into E2E/CI, and document the workflow in onboarding/CONTRIBUTING docs.
+      - project_status.yml is generated/updated by
+        scripts/update-project-status.ts and is a canonical, curated fossil
+        artifact.
+      - roadmap.yml should be treated the same way: a living, curated, versioned fossil,
+          updated by automation and committed as a source of truth.
+      - Both files enable traceability, automation, and reproducibility for the
+        project.
+      - Automate updates, curate and commit, integrate into E2E/CI, and document
+        the workflow in onboarding/CONTRIBUTING docs.
     milestone: Canonical Fossilization Complete
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
+      done:
+        retrospective: No retrospective provided yet.
+        insights: No insights provided yet.
+        completedAt: 2025-07-04T02:33:43-06:00
   - task: Scaffold E2E tests for fossilization and LLM insights workflow
     status: planned
     owner: emmanuelbarrera
-    context: >
+    context: |
       Design and implement E2E tests that validate the correctness, completeness, and traceability of project_status.yml and roadmap.yml as curated fossil artifacts. Ensure tests check YAML schema, fossilization status, test coverage, and integration of LLM-generated insights. Explore advanced patterns such as:
         - Automated validation of LLM recommendations for actionable test plans and code quality suggestions
         - Regression checks to ensure no loss of fossilization or coverage over time
@@ -260,17 +724,59 @@ tasks:
     subtasks:
       - task: Define YAML schema and validation rules for both fossils
         status: planned
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Implement E2E test to check schema and required fields
         status: planned
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Add test to assert minimum coverage and fossilization thresholds
         status: planned
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Add regression test to compare current and previous fossils
         status: planned
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Integrate LLM insights validation (presence, format, actionable content)
         status: planned
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Document E2E workflow and update onboarding/CONTRIBUTING docs
         status: planned
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
     milestone: Fossilization E2E & LLM Integration
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
   - task: Handle OpenAI API rate limit errors (429) in all LLM utilities
     status: planned
     owner: emmanuelbarrera
@@ -284,180 +790,570 @@ tasks:
     subtasks:
       - task: Implement retry and backoff in callOpenAIChat
         status: planned
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Add user-facing error messages and delay notifications in CLI/scripts
         status: planned
-      - task: Update all consumers (SemanticTaggerService, LLMPlanningService, scripts) to handle rate limits gracefully
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+      - task: Update all consumers (SemanticTaggerService, LLMPlanningService, scripts)
+          to handle rate limits gracefully
         status: planned
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Add/extend tests for rate limit scenarios
         status: planned
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
     milestone: LLM API Robustness
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
   - task: Refactor test to only write curated fossil outputs
     status: planned
     owner: emmanuelbarrera
-    context: >
-      Refactor a specific test (e.g., one that writes .temp-fossil-content-*.json or .temp-issue-body-*.md) so that it only writes output files if they are curated fossils or referenced artifacts. This will serve as an example for enforcing the new fossil-first test output policy.
-      **New requirements:**
-      - Tests must never write timestamped or mock/demo files to the repo.
-      - Only stable, canonical filenames are allowed for any output that is fossilized or versioned.
+    context: |
+      Refactor a specific test (e.g., one that writes .temp-fossil-content-*.json or .temp-issue-body-*.md) so that it only writes output files if they are curated fossils or referenced artifacts. This will serve as an example for enforcing the new fossil-first test output policy. **New requirements:** - Tests must never write timestamped or mock/demo files to the repo. - Only stable, canonical filenames are allowed for any output that is fossilized or versioned.
     subtasks:
-      - task: Identify a test that writes .temp-fossil-content-*.json or .temp-issue-body-*.md
+      - task: Identify a test that writes .temp-fossil-content-*.json or
+          .temp-issue-body-*.md
         status: planned
-      - task: Update the test to only write output if it is a curated fossil or referenced artifact
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+      - task: Update the test to only write output if it is a curated fossil or
+          referenced artifact
         status: planned
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Verify the test and output comply with the new policy
         status: planned
-      - task: Ensure no timestamped or mock/demo files are written to the repo; only stable, canonical filenames are used
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+      - task: Ensure no timestamped or mock/demo files are written to the repo; only
+          stable, canonical filenames are used
         status: planned
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
     recommendation: Use as a template for refactoring other tests
     preference: All test outputs must be curated fossils or referenced artifacts
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
   - task: Enhance local LLM support for automation ecosystem
     status: planned
     owner: emmanuelbarrera
-    context: >
-      Expand and optimize local LLM integration to support the full automation ecosystem, including intelligent model management, 
-      cost optimization, and seamless integration with fossilization workflows. Intelligent routing (auto/local/cloud), CLI override, documentation, and tests are now implemented. The current implementation has robust routing and override support, with further enhancements planned for model selection, cost adaptation, and performance monitoring.
+    context: |
+      Expand and optimize local LLM integration to support the full automation ecosystem, including intelligent model management,  cost optimization, and seamless integration with fossilization workflows. Intelligent routing (auto/local/cloud), CLI override, documentation, and tests are now implemented. The current implementation has robust routing and override support, with further enhancements planned for model selection, cost adaptation, and performance monitoring.
     issues: []
-    milestones: ["Local LLM Integration"]
-    labels: ["automation", "llm", "optimization", "local"]
+    milestones: [ "Local LLM Integration" ]
+    labels: [ "automation", "llm", "optimization", "local" ]
     subtasks:
-      - task: Implement happy-path local LLM integration and testing (Ollama-first, extensible)
+      - task: Implement happy-path local LLM integration and testing (Ollama-first,
+          extensible)
         status: done
-        context: >
+        context: |
           Completed: Local LLM integration is extensible, CLI supports backend selection, and onboarding/docs are updated. Integration tests for backend switching and fossilization are in place.
         subtasks:
           - task: Create LocalLLMService abstraction with pluggable backend support
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
           - task: Integrate local LLM usage into CLI (llm-usage or new command)
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
           - task: Add integration tests for happy-path (Ollama) and backend switching
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
           - task: Reference roadmap.yml task in test descriptions/comments for traceability
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
           - task: Document setup, usage, and test mapping in onboarding/docs
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
       - task: Enhance intelligent routing and cost optimization
         status: done
-        context: >
+        context: |
           Intelligent routing between local and cloud LLMs is now implemented, including CLI override flags (--prefer-local, --prefer-cloud, --auto), full documentation, and unit tests. The system now automatically selects the best provider based on task complexity, cost, and user preference, with override support. See commit: feat(llm): intelligent routing between local and cloud LLMs with CLI override, docs, and tests. Docs updated in API_REFERENCE.md, README.md, and COMPLETE_AUTOMATION_ECOSYSTEM.md.
         subtasks:
           - task: Refine complexity analysis for better local/cloud routing decisions
             status: done
-          - task: Add task-specific model selection (e.g., code generation vs content analysis)
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
+          - task: Add task-specific model selection (e.g., code generation vs content
+              analysis)
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Implement adaptive cost thresholds based on usage patterns
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add performance monitoring and automatic provider switching
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
       - task: Integrate local LLM with fossilization workflows
         status: planned
-        context: >
-          Ensure local LLM can handle all fossilization tasks including semantic tagging, content generation, and analysis
-          with appropriate fallback to cloud LLM when needed.
+        context: |
+          Ensure local LLM can handle all fossilization tasks including semantic tagging, content generation, and analysis with appropriate fallback to cloud LLM when needed.
         subtasks:
           - task: Test and optimize local LLM for semantic tagging tasks
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Implement local LLM support for content generation and summarization
             status: done
-            context: >
+            context: |
               generateExcerpt and related summarization now prefer local LLM (Ollama) with fallback to cloud LLM. Unit tests verify correct routing and fallback. See commit: feat(local-llm): prefer local LLM (Ollama) for content summarization in fossilization workflows. All tests pass and coverage is up to date.
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
           - task: Add local LLM support for fossil curation and validation
             status: planned
-            context: >
+            context: |
               Fossil curation and validation utilities (curateAndCheck, validation types) are being updated to prefer local LLM (Ollama) for any LLM-powered analysis, with fallback to cloud LLM. CLI and utility options allow explicit routing. Unit/integration tests will verify correct routing and fallback.
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Create fallback strategies for complex fossilization tasks
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Add CLI tools for local LLM management
         status: planned
-        context: >
-          Extend the existing llm-usage CLI with comprehensive local LLM management capabilities including model management,
-          performance testing, and configuration.
+        context: |
+          Extend the existing llm-usage CLI with comprehensive local LLM management capabilities including model management, performance testing, and configuration.
         subtasks:
           - task: Add model management commands (list, install, remove, test)
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Implement performance benchmarking and comparison tools
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add configuration management for local LLM settings
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Create usage analytics specific to local LLM performance
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Implement caching and optimization for local LLM
         status: planned
-        context: >
-          Add intelligent caching, response optimization, and performance tuning for local LLM calls to improve
-          automation workflow efficiency.
+        context: |
+          Add intelligent caching, response optimization, and performance tuning for local LLM calls to improve automation workflow efficiency.
         subtasks:
           - task: Implement response caching for repeated queries
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add prompt optimization and template management
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Implement batch processing for multiple LLM calls
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add memory management and resource optimization
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Add comprehensive testing and validation
         status: planned
-        context: >
-          Create comprehensive test suites for local LLM functionality including integration tests, performance tests,
-          and fallback scenario testing.
+        context: |
+          Create comprehensive test suites for local LLM functionality including integration tests, performance tests, and fallback scenario testing.
         subtasks:
           - task: Add unit tests for local LLM provider implementations
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Create integration tests for local LLM with fossilization workflows
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Implement performance benchmarking tests
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add fallback and error handling tests
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Document local LLM setup and usage patterns
         status: planned
-        context: >
-          Create comprehensive documentation for setting up and using local LLM in the automation ecosystem,
-          including best practices and troubleshooting guides.
+        context: |
+          Create comprehensive documentation for setting up and using local LLM in the automation ecosystem, including best practices and troubleshooting guides.
         subtasks:
           - task: Create setup guide for Ollama and other local LLM providers
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Document best practices for local LLM configuration
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add troubleshooting guide for common local LLM issues
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Create performance optimization guide
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Fossilize LLM insights, benchmarks, and model discovery results
         status: done
-        context: >
+        context: |
           Completed: LLM fossilization utilities and types are implemented, onboarding/docs updated, and integration tests cover all fossil types. All subtasks below are done.
         subtasks:
           - task: Design schema and storage location for LLM insights/benchmarks fossils
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
           - task: Implement scripts/utilities to generate and curate these fossils
             status: done
-          - task: Integrate fossilization of insights/benchmarks into LLM workflows and tests
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
+          - task: Integrate fossilization of insights/benchmarks into LLM workflows and
+              tests
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
           - task: Reference fossilized insights/benchmarks in roadmap and documentation
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
           - task: Add onboarding/docs section for fossil usage and auditing
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
     key_points:
-      - Current implementation has basic Ollama support but needs enhancement for production automation
-      - Focus on intelligent routing, cost optimization, and seamless integration with existing workflows
-      - Local LLM should handle most automation tasks with cloud LLM as fallback for complex operations
-      - Performance monitoring and automatic optimization are critical for automation reliability
-      - Comprehensive testing and documentation ensure maintainability and adoption
+      - Current implementation has basic Ollama support but needs enhancement
+        for production automation
+      - Focus on intelligent routing, cost optimization, and seamless
+        integration with existing workflows
+      - Local LLM should handle most automation tasks with cloud LLM as fallback
+        for complex operations
+      - Performance monitoring and automatic optimization are critical for
+        automation reliability
+      - Comprehensive testing and documentation ensure maintainability and
+        adoption
     recommendation: >
-      Prioritize intelligent routing and fossilization integration first, then add CLI tools and optimization features.
-      Focus on reliability and seamless fallback to cloud LLM when local LLM is insufficient.
+      Prioritize intelligent routing and fossilization integration first, then
+      add CLI tools and optimization features. Focus on reliability and seamless
+      fallback to cloud LLM when local LLM is insufficient.
     preference: >
-      Prefer local LLM for cost-sensitive automation tasks, with cloud LLM for complex analysis and generation tasks.
-      Implement comprehensive monitoring and automatic provider switching based on performance and cost metrics.
+      Prefer local LLM for cost-sensitive automation tasks, with cloud LLM for
+      complex analysis and generation tasks. Implement comprehensive monitoring
+      and automatic provider switching based on performance and cost metrics.
     deadline: 2024-08-15T00:00:00.000Z
     milestone: Local LLM Integration
-  - task: Remove semantic tag test LLM patching/simulation once local Ollama model is connected
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
+  - task: Remove semantic tag test LLM patching/simulation once local Ollama model
+      is connected
     status: planned
     owner: emmanuelbarrera
-    context: >
+    context: |
       The current semantic tag tests patch callLLM to simulate LLM responses for stable results. Once a local Ollama model is reliably connected and used in CI/tests, remove these patches and use the real local LLM for semantic tagging tests. This will ensure tests reflect actual model behavior and integration.
-    labels: ["testing", "llm", "local-llm", "cleanup"]
+    labels: [ "testing", "llm", "local-llm", "cleanup" ]
     milestone: Local LLM Integration
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
   - task: Enforce Canonical Fossil Artifact Policy and Curation Workflow
     tags:
       - immediate-actions
@@ -471,18 +1367,66 @@ tasks:
       - Temporary/backup files (if needed) must be .gitignore'd or stored outside the main repo.
       - All fossil entries must have a type field and be schema-validated.
     subtasks:
-      - task: Update curation script to remove fossil_content.json and ensure curated_roadmap_demo.json is a programmatic export of roadmap.yml
+      - task: Update curation script to remove fossil_content.json and ensure
+          curated_roadmap_demo.json is a programmatic export of roadmap.yml
         status: planned
-      - task: Document the canonical fossil artifact policy in onboarding and CONTRIBUTING docs
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+      - task: Document the canonical fossil artifact policy in onboarding and
+          CONTRIBUTING docs
         status: planned
-      - task: Refactor tests to only write output files if they are curated fossils or referenced artifacts
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+      - task: Refactor tests to only write output files if they are curated fossils or
+          referenced artifacts
         status: planned
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Integrate the curation script into CI to enforce artifact policy post-test
         status: planned
-      - task: Clarify and document the canonical use of .context-fossil/entries for versioned fossil artifacts
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+      - task: Clarify and document the canonical use of .context-fossil/entries for
+          versioned fossil artifacts
         status: planned
-      - task: Prohibit timestamped filenames for all canonical fossils, exports, and reports; require stable filenames and cleanup of any timestamped or test/demo outputs
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+      - task: Prohibit timestamped filenames for all canonical fossils, exports, and
+          reports; require stable filenames and cleanup of any timestamped or
+          test/demo outputs
         status: planned
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
   - task: Automate public markdown and JSON generation from project_status.yml
     status: planned
     owner: emmanuelbarrera
@@ -494,6 +1438,12 @@ tasks:
       The script should use a robust timestamp library (e.g., luxon or date-fns) for all date fields.
       All outputs must include frontmatter (for markdown) or metadata (for JSON) with audience, timestamp, and source.
     milestone: Immediate Actions
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
   - task: Automate fossil-to-markdown/json workflow with GitHub Actions/CI
     status: planned
     owner: emmanuelbarrera
@@ -502,6 +1452,12 @@ tasks:
       The workflow should validate generated outputs, publish to docs/blog/API as needed, and optionally update GitHub issues with the latest markdown.
       Ensure outputs are always in sync with the canonical YAML fossils and are CI-stamped for traceability.
     milestone: Immediate Actions
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
   - task: Fossilize prompts/system messages and publish as needed
     status: planned
     owner: emmanuelbarrera
@@ -509,6 +1465,12 @@ tasks:
       Design and implement a process to curate, version, and store prompts/system messages as fossils in fossils/prompts/.
       Automate publication of these prompts for LLM context, automation, and reproducibility, supporting future integrations and audits.
     milestone: Immediate Actions
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
   - task: Integrate local LLM for context gathering and fossilization
     status: planned
     owner: emmanuelbarrera
@@ -518,6 +1480,12 @@ tasks:
         - Generate public-facing markdown/blog posts from fossil data
         - Suggest or automate updates to GitHub issues and project status
         - Keep all outputs in sync with the canonical fossil workflow
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
   - task: Close Documentation Gaps and Improve Coherence Across All Docs
     status: in progress
     owner: emmanuelbarrera
@@ -527,7 +1495,8 @@ tasks:
       - coherence
     context: |
       Address critical gaps identified in documentation analysis to ensure all docs are cohesive, coherent, and aligned with current implementation patterns. This task consolidates all documentation improvements needed to close gaps between documented patterns and actual implementation, ensuring consistency across all onboarding, API, and development guides.
-      
+
+
       **Critical Gaps Identified:**
       1. **Fossil-Backed Creation**: Docs mention deprecated patterns but don't clearly promote fossil-backed utilities
       2. **Intelligent Tagging**: Missing documentation of semantic tagging system and LLM integration
@@ -537,7 +1506,7 @@ tasks:
       6. **Fossil Publication Workflow**: Incomplete documentation of YAML→JSON→Markdown workflow
       7. **Error Handling**: Inconsistent documentation of error handling patterns
       8. **Testing Patterns**: Missing documentation of fossil-first test output policy
-      
+
       **Immediate Actions Completed:**
       ✅ **GitHubService.createIssue() Fixed** - Restored functionality while maintaining backward compatibility
       ✅ **Direct execSync Calls Eliminated** - All GitHub CLI calls now use centralized `GitHubCLICommands`
@@ -545,19 +1514,70 @@ tasks:
       ✅ **GitHubCLICommands Enhanced** - Added API call support and improved error handling
       ✅ **Documentation Updated** - Key docs updated to promote fossil-backed creation and consistent patterns
     subtasks:
-      - task: Update API_REFERENCE.md to promote fossil-backed creation and deprecate direct CLI calls
+      - task: Update API_REFERENCE.md to promote fossil-backed creation and deprecate
+          direct CLI calls
         status: done
         context: |
           Update API_REFERENCE.md to clearly promote fossil-backed utilities (createFossilIssue, createFossilLabel, createFossilMilestone) as the primary pattern and clearly mark direct GitHub CLI calls as deprecated. Add comprehensive examples of fossil-backed creation, deduplication, and progress tracking.
         subtasks:
           - task: Add prominent fossil-backed creation section with examples
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
           - task: Mark GitHubService.createIssue as deprecated with migration guide
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
           - task: Add fossil deduplication and progress tracking documentation
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
           - task: Update all CLI examples to use fossil-backed utilities
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
       - task: Document intelligent tagging system and LLM integration patterns
         status: planned
         context: |
@@ -565,12 +1585,42 @@ tasks:
         subtasks:
           - task: Add intelligent tagging section to API_REFERENCE.md
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Document semantic tagging CLI commands and patterns
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Update COMPLETE_AUTOMATION_ECOSYSTEM.md with tagging integration
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add tagging examples to DEVELOPMENT_GUIDE.md
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Centralize and document GitHubCLICommands utility patterns
         status: done
         context: |
@@ -578,12 +1628,62 @@ tasks:
         subtasks:
           - task: Update CLI_COMMAND_INSIGHTS.md with GitHubCLICommands examples
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
           - task: Add GitHubCLICommands section to API_REFERENCE.md
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
           - task: Update DEVELOPMENT_GUIDE.md with centralized CLI patterns
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
           - task: Ensure all CLI examples use GitHubCLICommands
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
       - task: Document comprehensive validation patterns with Zod schemas
         status: done
         context: |
@@ -591,12 +1691,62 @@ tasks:
         subtasks:
           - task: Add validation patterns section to API_REFERENCE.md
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
           - task: Update DEVELOPMENT_GUIDE.md with Zod validation examples
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
           - task: Document Params object pattern in all relevant docs
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
           - task: Add validation error handling documentation
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
       - task: Create comprehensive local LLM setup and usage documentation
         status: planned
         context: |
@@ -604,12 +1754,42 @@ tasks:
         subtasks:
           - task: Add local LLM setup guide to API_REFERENCE.md
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Create local LLM troubleshooting and best practices guide
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Update COMPLETE_AUTOMATION_ECOSYSTEM.md with local LLM integration
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add local LLM examples to DEVELOPMENT_GUIDE.md
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Complete fossil publication workflow documentation
         status: planned
         context: |
@@ -617,12 +1797,42 @@ tasks:
         subtasks:
           - task: Update FOSSIL_PUBLICATION_WORKFLOW.md with complete examples
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add publication workflow to API_REFERENCE.md
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Document folder structure and naming conventions
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add future integration patterns (React/MDX/Next.js)
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Standardize error handling documentation across all docs
         status: done
         context: |
@@ -630,12 +1840,62 @@ tasks:
         subtasks:
           - task: Add comprehensive error handling section to API_REFERENCE.md
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
           - task: Update DEVELOPMENT_GUIDE.md with error handling patterns
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
           - task: Document error handling in CLI_COMMAND_INSIGHTS.md
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
           - task: Add error handling examples to all relevant docs
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
       - task: Document fossil-first test output policy and patterns
         status: done
         context: |
@@ -643,12 +1903,62 @@ tasks:
         subtasks:
           - task: Add fossil-first test policy to DEVELOPMENT_GUIDE.md
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
           - task: Document test output patterns in TESTING_LEARNINGS.md
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
           - task: Add test output examples and best practices
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
           - task: Update CONTRIBUTING_GUIDE.md with test output requirements
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
       - task: Create documentation coherence checklist and validation
         status: done
         context: |
@@ -656,15 +1966,55 @@ tasks:
         subtasks:
           - task: Create documentation coherence checklist
             status: done
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+              done:
+                retrospective: No retrospective provided yet.
+                insights: No insights provided yet.
+                completedAt: 2025-07-04T02:33:43-06:00
           - task: Add documentation validation to CI process
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Create documentation update workflow
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add documentation review process
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
+          done:
+            retrospective: No retrospective provided yet.
+            insights: No insights provided yet.
+            completedAt: 2025-07-04T02:33:43-06:00
     key_points:
-      - All documentation must promote fossil-backed creation as the primary pattern
-      - Intelligent tagging and LLM integration must be comprehensively documented
+      - All documentation must promote fossil-backed creation as the primary
+        pattern
+      - Intelligent tagging and LLM integration must be comprehensively
+        documented
       - Centralized CLI patterns must be consistently referenced
       - Validation patterns must be clearly documented with examples
       - Local LLM integration must be fully documented with setup guides
@@ -681,6 +2031,12 @@ tasks:
       Ensure all docs reference the same patterns and examples for consistency.
     deadline: 2024-07-20T00:00:00.000Z
     milestone: Documentation Coherence
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
   - task: Complete Remaining Documentation Improvements and Validation
     status: planned
     owner: emmanuelbarrera
@@ -690,13 +2046,20 @@ tasks:
       - validation
     context: |
       Complete the remaining documentation improvements and implement validation processes to ensure ongoing coherence. This task focuses on the remaining subtasks from the documentation coherence effort and establishing processes to maintain consistency going forward.
-      
+
+
       **Remaining Work:**
       1. **Intelligent Tagging Documentation**: Complete documentation of semantic tagging system
       2. **Local LLM Documentation**: Comprehensive setup and usage guides
       3. **Fossil Publication Workflow**: Complete YAML→JSON→Markdown documentation
       4. **CI Integration**: Add documentation validation to CI process
       5. **Validation Processes**: Establish ongoing documentation review and validation
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
   - task: Enhanced Fossil Management and Versioning System
     status: planned
     owner: emmanuelbarrera
@@ -706,7 +2069,8 @@ tasks:
       - versioning
     context: |
       Implement advanced fossil management capabilities including versioning, history tracking, search/filtering, and export/import functionality. This expands the current fossil system to support enterprise-level fossil management with full traceability and discoverability.
-      
+
+
       **Key Features:**
       - Fossil versioning with change tracking and metadata
       - Advanced search and filtering capabilities
@@ -718,46 +2082,157 @@ tasks:
         context: |
           Create the FossilVersion interface and related utilities to track fossil versions, timestamps, changes, authors, and metadata. This enables full audit trails and change history for all fossil artifacts.
         subtasks:
-          - task: Design FossilVersion interface with version, timestamp, changes, author, and metadata fields
+          - task: Design FossilVersion interface with version, timestamp, changes, author,
+              and metadata fields
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Implement version tracking utilities in fossilize.ts
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add version history to all fossil creation and update operations
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Create version comparison and diff utilities
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add version rollback capabilities
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Implement Fossil Search and Filtering System
         status: planned
         context: |
           Create the FossilSearchParams interface and search utilities to enable finding fossils based on query, tags, date range, type, status, and filters. This provides powerful discovery capabilities for large fossil collections.
         subtasks:
-          - task: Design FossilSearchParams interface with query, tags, dateRange, type, status, and filters
+          - task: Design FossilSearchParams interface with query, tags, dateRange, type,
+              status, and filters
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Implement search utilities with full-text and metadata search
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add CLI commands for fossil search and filtering
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Create search result formatting and export options
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add search result caching for performance
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Implement Fossil Export/Import Capabilities
         status: planned
         context: |
           Create the FossilExportOptions interface and utilities for exporting fossils in various formats with configurable metadata and history inclusion. This enables fossil migration, backup, and integration with external systems.
         subtasks:
-          - task: Design FossilExportOptions interface with format, metadata, history, and filters
+          - task: Design FossilExportOptions interface with format, metadata, history, and
+              filters
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Implement export utilities for JSON, YAML, and Markdown formats
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add import utilities with validation and conflict resolution
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Create bulk export/import capabilities for fossil collections
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add export/import CLI commands with progress tracking
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
     key_points:
       - Versioning enables full audit trails and change history
       - Search/filtering provides powerful discovery capabilities
@@ -773,6 +2248,12 @@ tasks:
       Ensure export/import maintains fossil integrity and relationships.
     deadline: 2024-09-15T00:00:00.000Z
     milestone: Enhanced Fossil Management
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
   - task: Advanced Automation and Workflow Scheduling
     status: planned
     owner: emmanuelbarrera
@@ -782,7 +2263,8 @@ tasks:
       - scheduling
     context: |
       Implement advanced automation capabilities including scheduled workflows, conditional triggers, and comprehensive analytics. This expands the current automation system to support complex, time-based, and event-driven automation scenarios.
-      
+
+
       **Key Features:**
       - Scheduled automation workflows with cron expressions
       - Conditional automation triggers based on events and conditions
@@ -794,46 +2276,157 @@ tasks:
         context: |
           Create the ScheduledWorkflow interface and scheduler to enable time-based automation with cron expressions, triggers, actions, and enabled status. This supports recurring automation tasks and scheduled fossil operations.
         subtasks:
-          - task: Design ScheduledWorkflow interface with id, name, schedule, cronExpression, triggers, actions, and enabled
+          - task: Design ScheduledWorkflow interface with id, name, schedule,
+              cronExpression, triggers, actions, and enabled
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Implement workflow scheduler with cron parsing and execution
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add workflow persistence and state management
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Create workflow validation and conflict detection
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add CLI commands for workflow management
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Implement Conditional Automation Triggers
         status: planned
         context: |
           Create the AutomationTrigger interface to support event-driven automation based on conditions, metadata, and triggers. This enables reactive automation based on fossil changes, GitHub events, and other conditions.
         subtasks:
-          - task: Design AutomationTrigger interface with type, conditions, metadata, and enabled
+          - task: Design AutomationTrigger interface with type, conditions, metadata, and
+              enabled
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Implement trigger evaluation engine with condition parsing
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add GitHub webhook integration for event triggers
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Create trigger chaining and dependency management
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add trigger testing and validation utilities
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Implement Automation Analytics and Reporting
         status: planned
         context: |
           Create the AutomationMetrics interface and analytics system to track success rates, execution times, error rates, cost analysis, and other performance metrics. This provides insights into automation effectiveness and optimization opportunities.
         subtasks:
-          - task: Design AutomationMetrics interface with successRate, avgExecutionTime, errorRate, lastExecution, totalExecutions, costAnalysis
+          - task: Design AutomationMetrics interface with successRate, avgExecutionTime,
+              errorRate, lastExecution, totalExecutions, costAnalysis
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Implement metrics collection and storage
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Create analytics dashboard and reporting utilities
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add cost analysis and optimization recommendations
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Create performance monitoring and alerting
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
     key_points:
       - Scheduled workflows enable time-based automation
       - Conditional triggers support event-driven automation
@@ -849,6 +2442,12 @@ tasks:
       Ensure analytics provide actionable insights.
     deadline: 2024-09-30T00:00:00.000Z
     milestone: Advanced Automation
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
   - task: Enhanced User Experience and Developer Tools
     status: planned
     owner: emmanuelbarrera
@@ -858,7 +2457,8 @@ tasks:
       - developer-tools
     context: |
       Implement enhanced user experience features including interactive tutorials, guided setup wizards, and comprehensive developer tools. This focuses on improving onboarding, usability, and developer productivity.
-      
+
+
       **Key Features:**
       - Interactive tutorials and guided setup wizards
       - Enhanced CLI with suggestions and auto-completion
@@ -870,46 +2470,142 @@ tasks:
         context: |
           Create guided setup wizards and interactive tutorials to improve onboarding experience. This includes step-by-step guidance, validation, and help text for new users.
         subtasks:
-          - task: Design GuidedSetupWizard interface with steps, currentStep, progress, and validation
+          - task: Design GuidedSetupWizard interface with steps, currentStep, progress, and
+              validation
             status: planned
-          - task: Design SetupStep interface with id, title, description, type, required, validation, helpText, and examples
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+          - task: Design SetupStep interface with id, title, description, type, required,
+              validation, helpText, and examples
             status: planned
-          - task: Implement interactive CLI with mode, suggestions, autoComplete, and helpContext
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+          - task: Implement interactive CLI with mode, suggestions, autoComplete, and
+              helpContext
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Create tutorial content for common workflows
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add progress tracking and resume capabilities
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Implement VSCode Extension
         status: planned
         context: |
           Create a VSCode extension to provide fossil management capabilities directly in the editor, including commands, snippets, diagnostics, and completion providers.
-          
+
+
           **Remote Repository & Edge Case Support:**
           The extension must support not only local development, but also remote repository analysis and auditing scenarios. This includes:
             - Opening, analyzing, and curating fossils in remote repositories (e.g., via SSH, Codespaces, remote containers)
             - Handling read-only, large, or non-standard repo structures
             - Integration with remote development environments
             - Ensuring all features work for both local and remote/hybrid use cases
-          
+
           Document intended use cases (local, remote, hybrid) to avoid local-only bias and maximize value for audit/consulting scenarios.
         subtasks:
-          - task: Design VSCodeExtension interface with commands, snippets, diagnostics, hoverProviders, and completionProviders
+          - task: Design VSCodeExtension interface with commands, snippets, diagnostics,
+              hoverProviders, and completionProviders
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Implement fossil creation and management commands
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add fossil syntax highlighting and validation
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Create fossil templates and snippets
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add fossil search and navigation features
             status: planned
-          - task: Add support for remote repository analysis and curation (Codespaces, SSH, remote containers)
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+          - task: Add support for remote repository analysis and curation (Codespaces, SSH,
+              remote containers)
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Test extension in remote and hybrid environments
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Document remote use cases and edge case handling
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Reinforce YAML→JSON→Markdown→Frontend Pipeline
         status: planned
         context: |
@@ -917,16 +2613,58 @@ tasks:
         subtasks:
           - task: Implement YAML→JSON transformation utility
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Implement JSON→Markdown generator with frontmatter
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Document and prototype Markdown→MDX/React integration
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add examples for Next.js/Remix/Tanstack Table consumption of fossil data
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Create a "future integration" section listing possible frontend approaches
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Document all integration points and revisit/prioritize as project evolves
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Cohesion & Integration
         status: planned
         context: |
@@ -934,12 +2672,43 @@ tasks:
         subtasks:
           - task: Map dependencies and integration points between all major features
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Add regular roadmap review for cohesion and scope
             status: planned
-          - task: Document how each feature supports the core fossilization/publication workflow
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+          - task: Document how each feature supports the core fossilization/publication
+              workflow
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
           - task: Consolidate or clarify overlapping features as needed
             status: planned
+            llmInsights:
+              summary: No LLM insights provided yet.
+              blockers: None reported.
+              recommendations: Review and update this section with LLM or human insights.
+              impact: Not yet assessed.
+              deadline: ""
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
     key_points:
       - Interactive tutorials improve onboarding experience
       - VSCode extension provides editor integration
@@ -955,6 +2724,12 @@ tasks:
       Ensure tools provide immediate value and feedback.
     deadline: 2024-10-15T00:00:00.000Z
     milestone: Enhanced UX and Developer Tools
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
   - task: Integrate LLM Insights for Completed Tasks
     status: planned
     owner: emmanuelbarrera
@@ -963,12 +2738,42 @@ tasks:
     subtasks:
       - task: Update roadmap.yml schema and examples to include llmInsights
         status: planned
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Document usage in API_REFERENCE.md and DEVELOPMENT_GUIDE.md
         status: planned
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Update publication/export scripts to include llmInsights in JSON/Markdown
         status: planned
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
       - task: Add onboarding and reporting examples using llmInsights
         status: planned
+        llmInsights:
+          summary: No LLM insights provided yet.
+          blockers: None reported.
+          recommendations: Review and update this section with LLM or human insights.
+          impact: Not yet assessed.
+          deadline: ""
     milestone: LLM-Driven Retrospectives
-    labels: ["llm", "insights", "retrospective", "automation"]
- 
+    labels: [ "llm", "insights", "retrospective", "automation" ]
+    llmInsights:
+      summary: No LLM insights provided yet.
+      blockers: None reported.
+      recommendations: Review and update this section with LLM or human insights.
+      impact: Not yet assessed.
+      deadline: ""
+
