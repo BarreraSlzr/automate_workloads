@@ -12,37 +12,15 @@ import { getEnv } from '../core/config';
 import { execSync } from 'child_process';
 import { promises as fs } from 'fs';
 import path from 'path';
-import { z } from '@/types/schemas';
-
-// Progress tracking schemas
-const TrackingConfigSchema = z.object({
-  mode: z.enum(['comprehensive', 'action-plan', 'health-only', 'automation-progress']).default('comprehensive'),
-  reportType: z.enum(['daily', 'weekly', 'monthly', 'custom']).default('daily'),
-  outputDir: z.string().default('.orchestration-reports'),
-  includeTrends: z.boolean().default(true),
-  triggerNextSteps: z.boolean().default(true),
-});
-
-const ProgressMetricsSchema = z.object({
-  healthScore: z.number().min(0).max(100),
-  actionPlanCompletion: z.number().min(0).max(100),
-  automationCompletion: z.number().min(0).max(100),
-  totalActionPlans: z.number(),
-  completedActionPlans: z.number(),
-  openActionPlans: z.number(),
-  totalAutomationIssues: z.number(),
-  completedAutomationIssues: z.number(),
-  openAutomationIssues: z.number(),
-  timestamp: z.string(),
-});
-
-const TrendAnalysisSchema = z.object({
-  trend: z.enum(['improving', 'declining', 'stable', 'insufficient_data']),
-  firstScore: z.number().optional(),
-  lastScore: z.number().optional(),
-  improvement: z.number().optional(),
-  dataPoints: z.number().optional(),
-});
+import { GitHubCLICommands } from '../utils/githubCliCommands';
+import { 
+  z, 
+  TrackingConfigSchema, 
+  ProgressMetricsSchema, 
+  TrendAnalysisSchema,
+  TrackProgressCLIArgsSchema,
+  TrackProgressStatusCLIArgsSchema
+} from '@/types/schemas';
 
 type TrackingConfig = z.infer<typeof TrackingConfigSchema>;
 type ProgressMetrics = z.infer<typeof ProgressMetricsSchema>;
@@ -184,21 +162,27 @@ class ProgressTrackingService {
     console.log(`📈 Tracking action plan progress for ${owner}/${repo}...`);
 
     try {
+      const commands = new GitHubCLICommands(owner, repo);
+
       // Get action plan issues
-      const actionPlanIssues = execSync(
-        `gh issue list --repo ${owner}/${repo} --label "action-plan" --limit 100 --json number,title,state,createdAt,updatedAt,labels`,
-        { encoding: 'utf8' }
-      );
+      const actionPlanResult = await commands.listIssues({
+        state: 'all',
+        labels: ['action-plan']
+      });
 
       // Get automation issues
-      const automationIssues = execSync(
-        `gh issue list --repo ${owner}/${repo} --label "automation" --limit 100 --json number,title,state,createdAt,updatedAt,labels`,
-        { encoding: 'utf8' }
-      );
+      const automationResult = await commands.listIssues({
+        state: 'all',
+        labels: ['automation']
+      });
+
+      if (!actionPlanResult.success || !automationResult.success) {
+        throw new Error('Failed to fetch issues from GitHub');
+      }
 
       // Parse and analyze
-      const actionPlans = JSON.parse(actionPlanIssues);
-      const automationIssuesData = JSON.parse(automationIssues);
+      const actionPlans = JSON.parse(actionPlanResult.stdout);
+      const automationIssuesData = JSON.parse(automationResult.stdout);
 
       const totalActionPlans = actionPlans.length;
       const completedActionPlans = actionPlans.filter((issue: any) => issue.state === 'CLOSED').length;
@@ -544,25 +528,44 @@ program
   .option('--output <file>', 'Output file for results (JSON)')
   .action(async (owner, repo, options) => {
     try {
+      // Validate CLI arguments using Zod
+      const validatedArgs = TrackProgressCLIArgsSchema.parse({
+        owner,
+        repo,
+        mode: options.mode,
+        reportType: options.reportType,
+        outputDir: options.outputDir,
+        trends: options.trends,
+        trigger: options.trigger,
+        output: options.output,
+      });
+
       const service = new ProgressTrackingService();
       
       const trackingConfig: TrackingConfig = {
-        mode: options.mode as any,
-        reportType: options.reportType as any,
-        outputDir: options.outputDir,
-        includeTrends: options.trends,
-        triggerNextSteps: options.trigger,
+        mode: validatedArgs.mode,
+        reportType: validatedArgs.reportType,
+        outputDir: validatedArgs.outputDir,
+        includeTrends: validatedArgs.trends,
+        triggerNextSteps: validatedArgs.trigger,
       };
 
-      const results = await service.trackProgress(owner, repo, trackingConfig);
+      const results = await service.trackProgress(validatedArgs.owner, validatedArgs.repo, trackingConfig);
       
-      if (options.output) {
-        await fs.writeFile(options.output, JSON.stringify(results, null, 2));
-        console.log(`✅ Results saved to ${options.output}`);
+      if (validatedArgs.output) {
+        await fs.writeFile(validatedArgs.output, JSON.stringify(results, null, 2));
+        console.log(`✅ Results saved to ${validatedArgs.output}`);
       } else {
         console.log(JSON.stringify(results, null, 2));
       }
     } catch (error) {
+      if (error instanceof z.ZodError) {
+        console.error('❌ Validation error:');
+        error.errors.forEach(err => {
+          console.error(`  - ${err.path.join('.')}: ${err.message}`);
+        });
+        process.exit(1);
+      }
       console.error('❌ Error during progress tracking:', error);
       process.exit(1);
     }
@@ -576,6 +579,12 @@ program
   .argument('<repo>', 'Repository name')
   .action(async (owner, repo) => {
     try {
+      // Validate CLI arguments using Zod
+      const validatedArgs = TrackProgressStatusCLIArgsSchema.parse({
+        owner,
+        repo,
+      });
+
       const service = new ProgressTrackingService();
       
       const quickConfig: TrackingConfig = {
@@ -586,11 +595,11 @@ program
         triggerNextSteps: false,
       };
 
-      const results = await service.trackProgress(owner, repo, quickConfig);
+      const results = await service.trackProgress(validatedArgs.owner, validatedArgs.repo, quickConfig);
       
       console.log('📊 Quick Status Report');
       console.log('=====================');
-      console.log(`Repository: ${owner}/${repo}`);
+      console.log(`Repository: ${validatedArgs.owner}/${validatedArgs.repo}`);
       console.log(`Health Score: ${(results.metrics as any).healthScore}/100`);
       console.log(`Action Plan Completion: ${(results.metrics as any).actionPlanCompletion}%`);
       console.log(`Automation Completion: ${(results.metrics as any).automationCompletion}%`);
@@ -601,6 +610,13 @@ program
         console.log((results.recommendations as any)[0]);
       }
     } catch (error) {
+      if (error instanceof z.ZodError) {
+        console.error('❌ Validation error:');
+        error.errors.forEach(err => {
+          console.error(`  - ${err.path.join('.')}: ${err.message}`);
+        });
+        process.exit(1);
+      }
       console.error('❌ Error during status check:', error);
       process.exit(1);
     }

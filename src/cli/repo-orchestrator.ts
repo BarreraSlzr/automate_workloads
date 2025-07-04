@@ -345,38 +345,50 @@ class RepoOrchestratorService {
       };
     }
     try {
-      // Use GitHub CLI to get repository information
-      const repoData = execSync(
-        `gh repo view ${repoConfig.owner}/${repoConfig.repo} --json name,owner,description,primaryLanguage,stargazerCount,forkCount,defaultBranchRef,updatedAt`,
-        { encoding: 'utf8' }
-      );
+      // Use GitHubCLICommands to get repository information
+      const commands = new GitHubCLICommands(repoConfig.owner, repoConfig.repo);
       
-      const repo = JSON.parse(repoData);
+      // Get repository info via API call
+      const repoResult = await commands.apiCall('', {
+        method: 'GET',
+        fields: {}
+      });
+      
+      if (!repoResult.success) {
+        throw new Error('Failed to fetch repository information');
+      }
+      
+      const repo = JSON.parse(repoResult.stdout);
       
       // Get issues and PRs count separately since they're not available in the main repo view
       let openIssues = 0;
       let openPRs = 0;
       
       try {
-        const issuesData = execSync(
-          `gh issue list --repo ${repoConfig.owner}/${repoConfig.repo} --state open --json number,title,labels,updatedAt`,
-          { encoding: 'utf8' }
-        );
-        const issues = JSON.parse(issuesData);
-        openIssues = issues.length;
-        // Store issues for later use
-        (repoConfig as any).openIssuesList = issues;
+        const issuesResult = await commands.listIssues({
+          state: 'open'
+        });
+        
+        if (issuesResult.success) {
+          const issues = JSON.parse(issuesResult.stdout);
+          openIssues = issues.length;
+          // Store issues for later use
+          (repoConfig as any).openIssuesList = issues;
+        }
       } catch {
         // Ignore issues fetch error
       }
       
       try {
-        const prsData = execSync(
-          `gh api repos/${repoConfig.owner}/${repoConfig.repo}/pulls?state=open&per_page=1`,
-          { encoding: 'utf8' }
-        );
-        const prs = JSON.parse(prsData);
-        openPRs = prs.length > 0 ? parseInt(prs[0].number) : 0;
+        const prsResult = await commands.apiCall('pulls', {
+          method: 'GET',
+          fields: { state: 'open', per_page: '1' }
+        });
+        
+        if (prsResult.success) {
+          const prs = JSON.parse(prsResult.stdout);
+          openPRs = prs.length > 0 ? parseInt(prs[0].number) : 0;
+        }
       } catch {
         // Ignore PRs fetch error
       }
@@ -433,18 +445,23 @@ class RepoOrchestratorService {
 
     // Check for recent activity
     try {
-      const lastCommit = execSync(
-        `gh api repos/${repoConfig.owner}/${repoConfig.repo}/commits?per_page=1`,
-        { encoding: 'utf8' }
-      );
+      const commands = new GitHubCLICommands(repoConfig.owner, repoConfig.repo);
+      const commitsResult = await commands.apiCall('commits', {
+        method: 'GET',
+        fields: { per_page: '1' }
+      });
       
-      const commits = JSON.parse(lastCommit);
-      checksPerformed++;
-      
-      if (commits.length === 0) {
-        issues.push('No recent commits found');
-        score -= 20;
-        recommendations.push('Consider adding recent commits to maintain activity');
+      if (commitsResult.success) {
+        const commits = JSON.parse(commitsResult.stdout);
+        checksPerformed++;
+        
+        if (commits.length === 0) {
+          issues.push('No recent commits found');
+          score -= 20;
+          recommendations.push('Consider adding recent commits to maintain activity');
+        }
+      } else {
+        throw new Error('Failed to fetch commits');
       }
     } catch (error) {
       checksFailed++;
@@ -455,22 +472,26 @@ class RepoOrchestratorService {
     // Check for open issues
     let hasOpenIssues = false;
     try {
-      const openIssues = execSync(
-        `gh issue list --repo ${repoConfig.owner}/${repoConfig.repo} --state open --json number`,
-        { encoding: 'utf8' }
-      );
+      const commands = new GitHubCLICommands(repoConfig.owner, repoConfig.repo);
+      const openIssuesResult = await commands.listIssues({
+        state: 'open'
+      });
       
-      const issuesData = JSON.parse(openIssues);
-      checksPerformed++;
-      
-      if (issuesData.length === 0) {
-        hasOpenIssues = false;
-        recommendations.push('No open issues found - consider creating issues for tracking');
-      } else {
-        hasOpenIssues = true;
-        if (issuesData.length > 10) {
-          recommendations.push(`Repository has ${issuesData.length} open issues - consider prioritizing and closing some`);
+      if (openIssuesResult.success) {
+        const issuesData = JSON.parse(openIssuesResult.stdout);
+        checksPerformed++;
+        
+        if (issuesData.length === 0) {
+          hasOpenIssues = false;
+          recommendations.push('No open issues found - consider creating issues for tracking');
+        } else {
+          hasOpenIssues = true;
+          if (issuesData.length > 10) {
+            recommendations.push(`Repository has ${issuesData.length} open issues - consider prioritizing and closing some`);
+          }
         }
+      } else {
+        throw new Error('Failed to fetch issues');
       }
     } catch (error) {
       checksFailed++;
@@ -799,26 +820,34 @@ class RepoOrchestratorService {
     };
 
     try {
+      const commands = new GitHubCLICommands(repoConfig.owner, repoConfig.repo);
+      
       // Get recent issues
-      const issues = execSync(
-        `gh api repos/${repoConfig.owner}/${repoConfig.repo}/issues?state=open&per_page=10`,
-        { encoding: 'utf8' }
-      );
-      context.recentIssues = JSON.parse(issues);
+      const issuesResult = await commands.apiCall('issues', {
+        method: 'GET',
+        fields: { state: 'open', per_page: '10' }
+      });
+      if (issuesResult.success) {
+        context.recentIssues = JSON.parse(issuesResult.stdout);
+      }
 
       // Get recent PRs
-      const prs = execSync(
-        `gh api repos/${repoConfig.owner}/${repoConfig.repo}/pulls?state=open&per_page=10`,
-        { encoding: 'utf8' }
-      );
-      context.recentPRs = JSON.parse(prs);
+      const prsResult = await commands.apiCall('pulls', {
+        method: 'GET',
+        fields: { state: 'open', per_page: '10' }
+      });
+      if (prsResult.success) {
+        context.recentPRs = JSON.parse(prsResult.stdout);
+      }
 
       // Get recent commits
-      const commits = execSync(
-        `gh api repos/${repoConfig.owner}/${repoConfig.repo}/commits?per_page=10`,
-        { encoding: 'utf8' }
-      );
-      context.recentCommits = JSON.parse(commits);
+      const commitsResult = await commands.apiCall('commits', {
+        method: 'GET',
+        fields: { per_page: '10' }
+      });
+      if (commitsResult.success) {
+        context.recentCommits = JSON.parse(commitsResult.stdout);
+      }
 
     } catch (error) {
       console.warn('⚠️  Could not gather complete context:', error);
@@ -973,18 +1002,21 @@ class RepoOrchestratorService {
     const metrics: Record<string, unknown> = {};
 
     try {
-      // Get basic repository metrics
-      const repoData = execSync(
-        `gh api repos/${repoConfig.owner}/${repoConfig.repo}`,
-        { encoding: 'utf8' }
-      );
+      const commands = new GitHubCLICommands(repoConfig.owner, repoConfig.repo);
       
-      const repo = JSON.parse(repoData);
-      metrics.stars = repo.stargazer_count;
-      metrics.forks = repo.forks_count;
-      metrics.openIssues = repo.open_issues_count;
-      metrics.lastUpdated = repo.updated_at;
-
+      // Get basic repository metrics
+      const repoResult = await commands.apiCall('', {
+        method: 'GET',
+        fields: {}
+      });
+      
+      if (repoResult.success) {
+        const repo = JSON.parse(repoResult.stdout);
+        metrics.stars = repo.stargazer_count;
+        metrics.forks = repo.forks_count;
+        metrics.openIssues = repo.open_issues_count;
+        metrics.lastUpdated = repo.updated_at;
+      }
     } catch (error) {
       console.warn('⚠️  Could not gather metrics:', error);
     }
@@ -1129,14 +1161,17 @@ class RepoOrchestratorService {
     const defaultLabel = 'automation';
     ensureLabelExists(repo, defaultLabel, 'ededed');
     try {
-      const issuesData = execSync(
-        `gh issue list --repo ${repo} --state open --json number,labels`,
-        { encoding: 'utf8' }
-      );
-      const issues = JSON.parse(issuesData);
-      for (const issue of issues) {
-        if (!issue.labels || issue.labels.length === 0) {
-          addLabelToIssue(repo, issue.number, defaultLabel);
+      const commands = new GitHubCLICommands(repoConfig.owner, repoConfig.repo);
+      const issuesResult = await commands.listIssues({
+        state: 'open'
+      });
+      
+      if (issuesResult.success) {
+        const issues = JSON.parse(issuesResult.stdout);
+        for (const issue of issues) {
+          if (!issue.labels || issue.labels.length === 0) {
+            addLabelToIssue(repo, issue.number, defaultLabel);
+          }
         }
       }
     } catch (error) {
@@ -1155,11 +1190,15 @@ class RepoOrchestratorService {
       const issues = repoInfo.issues || [];
       let prs: any[] = [];
       try {
-        const prsData = execSync(
-          `gh api repos/${repoConfig.owner}/${repoConfig.repo}/pulls?state=open&per_page=100`,
-          { encoding: 'utf8' }
-        );
-        prs = JSON.parse(prsData);
+        const commands = new GitHubCLICommands(repoConfig.owner, repoConfig.repo);
+        const prsResult = await commands.apiCall('pulls', {
+          method: 'GET',
+          fields: { state: 'open', per_page: '100' }
+        });
+        
+        if (prsResult.success) {
+          prs = JSON.parse(prsResult.stdout);
+        }
       } catch {
         prs = [];
       }
@@ -1259,11 +1298,17 @@ class RepoOrchestratorService {
       ];
     }
     try {
-      const issuesJson = execSync(
-        `gh issue list --repo ${repoConfig.owner}/${repoConfig.repo} --state open --json number,title,body`,
-        { encoding: 'utf-8', env: { ...process.env } }
-      );
-      return JSON.parse(issuesJson);
+      const commands = new GitHubCLICommands(repoConfig.owner, repoConfig.repo);
+      const issuesResult = await commands.listIssues({
+        state: 'open'
+      });
+      
+      if (issuesResult.success) {
+        return JSON.parse(issuesResult.stdout);
+      } else {
+        console.error('Failed to fetch issues from GitHub');
+        return [];
+      }
     } catch (e) {
       console.error('Failed to read issues as JSON. Ensure the issues script supports --json.');
       return [];
