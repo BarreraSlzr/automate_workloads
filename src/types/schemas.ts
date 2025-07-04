@@ -610,4 +610,191 @@ export const UpdateChecklistRoadmapCLIArgsSchema = z.object({
   status: z.enum(['pending', 'ready', 'partial', 'done']),
   comment: z.string().optional(),
   dryRun: z.boolean().default(false),
+});
+
+// LLM Insights Export Schemas
+export const LLMInsightExportSchema = z.object({
+  format: z.enum(['json', 'yaml', 'markdown', 'csv', 'html']).default('json'),
+  filters: z.object({
+    type: z.enum(['insight', 'benchmark', 'discovery']).optional(),
+    dateRange: z.object({
+      start: z.string().optional(),
+      end: z.string().optional(),
+    }).optional(),
+    model: z.string().optional(),
+    provider: z.string().optional(),
+    tags: z.array(z.string()).optional(),
+  }).optional(),
+  outputPath: z.string().optional(),
+  includeMetadata: z.boolean().default(true),
+  includeRawResponse: z.boolean().default(false),
+});
+
+// External Review Integration Schemas
+export const ExternalReviewSchema = z.object({
+  reviewId: z.string(),
+  fossilId: z.string(),
+  reviewer: z.string(),
+  status: z.enum(['pending', 'approved', 'rejected', 'needs_changes']),
+  comments: z.array(z.object({
+    id: z.string(),
+    author: z.string(),
+    content: z.string(),
+    timestamp: z.string(),
+    lineNumber: z.number().optional(),
+  })),
+  metadata: z.record(z.any()).optional(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
+export const ReviewRequestSchema = z.object({
+  fossilIds: z.array(z.string()),
+  reviewers: z.array(z.string()),
+  deadline: z.string().optional(),
+  priority: z.enum(['low', 'medium', 'high', 'critical']).default('medium'),
+  context: z.string().optional(),
+  autoApprove: z.boolean().default(false),
+});
+
+// Task Matching Algorithm Schemas
+export const TaskMatchingConfigSchema = z.object({
+  algorithm: z.enum(['exact', 'fuzzy', 'semantic', 'hybrid']).default('hybrid'),
+  similarityThreshold: z.number().min(0).max(1).default(0.8),
+  maxResults: z.number().min(1).max(100).default(10),
+  weights: z.object({
+    title: z.number().min(0).max(1).default(0.4),
+    content: z.number().min(0).max(1).default(0.3),
+    tags: z.number().min(0).max(1).default(0.2),
+    metadata: z.number().min(0).max(1).default(0.1),
+  }).optional(),
+  useLLM: z.boolean().default(true),
+  llmModel: z.string().default('llama2'),
+});
+
+export const TaskMatchResultSchema = z.object({
+  query: z.string(),
+  matches: z.array(z.object({
+    fossilId: z.string(),
+    title: z.string(),
+    type: z.string(),
+    similarity: z.number(),
+    confidence: z.number(),
+    matchedFields: z.array(z.string()),
+    metadata: z.record(z.any()).optional(),
+  })),
+  totalResults: z.number(),
+  processingTime: z.number(),
+  algorithm: z.string(),
+});
+
+// Batch Processing Schemas
+export const BatchProcessingConfigSchema = z.object({
+  batchSize: z.number().min(1).max(1000).default(50),
+  maxConcurrency: z.number().min(1).max(20).default(5),
+  retryAttempts: z.number().min(0).max(10).default(3),
+  retryDelayMs: z.number().min(100).max(10000).default(1000),
+  timeoutMs: z.number().min(1000).max(300000).default(30000),
+  progressCallback: z.function().optional(),
+  errorHandler: z.function().optional(),
+});
+
+export const BatchProcessingResultSchema = z.object({
+  totalItems: z.number(),
+  processedItems: z.number(),
+  successfulItems: z.number(),
+  failedItems: z.number(),
+  skippedItems: z.number(),
+  processingTime: z.number(),
+  errors: z.array(z.object({
+    itemId: z.string(),
+    error: z.string(),
+    retryCount: z.number(),
+  })),
+  results: z.array(z.record(z.any())),
+});
+
+// Git Diff Analysis Schemas
+export const GitDiffAnalysisSchema = z.object({
+  commitHash: z.string().optional(),
+  filePatterns: z.array(z.string()).optional(),
+  includeStaged: z.boolean().default(true),
+  includeUnstaged: z.boolean().default(true),
+  maxFiles: z.number().min(1).max(1000).default(100),
+  analysisDepth: z.enum(['shallow', 'medium', 'deep']).default('medium'),
+});
+
+export const DiffAnalysisResultSchema = z.object({
+  filesChanged: z.number(),
+  linesAdded: z.number(),
+  linesDeleted: z.number(),
+  files: z.array(z.object({
+    path: z.string(),
+    status: z.enum(['modified', 'added', 'deleted', 'renamed']),
+    linesAdded: z.number(),
+    linesDeleted: z.number(),
+    changeType: z.enum(['docs', 'code', 'config', 'test', 'other']),
+    impact: z.enum(['low', 'medium', 'high', 'critical']),
+    recommendations: z.array(z.string()),
+  })),
+  patterns: z.array(z.object({
+    pattern: z.string(),
+    count: z.number(),
+    files: z.array(z.string()),
+  })),
+  insights: z.array(z.object({
+    type: z.string(),
+    description: z.string(),
+    confidence: z.number(),
+    recommendations: z.array(z.string()),
+  })),
+});
+
+// Commit Message Analysis Schemas
+export const CommitMessageAnalysisSchema = z.object({
+  message: z.string(),
+  conventionalFormat: z.boolean(),
+  type: z.string().optional(),
+  scope: z.string().optional(),
+  description: z.string().optional(),
+  body: z.string().optional(),
+  footer: z.string().optional(),
+  breakingChange: z.boolean().default(false),
+  issues: z.array(z.string()).optional(),
+  suggestions: z.array(z.string()),
+  score: z.number().min(0).max(100),
+});
+
+// Documentation Pattern Matching Schemas
+export const DocPatternMatchSchema = z.object({
+  pattern: z.string(),
+  matches: z.array(z.object({
+    file: z.string(),
+    line: z.number(),
+    content: z.string(),
+    context: z.string(),
+    relevance: z.number(),
+  })),
+  totalMatches: z.number(),
+  patternType: z.enum(['code', 'docs', 'config', 'test']),
+});
+
+// Integration Schemas
+export const IntegrationConfigSchema = z.object({
+  type: z.enum(['github', 'slack', 'discord', 'email', 'webhook']),
+  config: z.record(z.any()),
+  enabled: z.boolean().default(true),
+  webhookUrl: z.string().optional(),
+  apiKey: z.string().optional(),
+  channel: z.string().optional(),
+  template: z.string().optional(),
+});
+
+export const IntegrationEventSchema = z.object({
+  eventType: z.string(),
+  timestamp: z.string(),
+  data: z.record(z.any()),
+  metadata: z.record(z.any()).optional(),
+  recipients: z.array(z.string()).optional(),
+  priority: z.enum(['low', 'medium', 'high', 'critical']).default('medium'),
 }); 
