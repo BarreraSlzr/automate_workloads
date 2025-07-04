@@ -16,6 +16,7 @@ import {
   generateUpdateReport,
   ChecklistItemUpdate 
 } from '../utils/checklistUpdater';
+import { ZodError, UpdateChecklistFileCLIArgsSchema, UpdateChecklistBatchCLIArgsSchema, UpdateChecklistRoadmapCLIArgsSchema } from '@/types/schemas';
 import * as fs from 'fs';
 
 const program = new Command();
@@ -35,22 +36,31 @@ program
   .option('--no-backup', 'Skip creating backup files')
   .action(async (filePath: string, options: any) => {
     try {
+      // Validate CLI arguments using Zod
+      const validatedArgs = UpdateChecklistFileCLIArgsSchema.parse({
+        filePath,
+        updates: options.updates,
+        updatesFile: options.updatesFile,
+        dryRun: options.dryRun,
+        backup: options.backup,
+      });
+
       // Validate file exists
-      if (!fs.existsSync(filePath)) {
-        console.error(`❌ File not found: ${filePath}`);
+      if (!fs.existsSync(validatedArgs.filePath)) {
+        console.error(`❌ File not found: ${validatedArgs.filePath}`);
         process.exit(1);
       }
 
       // Get updates from command line or file
       let updatesString: string;
-      if (options.updates) {
-        updatesString = options.updates;
-      } else if (options.updatesFile) {
-        if (!fs.existsSync(options.updatesFile)) {
-          console.error(`❌ Updates file not found: ${options.updatesFile}`);
+      if (validatedArgs.updates) {
+        updatesString = validatedArgs.updates;
+      } else if (validatedArgs.updatesFile) {
+        if (!fs.existsSync(validatedArgs.updatesFile)) {
+          console.error(`❌ Updates file not found: ${validatedArgs.updatesFile}`);
           process.exit(1);
         }
-        updatesString = fs.readFileSync(options.updatesFile, 'utf8');
+        updatesString = fs.readFileSync(validatedArgs.updatesFile, 'utf8');
       } else {
         console.error('❌ Must provide either --updates or --updates-file');
         process.exit(1);
@@ -64,9 +74,9 @@ program
         process.exit(1);
       }
 
-      console.log(`📝 Updating ${filePath} with ${updates.length} changes...`);
+      console.log(`📝 Updating ${validatedArgs.filePath} with ${updates.length} changes...`);
       
-      if (options.dryRun) {
+      if (validatedArgs.dryRun) {
         console.log('🔍 Dry run - showing what would be updated:');
         updates.forEach(update => {
           console.log(`  - ${update.id}: ${update.status}${update.comment ? ` (${update.comment})` : ''}`);
@@ -75,7 +85,7 @@ program
       }
 
       // Perform update
-      const result = updateChecklistFile(filePath, updates);
+      const result = updateChecklistFile(validatedArgs.filePath, updates);
       
       if (result.success) {
         console.log(`✅ Successfully updated ${result.updatedCount} items`);
@@ -90,6 +100,13 @@ program
         process.exit(1);
       }
     } catch (error) {
+      if (error instanceof ZodError) {
+        console.error('❌ Validation error:');
+        error.errors.forEach(err => {
+          console.error(`  - ${err.path.join('.')}: ${err.message}`);
+        });
+        process.exit(1);
+      }
       console.error(`❌ Error: ${error instanceof Error ? error.message : String(error)}`);
       process.exit(1);
     }
@@ -104,17 +121,25 @@ program
   .option('--report <file>', 'Save update report to file')
   .action(async (options: any) => {
     try {
+      // Validate CLI arguments using Zod
+      const validatedArgs = UpdateChecklistBatchCLIArgsSchema.parse({
+        config: options.config,
+        updates: options.updates,
+        dryRun: options.dryRun,
+        report: options.report,
+      });
+
       // Get batch configuration
       let batchConfig: Record<string, any>;
       
-      if (options.config) {
-        if (!fs.existsSync(options.config)) {
-          console.error(`❌ Config file not found: ${options.config}`);
+      if (validatedArgs.config) {
+        if (!fs.existsSync(validatedArgs.config)) {
+          console.error(`❌ Config file not found: ${validatedArgs.config}`);
           process.exit(1);
         }
-        batchConfig = JSON.parse(fs.readFileSync(options.config, 'utf8'));
-      } else if (options.updates) {
-        batchConfig = JSON.parse(options.updates);
+        batchConfig = JSON.parse(fs.readFileSync(validatedArgs.config, 'utf8'));
+      } else if (validatedArgs.updates) {
+        batchConfig = JSON.parse(validatedArgs.updates);
       } else {
         console.error('❌ Must provide either --config or --updates');
         process.exit(1);
@@ -136,7 +161,7 @@ program
       const totalUpdates = files.reduce((sum, f) => sum + f.updates.length, 0);
       console.log(`📝 Updating ${files.length} files with ${totalUpdates} total changes...`);
 
-      if (options.dryRun) {
+      if (validatedArgs.dryRun) {
         console.log('🔍 Dry run - showing what would be updated:');
         files.forEach(({ path, updates }) => {
           console.log(`\n📄 ${path}:`);
@@ -155,9 +180,9 @@ program
       console.log('\n' + report);
 
       // Save report if requested
-      if (options.report) {
-        fs.writeFileSync(options.report, report);
-        console.log(`📊 Report saved to: ${options.report}`);
+      if (validatedArgs.report) {
+        fs.writeFileSync(validatedArgs.report, report);
+        console.log(`📊 Report saved to: ${validatedArgs.report}`);
       }
 
       // Exit with error if any files failed
@@ -167,6 +192,13 @@ program
         process.exit(1);
       }
     } catch (error) {
+      if (error instanceof ZodError) {
+        console.error('❌ Validation error:');
+        error.errors.forEach(err => {
+          console.error(`  - ${err.path.join('.')}: ${err.message}`);
+        });
+        process.exit(1);
+      }
       console.error(`❌ Error: ${error instanceof Error ? error.message : String(error)}`);
       process.exit(1);
     }
@@ -182,35 +214,39 @@ program
   .option('--dry-run', 'Show what would be updated without making changes')
   .action(async (filePath: string, options: any) => {
     try {
-      if (!fs.existsSync(filePath)) {
-        console.error(`❌ File not found: ${filePath}`);
-        process.exit(1);
-      }
+      // Validate CLI arguments using Zod
+      const validatedArgs = UpdateChecklistRoadmapCLIArgsSchema.parse({
+        filePath,
+        task: options.task,
+        status: options.status,
+        comment: options.comment,
+        dryRun: options.dryRun,
+      });
 
-      if (!options.task || !options.status) {
-        console.error('❌ Must provide both --task and --status');
+      if (!fs.existsSync(validatedArgs.filePath)) {
+        console.error(`❌ File not found: ${validatedArgs.filePath}`);
         process.exit(1);
       }
 
       const updates: ChecklistItemUpdate[] = [{
-        id: options.task,
-        status: options.status as any,
-        comment: options.comment
+        id: validatedArgs.task,
+        status: validatedArgs.status,
+        comment: validatedArgs.comment
       }];
 
-      console.log(`📝 Updating roadmap task: ${options.task} -> ${options.status}`);
+      console.log(`📝 Updating roadmap task: ${validatedArgs.task} -> ${validatedArgs.status}`);
       
-      if (options.dryRun) {
+      if (validatedArgs.dryRun) {
         console.log('🔍 Dry run - would update:');
-        console.log(`  - Task: ${options.task}`);
-        console.log(`  - Status: ${options.status}`);
-        if (options.comment) {
-          console.log(`  - Comment: ${options.comment}`);
+        console.log(`  - Task: ${validatedArgs.task}`);
+        console.log(`  - Status: ${validatedArgs.status}`);
+        if (validatedArgs.comment) {
+          console.log(`  - Comment: ${validatedArgs.comment}`);
         }
         return;
       }
 
-      const result = updateChecklistFile(filePath, updates);
+      const result = updateChecklistFile(validatedArgs.filePath, updates);
       
       if (result.success) {
         console.log(`✅ Successfully updated roadmap task`);
@@ -222,6 +258,13 @@ program
         process.exit(1);
       }
     } catch (error) {
+      if (error instanceof ZodError) {
+        console.error('❌ Validation error:');
+        error.errors.forEach(err => {
+          console.error(`  - ${err.path.join('.')}: ${err.message}`);
+        });
+        process.exit(1);
+      }
       console.error(`❌ Error: ${error instanceof Error ? error.message : String(error)}`);
       process.exit(1);
     }

@@ -8,37 +8,18 @@
 
 import { GitHubService } from "../services/github";
 import { validateConfig } from "../core/config";
+import { z, ZodError, GitHubIssuesCLIArgsSchema } from "@/types/schemas";
+
+
 
 /**
- * CLI options interface
- */
-interface GitHubIssuesCLIOptions {
-  /** Repository owner */
-  owner?: string;
-  /** Repository name */
-  repo?: string;
-  /** Issue state filter */
-  state?: 'open' | 'closed' | 'all';
-  /** Output format */
-  format?: 'text' | 'json' | 'table';
-  /** Verbose output */
-  verbose?: boolean;
-}
-
-/**
- * Parses command line arguments
+ * Parses command line arguments using Zod validation
  * 
- * @returns {GitHubIssuesCLIOptions} Parsed CLI options
+ * @returns {z.infer<typeof GitHubIssuesCLIArgsSchema>} Parsed and validated CLI options
  */
-function parseArgs(): GitHubIssuesCLIOptions {
+function parseArgs(): z.infer<typeof GitHubIssuesCLIArgsSchema> {
   const args = process.argv.slice(2);
-  const options: GitHubIssuesCLIOptions = {
-    owner: 'BarreraSlzr',
-    repo: 'automate_workloads',
-    state: 'open',
-    format: 'text',
-    verbose: false,
-  };
+  const options: Record<string, any> = {};
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
@@ -54,11 +35,11 @@ function parseArgs(): GitHubIssuesCLIOptions {
         break;
       case '--state':
       case '-s':
-        options.state = args[++i] as 'open' | 'closed' | 'all';
+        options.state = args[++i];
         break;
       case '--format':
       case '-f':
-        options.format = args[++i] as 'text' | 'json' | 'table';
+        options.format = args[++i];
         break;
       case '--json':
         options.format = 'json';
@@ -78,7 +59,18 @@ function parseArgs(): GitHubIssuesCLIOptions {
     }
   }
 
-  return options;
+  try {
+    return GitHubIssuesCLIArgsSchema.parse(options);
+  } catch (error) {
+    if (error instanceof ZodError) {
+      console.error('❌ Validation error:');
+      error.errors.forEach(err => {
+        console.error(`  - ${err.path.join('.')}: ${err.message}`);
+      });
+      process.exit(1);
+    }
+    throw error;
+  }
 }
 
 /**

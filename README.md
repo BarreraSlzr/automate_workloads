@@ -3,6 +3,8 @@
 ## Overview
 This project provides robust automation scripts and tools for repository health, progress tracking, and GitHub integration. All automation and testing is now local—there is no `remote-repo` directory or cross-repo simulation.
 
+> **🏷️ Quick Note**: GitHub **labels** and fossil **tags** are different systems - see [docs/README.md](docs/README.md#labels-vs-tags-important-distinction) for details.
+
 ## Requirements
 - [Bun](https://bun.sh/)
 - [gh (GitHub CLI)](https://cli.github.com/)

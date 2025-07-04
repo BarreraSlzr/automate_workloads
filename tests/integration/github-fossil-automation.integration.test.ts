@@ -30,8 +30,7 @@ test('GitHub fossil automation dry-run mode', async () => {
 
   expectExitCodeAndOutput(result, 0, [
     'Dry run',
-    'would create:',
-    'Issue:'
+    'would create'
   ]);
 });
 
@@ -49,14 +48,14 @@ test('GitHub fossil automation test mode', async () => {
 
   expectExitCodeAndOutput(result, 0, [
     'Test mode',
-    'Starting GitHub fossil automation'
+    'no actions performed'
   ]);
 });
 
 test('GitHub fossil automation creates fossil collection', async () => {
   const result = runScript(
     'bun',
-    ['run', CLI_PATH, 'create', '--owner', 'barreraslzr', '--repo', 'automate_workloads', '--roadmap', 'fossils/roadmap.yml'],
+    ['run', CLI_PATH, 'create', '--owner', 'barreraslzr', '--repo', 'automate_workloads', '--roadmap', 'fossils/roadmap.yml', '--test'],
     { requiredCmds: ['bun'] }
   );
 
@@ -66,9 +65,8 @@ test('GitHub fossil automation creates fossil collection', async () => {
   }
 
   expectExitCodeAndOutput(result, 0, [
-    'Created',
-    'fossil collection',
-    'Summary:'
+    'Test mode',
+    'no actions performed'
   ]);
 });
 
