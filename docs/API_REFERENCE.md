@@ -36,6 +36,7 @@ The recommended way to set up your environment is via the automated onboarding s
 - [Fossil Entry Schema](#fossil-entry-schema)
 - [🦴 Migration & Issue Update CLI](#migration-issue-update-cli)
 - [🦴 LLM Fossilization Utilities](#llm-fossilization-utilities)
+- [📊 Roadmap LLM Insights](#roadmap-llm-insights)
 - [🧠 Intelligent LLM Routing](#intelligent-llm-routing)
 
 ---
@@ -1173,4 +1174,137 @@ The publication workflow supports future integrations with:
 - **React/MDX**: Frontmatter metadata enables MDX processing
 - **Next.js/Remix**: Structured data for dynamic rendering
 - **API Endpoints**: JSON outputs serve as REST API responses
-- **Automation**: CI/CD integration for automatic publication 
+- **Automation**: CI/CD integration for automatic publication
+
+---
+
+## 📊 Roadmap LLM Insights
+
+The roadmap LLM insights system provides external analysis and generation of insights from `roadmap.yml`, replacing the previous embedded `llmInsights` approach for better maintainability and advanced analysis capabilities.
+
+### Overview
+
+Instead of embedding LLM insights directly in `roadmap.yml`, the system now:
+- **Analyzes** the roadmap externally using sophisticated LLM analysis
+- **Generates** insights for tasks, milestones, and overall progress
+- **Fossilizes** all insights with proper metadata and traceability
+- **Publishes** insights in multiple formats for different use cases
+
+### Core Scripts
+
+#### Remove Embedded LLM Insights
+```bash
+# Remove all llmInsights from roadmap.yml
+bun run scripts/remove-llm-insights-from-roadmap.ts
+```
+
+This script:
+- Creates a backup of the current roadmap with LLM insights
+- Removes all `llmInsights` properties from tasks and subtasks
+- Preserves all other roadmap structure and metadata
+
+#### Generate External LLM Insights
+```bash
+# Analyze roadmap and generate fresh insights
+bun run scripts/analyze-roadmap-llm-insights.ts
+```
+
+This script:
+- Analyzes each task individually for insights
+- Analyzes milestone progress and completion
+- Analyzes overall roadmap health and progress
+- Fossilizes all insights with proper metadata
+
+#### Extract Insights for Publication
+```bash
+# Extract insights for web publication and reports
+bun run scripts/extract-roadmap-insights.ts
+```
+
+This script:
+- Creates a collection of all insights
+- Generates web-friendly publication format
+- Creates markdown reports for human consumption
+- Maintains traceability back to the roadmap
+
+### Analysis Capabilities
+
+#### Task-Level Analysis
+Each task is analyzed for:
+- **Priority**: High/medium/low based on status, tags, and context
+- **Impact**: High/medium/low based on task scope and dependencies
+- **Blockers**: Identified dependencies or issues
+- **Recommendations**: Specific next steps
+- **Category**: Classification (implementation, testing, documentation, etc.)
+- **Progress**: Assessment based on status and subtasks
+
+#### Milestone Analysis
+Each milestone is analyzed for:
+- **Completion**: Percentage of completion
+- **Priority**: Based on completion and task importance
+- **Blockers**: Issues preventing completion
+- **Recommendations**: Steps to advance the milestone
+- **Risk**: Assessment of completion risk
+
+#### Overall Progress Analysis
+The entire roadmap is analyzed for:
+- **Health**: Excellent/good/fair/poor based on progress distribution
+- **Priorities**: Top 3 priority areas to focus on
+- **Risks**: Key concerns for roadmap completion
+- **Recommendations**: Strategic recommendations
+- **Next Quarter**: Key objectives for the next quarter
+
+### File Structure
+
+```
+fossils/
+├── roadmap.yml                    # Clean roadmap without embedded insights
+├── roadmap_insights/             # Directory for LLM insight fossils
+│   ├── analysis_summary.json     # Summary of all generated insights
+│   └── [individual fossil files] # Individual insight fossils
+├── roadmap_insights_collection.json  # Collection of all insights
+├── roadmap_insights_web.json     # Web publication format
+└── public/
+    └── roadmap_progress.md       # Human-readable markdown report
+```
+
+### Usage Patterns
+
+#### For Developers
+```bash
+# Generate fresh insights after roadmap updates
+bun run scripts/analyze-roadmap-llm-insights.ts
+
+# Extract insights for web publication
+bun run scripts/extract-roadmap-insights.ts
+```
+
+#### For Project Managers
+- Review `fossils/roadmap_insights/analysis_summary.json` for overview
+- Check `fossils/public/roadmap_progress.md` for human-readable report
+- Use milestone analysis for progress tracking
+- Reference task insights for prioritization
+
+#### For LLM Systems
+- Parse `fossils/roadmap_insights_collection.json` for structured data
+- Use `fossils/roadmap_insights_web.json` for web integration
+- Reference individual fossils for detailed analysis
+
+### Integration with CI/CD
+
+```yaml
+# Example GitHub Actions workflow
+- name: Analyze Roadmap Insights
+  run: |
+    bun run scripts/analyze-roadmap-llm-insights.ts
+    bun run scripts/extract-roadmap-insights.ts
+```
+
+### Migration from Embedded Insights
+
+If you have existing scripts that access `task.llmInsights`, update them to:
+1. Use the insights collection files
+2. Reference individual fossil files
+3. Use the web publication format
+
+See [Roadmap LLM Insights Migration Guide](./ROADMAP_LLM_INSIGHTS_MIGRATION.md) for detailed migration instructions. 
