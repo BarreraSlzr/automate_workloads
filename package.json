@@ -1,5 +1,6 @@
 {
   "name": "automate_workloads",
+  "version": "1.0.0",
   "type": "module",
   "private": true,
   "scripts": {
@@ -76,6 +77,7 @@
     "llm:execute": "bun run src/cli/llm-execute.ts",
     "llm:monitor": "bun run src/cli/llm-monitor.ts",
     "llm:plan": "bun run src/cli/llm-plan.ts",
+    "llm:chat-context": "bun run scripts/llm-chat-context.ts",
     "validate:plan": "bun run src/cli/validate-plan.ts",
     "validate:plan:batch": "bun run src/cli/validate-plan.ts batch",
     "validate:plan:create-expected": "bun run src/cli/validate-plan.ts create-expected",
