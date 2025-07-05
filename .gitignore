@@ -137,3 +137,10 @@ context-backups/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Blog content - managed in separate branches
+docs/blog/
+blog-content/
+*.blog.md
+blog-publications/
+blog-backups/

@@ -1,9 +1,9 @@
 {
-  "timestamp": "2025-07-04T23:44:37-06:00",
+  "timestamp": "2025-07-05T02:08:42-06:00",
   "validation": {
     "typescript": {
       "status": "pass",
-      "duration": 3869
+      "duration": 0
     },
     "tests": {
       "status": "pass",
@@ -11,7 +11,7 @@
       "passed": 3,
       "failed": 0,
       "skipped": 0,
-      "duration": 12
+      "duration": 0
     }
   },
   "project": {
@@ -19,17 +19,17 @@
     "version": "1.0.0",
     "description": "A comprehensive automation ecosystem integrating GitHub, Twitter, Gmail, Buffer, and Obsidian with Bun and TypeScript",
     "lastCommit": {
-      "hash": "ba43c21e56e6c3f70e4ffbd97757c8f1c0a270d2",
-      "message": "chore(analysis): add git diff analysis and LLM usage logs",
+      "hash": "341834ea64a59d3a8d515de194d9f8cd0bc33618",
+      "message": "fix: update Husky pre-commit hook for v9+ (no bootstrap lines)",
       "author": "Emmanuel Barrera Salazar (BarreraSlzr)",
-      "date": "2025-07-04 22:36:31 -0600"
+      "date": "2025-07-05 02:02:59 -0600"
     },
     "recentChanges": [
+      "fix: update Husky pre-commit hook for v9+ (no bootstrap lines)",
+      "test: testing husky pre-commit validation with type violation",
       "chore(analysis): add git diff analysis and LLM usage logs",
       "feat(fossils): update roadmap and insights with new architecture",
-      "docs(guides): update API reference and development guide",
-      "docs(migration): add comprehensive LLM insights migration documentation",
-      "refactor(scripts): update roadmap insights scripts for new architecture"
+      "docs(guides): update API reference and development guide"
     ],
     "openIssues": 30,
     "pendingTasks": 203
@@ -48,20 +48,18 @@
       "summary": "No unstaged changes"
     },
     "untracked": [
-      ".github/workflows/performance-monitoring.yml",
-      ".github/workflows/performance-tracking.yml",
-      "docs/PERFORMANCE_MONITORING_GUIDE.md",
-      "docs/PERFORMANCE_TRACEABILITY_GUIDE.md",
-      "fossils/performance/performance_data.json",
-      "scripts/performance-insights.sh",
-      "scripts/performance-monitor.sh",
-      "scripts/performance-notifications.sh",
-      "src/cli/performance-monitor.ts",
-      "src/utils/performanceMonitor.ts",
-      "src/utils/performanceTracker.ts",
-      "tests/unit/scripts/performance-insights.test.ts",
-      "tests/unit/scripts/performance-monitor.test.ts",
-      "tests/unit/scripts/performance-notifications.test.ts"
+      ".llm-usage-log.json",
+      ".temp-fossil-content-91967.json",
+      "docs/ADVANCED_FOSSIL_QUERY_PATTERNS_GUIDE.md",
+      "docs/FOSSIL_QUERY_ANALYSIS_SUMMARY.md",
+      "docs/FOSSIL_QUERY_PATTERNS_ANALYSIS.md",
+      "docs/FOSSIL_QUERY_PATTERNS_RULE.md",
+      "docs/WORKFLOW_UTILITY_DETECTION_RULE.md",
+      "examples/advanced-fossil-query-patterns.ts",
+      "fossils/performance/performance_log.json",
+      "scripts/advanced-fossil-analysis.ts.bak",
+      "scripts/analyze-bun-test-snapshots.ts",
+      "scripts/test-llm-fossilization.ts"
     ],
     "branch": "master",
     "ahead": 0,
@@ -95,6 +93,6 @@
   "recommendations": [
     "Run \"bun test\" for comprehensive test validation",
     "Consider addressing open issues to reduce technical debt",
-    "Consider adding 14 untracked files to .gitignore or staging them"
+    "Consider adding 12 untracked files to .gitignore or staging them"
   ]
 }

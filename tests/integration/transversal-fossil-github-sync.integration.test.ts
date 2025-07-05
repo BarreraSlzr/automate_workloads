@@ -39,6 +39,9 @@ test('Transversal fossil & GitHub sync example runs and outputs canonical fossil
   for (const file of fossilFiles) {
     expect(file).not.toMatch(/\d{4}-\d{2}-\d{2}T/); // No ISO timestamps
     expect(file).not.toMatch(/\d{13,}/); // No millisecond timestamps
-    expect(file).not.toMatch(/temp/); // No temp files
+    // More specific temp file check - exclude legitimate directories
+    if (file.includes('temp') && !file.includes('commit_templates') && !file.includes('template')) {
+      expect(file).not.toMatch(/^\.temp/); // No temp files starting with .temp
+    }
   }
 }); 

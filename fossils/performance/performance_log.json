@@ -1,0 +1,32 @@
+[
+  {
+    "script": "scripts/llm-chat-context",
+    "execution_time": 6.602,
+    "memory_usage_mb": 0.8914041519165039,
+    "exit_code": 0,
+    "timestamp": "2025-07-05T05:48:06.291Z",
+    "additional_metrics": {
+      "real_time": 6.602,
+      "user_time": 5.281600000000001,
+      "sys_time": 1.3204000000000002,
+      "output_size_bytes": 1154,
+      "error_size_bytes": 0,
+      "cpu_percent": 100
+    }
+  },
+  {
+    "script": "fossil-summary-md",
+    "execution_time": 0.08,
+    "memory_usage_mb": 2.75,
+    "exit_code": 0,
+    "timestamp": "2025-07-05T06:36:26Z",
+    "additional_metrics": {
+      "real_time": 0.08,
+      "user_time": 0.02,
+      "sys_time": 0.01,
+      "output_size_bytes": 7777,
+      "error_size_bytes": 0,
+      "cpu_percent": 37.00
+    }
+  }
+]

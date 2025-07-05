@@ -184,6 +184,21 @@ actions:
     description: Run QA workflow
     example: bun run qa:workflow
     llm: true
+  - name: precommit:unified
+    category: Pre-commit
+    description: Run unified pre-commit validation
+    example: bun run precommit:unified
+    llm: true
+  - name: footprint:evolving
+    category: Footprint
+    description: Update evolving footprint
+    example: bun run footprint:evolving --update true
+    llm: true
+  - name: footprint:validate
+    category: Footprint
+    description: Validate footprint files
+    example: bun run footprint:validate
+    llm: true
   - name: workflow:automate
     category: Workflow
     description: Run LLM workflow

@@ -6,7 +6,17 @@ import {
   WorkflowStepSchema,
   ComponentSchema,
   RiskSchema,
-  DependencySchema
+  DependencySchema,
+  ProgressMetricsSchema,
+  TrendAnalysisSchema,
+  DiffAnalysisResultSchema,
+  CommitMessageAnalysisSchema,
+  DocPatternMatchSchema,
+  IntegrationEventSchema,
+  BatchProcessingResultSchema,
+  TaskMatchResultSchema,
+  ExternalReviewSchema,
+  ReviewRequestSchema
 } from "../../../src/types/schemas";
 import {
   LLMInsightFossilSchema,
@@ -320,4 +330,164 @@ test('Schema integration test validates complete workflow with all schemas', () 
   workflow.dependencies.forEach(dependency => {
     expect(() => DependencySchema.parse(dependency)).not.toThrow();
   });
+});
+
+test('ProgressMetricsSchema validates correct metrics', () => {
+  const valid = {
+    healthScore: 90,
+    actionPlanCompletion: 80,
+    automationCompletion: 70,
+    totalActionPlans: 10,
+    completedActionPlans: 8,
+    openActionPlans: 2,
+    totalAutomationIssues: 5,
+    completedAutomationIssues: 3,
+    openAutomationIssues: 2,
+    timestamp: '2025-07-05T00:00:00Z'
+  };
+  expect(() => ProgressMetricsSchema.parse(valid)).not.toThrow();
+});
+
+test('TrendAnalysisSchema validates correct trend', () => {
+  const valid = {
+    trend: 'improving',
+    firstScore: 60,
+    lastScore: 90,
+    improvement: 30,
+    dataPoints: 5
+  };
+  expect(() => TrendAnalysisSchema.parse(valid)).not.toThrow();
+});
+
+test('DiffAnalysisResultSchema validates correct diff', () => {
+  const valid = {
+    filesChanged: 2,
+    linesAdded: 10,
+    linesDeleted: 5,
+    files: [
+      {
+        path: 'src/index.ts',
+        status: 'modified',
+        linesAdded: 5,
+        linesDeleted: 2,
+        changeType: 'code',
+        impact: 'medium',
+        recommendations: ['Refactor for clarity']
+      },
+      {
+        path: 'README.md',
+        status: 'added',
+        linesAdded: 5,
+        linesDeleted: 0,
+        changeType: 'docs',
+        impact: 'low',
+        recommendations: []
+      }
+    ],
+    patterns: [
+      { pattern: 'TODO', count: 2, files: ['src/index.ts'] }
+    ],
+    insights: [
+      { type: 'refactor', description: 'Consider refactoring', confidence: 0.9, recommendations: ['Refactor'] }
+    ]
+  };
+  expect(() => DiffAnalysisResultSchema.parse(valid)).not.toThrow();
+});
+
+test('CommitMessageAnalysisSchema validates correct commit message analysis', () => {
+  const valid = {
+    message: 'feat: add new feature',
+    conventionalFormat: true,
+    suggestions: ['Use imperative mood'],
+    score: 95
+  };
+  expect(() => CommitMessageAnalysisSchema.parse(valid)).not.toThrow();
+});
+
+test('DocPatternMatchSchema validates correct doc pattern match', () => {
+  const valid = {
+    pattern: 'TODO',
+    matches: [
+      { file: 'src/index.ts', line: 10, content: 'TODO: refactor', context: 'function', relevance: 0.8 }
+    ],
+    totalMatches: 1,
+    patternType: 'code'
+  };
+  expect(() => DocPatternMatchSchema.parse(valid)).not.toThrow();
+});
+
+test('IntegrationEventSchema validates correct integration event', () => {
+  const valid = {
+    eventType: 'push',
+    timestamp: '2025-07-05T00:00:00Z',
+    data: { ref: 'refs/heads/main' },
+    metadata: { source: 'github' },
+    recipients: ['user1'],
+    priority: 'high'
+  };
+  expect(() => IntegrationEventSchema.parse(valid)).not.toThrow();
+});
+
+test('BatchProcessingResultSchema validates correct batch processing result', () => {
+  const valid = {
+    totalItems: 10,
+    processedItems: 10,
+    successfulItems: 9,
+    failedItems: 1,
+    skippedItems: 0,
+    processingTime: 1000,
+    errors: [
+      { itemId: 'item-1', error: 'Failed to process', retryCount: 2 }
+    ],
+    results: [ { id: 'item-2', status: 'success' } ]
+  };
+  expect(() => BatchProcessingResultSchema.parse(valid)).not.toThrow();
+});
+
+test('TaskMatchResultSchema validates correct task match result', () => {
+  const valid = {
+    query: 'fix bug',
+    matches: [
+      {
+        fossilId: 'fossil-1',
+        title: 'Fix login bug',
+        type: 'bug',
+        similarity: 0.95,
+        confidence: 0.9,
+        matchedFields: ['title'],
+        metadata: { priority: 'high' }
+      }
+    ],
+    totalResults: 1,
+    processingTime: 200,
+    algorithm: 'semantic'
+  };
+  expect(() => TaskMatchResultSchema.parse(valid)).not.toThrow();
+});
+
+test('ExternalReviewSchema validates correct external review', () => {
+  const valid = {
+    reviewId: 'review-1',
+    fossilId: 'fossil-1',
+    reviewer: 'user1',
+    status: 'approved',
+    comments: [
+      { id: 'c1', author: 'user1', content: 'Looks good', timestamp: '2025-07-05T00:00:00Z' }
+    ],
+    createdAt: '2025-07-05T00:00:00Z',
+    updatedAt: '2025-07-05T00:00:00Z'
+  };
+  expect(() => ExternalReviewSchema.parse(valid)).not.toThrow();
+});
+
+test('ReviewRequestSchema validates correct review request', () => {
+  const valid = {
+    fossilIds: ['fossil-1', 'fossil-2'],
+    reviewers: ['user1', 'user2'],
+    deadline: '2025-07-10T00:00:00Z',
+    priority: 'high',
+    context: 'Urgent review needed',
+    autoApprove: false
+  };
+  expect(() => ReviewRequestSchema.parse(valid)).not.toThrow();
 });

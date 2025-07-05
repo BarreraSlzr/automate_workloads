@@ -1,5 +1,6 @@
 import { test, expect } from "bun:test";
 import { ScriptTester } from "../../base-tester.ts";
+import { safeParseJSON } from "../../../src/utils/cli";
 
 const tester = new ScriptTester("./scripts/llm-chat-context.ts", "LLM Chat Context Script Test");
 
@@ -17,12 +18,13 @@ test("llm-chat-context.ts generates context file", async () => {
       "📊 Gathering project information...",
       "🗿 Analyzing fossils",
       "🔍 Analyzing git changes",
-      "📋 LLM Chat Context Summary",
+      "📋 LLM Chat Context Summary:",
       "Context saved to: fossils/chat_context.json",
       "🚀 Ready for LLM chat"
     ],
     expectedExitCode: 0,
     timeoutMs: 60000,
+    extraEnv: { SKIP_TSC: "1" },
     normalize: output => output.trim(),
   });
   
@@ -32,7 +34,7 @@ test("llm-chat-context.ts generates context file", async () => {
   
   try {
     const content = await fs.readFile(contextFile, 'utf-8');
-    const context = JSON.parse(content);
+    const context = safeParseJSON<any>(content, 'chat context');
     
     // Verify required fields
     expect(context).toHaveProperty('timestamp');

@@ -1,0 +1,1059 @@
+current:
+  timestamp: 2025-07-05T13:01:46.632Z
+  commit: 341834ea64a59d3a8d515de194d9f8cd0bc33618
+  branch: master
+  message: "fix: update Husky pre-commit hook for v9+ (no bootstrap lines)"
+  author: Emmanuel Barrera Salazar (BarreraSlzr)
+  files:
+    staged: []
+    unstaged:
+      - path: .husky/pre-commit
+        status: M
+        size: 7068
+        lines: 198
+        lastModified: 2025-07-05T09:13:53.904Z
+        extension: husky/pre-commit
+      - path: bun.lock
+        status: M
+        size: 39983
+        lines: 368
+        lastModified: 2025-07-05T08:03:03.497Z
+        extension: lock
+      - path: docs/LLM_ERROR_PREVENTION_SUMMARY.md
+        status: M
+        size: 19298
+        lines: 684
+        lastModified: 2025-07-05T08:03:03.498Z
+        extension: md
+      - path: fossils/chat_context.json
+        status: M
+        size: 2889
+        lines: 98
+        lastModified: 2025-07-05T08:08:42.496Z
+        extension: json
+      - path: fossils/curated_roadmap_canonical.json
+        status: M
+        size: 83153
+        lines: 1652
+        lastModified: 2025-07-05T09:38:24.272Z
+        extension: json
+      - path: fossils/curated_roadmap_demo.json
+        status: M
+        size: 83143
+        lines: 1652
+        lastModified: 2025-07-05T09:34:40.147Z
+        extension: json
+      - path: fossils/project_status.yml
+        status: M
+        size: 82905
+        lines: 2198
+        lastModified: 2025-07-05T09:34:05.021Z
+        extension: yml
+      - path: fossils/setup_status.yml
+        status: M
+        size: 2047
+        lines: 69
+        lastModified: 2025-07-05T08:08:47.026Z
+        extension: yml
+      - path: package.json
+        status: M
+        size: 10402
+        lines: 195
+        lastModified: 2025-07-05T13:01:09.209Z
+        extension: json
+      - path: scripts/extract-roadmap-insights.ts
+        status: M
+        size: 6618
+        lines: 207
+        lastModified: 2025-07-05T12:34:33.869Z
+        extension: ts
+      - path: scripts/llm-chat-context.ts
+        status: M
+        size: 20505
+        lines: 618
+        lastModified: 2025-07-05T08:03:03.503Z
+        extension: ts
+      - path: scripts/precommit-validate.ts
+        status: M
+        size: 15301
+        lines: 492
+        lastModified: 2025-07-05T11:14:40.923Z
+        extension: ts
+      - path: src/cli/analyze-git-diff.ts
+        status: M
+        size: 6594
+        lines: 200
+        lastModified: 2025-07-05T12:02:54.748Z
+        extension: ts
+      - path: src/cli/context-fossil.ts
+        status: M
+        size: 48207
+        lines: 1421
+        lastModified: 2025-07-05T12:34:41.885Z
+        extension: ts
+      - path: src/cli/curate-fossil.ts
+        status: M
+        size: 770
+        lines: 27
+        lastModified: 2025-07-05T11:40:29.802Z
+        extension: ts
+      - path: src/cli/ensure-demo-issue.ts
+        status: M
+        size: 1079
+        lines: 27
+        lastModified: 2025-07-05T11:40:35.101Z
+        extension: ts
+      - path: src/cli/github-issues.ts
+        status: M
+        size: 2926
+        lines: 108
+        lastModified: 2025-07-05T12:34:55.885Z
+        extension: ts
+      - path: src/cli/issues-create.ts
+        status: M
+        size: 3282
+        lines: 83
+        lastModified: 2025-07-05T12:03:52.048Z
+        extension: ts
+      - path: src/cli/performance-monitor.ts
+        status: M
+        size: 11100
+        lines: 342
+        lastModified: 2025-07-05T12:09:20.455Z
+        extension: ts
+      - path: src/cli/repo-orchestrator.ts
+        status: M
+        size: 52626
+        lines: 1494
+        lastModified: 2025-07-05T12:26:46.965Z
+        extension: ts
+      - path: src/cli/timestamp-filter.ts
+        status: M
+        size: 2739
+        lines: 92
+        lastModified: 2025-07-05T12:16:51.704Z
+        extension: ts
+      - path: src/cli/validate-plan.ts
+        status: M
+        size: 8320
+        lines: 228
+        lastModified: 2025-07-05T12:35:04.151Z
+        extension: ts
+      - path: src/services/github.ts
+        status: M
+        size: 10399
+        lines: 369
+        lastModified: 2025-07-05T12:26:56.112Z
+        extension: ts
+      - path: src/services/llm.ts
+        status: M
+        size: 34644
+        lines: 1028
+        lastModified: 2025-07-05T11:31:35.777Z
+        extension: ts
+      - path: src/services/llmEnhanced.ts
+        status: M
+        size: 16120
+        lines: 513
+        lastModified: 2025-07-05T11:31:43.739Z
+        extension: ts
+      - path: src/services/semantic-tagger.ts
+        status: M
+        size: 13842
+        lines: 376
+        lastModified: 2025-07-05T12:27:30.281Z
+        extension: ts
+      - path: src/types/cli.ts
+        status: M
+        size: 10347
+        lines: 283
+        lastModified: 2025-07-05T12:16:51.545Z
+        extension: ts
+      - path: src/types/core.ts
+        status: M
+        size: 7126
+        lines: 306
+        lastModified: 2025-07-05T10:59:34.958Z
+        extension: ts
+      - path: src/types/index.ts
+        status: M
+        size: 5344
+        lines: 251
+        lastModified: 2025-07-05T12:30:56.275Z
+        extension: ts
+      - path: src/types/llm.ts
+        status: M
+        size: 5144
+        lines: 175
+        lastModified: 2025-07-05T11:17:29.858Z
+        extension: ts
+      - path: src/types/schemas.ts
+        status: M
+        size: 67578
+        lines: 1896
+        lastModified: 2025-07-05T12:32:10.667Z
+        extension: ts
+      - path: src/utils/cli.ts
+        status: M
+        size: 10856
+        lines: 391
+        lastModified: 2025-07-05T12:26:02.357Z
+        extension: ts
+      - path: src/utils/curateFossil.ts
+        status: M
+        size: 1567
+        lines: 38
+        lastModified: 2025-07-05T11:41:18.192Z
+        extension: ts
+      - path: src/utils/fossilIssue.ts
+        status: M
+        size: 13142
+        lines: 411
+        lastModified: 2025-07-05T12:23:37.606Z
+        extension: ts
+      - path: src/utils/fossilLabel.ts
+        status: M
+        size: 3802
+        lines: 112
+        lastModified: 2025-07-05T12:24:52.171Z
+        extension: ts
+      - path: src/utils/fossilManager.ts
+        status: M
+        size: 16747
+        lines: 602
+        lastModified: 2025-07-05T12:30:36.556Z
+        extension: ts
+      - path: src/utils/fossilMilestone.ts
+        status: M
+        size: 4187
+        lines: 120
+        lastModified: 2025-07-05T12:25:49.807Z
+        extension: ts
+      - path: src/utils/fossilSummary.ts
+        status: M
+        size: 1737
+        lines: 45
+        lastModified: 2025-07-05T08:03:03.509Z
+        extension: ts
+      - path: src/utils/fossilize.ts
+        status: M
+        size: 3927
+        lines: 127
+        lastModified: 2025-07-05T12:26:28.032Z
+        extension: ts
+      - path: src/utils/githubCliCommands.ts
+        status: M
+        size: 6393
+        lines: 215
+        lastModified: 2025-07-05T12:05:11.507Z
+        extension: ts
+      - path: src/utils/githubFossilManager.ts
+        status: M
+        size: 8455
+        lines: 282
+        lastModified: 2025-07-05T11:45:58.606Z
+        extension: ts
+      - path: src/utils/llmFossilManager.ts
+        status: M
+        size: 16406
+        lines: 513
+        lastModified: 2025-07-05T11:20:17.118Z
+        extension: ts
+      - path: src/utils/performanceMonitor.ts
+        status: M
+        size: 13827
+        lines: 442
+        lastModified: 2025-07-05T08:03:03.510Z
+        extension: ts
+      - path: src/utils/performanceTracker.ts
+        status: M
+        size: 14454
+        lines: 480
+        lastModified: 2025-07-05T08:03:03.510Z
+        extension: ts
+      - path: src/utils/plan-validator.ts
+        status: M
+        size: 15044
+        lines: 469
+        lastModified: 2025-07-05T12:32:58.924Z
+        extension: ts
+      - path: src/utils/roadmapInsightsAccessor.ts
+        status: M
+        size: 8124
+        lines: 243
+        lastModified: 2025-07-05T12:22:00.906Z
+        extension: ts
+      - path: src/utils/roadmapInsightsExtractor.ts
+        status: M
+        size: 12104
+        lines: 340
+        lastModified: 2025-07-05T12:23:01.852Z
+        extension: ts
+      - path: src/utils/syncTracker.ts
+        status: M
+        size: 10668
+        lines: 241
+        lastModified: 2025-07-05T12:27:05.146Z
+        extension: ts
+      - path: src/utils/timestampFilter.ts
+        status: M
+        size: 9867
+        lines: 314
+        lastModified: 2025-07-05T12:12:50.083Z
+        extension: ts
+      - path: src/utils/typeSchemaValidator.ts
+        status: M
+        size: 41348
+        lines: 1522
+        lastModified: 2025-07-05T12:33:26.670Z
+        extension: ts
+      - path: src/utils/visualDiagramGenerator.ts
+        status: M
+        size: 12513
+        lines: 461
+        lastModified: 2025-07-05T12:31:54.432Z
+        extension: ts
+      - path: tests/e2e/examples.e2e.test.ts
+        status: M
+        size: 900
+        lines: 27
+        lastModified: 2025-07-05T09:32:17.869Z
+        extension: ts
+      - path: tests/e2e/scripts.e2e.test.ts
+        status: M
+        size: 2599
+        lines: 65
+        lastModified: 2025-07-05T09:31:54.777Z
+        extension: ts
+      - path: tests/integration/transversal-fossil-github-sync.integration.test.ts
+        status: M
+        size: 2016
+        lines: 47
+        lastModified: 2025-07-05T09:31:33.292Z
+        extension: ts
+      - path: tests/unit/scripts/llm-chat-context.test.ts
+        status: M
+        size: 3404
+        lines: 85
+        lastModified: 2025-07-05T08:03:03.511Z
+        extension: ts
+      - path: tests/unit/services/semantic-tagger.test.ts
+        status: M
+        size: 10813
+        lines: 288
+        lastModified: 2025-07-05T12:36:15.632Z
+        extension: ts
+      - path: tests/unit/types/schemas.test.ts
+        status: M
+        size: 14123
+        lines: 494
+        lastModified: 2025-07-05T08:03:03.511Z
+        extension: ts
+    untracked:
+      - path: .llm-usage-log.json
+        status: ??
+        size: 1664
+        lines: 41
+        lastModified: 2025-07-05T11:49:27.661Z
+        extension: json
+      - path: BATCH_COMMIT_ORCHESTRATION_GUIDE.md
+        status: ??
+        size: 7911
+        lines: 284
+        lastModified: 2025-07-05T10:46:22.853Z
+        extension: md
+      - path: COMMIT_BATCH_SUMMARY.md
+        status: ??
+        size: 6544
+        lines: 188
+        lastModified: 2025-07-05T08:03:03.496Z
+        extension: md
+      - path: docs/ADVANCED_FOSSIL_QUERY_PATTERNS_GUIDE.md
+        status: ??
+        size: 13521
+        lines: 493
+        lastModified: 2025-07-05T07:56:27.198Z
+        extension: md
+      - path: docs/API_KEY_SANITIZATION_GUIDE.md
+        status: ??
+        size: 6288
+        lines: 246
+        lastModified: 2025-07-05T08:32:29.919Z
+        extension: md
+      - path: docs/AUTOMATIC_PROCEDURE_GUIDE.md
+        status: ??
+        size: 8554
+        lines: 313
+        lastModified: 2025-07-05T10:26:04.114Z
+        extension: md
+      - path: docs/COMPREHENSIVE_LLM_SNAPSHOTTING_GUIDE.md
+        status: ??
+        size: 16016
+        lines: 558
+        lastModified: 2025-07-05T08:19:47.788Z
+        extension: md
+      - path: docs/ENHANCED_COMMIT_MESSAGE_SYSTEM.md
+        status: ??
+        size: 14255
+        lines: 497
+        lastModified: 2025-07-05T09:14:48.836Z
+        extension: md
+      - path: docs/EVOLVING_FOOTPRINT_GUIDE.md
+        status: ??
+        size: 8442
+        lines: 338
+        lastModified: 2025-07-05T13:01:36.785Z
+        extension: md
+      - path: docs/FILE_FOOTPRINT_SYSTEM.md
+        status: ??
+        size: 7614
+        lines: 306
+        lastModified: 2025-07-05T12:48:58.806Z
+        extension: md
+      - path: docs/FOOTPRINT_SIMPLIFICATION_ANALYSIS.md
+        status: ??
+        size: 7322
+        lines: 278
+        lastModified: 2025-07-05T12:55:58.532Z
+        extension: md
+      - path: docs/FOOTPRINT_USAGE_SCOPES.md
+        status: ??
+        size: 9569
+        lines: 340
+        lastModified: 2025-07-05T12:54:11.495Z
+        extension: md
+      - path: docs/FOSSIL_QUERY_ANALYSIS_SUMMARY.md
+        status: ??
+        size: 10592
+        lines: 366
+        lastModified: 2025-07-05T07:56:27.199Z
+        extension: md
+      - path: docs/FOSSIL_QUERY_PATTERNS_ANALYSIS.md
+        status: ??
+        size: 18871
+        lines: 648
+        lastModified: 2025-07-05T07:56:27.200Z
+        extension: md
+      - path: docs/FOSSIL_QUERY_PATTERNS_RULE.md
+        status: ??
+        size: 13513
+        lines: 455
+        lastModified: 2025-07-05T07:56:27.200Z
+        extension: md
+      - path: docs/GIT_HISTORY_LLM_INSIGHTS_APPROACH.md
+        status: ??
+        size: 11251
+        lines: 375
+        lastModified: 2025-07-05T09:02:25.022Z
+        extension: md
+      - path: docs/LLM_INSIGHTS_COMMIT_TRACEABILITY.md
+        status: ??
+        size: 17562
+        lines: 670
+        lastModified: 2025-07-05T08:55:27.270Z
+        extension: md
+      - path: docs/LLM_INSIGHTS_RULE_IMPLEMENTATION_GUIDE.md
+        status: ??
+        size: 23796
+        lines: 909
+        lastModified: 2025-07-05T08:58:02.140Z
+        extension: md
+      - path: docs/LLM_SNAPSHOTTING_IMPLEMENTATION_SUMMARY.md
+        status: ??
+        size: 10775
+        lines: 333
+        lastModified: 2025-07-05T08:20:58.380Z
+        extension: md
+      - path: docs/LLM_SNAPSHOTTING_VALIDATION_GUIDE.md
+        status: ??
+        size: 6081
+        lines: 244
+        lastModified: 2025-07-05T08:23:55.626Z
+        extension: md
+      - path: docs/LLM_SNAPSHOT_AUDIT_GUIDE.md
+        status: ??
+        size: 10207
+        lines: 357
+        lastModified: 2025-07-05T08:03:03.498Z
+        extension: md
+      - path: docs/LLM_SNAPSHOT_PROCESSING_APPROACH.md
+        status: ??
+        size: 8191
+        lines: 261
+        lastModified: 2025-07-05T09:42:37.146Z
+        extension: md
+      - path: docs/LLM_SNAPSHOT_STRUCTURE_ANALYSIS.md
+        status: ??
+        size: 24433
+        lines: 815
+        lastModified: 2025-07-05T08:03:03.499Z
+        extension: md
+      - path: docs/REMOTE_REPO_IMPLEMENTATION_GUIDE.md
+        status: ??
+        size: 33638
+        lines: 1067
+        lastModified: 2025-07-05T12:43:10.464Z
+        extension: md
+      - path: docs/REMOTE_REPO_QUICK_REFERENCE.md
+        status: ??
+        size: 9263
+        lines: 316
+        lastModified: 2025-07-05T12:43:39.683Z
+        extension: md
+      - path: docs/REMOTE_REPO_REFACTOR_INSIGHTS_APPROACH.md
+        status: ??
+        size: 8910
+        lines: 251
+        lastModified: 2025-07-05T12:41:12.437Z
+        extension: md
+      - path: docs/SNAPSHOT_PROCESSING_COHESION_SUMMARY.md
+        status: ??
+        size: 7808
+        lines: 238
+        lastModified: 2025-07-05T09:54:22.225Z
+        extension: md
+      - path: docs/VSCODE_AI_INTEGRATION_GUIDE.md
+        status: ??
+        size: 15074
+        lines: 571
+        lastModified: 2025-07-05T10:04:32.167Z
+        extension: md
+      - path: docs/WORKFLOW_UTILITY_DETECTION_RULE.md
+        status: ??
+        size: 14150
+        lines: 494
+        lastModified: 2025-07-05T07:56:27.200Z
+        extension: md
+      - path: examples/advanced-fossil-query-patterns.ts
+        status: ??
+        size: 24482
+        lines: 834
+        lastModified: 2025-07-05T07:56:27.201Z
+        extension: ts
+      - path: examples/enhanced-commit-message-demo.ts
+        status: ??
+        size: 21335
+        lines: 642
+        lastModified: 2025-07-05T09:16:06.202Z
+        extension: ts
+      - path: examples/git-history-insights-demo.ts
+        status: ??
+        size: 12367
+        lines: 390
+        lastModified: 2025-07-05T09:03:01.044Z
+        extension: ts
+      - path: examples/predictive-monitoring-demo.ts
+        status: ??
+        size: 14476
+        lines: 367
+        lastModified: 2025-07-05T10:16:30.440Z
+        extension: ts
+      - path: examples/snapshot-processing-analysis.ts
+        status: ??
+        size: 12642
+        lines: 411
+        lastModified: 2025-07-05T09:51:58.762Z
+        extension: ts
+      - path: examples/vscode-ai-integration.ts
+        status: ??
+        size: 17237
+        lines: 551
+        lastModified: 2025-07-05T10:02:23.249Z
+        extension: ts
+      - path: fossils/audit/llm-snapshot-audit-2025-07-05T07-48-37-635Z.json
+        status: ??
+        size: 2714
+        lines: 96
+        lastModified: 2025-07-05T08:03:03.499Z
+        extension: json
+      - path: fossils/audit/llm-snapshot-audit-2025-07-05T07-49-57-777Z.md
+        status: ??
+        size: 1182
+        lines: 44
+        lastModified: 2025-07-05T08:03:03.499Z
+        extension: md
+      - path: fossils/commit_audits/commit-audit-341834ea-1751707475836.json
+        status: ??
+        size: 5875
+        lines: 240
+        lastModified: 2025-07-05T09:24:35.837Z
+        extension: json
+      - path: fossils/performance/performance_log.json
+        status: ??
+        size: 772
+        lines: 32
+        lastModified: 2025-07-05T08:01:24.763Z
+        extension: json
+      - path: llm-snapshot-1751705076490.yml
+        status: ??
+        size: 162
+        lines: 7
+        lastModified: 2025-07-05T08:44:36.491Z
+        extension: yml
+      - path: scripts/advanced-fossil-analysis.ts
+        status: ??
+        size: 26094
+        lines: 748
+        lastModified: 2025-07-05T11:43:04.677Z
+        extension: ts
+      - path: scripts/analyze-batch-plan.ts
+        status: ??
+        size: 7888
+        lines: 264
+        lastModified: 2025-07-05T10:52:06.946Z
+        extension: ts
+      - path: scripts/analyze-bun-test-snapshots.ts
+        status: ??
+        size: 26047
+        lines: 769
+        lastModified: 2025-07-05T07:56:27.201Z
+        extension: ts
+      - path: scripts/analyze-git-diff.ts
+        status: ??
+        size: 14243
+        lines: 454
+        lastModified: 2025-07-05T10:25:32.336Z
+        extension: ts
+      - path: scripts/audit-llm-snapshots.ts
+        status: ??
+        size: 24161
+        lines: 726
+        lastModified: 2025-07-05T11:12:25.909Z
+        extension: ts
+      - path: scripts/automatic-procedure.ts
+        status: ??
+        size: 11928
+        lines: 422
+        lastModified: 2025-07-05T10:25:19.722Z
+        extension: ts
+      - path: scripts/automation/batch-commit-orchestrator.sh
+        status: ??
+        size: 15614
+        lines: 536
+        lastModified: 2025-07-05T10:59:02.508Z
+        extension: sh
+      - path: scripts/check-api-keys-in-fossils.ts
+        status: ??
+        size: 5038
+        lines: 132
+        lastModified: 2025-07-05T08:31:23.673Z
+        extension: ts
+      - path: scripts/commit-insight-generator.ts
+        status: ??
+        size: 19931
+        lines: 673
+        lastModified: 2025-07-05T11:37:41.735Z
+        extension: ts
+      - path: scripts/commit-message-template.ts
+        status: ??
+        size: 21649
+        lines: 659
+        lastModified: 2025-07-05T11:43:09.497Z
+        extension: ts
+      - path: scripts/commit-message-validator.ts
+        status: ??
+        size: 12693
+        lines: 436
+        lastModified: 2025-07-05T11:43:17.986Z
+        extension: ts
+      - path: scripts/commit-with-footprint.sh
+        status: ??
+        size: 6176
+        lines: 204
+        lastModified: 2025-07-05T12:48:10.166Z
+        extension: sh
+      - path: scripts/enhanced-pre-commit-validator.ts
+        status: ??
+        size: 31538
+        lines: 960
+        lastModified: 2025-07-05T09:21:32.420Z
+        extension: ts
+      - path: scripts/fix-validation-issues.ts
+        status: ??
+        size: 7140
+        lines: 241
+        lastModified: 2025-07-05T10:59:31.763Z
+        extension: ts
+      - path: scripts/generate-evolving-footprint.ts
+        status: ??
+        size: 10043
+        lines: 338
+        lastModified: 2025-07-05T13:01:42.819Z
+        extension: ts
+      - path: scripts/generate-file-footprint.ts
+        status: ??
+        size: 14957
+        lines: 511
+        lastModified: 2025-07-05T12:50:22.453Z
+        extension: ts
+      - path: scripts/git-history-llm-insights.ts
+        status: ??
+        size: 26345
+        lines: 863
+        lastModified: 2025-07-05T11:39:29.991Z
+        extension: ts
+      - path: scripts/llm-snapshot-export.ts
+        status: ??
+        size: 3665
+        lines: 114
+        lastModified: 2025-07-05T11:39:46.808Z
+        extension: ts
+      - path: scripts/pre-commit-evolving-footprint.sh
+        status: ??
+        size: 1027
+        lines: 37
+        lastModified: 2025-07-05T13:01:03.380Z
+        extension: sh
+      - path: scripts/pre-commit-footprint.sh
+        status: ??
+        size: 5758
+        lines: 170
+        lastModified: 2025-07-05T12:50:29.275Z
+        extension: sh
+      - path: scripts/quick-validate-llm.ts
+        status: ??
+        size: 7055
+        lines: 192
+        lastModified: 2025-07-05T08:23:16.507Z
+        extension: ts
+      - path: scripts/test-api-key-sanitization.ts
+        status: ??
+        size: 5301
+        lines: 151
+        lastModified: 2025-07-05T08:30:57.074Z
+        extension: ts
+      - path: scripts/test-comprehensive-llm-snapshotting.ts
+        status: ??
+        size: 9826
+        lines: 239
+        lastModified: 2025-07-05T11:39:51.326Z
+        extension: ts
+      - path: scripts/test-llm-fossilization.ts
+        status: ??
+        size: 5844
+        lines: 164
+        lastModified: 2025-07-05T11:40:03.488Z
+        extension: ts
+      - path: scripts/test-llm-snapshotting-simple.ts
+        status: ??
+        size: 6896
+        lines: 176
+        lastModified: 2025-07-05T08:18:42.474Z
+        extension: ts
+      - path: scripts/test-new-fossil-generation.ts
+        status: ??
+        size: 5224
+        lines: 147
+        lastModified: 2025-07-05T08:39:59.920Z
+        extension: ts
+      - path: scripts/test-sanitization-simple.ts
+        status: ??
+        size: 3513
+        lines: 109
+        lastModified: 2025-07-05T08:31:50.564Z
+        extension: ts
+      - path: scripts/validate-footprint.ts
+        status: ??
+        size: 13669
+        lines: 489
+        lastModified: 2025-07-05T12:51:23.263Z
+        extension: ts
+      - path: scripts/validate-llm-snapshotting.ts
+        status: ??
+        size: 5884
+        lines: 163
+        lastModified: 2025-07-05T11:40:08.583Z
+        extension: ts
+      - path: scripts/validate-snapshot-schemas.ts
+        status: ??
+        size: 13565
+        lines: 453
+        lastModified: 2025-07-05T09:53:55.443Z
+        extension: ts
+      - path: scripts/validate-types-schemas-simple.ts
+        status: ??
+        size: 10346
+        lines: 358
+        lastModified: 2025-07-05T10:42:40.106Z
+        extension: ts
+      - path: scripts/vscode-extension-snapshot-processor.ts
+        status: ??
+        size: 25415
+        lines: 799
+        lastModified: 2025-07-05T11:38:49.794Z
+        extension: ts
+      - path: src/cli/fossil-summary.ts
+        status: ??
+        size: 3295
+        lines: 93
+        lastModified: 2025-07-05T12:07:39.008Z
+        extension: ts
+      - path: src/cli/fossilize-performance.ts
+        status: ??
+        size: 2890
+        lines: 81
+        lastModified: 2025-07-05T12:09:48.499Z
+        extension: ts
+      - path: src/cli/fossilize-validation.ts
+        status: ??
+        size: 2257
+        lines: 84
+        lastModified: 2025-07-05T12:07:14.289Z
+        extension: ts
+      - path: src/cli/git-history-insights.ts
+        status: ??
+        size: 13848
+        lines: 431
+        lastModified: 2025-07-05T11:41:04.813Z
+        extension: ts
+      - path: src/cli/llm-predictive-monitoring.ts
+        status: ??
+        size: 18719
+        lines: 479
+        lastModified: 2025-07-05T10:15:10.925Z
+        extension: ts
+      - path: src/cli/llm-snapshot.ts
+        status: ??
+        size: 7239
+        lines: 186
+        lastModified: 2025-07-05T11:12:58.664Z
+        extension: ts
+      - path: src/cli/validate-types-schemas.ts
+        status: ??
+        size: 10004
+        lines: 330
+        lastModified: 2025-07-05T11:02:51.840Z
+        extension: ts
+      - path: src/cli/vscode-ai.ts
+        status: ??
+        size: 18804
+        lines: 506
+        lastModified: 2025-07-05T11:38:57.084Z
+        extension: ts
+      - path: src/services/index.ts
+        status: ??
+        size: 6249
+        lines: 205
+        lastModified: 2025-07-05T10:37:30.138Z
+        extension: ts
+      - path: src/services/llmPredictiveMonitoring.ts
+        status: ??
+        size: 26951
+        lines: 954
+        lastModified: 2025-07-05T11:42:19.787Z
+        extension: ts
+      - path: src/services/vscodeAI.ts
+        status: ??
+        size: 23038
+        lines: 808
+        lastModified: 2025-07-05T09:59:54.265Z
+        extension: ts
+      - path: src/types/fossil.ts
+        status: ??
+        size: 3217
+        lines: 127
+        lastModified: 2025-07-05T12:31:17.237Z
+        extension: ts
+      - path: src/types/performance.ts
+        status: ??
+        size: 4834
+        lines: 153
+        lastModified: 2025-07-05T08:03:03.508Z
+        extension: ts
+      - path: src/types/validation.ts
+        status: ??
+        size: 1550
+        lines: 51
+        lastModified: 2025-07-05T12:32:28.771Z
+        extension: ts
+      - path: src/utils/index.ts
+        status: ??
+        size: 7157
+        lines: 116
+        lastModified: 2025-07-05T10:34:26.124Z
+        extension: ts
+      - path: src/utils/llmSnapshotExporter.ts
+        status: ??
+        size: 9192
+        lines: 288
+        lastModified: 2025-07-05T11:09:55.622Z
+        extension: ts
+      - path: test-template.json
+        status: ??
+        size: 1207
+        lines: 49
+        lastModified: 2025-07-05T09:24:39.344Z
+        extension: json
+      - path: tests/unit/scripts/footprint-system.test.ts
+        status: ??
+        size: 12704
+        lines: 363
+        lastModified: 2025-07-05T12:52:16.428Z
+        extension: ts
+      - path: type-schema-validation-report.md
+        status: ??
+        size: 670
+        lines: 30
+        lastModified: 2025-07-05T12:36:19.740Z
+        extension: md
+  stats:
+    totalFiles: 148
+    stagedCount: 0
+    unstagedCount: 57
+    untrackedCount: 91
+    totalLinesAdded: 0
+    totalLinesDeleted: 0
+  gitStatus: |-
+    M .husky/pre-commit
+     M bun.lock
+     M docs/LLM_ERROR_PREVENTION_SUMMARY.md
+     M fossils/chat_context.json
+     M fossils/curated_roadmap_canonical.json
+     M fossils/curated_roadmap_demo.json
+     M fossils/project_status.yml
+     M fossils/setup_status.yml
+     M package.json
+     M scripts/extract-roadmap-insights.ts
+     M scripts/llm-chat-context.ts
+     M scripts/precommit-validate.ts
+     M src/cli/analyze-git-diff.ts
+     M src/cli/context-fossil.ts
+     M src/cli/curate-fossil.ts
+     M src/cli/ensure-demo-issue.ts
+     M src/cli/github-issues.ts
+     M src/cli/issues-create.ts
+     M src/cli/performance-monitor.ts
+     M src/cli/repo-orchestrator.ts
+     M src/cli/timestamp-filter.ts
+     M src/cli/validate-plan.ts
+     M src/services/github.ts
+     M src/services/llm.ts
+     M src/services/llmEnhanced.ts
+     M src/services/semantic-tagger.ts
+     M src/types/cli.ts
+     M src/types/core.ts
+     M src/types/index.ts
+     M src/types/llm.ts
+     M src/types/schemas.ts
+     M src/utils/cli.ts
+     M src/utils/curateFossil.ts
+     M src/utils/fossilIssue.ts
+     M src/utils/fossilLabel.ts
+     M src/utils/fossilManager.ts
+     M src/utils/fossilMilestone.ts
+     M src/utils/fossilSummary.ts
+     M src/utils/fossilize.ts
+     M src/utils/githubCliCommands.ts
+     M src/utils/githubFossilManager.ts
+     M src/utils/llmFossilManager.ts
+     M src/utils/performanceMonitor.ts
+     M src/utils/performanceTracker.ts
+     M src/utils/plan-validator.ts
+     M src/utils/roadmapInsightsAccessor.ts
+     M src/utils/roadmapInsightsExtractor.ts
+     M src/utils/syncTracker.ts
+     M src/utils/timestampFilter.ts
+     M src/utils/typeSchemaValidator.ts
+     M src/utils/visualDiagramGenerator.ts
+     M tests/e2e/examples.e2e.test.ts
+     M tests/e2e/scripts.e2e.test.ts
+     M tests/integration/transversal-fossil-github-sync.integration.test.ts
+     M tests/unit/scripts/llm-chat-context.test.ts
+     M tests/unit/services/semantic-tagger.test.ts
+     M tests/unit/types/schemas.test.ts
+    ?? .llm-usage-log.json
+    ?? BATCH_COMMIT_ORCHESTRATION_GUIDE.md
+    ?? COMMIT_BATCH_SUMMARY.md
+    ?? docs/ADVANCED_FOSSIL_QUERY_PATTERNS_GUIDE.md
+    ?? docs/API_KEY_SANITIZATION_GUIDE.md
+    ?? docs/AUTOMATIC_PROCEDURE_GUIDE.md
+    ?? docs/COMPREHENSIVE_LLM_SNAPSHOTTING_GUIDE.md
+    ?? docs/ENHANCED_COMMIT_MESSAGE_SYSTEM.md
+    ?? docs/EVOLVING_FOOTPRINT_GUIDE.md
+    ?? docs/FILE_FOOTPRINT_SYSTEM.md
+    ?? docs/FOOTPRINT_SIMPLIFICATION_ANALYSIS.md
+    ?? docs/FOOTPRINT_USAGE_SCOPES.md
+    ?? docs/FOSSIL_QUERY_ANALYSIS_SUMMARY.md
+    ?? docs/FOSSIL_QUERY_PATTERNS_ANALYSIS.md
+    ?? docs/FOSSIL_QUERY_PATTERNS_RULE.md
+    ?? docs/GIT_HISTORY_LLM_INSIGHTS_APPROACH.md
+    ?? docs/LLM_INSIGHTS_COMMIT_TRACEABILITY.md
+    ?? docs/LLM_INSIGHTS_RULE_IMPLEMENTATION_GUIDE.md
+    ?? docs/LLM_SNAPSHOTTING_IMPLEMENTATION_SUMMARY.md
+    ?? docs/LLM_SNAPSHOTTING_VALIDATION_GUIDE.md
+    ?? docs/LLM_SNAPSHOT_AUDIT_GUIDE.md
+    ?? docs/LLM_SNAPSHOT_PROCESSING_APPROACH.md
+    ?? docs/LLM_SNAPSHOT_STRUCTURE_ANALYSIS.md
+    ?? docs/REMOTE_REPO_IMPLEMENTATION_GUIDE.md
+    ?? docs/REMOTE_REPO_QUICK_REFERENCE.md
+    ?? docs/REMOTE_REPO_REFACTOR_INSIGHTS_APPROACH.md
+    ?? docs/SNAPSHOT_PROCESSING_COHESION_SUMMARY.md
+    ?? docs/VSCODE_AI_INTEGRATION_GUIDE.md
+    ?? docs/WORKFLOW_UTILITY_DETECTION_RULE.md
+    ?? examples/advanced-fossil-query-patterns.ts
+    ?? examples/enhanced-commit-message-demo.ts
+    ?? examples/git-history-insights-demo.ts
+    ?? examples/predictive-monitoring-demo.ts
+    ?? examples/snapshot-processing-analysis.ts
+    ?? examples/vscode-ai-integration.ts
+    ?? fossils/audit/
+    ?? fossils/commit_audits/
+    ?? fossils/performance/performance_log.json
+    ?? llm-snapshot-1751705076490.yml
+    ?? scripts/advanced-fossil-analysis.ts
+    ?? scripts/analyze-batch-plan.ts
+    ?? scripts/analyze-bun-test-snapshots.ts
+    ?? scripts/analyze-git-diff.ts
+    ?? scripts/audit-llm-snapshots.ts
+    ?? scripts/automatic-procedure.ts
+    ?? scripts/automation/batch-commit-orchestrator.sh
+    ?? scripts/check-api-keys-in-fossils.ts
+    ?? scripts/commit-insight-generator.ts
+    ?? scripts/commit-message-template.ts
+    ?? scripts/commit-message-validator.ts
+    ?? scripts/commit-with-footprint.sh
+    ?? scripts/enhanced-pre-commit-validator.ts
+    ?? scripts/fix-validation-issues.ts
+    ?? scripts/generate-evolving-footprint.ts
+    ?? scripts/generate-file-footprint.ts
+    ?? scripts/git-history-llm-insights.ts
+    ?? scripts/llm-snapshot-export.ts
+    ?? scripts/pre-commit-evolving-footprint.sh
+    ?? scripts/pre-commit-footprint.sh
+    ?? scripts/quick-validate-llm.ts
+    ?? scripts/test-api-key-sanitization.ts
+    ?? scripts/test-comprehensive-llm-snapshotting.ts
+    ?? scripts/test-llm-fossilization.ts
+    ?? scripts/test-llm-snapshotting-simple.ts
+    ?? scripts/test-new-fossil-generation.ts
+    ?? scripts/test-sanitization-simple.ts
+    ?? scripts/validate-footprint.ts
+    ?? scripts/validate-llm-snapshotting.ts
+    ?? scripts/validate-snapshot-schemas.ts
+    ?? scripts/validate-types-schemas-simple.ts
+    ?? scripts/vscode-extension-snapshot-processor.ts
+    ?? src/cli/fossil-summary.ts
+    ?? src/cli/fossilize-performance.ts
+    ?? src/cli/fossilize-validation.ts
+    ?? src/cli/git-history-insights.ts
+    ?? src/cli/llm-predictive-monitoring.ts
+    ?? src/cli/llm-snapshot.ts
+    ?? src/cli/validate-types-schemas.ts
+    ?? src/cli/vscode-ai.ts
+    ?? src/services/index.ts
+    ?? src/services/llmPredictiveMonitoring.ts
+    ?? src/services/vscodeAI.ts
+    ?? src/types/fossil.ts
+    ?? src/types/performance.ts
+    ?? src/types/validation.ts
+    ?? src/utils/index.ts
+    ?? src/utils/llmSnapshotExporter.ts
+    ?? test-template.json
+    ?? tests/unit/scripts/footprint-system.test.ts
+    ?? type-schema-validation-report.md
+history: []
+metadata:
+  created: 2025-07-05T13:01:46.632Z
+  lastUpdated: 2025-07-05T13:01:46.632Z
+  totalCommits: 1
+  totalFilesTracked: 148

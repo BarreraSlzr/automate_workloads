@@ -26,9 +26,9 @@ const SCRIPT_TEST_CASES = [
   {
     name: 'fossil-summary-json script runs and outputs JSON',
     command: ['bun', 'run', 'scripts/fossil-summary-json.ts'],
-    expectedOutput: ['{', '}'],
+    expectedOutput: ['[', ']'],
     expectedExitCode: 0,
-    description: 'Should output a JSON summary of fossils'
+    description: 'Should output a JSON array summary of fossils'
   },
   {
     name: 'fossil-summary-md script runs and outputs Markdown',

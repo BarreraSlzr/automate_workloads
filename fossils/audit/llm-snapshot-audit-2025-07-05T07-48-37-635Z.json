@@ -1,0 +1,96 @@
+{
+  "timestamp": "2025-07-05T07:48:37.585Z",
+  "fossilCount": 2,
+  "llmCalls": [
+    {
+      "fossilId": "fossil_52036e1e1b7a_1751698502554",
+      "type": "llm-validation",
+      "timestamp": "2025-07-05T07:01:07.115Z",
+      "model": "gpt-3.5-turbo",
+      "context": "test-fossilization",
+      "purpose": "fossilization-explanation",
+      "valueScore": 0.8,
+      "qualityScore": 0,
+      "validation": {
+        "isValid": true,
+        "errors": [],
+        "warnings": []
+      },
+      "preprocessing": {
+        "success": true,
+        "changes": [
+          "Improved message 2 content",
+          "Added default context and purpose"
+        ]
+      },
+      "commitRef": "3de4a04cd75fb38a9b1614c45c90fabc65c4807d"
+    },
+    {
+      "fossilId": "fossil_96911d5514b7_1751698633869",
+      "type": "llm-error-prevention",
+      "timestamp": "2025-07-05T07:02:11.300Z",
+      "model": "unknown",
+      "context": "unknown",
+      "purpose": "unknown",
+      "valueScore": 0,
+      "qualityScore": 0,
+      "validation": {
+        "isValid": false,
+        "errors": [],
+        "warnings": []
+      },
+      "sessionId": "session-1751698866600-bkkv5ccbz",
+      "commitRef": "3de4a04cd75fb38a9b1614c45c90fabc65c4807d"
+    }
+  ],
+  "testChanges": [
+    {
+      "file": "tests/unit/scripts/llm-chat-context.test.ts",
+      "changeType": "modified",
+      "linesChanged": 8,
+      "needsLLMInsights": true,
+      "llmInsightReason": "Contains validation logic",
+      "testPatterns": [
+        "bun:test",
+        "expect"
+      ],
+      "fossilizationStatus": "pending"
+    },
+    {
+      "file": "tests/unit/types/schemas.test.ts",
+      "changeType": "modified",
+      "linesChanged": 174,
+      "needsLLMInsights": true,
+      "llmInsightReason": "Contains fossilization logic, Contains validation logic",
+      "testPatterns": [
+        "bun:test",
+        "expect"
+      ],
+      "fossilizationStatus": "pending"
+    }
+  ],
+  "insights": [
+    "Found 2 LLM fossils for analysis",
+    "Average quality score is below threshold - consider improving input validation",
+    "Validation success rate is low - review validation logic",
+    "2 test files need LLM insights for proper fossilization",
+    "2 test files have pending fossilization"
+  ],
+  "recommendations": [
+    "Improve input validation and preprocessing to increase quality scores",
+    "Run LLM insight generation for test files that need fossilization"
+  ],
+  "qualityMetrics": {
+    "averageQualityScore": 0,
+    "qualityDistribution": {
+      "excellent": 0,
+      "good": 0,
+      "fair": 0,
+      "poor": 0,
+      "veryPoor": 2
+    },
+    "validationSuccessRate": 0.5,
+    "preprocessingSuccessRate": 0.5,
+    "commonIssues": []
+  }
+}

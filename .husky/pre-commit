@@ -1,18 +1,197 @@
 #!/bin/bash
-echo "DEBUG: Pre-commit hook starting..."
-changed_scripts=$(git diff --cached --name-only --diff-filter=ACM | grep '^scripts/.*\.ts$' || true)
-echo "DEBUG: Changed scripts: '$changed_scripts'"
-if [ -n "$changed_scripts" ]; then
-  echo "Running performance monitoring on changed scripts..."
-  for script in $changed_scripts; do
-    echo "DEBUG: Monitoring script: $script"
-    bun run perf:monitor-single "$script"
-    last_time=$(jq '.[-1].execution_time' fossils/performance/performance_log.json)
-    echo "DEBUG: Last execution time: $last_time"
-    if (( $(echo "$last_time > 10" | bc -l) )); then
-      echo "Performance regression: $script took $last_time seconds"
-      exit 1
-    fi
-  done
+. "$(dirname "$0")/_/husky.sh"
+
+set -e
+
+# Pre-commit hook with comprehensive validation, fossilization, and performance audit
+# Follows fossil-first, validation-first, and error-prevention patterns from @/docs
+
+echo "🔍 [Pre-commit] Starting unified validation, fossilization, and performance audit..."
+echo "📅 Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+echo "🔗 Commit: $(git rev-parse --short HEAD)"
+echo "🌿 Branch: $(git branch --show-current)"
+echo ""
+
+# =============================================================================
+# TIMESTAMP-ONLY CHANGE FILTER (block commit if only timestamps changed)
+# =============================================================================
+echo "⏳ [Pre-commit] Checking for timestamp-only changes..."
+if bun run src/cli/timestamp-filter.ts --check; then
+  echo '❌ Only timestamp changes detected in fossils or tracked files. Skipping commit.'
+  exit 1
 fi
-echo "DEBUG: Pre-commit hook completed successfully"
+
+echo "✅ No timestamp-only changes detected. Proceeding with validations..."
+
+# =============================================================================
+# MANDATORY VALIDATION STEPS (Block commit on failure)
+# =============================================================================
+
+echo "📋 [Step 1/6] TypeScript type-checking..."
+if bun run type-check; then
+    echo "✅ TypeScript validation passed"
+else
+    echo "❌ TypeScript validation failed - blocking commit"
+    exit 1
+fi
+
+echo ""
+echo "📋 [Step 1.5/6] Type and schema cohesion validation..."
+echo "  🔍 Checking schema consistency across types/schemas/..."
+if bun run validate:types-schemas-cohesion; then
+    echo "✅ Type and schema cohesion validation passed"
+else
+    echo "❌ Type/schema cohesion validation failed - blocking commit"
+    echo "  💡 Check for:"
+    echo "    - Circular dependencies in schemas"
+    echo "    - Inconsistent type definitions"
+    echo "    - Missing schema exports"
+    echo "    - Schema conflicts or overlaps"
+    exit 1
+fi
+
+echo ""
+echo "📋 [Step 2/6] Linting and code style validation..."
+if bun run lint; then
+    echo "✅ Linting validation passed"
+else
+    echo "❌ Linting validation failed - blocking commit"
+    exit 1
+fi
+
+echo ""
+echo "📋 [Step 3/6] Running all tests (unit + integration)..."
+if bun test; then
+    echo "✅ All tests passed"
+else
+    echo "❌ Tests failed - blocking commit"
+    exit 1
+fi
+
+echo ""
+echo "📋 [Step 4/6] Running comprehensive pre-commit validation..."
+if bun run validate:pre-commit; then
+    echo "✅ Pre-commit validation passed"
+else
+    echo "❌ Pre-commit validation failed - blocking commit"
+    exit 1
+fi
+
+echo ""
+echo "📋 [Step 4.5/6] Enhanced commit message validation..."
+if bun run scripts/enhanced-pre-commit-validator.ts --validate --pre-commit --strict; then
+    echo "✅ Enhanced commit message validation passed"
+else
+    echo "❌ Enhanced commit message validation failed - blocking commit"
+    echo "  💡 Use bun run scripts/commit-message-template.ts --create to generate proper templates"
+    exit 1
+fi
+
+echo ""
+echo "📋 [Step 4.5/6] Validating all types and schemas..."
+if bun run validate:types-schemas --strict; then
+    echo "✅ Type and schema validation passed"
+else
+    echo "❌ Type/schema validation failed - blocking commit"
+    exit 1
+fi
+
+echo ""
+echo "📋 [Step 5/6] Validating fossil and plan files..."
+changed_json=$(git diff --cached --name-only | grep -E '\\.json$' || true)
+fossil_validation_passed=true
+
+for file in $changed_json; do
+    if [[ $file == *plan* ]] || [[ $file == *fossil* ]] || [[ $file == *roadmap* ]]; then
+        echo "  🦴 Validating: $file"
+        if bun run validate:plan validate "$file" --strict; then
+            echo "    ✅ $file validation passed"
+        else
+            echo "    ❌ $file validation failed"
+            fossil_validation_passed=false
+        fi
+    fi
+done
+
+if [ "$fossil_validation_passed" = false ]; then
+    echo "❌ Fossil/plan validation failed - blocking commit"
+    exit 1
+fi
+
+echo ""
+echo "📋 [Step 6/6] Performance monitoring on changed scripts..."
+changed_scripts=$(git diff --cached --name-only --diff-filter=ACM | grep '^scripts/.*\\.ts$' || true)
+performance_check_passed=true
+
+if [ -n "$changed_scripts" ]; then
+    echo "  📊 Monitoring performance for changed scripts:"
+    for script in $changed_scripts; do
+        echo "    🔍 Monitoring: $script"
+        if bun run src/cli/performance-monitor.ts monitor "$script"; then
+            echo "      ✅ $script performance check passed"
+        else
+            echo "      ❌ $script performance check failed"
+            performance_check_passed=false
+        fi
+    done
+else
+    echo "  ℹ️  No script changes detected - skipping performance monitoring"
+fi
+
+if [ "$performance_check_passed" = false ]; then
+    echo "❌ Performance check failed - blocking commit"
+    exit 1
+fi
+
+# =============================================================================
+# OPTIONAL FOSSILIZATION AND REPORTING STEPS (Don't block commit)
+# =============================================================================
+
+echo ""
+echo "🦴 [Optional] Fossilization and reporting for traceability..."
+
+# Optional: Fossilize validation results
+if command -v bun >/dev/null 2>&1 && [ -f "src/cli/fossilize-validation.ts" ]; then
+    echo "  📝 Fossilizing validation results..."
+    if bun run src/cli/fossilize-validation.ts --last; then
+        echo "    ✅ Validation results fossilized"
+    else
+        echo "    ⚠️  Validation fossilization failed (non-blocking)"
+    fi
+fi
+
+# Optional: Fossilize performance results
+if command -v bun >/dev/null 2>&1 && [ -f "src/cli/fossilize-performance.ts" ]; then
+    echo "  📊 Fossilizing performance results..."
+    if bun run src/cli/fossilize-performance.ts --last; then
+        echo "    ✅ Performance results fossilized"
+    else
+        echo "    ⚠️  Performance fossilization failed (non-blocking)"
+    fi
+fi
+
+# Optional: Generate LLM insights for changed files
+if [ -n "$OPENAI_API_KEY" ] && command -v bun >/dev/null 2>&1 && [ -f "src/cli/llm-analyze.ts" ]; then
+    echo "  🧠 Generating LLM insights for changes..."
+    changed_files=$(git diff --cached --name-only | head -5 | tr '\n' ' ')
+    if bun run src/cli/llm-analyze.ts --files "$changed_files" --fossilize; then
+        echo "    ✅ LLM insights generated and fossilized"
+    else
+        echo "    ⚠️  LLM insights generation failed (non-blocking)"
+    fi
+fi
+
+# Optional: Update fossilization summary
+if command -v bun >/dev/null 2>&1 && [ -f "src/cli/fossil-summary.ts" ]; then
+    echo "  📋 Updating fossilization summary..."
+    if bun run src/cli/fossil-summary.ts --update; then
+        echo "    ✅ Fossilization summary updated"
+    else
+        echo "    ⚠️  Fossilization summary update failed (non-blocking)"
+    fi
+fi
+
+echo ""
+echo "🎉 [Pre-commit] All validations passed! Commit proceeding..."
+echo "📊 Final LLM Usage: $(bun run src/cli/llm-usage.ts --summary 2>/dev/null || echo 'N/A')"
+echo "✅ Graceful shutdown complete"

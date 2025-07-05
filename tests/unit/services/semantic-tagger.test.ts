@@ -28,7 +28,7 @@ describe('SemanticTaggerService', () => {
 
   describe('generateSemanticTags', () => {
     it('should generate semantic tags with content hash', async () => {
-      const serviceWithoutKey = new SemanticTaggerService('gpt-4', '');
+      const serviceWithoutKey = new SemanticTaggerService({ model: 'gpt-4' });
       // Patch callLLM to return predictable result
       serviceWithoutKey['llmService'].callLLM = async () => ({
         choices: [{ message: { content: '{"semanticCategory":"repository-health","confidence":0.95,"concepts":["health"],"sentiment":"neutral","priority":"medium","impact":"medium","stakeholders":["developers"]}' } }]
@@ -47,7 +47,7 @@ describe('SemanticTaggerService', () => {
         content: 'Health score: 90/100. Good performance.',
       };
       
-      const serviceWithoutKey = new SemanticTaggerService('gpt-4', '');
+      const serviceWithoutKey = new SemanticTaggerService({ model: 'gpt-4' });
       serviceWithoutKey['llmService'].callLLM = async () => ({
         choices: [{ message: { content: '{"semanticCategory":"repository-health","confidence":0.95,"concepts":["health"],"sentiment":"neutral","priority":"medium","impact":"medium","stakeholders":["developers"]}' } }]
       });
@@ -64,7 +64,7 @@ describe('SemanticTaggerService', () => {
         title: 'CI/CD Pipeline Setup',
       };
       
-      const serviceWithoutKey = new SemanticTaggerService('gpt-4', '');
+      const serviceWithoutKey = new SemanticTaggerService({ model: 'gpt-4' });
       serviceWithoutKey['llmService'].callLLM = async () => ({
         choices: [{ message: { content: '{"semanticCategory":"automation","confidence":0.95,"concepts":["workflow","automated"],"sentiment":"neutral","priority":"medium","impact":"medium","stakeholders":["developers"]}' } }]
       });
@@ -208,18 +208,18 @@ describe('SemanticTaggerService', () => {
 
   describe('Local LLM integration', () => {
     it('should pass enableLocalLLM and routingPreference to LLMService', async () => {
-      const service = new SemanticTaggerService('gpt-4', undefined, { enableLocalLLM: true, routingPreference: 'local' });
+      const service = new SemanticTaggerService({ model: 'gpt-4', llmOptions: { enableLocalLLM: true, routingPreference: 'local' } });
       expect(service['llmService']['config'].enableLocalLLM).toBe(true);
       expect(service['llmOptions'].routingPreference).toBe('local');
     });
     it('should register a custom local backend if provided', async () => {
-      const service = new SemanticTaggerService('gpt-4', undefined, { enableLocalLLM: true, localBackend: 'llama.cpp' });
+      const service = new SemanticTaggerService({ model: 'gpt-4', llmOptions: { enableLocalLLM: true, localBackend: 'llama.cpp' } });
       // Should have a provider named 'llama.cpp'
       const found = service['llmService']['providers'].some(p => p.name === 'llama.cpp');
       expect(found).toBe(true);
     });
     it('should use routingPreference in callLLM', async () => {
-      const service = new SemanticTaggerService('gpt-4', undefined, { routingPreference: 'cloud' });
+      const service = new SemanticTaggerService({ model: 'gpt-4', llmOptions: { routingPreference: 'cloud' } });
       // Call generateSemanticTags and check config is set
       await service.generateSemanticTags({
         id: 'test',
@@ -240,7 +240,7 @@ describe('SemanticTaggerService', () => {
 
   describe('generateExcerpt', () => {
     it('should prefer local LLM for excerpt generation when available', async () => {
-      const service = new SemanticTaggerService('gpt-4', 'test-key', { enableLocalLLM: true, localBackend: 'ollama', routingPreference: 'local' });
+      const service = new SemanticTaggerService({ model: 'gpt-4', apiKey: 'test-key', llmOptions: { enableLocalLLM: true, localBackend: 'ollama', routingPreference: 'local' } });
       // Patch callLLM to simulate local LLM selection
       service['llmService'].callLLM = async (opts: any) => {
         expect(opts.routingPreference).toBe('local');
@@ -263,7 +263,7 @@ describe('SemanticTaggerService', () => {
       expect(result).toBe('Local summary.');
     });
     it('should fallback to cloud LLM or fallback if local is unavailable', async () => {
-      const service = new SemanticTaggerService('gpt-4', 'test-key', { enableLocalLLM: false, routingPreference: 'cloud' });
+      const service = new SemanticTaggerService({ model: 'gpt-4', apiKey: 'test-key', llmOptions: { enableLocalLLM: false, routingPreference: 'cloud' } });
       // Patch callLLM to simulate cloud LLM selection
       service['llmService'].callLLM = async (opts: any) => {
         expect(opts.routingPreference).toBe('cloud');
