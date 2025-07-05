@@ -21,70 +21,18 @@ import {
   IssueFossilParamsSchema,
   LabelFossilParamsSchema,
   MilestoneFossilParamsSchema
-} from '../types';
+} from '../types/schemas';
+import {
+  BaseFossilParams,
+  IssueFossilParams,
+  LabelFossilParams,
+  MilestoneFossilParams,
+  FossilSearchParams,
+  FossilResult,
+  FossilReport
+} from '../types/fossil';
 
-// ============================================================================
-// TYPE DEFINITIONS
-// ============================================================================
 
-export interface BaseFossilParams {
-  owner: string;
-  repo: string;
-  type: string;
-  tags?: string[];
-  metadata?: Record<string, any>;
-  dryRun?: boolean;
-  verbose?: boolean;
-}
-
-export interface IssueFossilParams extends BaseFossilParams {
-  title: string;
-  body?: string;
-  labels?: string[];
-  milestone?: string;
-  section?: string;
-  purpose?: string;
-  checklist?: string;
-  automationMetadata?: string;
-  extraBody?: string;
-}
-
-export interface LabelFossilParams extends BaseFossilParams {
-  name: string;
-  description: string;
-  color: string;
-}
-
-export interface MilestoneFossilParams extends BaseFossilParams {
-  title: string;
-  description: string;
-  dueOn?: string;
-}
-
-export interface FossilSearchParams {
-  search?: string;
-  type?: string;
-  tags?: string[];
-  limit?: number;
-  offset?: number;
-}
-
-export interface FossilResult {
-  success: boolean;
-  fossilId?: string;
-  fossilHash?: string;
-  deduplicated?: boolean;
-  objectNumber?: string;
-  error?: string;
-}
-
-export interface FossilReport {
-  totalFossils: number;
-  byType: Record<string, number>;
-  byStatus: Record<string, number>;
-  duplicates: number;
-  recommendations: string[];
-}
 
 // ============================================================================
 // FOSSIL MANAGER CLASS
@@ -551,7 +499,7 @@ export class FossilManager {
     tags: string[];
     metadata: Record<string, any>;
   }): Promise<any> {
-    const contentHash = generateContentHash(entry.content, entry.type, entry.title);
+    const contentHash = generateContentHash({ content: entry.content, type: entry.type, title: entry.title });
     
     const fossilEntry = {
       type: entry.type as ContextEntry['type'],

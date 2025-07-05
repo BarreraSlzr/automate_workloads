@@ -17,7 +17,8 @@ const INSIGHTS_WEB_PATH = 'fossils/roadmap_insights_web.json';
 /**
  * Generate a task ID for consistent referencing
  */
-export function generateTaskId(taskName: string, taskPath: string[]): string {
+export function generateTaskId(params: { taskName: string; taskPath: string[] }): string {
+  const { taskName, taskPath } = params;
   const fullPath = [...taskPath, taskName].join('-');
   return createHash('md5').update(fullPath).digest('hex').slice(0, 12);
 }
@@ -63,14 +64,12 @@ export async function saveInsightsCollection(collection: {
 /**
  * Find insights for a specific task by task path
  */
-export function findTaskInsights(
-  insights: RoadmapTaskInsight[],
-  taskPath: string[]
-): RoadmapTaskInsight | null {
+export function findTaskInsights(params: { insights: RoadmapTaskInsight[]; taskPath: string[] }): RoadmapTaskInsight | null {
+  const { insights, taskPath } = params;
   if (taskPath.length === 0) return null;
   const taskName = taskPath[taskPath.length - 1];
   if (!taskName) return null;
-  const taskId = generateTaskId(taskName, taskPath.slice(0, -1));
+  const taskId = generateTaskId({ taskName, taskPath: taskPath.slice(0, -1) });
   
   return insights.find(insight => insight.taskId === taskId) || null;
 }
@@ -78,46 +77,37 @@ export function findTaskInsights(
 /**
  * Find insights for a task by title (fallback method)
  */
-export function findTaskInsightsByTitle(
-  insights: RoadmapTaskInsight[],
-  taskTitle: string
-): RoadmapTaskInsight | null {
+export function findTaskInsightsByTitle(params: { insights: RoadmapTaskInsight[]; taskTitle: string }): RoadmapTaskInsight | null {
+  const { insights, taskTitle } = params;
   return insights.find(insight => insight.taskTitle === taskTitle) || null;
 }
 
 /**
  * Get insights for a task, with fallback to title matching
  */
-export function getTaskInsights(
-  insights: RoadmapTaskInsight[],
-  taskPath: string[],
-  taskTitle: string
-): RoadmapTaskInsight | null {
+export function getTaskInsights(params: { insights: RoadmapTaskInsight[]; taskPath: string[]; taskTitle: string }): RoadmapTaskInsight | null {
+  const { insights, taskPath, taskTitle } = params;
   // Try path-based matching first
-  const pathMatch = findTaskInsights(insights, taskPath);
+  const pathMatch = findTaskInsights({ insights, taskPath });
   if (pathMatch) return pathMatch;
   
   // Fallback to title matching
-  return findTaskInsightsByTitle(insights, taskTitle);
+  return findTaskInsightsByTitle({ insights, taskTitle });
 }
 
 /**
  * Get insights for all tasks with a specific status
  */
-export function getInsightsByStatus(
-  insights: RoadmapTaskInsight[],
-  status: string
-): RoadmapTaskInsight[] {
+export function getInsightsByStatus(params: { insights: RoadmapTaskInsight[]; status: string }): RoadmapTaskInsight[] {
+  const { insights, status } = params;
   return insights.filter(insight => insight.status === status);
 }
 
 /**
  * Get insights for all tasks with a specific tag
  */
-export function getInsightsByTag(
-  insights: RoadmapTaskInsight[],
-  tag: string
-): RoadmapTaskInsight[] {
+export function getInsightsByTag(params: { insights: RoadmapTaskInsight[]; tag: string }): RoadmapTaskInsight[] {
+  const { insights, tag } = params;
   return insights.filter(insight => 
     insight.tags && insight.tags.includes(tag)
   );
@@ -126,20 +116,16 @@ export function getInsightsByTag(
 /**
  * Get insights for all tasks by a specific owner
  */
-export function getInsightsByOwner(
-  insights: RoadmapTaskInsight[],
-  owner: string
-): RoadmapTaskInsight[] {
+export function getInsightsByOwner(params: { insights: RoadmapTaskInsight[]; owner: string }): RoadmapTaskInsight[] {
+  const { insights, owner } = params;
   return insights.filter(insight => insight.owner === owner);
 }
 
 /**
  * Get insights for all tasks in a specific milestone
  */
-export function getInsightsByMilestone(
-  insights: RoadmapTaskInsight[],
-  milestone: string
-): RoadmapTaskInsight[] {
+export function getInsightsByMilestone(params: { insights: RoadmapTaskInsight[]; milestone: string }): RoadmapTaskInsight[] {
+  const { insights, milestone } = params;
   return insights.filter(insight => insight.milestone === milestone);
 }
 
@@ -202,10 +188,8 @@ export function getInsightsWithDeadlines(insights: RoadmapTaskInsight[]): Roadma
 /**
  * Get insights by category (based on impact and summary analysis)
  */
-export function getInsightsByCategory(
-  insights: RoadmapTaskInsight[],
-  category: string
-): RoadmapTaskInsight[] {
+export function getInsightsByCategory(params: { insights: RoadmapTaskInsight[]; category: string }): RoadmapTaskInsight[] {
+  const { insights, category } = params;
   return insights.filter(insight => {
     const summary = insight.llmInsights.summary.toLowerCase();
     const impact = insight.llmInsights.impact.toLowerCase();

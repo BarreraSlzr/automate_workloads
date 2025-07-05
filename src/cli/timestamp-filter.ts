@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 
 import { TimestampFilter } from '../utils/timestampFilter';
+import { parseCLIArgs, TimestampFilterCLIParamsSchema } from '../types/cli';
 
 /**
  * CLI for timestamp filtering
@@ -16,10 +17,10 @@ import { TimestampFilter } from '../utils/timestampFilter';
  *   --help           Show this help
  */
 async function main() {
-  const args = process.argv.slice(2);
+  const options = parseCLIArgs(TimestampFilterCLIParamsSchema, process.argv.slice(2));
   const filter = new TimestampFilter();
 
-  if (args.includes('--help') || args.includes('-h')) {
+  if (options.help || options.h) {
     console.log(`
 🕐 Timestamp Filter CLI
 
@@ -48,7 +49,7 @@ Examples:
     return;
   }
 
-  if (args.includes('--create-hook')) {
+  if (options.createHook) {
     try {
       await filter.createGitHook();
       console.log('✅ Git hook created at .git/hooks/pre-commit');
@@ -60,13 +61,13 @@ Examples:
     return;
   }
 
-  if (args.includes('--check')) {
+  if (options.check) {
     const analysis = await filter.analyzeTimestampChanges({ verbose: true });
     const recommendations = filter.getRecommendations(analysis);
     
     console.log('\n' + recommendations.join('\n'));
     
-    if (args.includes('--skip-if-only') && analysis.hasOnlyTimestampChanges) {
+    if (options.skipIfOnly && analysis.hasOnlyTimestampChanges) {
       console.log('\n🔄 Skipping commit due to timestamp-only changes');
       process.exit(0);
     }
@@ -76,8 +77,7 @@ Examples:
   }
 
   // Default: analyze and show results
-  const verbose = args.includes('--verbose');
-  const analysis = await filter.analyzeTimestampChanges({ verbose });
+  const analysis = await filter.analyzeTimestampChanges({ verbose: options.verbose });
   const recommendations = filter.getRecommendations(analysis);
   
   console.log('\n' + recommendations.join('\n'));

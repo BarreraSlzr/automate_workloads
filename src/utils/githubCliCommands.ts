@@ -1,37 +1,10 @@
-import { execSync } from 'child_process';
+import { executeCommand } from './cli';
+import { CommandResult, IssueParams, LabelParams, MilestoneParams } from '../types/cli';
 
 /**
  * Centralized GitHub CLI command utility for type-safe command construction
  * and consistent error handling across the codebase.
  */
-
-export interface CommandResult {
-  success: boolean;
-  stdout: string;
-  stderr: string;
-  exitCode?: number;
-  message?: string;
-}
-
-export interface IssueParams {
-  title: string;
-  body?: string;
-  labels?: string[];
-  milestone?: string;
-  assignees?: string[];
-}
-
-export interface LabelParams {
-  name: string;
-  description: string;
-  color: string;
-}
-
-export interface MilestoneParams {
-  title: string;
-  description: string;
-  dueOn?: string;
-}
 
 export class GitHubCLICommands {
   constructor(private owner: string, private repo: string) {}
@@ -191,18 +164,21 @@ export class GitHubCLICommands {
    * Execute a command with comprehensive error handling
    */
   async executeCommand(cmd: string): Promise<CommandResult> {
-    try {
-      const result = execSync(cmd, { encoding: 'utf8' });
-      return { 
-        success: true, 
-        stdout: result, 
-        stderr: '',
-        message: 'Command executed successfully'
-      };
-    } catch (error: any) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+    const result = executeCommand(cmd, { throwOnError: false });
+    
+    // Convert CLIExecuteResult to CommandResult
+    const commandResult: CommandResult = {
+      success: result.success,
+      stdout: result.stdout,
+      stderr: result.stderr,
+      exitCode: result.exitCode,
+      message: result.success ? 'Command executed successfully' : `CLI Error: ${result.stderr}`
+    };
+    
+    // Handle common GitHub CLI errors
+    if (!result.success) {
+      const errorMessage = result.stderr;
       
-      // Handle common GitHub CLI errors
       if (errorMessage.includes('already exists')) {
         return { 
           success: true, 
@@ -232,14 +208,8 @@ export class GitHubCLICommands {
           message: 'Authentication failed'
         };
       }
-      
-      return { 
-        success: false, 
-        stdout: '', 
-        stderr: errorMessage,
-        exitCode: error.status || 1,
-        message: `CLI Error: ${errorMessage}`
-      };
     }
+    
+    return commandResult;
   }
 } 

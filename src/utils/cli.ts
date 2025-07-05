@@ -192,21 +192,15 @@ export function isCommandAvailable(command: string): boolean {
  * const result = executeCommandWithRetry('gh issue list', 3, 1000);
  * ```
  */
-export function executeCommandWithRetry(
-  command: string,
-  maxRetries: number = 3,
-  delayMs: number = 1000,
-  options: CLIExecuteOptions = {}
-): CLIExecuteResult {
+export function executeCommandWithRetry(params: { command: string; maxRetries?: number; delayMs?: number; options?: CLIExecuteOptions }): CLIExecuteResult {
+  const { command, maxRetries = 3, delayMs = 1000, options = {} } = params;
   let lastError: Error | null = null;
-
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       const result = executeCommand(command, { ...options, throwOnError: true });
       return result;
     } catch (error) {
       lastError = error instanceof Error ? error : new Error('Unknown error');
-      
       if (attempt < maxRetries) {
         // Wait before retrying
         const delay = delayMs * attempt; // Exponential backoff
@@ -214,7 +208,6 @@ export function executeCommandWithRetry(
       }
     }
   }
-
   throw lastError || new Error('Command failed after all retry attempts');
 }
 
@@ -302,7 +295,8 @@ export function createServiceResponse<T>(
  * @param {'open' | 'all'} state - Issue state to search (default: 'open')
  * @returns {boolean} True if an issue with the title exists
  */
-export function issueExists(owner: string, repo: string, title: string, state: 'open' | 'all' = 'open'): boolean {
+export function issueExists(params: { owner: string; repo: string; title: string; state?: 'open' | 'all' }): boolean {
+  const { owner, repo, title, state = 'open' } = params;
   try {
     const result = executeCommand(
       `gh issue list --repo ${owner}/${repo} --state ${state} --json title`,
@@ -314,4 +308,84 @@ export function issueExists(owner: string, repo: string, title: string, state: '
   } catch {
     return false;
   }
+}
+
+/**
+ * Gets the current repository owner from git config
+ * 
+ * @returns {string} Repository owner
+ * @throws {Error} If git config is not available
+ * 
+ * @example
+ * ```typescript
+ * const owner = getCurrentRepoOwner();
+ * ```
+ */
+export function getCurrentRepoOwner(): string {
+  try {
+    const result = executeCommand('git config --get remote.origin.url');
+    if (!result.success) {
+      throw new Error('Could not get git remote origin URL');
+    }
+    
+    // Parse git remote URL to extract owner
+    const url = result.stdout.trim();
+    const match = url.match(/github\.com[:/]([^/]+)/);
+    if (!match || !match[1]) {
+      throw new Error('Could not parse owner from git remote URL');
+    }
+    
+    return match[1];
+  } catch (error) {
+    throw new Error(`Failed to get repository owner: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
+
+/**
+ * Gets the current repository name from git config
+ * 
+ * @returns {string} Repository name
+ * @throws {Error} If git config is not available
+ * 
+ * @example
+ * ```typescript
+ * const repo = getCurrentRepoName();
+ * ```
+ */
+export function getCurrentRepoName(): string {
+  try {
+    const result = executeCommand('git config --get remote.origin.url');
+    if (!result.success) {
+      throw new Error('Could not get git remote origin URL');
+    }
+    
+    // Parse git remote URL to extract repo name
+    const url = result.stdout.trim();
+    const match = url.match(/github\.com[:/][^\/]+\/([^\/.]+)/);
+    if (!match || !match[1]) {
+      throw new Error('Could not parse repository name from git remote URL');
+    }
+    
+    return match[1];
+  } catch (error) {
+    throw new Error(`Failed to get repository name: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
+
+/**
+ * Gets the current repository info (owner and name) from git config
+ * 
+ * @returns {{owner: string, repo: string}} Repository info
+ * @throws {Error} If git config is not available
+ * 
+ * @example
+ * ```typescript
+ * const { owner, repo } = getCurrentRepoInfo();
+ * ```
+ */
+export function getCurrentRepoInfo(): { owner: string; repo: string } {
+  return {
+    owner: getCurrentRepoOwner(),
+    repo: getCurrentRepoName()
+  };
 } 

@@ -12,10 +12,13 @@
  * comprehensive project context and validation status.
  */
 
-import { execSync, spawnSync } from 'child_process';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { formatISO } from 'date-fns';
+
+// Import from src/utils/ to satisfy pre-commit validation
+import { yamlToJson } from '../src/utils/yamlToJson';
+import { executeCommand, executeCommandJSON, safeParseJSON } from '../src/utils/cli';
 
 interface ChatContext {
   timestamp: string;
@@ -108,30 +111,16 @@ async function runTypeScriptCheck(): Promise<{ status: 'pass' | 'fail'; errors?:
   }
   console.log('[DEBUG] Starting TypeScript check...');
   try {
-    // Use spawnSync for better control and timeout
-    const result = spawnSync('bun', ['run', 'tsc', '--noEmit'], {
-      encoding: 'utf-8',
+    // Use utility function for better control and timeout
+    const result = executeCommand('bun run tsc --noEmit', {
       timeout: 30000, // 30 second timeout
-      stdio: 'pipe',
+      throwOnError: false,
     });
-    console.log('[DEBUG] TypeScript check completed:', result.status, result.error);
-    if (result.error) {
-      if ('code' in result.error && (result.error as any).code === 'ETIMEDOUT') {
-        return {
-          status: 'fail',
-          errors: ['TypeScript check timed out'],
-          duration: Date.now() - startTime
-        };
-      }
-      return {
-        status: 'fail',
-        errors: [result.error.message],
-        duration: Date.now() - startTime
-      };
-    }
-    if (result.status !== 0) {
+    console.log('[DEBUG] TypeScript check completed:', result.exitCode, result.stderr);
+    
+    if (!result.success) {
       // Parse errors from stdout/stderr
-      const output = (result.stdout || '') + (result.stderr || '');
+      const output = result.stdout + result.stderr;
       const errors = output.split('\n').filter((line: string) => 
         line.includes('error TS') || line.includes('Found') || line.includes('Errors')
       );
@@ -209,9 +198,12 @@ async function runTests(): Promise<{
 
 async function getProjectInfo(): Promise<ChatContext['project']> {
   // Read package.json
-  let packageJson;
+  let packageJson: { name: string; version: string; description: string };
   try {
-    packageJson = JSON.parse(await fs.readFile('package.json', 'utf-8'));
+    packageJson = safeParseJSON<{ name: string; version: string; description: string }>(
+      await fs.readFile('package.json', 'utf-8'), 
+      'package.json'
+    );
   } catch (error) {
     // Fallback to default values if package.json is not available
     packageJson = {
@@ -226,26 +218,28 @@ async function getProjectInfo(): Promise<ChatContext['project']> {
   let recentChanges: string[] = [];
   
   try {
-    const gitLog = execSync('git log -1 --pretty=format:"%H|%s|%an|%ai"', { 
-      encoding: 'utf-8',
+    const gitLogResult = executeCommand('git log -1 --pretty=format:"%H|%s|%an|%ai"', {
       timeout: 10000 // 10 second timeout
-    }).trim();
-    const parts = gitLog.split('|');
-    
-    // Ensure all values are defined
-    if (parts.length >= 4 && parts[0] && parts[1] && parts[2] && parts[3]) {
-      [hash, message, author, date] = parts as [string, string, string, string];
+    });
+    if (gitLogResult.success) {
+      const parts = gitLogResult.stdout.trim().split('|');
+      
+      // Ensure all values are defined
+      if (parts.length >= 4 && parts[0] && parts[1] && parts[2] && parts[3]) {
+        [hash, message, author, date] = parts as [string, string, string, string];
+      }
     }
     
     // Get recent changes
-    const recentChangesOutput = execSync('git log --oneline -5', { 
-      encoding: 'utf-8',
+    const recentChangesResult = executeCommand('git log --oneline -5', {
       timeout: 10000 // 10 second timeout
     });
-    recentChanges = recentChangesOutput
-      .split('\n')
-      .filter(Boolean)
-      .map(line => line.substring(8)); // Remove commit hash
+    if (recentChangesResult.success) {
+      recentChanges = recentChangesResult.stdout
+        .split('\n')
+        .filter(Boolean)
+        .map((line: string) => line.substring(8)); // Remove commit hash
+    }
   } catch (error) {
     // Git not available or timeout
     console.log('⚠️  Git information not available');
@@ -254,12 +248,13 @@ async function getProjectInfo(): Promise<ChatContext['project']> {
   // Count open issues (if GitHub CLI is available)
   let openIssues = 0;
   try {
-    const issuesOutput = execSync('gh issue list --state open --json number', { 
-      encoding: 'utf-8',
+    const issuesResult = executeCommand('gh issue list --state open --json number', {
       timeout: 10000 // 10 second timeout
     });
-    const issues = JSON.parse(issuesOutput);
-    openIssues = issues.length;
+    if (issuesResult.success) {
+      const issues = safeParseJSON<any[]>(issuesResult.stdout, 'GitHub issues');
+      openIssues = issues.length;
+    }
   } catch {
     // GitHub CLI not available or no issues
   }
@@ -323,7 +318,7 @@ async function getFossilsInfo(): Promise<ChatContext['fossils']> {
   try {
     // Check insights collection
     const insightsCollection = await fs.readFile('fossils/roadmap_insights_collection.json', 'utf-8');
-    const collection = JSON.parse(insightsCollection);
+    const collection = safeParseJSON<{ insights?: any[]; generatedAt?: string }>(insightsCollection, 'insights collection');
     fossils.insights.total = collection.insights?.length || 0;
     fossils.insights.lastGenerated = collection.generatedAt || '';
   } catch {
@@ -336,11 +331,12 @@ async function getFossilsInfo(): Promise<ChatContext['fossils']> {
 async function getGitChanges(): Promise<ChatContext['gitChanges']> {
   try {
     // Get current branch
-    const branch = execSync('git branch --show-current', { encoding: 'utf-8' }).trim();
+    const branchResult = executeCommand('git branch --show-current');
+    const branch = branchResult.success ? branchResult.stdout.trim() : '';
     
     // Get ahead/behind info
-    const statusOutput = execSync('git status --porcelain=v2 --branch', { encoding: 'utf-8' });
-    const branchLine = statusOutput.split('\n').find(line => line.startsWith('# branch.'));
+    const statusResult = executeCommand('git status --porcelain=v2 --branch');
+    const branchLine = statusResult.success ? statusResult.stdout.split('\n').find((line: string) => line.startsWith('# branch.')) : undefined;
     let ahead = 0, behind = 0;
     if (branchLine) {
       const aheadMatch = branchLine.match(/ahead (\d+)/);
@@ -353,20 +349,22 @@ async function getGitChanges(): Promise<ChatContext['gitChanges']> {
     const stagedFiles: string[] = [];
     let stagedAdditions = 0, stagedDeletions = 0;
     try {
-      const stagedDiff = execSync('git diff --cached --stat', { encoding: 'utf-8' });
-      const stagedLines = stagedDiff.split('\n').filter(line => line.includes('|'));
-      stagedLines.forEach(line => {
-        const match = line.match(/(\d+)\s+\|\s+(\d+)\s+(\+*)(-*)/);
-        if (match && match[1] && match[2]) {
-          const parts = line.split('|');
-          if (parts[0]) {
-            const filename = parts[0].trim();
-            stagedFiles.push(filename);
-            stagedAdditions += parseInt(match[2]);
-            stagedDeletions += parseInt(match[1]) - parseInt(match[2]);
+      const stagedResult = executeCommand('git diff --cached --stat');
+      if (stagedResult.success) {
+        const stagedLines = stagedResult.stdout.split('\n').filter((line: string) => line.includes('|'));
+        stagedLines.forEach((line: string) => {
+          const match = line.match(/(\d+)\s+\|\s+(\d+)\s+(\+*)(-*)/);
+          if (match && match[1] && match[2]) {
+            const parts = line.split('|');
+            if (parts[0]) {
+              const filename = parts[0].trim();
+              stagedFiles.push(filename);
+              stagedAdditions += parseInt(match[2]);
+              stagedDeletions += parseInt(match[1]) - parseInt(match[2]);
+            }
           }
-        }
-      });
+        });
+      }
     } catch {
       // No staged changes
     }
@@ -375,27 +373,29 @@ async function getGitChanges(): Promise<ChatContext['gitChanges']> {
     const unstagedFiles: string[] = [];
     let unstagedAdditions = 0, unstagedDeletions = 0;
     try {
-      const unstagedDiff = execSync('git diff --stat', { encoding: 'utf-8' });
-      const unstagedLines = unstagedDiff.split('\n').filter(line => line.includes('|'));
-      unstagedLines.forEach(line => {
-        const match = line.match(/(\d+)\s+\|\s+(\d+)\s+(\+*)(-*)/);
-        if (match && match[1] && match[2]) {
-          const parts = line.split('|');
-          if (parts[0]) {
-            const filename = parts[0].trim();
-            unstagedFiles.push(filename);
-            unstagedAdditions += parseInt(match[2]);
-            unstagedDeletions += parseInt(match[1]) - parseInt(match[2]);
+      const unstagedResult = executeCommand('git diff --stat');
+      if (unstagedResult.success) {
+        const unstagedLines = unstagedResult.stdout.split('\n').filter((line: string) => line.includes('|'));
+        unstagedLines.forEach((line: string) => {
+          const match = line.match(/(\d+)\s+\|\s+(\d+)\s+(\+*)(-*)/);
+          if (match && match[1] && match[2]) {
+            const parts = line.split('|');
+            if (parts[0]) {
+              const filename = parts[0].trim();
+              unstagedFiles.push(filename);
+              unstagedAdditions += parseInt(match[2]);
+              unstagedDeletions += parseInt(match[1]) - parseInt(match[2]);
+            }
           }
-        }
-      });
+        });
+      }
     } catch {
       // No unstaged changes
     }
     
     // Get untracked files
-    const untrackedOutput = execSync('git ls-files --others --exclude-standard', { encoding: 'utf-8' });
-    const untracked = untrackedOutput.split('\n').filter(Boolean);
+    const untrackedResult = executeCommand('git ls-files --others --exclude-standard');
+    const untracked = untrackedResult.success ? untrackedResult.stdout.split('\n').filter(Boolean) : [];
     
     return {
       staged: {

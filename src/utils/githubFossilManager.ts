@@ -6,6 +6,7 @@ import type {
   GitHubFossilCollection 
 } from '@/types';
 import { GitHubService } from '../services/github';
+import { ContextFossilService } from '../cli/context-fossil';
 
 export class GitHubFossilManager {
   private owner: string;
@@ -38,19 +39,16 @@ export class GitHubFossilManager {
         // Use the existing fossil-backed issue creation utility
         const { createFossilIssue } = await import('./fossilIssue');
         const result = await createFossilIssue({
-          owner: this.owner,
-          repo: this.repo,
-          title: task.task,
           body: issueBody,
-          labels,
-          milestone: task.milestone,
+          title: task.task,
           section: 'roadmap',
           type: 'action',
           tags: ['roadmap', 'automation'],
           metadata: {
             roadmapTask: task,
             roadmapSource: roadmap.source
-          }
+          },
+          parsedFields: {}
         });
 
         if (!result.deduplicated && result.issueNumber) {
@@ -101,13 +99,14 @@ export class GitHubFossilManager {
         // Use fossil-backed milestone creation
         const { createFossilMilestone } = await import('./fossilMilestone');
         const result = await createFossilMilestone({
-          owner: this.owner,
-          repo: this.repo,
+          fossilService: new ContextFossilService(),
+          type: 'action',
           title: milestoneTitle,
-          description: `Milestone for ${milestoneTitle}`,
-          dueOn: this.getMilestoneDueDate(roadmap, milestoneTitle),
+          body: `Milestone for ${milestoneTitle}`,
+          section: this.getMilestoneDueDate(roadmap, milestoneTitle) || 'general',
           tags: ['roadmap', 'automation'],
-          metadata: { roadmapSource: roadmap.source }
+          metadata: { roadmapSource: roadmap.source },
+          parsedFields: {}
         });
 
         if (!result.deduplicated && result.milestoneNumber) {
@@ -154,13 +153,14 @@ export class GitHubFossilManager {
         // Use fossil-backed label creation
         const { createFossilLabel } = await import('./fossilLabel');
         const result = await createFossilLabel({
-          owner: this.owner,
-          repo: this.repo,
-          name: label.name,
-          description: label.description,
-          color: label.color,
+          fossilService: new ContextFossilService(),
+          type: 'action',
+          title: label.name,
+          body: label.description,
+          section: 'labels',
           tags: ['roadmap', 'automation'],
-          metadata: { roadmapAutomation: true }
+          metadata: { roadmapAutomation: true, color: label.color },
+          parsedFields: {}
         });
 
         if (!result.deduplicated) {

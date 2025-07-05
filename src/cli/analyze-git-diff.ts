@@ -6,18 +6,7 @@
  */
 
 import { GitDiffAnalyzer } from '../utils/gitDiffAnalyzer';
-
-interface CLIOptions {
-  commitHash?: string;
-  includeStaged?: boolean;
-  includeUnstaged?: boolean;
-  maxFiles?: number;
-  analysisDepth?: 'shallow' | 'medium' | 'deep';
-  format?: 'json' | 'text' | 'table';
-  output?: string;
-  batch?: boolean;
-  batchSize?: number;
-}
+import { parseCLIArgs, GitDiffAnalysisParamsSchema } from '../types/cli';
 
 function showHelp(): void {
   console.log(`
@@ -54,60 +43,12 @@ Examples:
 
 async function main(): Promise<void> {
   try {
-    const args = process.argv.slice(2);
+    const options = parseCLIArgs(GitDiffAnalysisParamsSchema, process.argv.slice(2));
     
-    // Parse arguments
-    const options: CLIOptions = {};
-    
-    for (let i = 0; i < args.length; i++) {
-      const arg = args[i];
-      
-      switch (arg) {
-        case '--help':
-        case '-h':
-          showHelp();
-          process.exit(0);
-          break;
-        case '--commit-hash':
-          options.commitHash = args[++i];
-          break;
-        case '--include-staged':
-          options.includeStaged = true;
-          break;
-        case '--include-unstaged':
-          options.includeUnstaged = true;
-          break;
-        case '--max-files':
-          const maxFilesArg = args[++i];
-          if (maxFilesArg) {
-            options.maxFiles = parseInt(maxFilesArg);
-          }
-          break;
-        case '--analysis-depth':
-          const depthArg = args[++i];
-          if (depthArg) {
-            options.analysisDepth = depthArg as 'shallow' | 'medium' | 'deep';
-          }
-          break;
-        case '--format':
-          const formatArg = args[++i];
-          if (formatArg) {
-            options.format = formatArg as 'json' | 'text' | 'table';
-          }
-          break;
-        case '--output':
-          options.output = args[++i];
-          break;
-        case '--batch':
-          options.batch = true;
-          break;
-        case '--batch-size':
-          const batchSizeArg = args[++i];
-          if (batchSizeArg) {
-            options.batchSize = parseInt(batchSizeArg);
-          }
-          break;
-      }
+    // Handle help
+    if (options.help || options.h) {
+      showHelp();
+      process.exit(0);
     }
     
     // Set defaults

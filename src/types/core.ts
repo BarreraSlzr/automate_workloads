@@ -87,7 +87,15 @@ export interface ContextEntry {
     stakeholders?: string[];
     /** Similarity score for related content */
     similarityScore?: number;
-  };
+  
+  timestamp: string;
+  purpose: string;
+  context: string; // alias for content
+  validation?: { qualityScore?: number };
+  success?: boolean;
+  provider?: string;
+  insights?: any[];
+  traceData?: any;};
   /** Relationship tags */
   relationships?: {
     /** Related fossil IDs */
@@ -123,7 +131,7 @@ export interface ContextQuery {
   /** Maximum number of entries to return */
   limit: number;
   /** Number of entries to skip */
-  offset: number;
+  offset?: number; // defaults to 0
   /** Filter by entry type */
   type?: ContextEntry['type'];
   /** Filter by tags */
@@ -279,4 +287,20 @@ export interface ConfigValidationResult {
   missingServices: string[];
   /** List of available services */
   availableServices: string[];
+}
+
+/**
+ * Fossil summary interface for display and listing purposes
+ */
+export interface FossilSummary {
+  /** Fossil type */
+  type: string;
+  /** Fossil title */
+  title: string;
+  /** Creation timestamp */
+  createdAt: string;
+  /** Associated tags */
+  tags: string[];
+  /** Brief excerpt/summary */
+  excerpt: string;
 }

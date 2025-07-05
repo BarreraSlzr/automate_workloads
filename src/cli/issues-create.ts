@@ -2,15 +2,9 @@ import { GitHubService } from '../services/github.ts';
 import { ContextFossilService } from './context-fossil.ts';
 import * as fs from 'fs';
 import { createFossilIssue } from '../utils/fossilIssue';
+import { IssuesCreateParamsSchema, IssuesCreateParams } from '../types/cli';
 
-export interface IssuesCreateOptions {
-  purpose?: string;
-  checklist?: string;
-  metadata?: string;
-  debug?: boolean;
-}
-
-export async function runIssuesCreate(options: IssuesCreateOptions = {}) {
+export async function runIssuesCreate(options: IssuesCreateParams = {}) {
   const debug = !!options.debug || process.env.DEBUG === '1';
   const fossil = new ContextFossilService();
   const title = '[AUTOMATION] Streamlined Automation Workflow Progression';
@@ -66,13 +60,13 @@ export async function runIssuesCreate(options: IssuesCreateOptions = {}) {
   // Use fossil-backed issue creation
   try {
     const result = await createFossilIssue({
-      owner,
-      repo,
-      title,
       body: content,
-      labels: ['automation', 'bot'],
+      title,
+      section: 'general',
+      metadata: { source: 'cli-issues-create' },
+      type: 'action',
       tags: ['automation', 'bot'],
-      metadata: { createdBy: 'automation', ...options },
+      parsedFields: {}
     });
     if (result.deduplicated) {
       console.log(`⚠️ Duplicate automation issue found for fossil hash: ${result.fossilHash}. Skipping creation.`);

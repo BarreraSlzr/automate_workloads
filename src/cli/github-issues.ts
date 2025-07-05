@@ -8,70 +8,7 @@
 
 import { GitHubService } from "../services/github";
 import { validateConfig } from "../core/config";
-import { z, ZodError, GitHubIssuesCLIArgsSchema } from "@/types/schemas";
-
-
-
-/**
- * Parses command line arguments using Zod validation
- * 
- * @returns {z.infer<typeof GitHubIssuesCLIArgsSchema>} Parsed and validated CLI options
- */
-function parseArgs(): z.infer<typeof GitHubIssuesCLIArgsSchema> {
-  const args = process.argv.slice(2);
-  const options: Record<string, any> = {};
-
-  for (let i = 0; i < args.length; i++) {
-    const arg = args[i];
-    
-    switch (arg) {
-      case '--owner':
-      case '-o':
-        options.owner = args[++i];
-        break;
-      case '--repo':
-      case '-r':
-        options.repo = args[++i];
-        break;
-      case '--state':
-      case '-s':
-        options.state = args[++i];
-        break;
-      case '--format':
-      case '-f':
-        options.format = args[++i];
-        break;
-      case '--json':
-        options.format = 'json';
-        break;
-      case '--table':
-        options.format = 'table';
-        break;
-      case '--verbose':
-      case '-v':
-        options.verbose = true;
-        break;
-      case '--help':
-      case '-h':
-        showHelp();
-        process.exit(0);
-        break;
-    }
-  }
-
-  try {
-    return GitHubIssuesCLIArgsSchema.parse(options);
-  } catch (error) {
-    if (error instanceof ZodError) {
-      console.error('❌ Validation error:');
-      error.errors.forEach(err => {
-        console.error(`  - ${err.path.join('.')}: ${err.message}`);
-      });
-      process.exit(1);
-    }
-    throw error;
-  }
-}
+import { parseCLIArgs, GitHubIssuesCLIArgsSchema } from "@/types/cli";
 
 /**
  * Displays help information
@@ -102,8 +39,14 @@ Examples:
  */
 async function main(): Promise<void> {
   try {
+    // Check for help argument before parsing
+    if (process.argv.includes('--help') || process.argv.includes('-h')) {
+      showHelp();
+      return;
+    }
+    
     // Parse command line arguments
-    const options = parseArgs();
+    const options = parseCLIArgs(GitHubIssuesCLIArgsSchema, process.argv.slice(2));
     
     if (options.verbose) {
       console.log('GitHub Issues CLI - Starting...');

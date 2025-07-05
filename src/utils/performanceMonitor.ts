@@ -1,64 +1,16 @@
-import { z } from 'zod';
 import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { execSync } from 'child_process';
-
-// Performance monitoring schemas
-export const PerformanceMetricsSchema = z.object({
-  real_time: z.number(),
-  user_time: z.number(),
-  sys_time: z.number(),
-  output_size_bytes: z.number(),
-  error_size_bytes: z.number(),
-  cpu_percent: z.number(),
-});
-
-export const PerformanceLogEntrySchema = z.object({
-  script: z.string(),
-  execution_time: z.number(),
-  memory_usage_mb: z.number(),
-  exit_code: z.number(),
-  timestamp: z.string(),
-  additional_metrics: PerformanceMetricsSchema,
-});
-
-export const PerformanceSummarySchema = z.object({
-  total_executions: z.number(),
-  scripts: z.number(),
-  average_execution_time: z.number(),
-  fastest_execution: z.number(),
-  slowest_execution: z.number(),
-  total_execution_time: z.number(),
-  successful_executions: z.number(),
-  failed_executions: z.number(),
-  success_rate: z.number(),
-  average_memory_usage: z.number(),
-  script_performance: z.array(z.object({
-    script: z.string(),
-    executions: z.number(),
-    average_time: z.number(),
-    success_rate: z.number(),
-  })),
-});
-
-export type PerformanceMetrics = z.infer<typeof PerformanceMetricsSchema>;
-export type PerformanceLogEntry = z.infer<typeof PerformanceLogEntrySchema>;
-export type PerformanceSummary = z.infer<typeof PerformanceSummarySchema>;
-
-// Performance monitoring configuration
-export interface PerformanceMonitorConfig {
-  logDir: string;
-  logFile: string;
-  summaryFile: string;
-  reportFile: string;
-}
-
-export const DEFAULT_PERFORMANCE_CONFIG: PerformanceMonitorConfig = {
-  logDir: 'fossils/performance',
-  logFile: 'fossils/performance/performance_log.json',
-  summaryFile: 'fossils/performance/performance_summary.json',
-  reportFile: 'fossils/performance/performance_report.md',
-};
+import {
+  PerformanceMetricsSchema,
+  PerformanceLogEntrySchema,
+  PerformanceSummarySchema,
+  PerformanceMetrics,
+  PerformanceLogEntry,
+  PerformanceSummary,
+  PerformanceMonitorConfig,
+  DEFAULT_PERFORMANCE_CONFIG
+} from '../types/performance';
 
 // Performance monitoring utility class
 export class PerformanceMonitor {
@@ -240,6 +192,7 @@ export class PerformanceMonitor {
       failed_executions: failedExecutions,
       success_rate: (successfulExecutions / totalExecutions) * 100,
       average_memory_usage: memoryUsages.reduce((sum, usage) => sum + usage, 0) / totalExecutions,
+      total_memory_usage: memoryUsages.reduce((sum, usage) => sum + usage, 0),
       script_performance: scriptPerformance,
     };
 

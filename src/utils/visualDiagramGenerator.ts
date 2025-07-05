@@ -14,11 +14,8 @@ import {
   DependencySchema
 } from '../types';
 
-// Type definitions for diagram generation
-export type WorkflowStep = z.infer<typeof WorkflowStepSchema>;
-export type Component = z.infer<typeof ComponentSchema>;
-export type Risk = z.infer<typeof RiskSchema>;
-export type Dependency = z.infer<typeof DependencySchema>;
+// Import types from schemas
+import type { WorkflowStep, Component, Risk, Dependency } from '../types/schemas';
 
 /**
  * Generate a workflow diagram from steps

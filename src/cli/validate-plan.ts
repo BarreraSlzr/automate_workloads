@@ -7,7 +7,8 @@
  */
 
 import { Command } from 'commander';
-import { PlanValidator, type ValidationOptions } from '../utils/plan-validator';
+import { PlanValidator } from '../utils/plan-validator';
+import type { ValidationOptions } from '../types/validation';
 
 const program = new Command();
 

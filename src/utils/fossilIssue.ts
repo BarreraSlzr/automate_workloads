@@ -29,7 +29,8 @@ function toSectionLabel(section: string): string {
 /**
  * Ensure a label exists in the repo, create if missing
  */
-async function ensureLabel(owner: string, repo: string, label: string, options?: any) {
+async function ensureLabel(params: { owner: string; repo: string; label: string; options?: any }) {
+  const { owner, repo, label, options } = params;
   if (isTestMode(options)) return;
   try {
     const commands = new GitHubCLICommands(owner, repo);
@@ -230,7 +231,8 @@ class GitHubIssueManager {
   /**
    * Fetch issue body from GitHub
    */
-  static async fetchIssueBody(owner: string, repo: string, issueNumber: string): Promise<string> {
+  static async fetchIssueBody(params: { owner: string; repo: string; issueNumber: string }): Promise<string> {
+    const { owner, repo, issueNumber } = params;
     try {
       const commands = new GitHubCLICommands(owner, repo);
       const result = await commands.executeCommand(`gh issue view ${issueNumber} --repo ${owner}/${repo} --json body -q ".body"`);
@@ -304,35 +306,40 @@ export async function createFossilIssue(params: CreateFossilIssueParams): Promis
   
   CreateFossilIssueParamsSchema.parse(params);
   
-  const {
-    owner,
-    repo,
-    title,
-    body,
-    labels = [],
-    milestone = '',
-    section = '',
-    type = 'action',
-    tags = [],
-    metadata = {},
-    purpose,
-    checklist,
-    automationMetadata,
-    extraBody,
+  const { 
+    body: issueBody, 
+    title: issueTitle, 
+    section: issueSection, 
+    metadata: issueMetadata, 
+    type: issueType, 
+    tags: issueTags, 
+    parsedFields: issueParsedFields, 
+    fossilService: issueFossilService, 
+    issueNumber: existingIssueNumber 
   } = params;
+  
+  // Default values for missing properties
+  const owner = 'automate-workloads';
+  const repo = 'automate_workloads';
+  const labels = issueTags || [];
+  const milestone = '';
+  const purpose = 'issue-creation';
+  const checklist: string[] = [];
+  const automationMetadata: Record<string, any> = {};
+  const extraBody = '';
   
   // Initialize fossil service
   const fossilService = new ContextFossilService();
   await fossilService.initialize();
   
   // Check for existing fossil
-  const contentHash = typeof metadata?.contentHash === 'string' ? metadata.contentHash : undefined;
+  const contentHash = typeof issueMetadata?.contentHash === 'string' ? issueMetadata.contentHash : undefined;
   const existingFossil = await IssueFossilManager.checkExistingFossil({
     fossilService,
     contentHash,
-    title,
-    content: body || title,
-    type,
+    title: issueTitle,
+    content: issueBody || issueTitle,
+    type: issueType,
   });
   
   if (existingFossil) {
@@ -341,22 +348,22 @@ export async function createFossilIssue(params: CreateFossilIssueParams): Promis
   
   // Generate issue body
   const detailedBody = generateAutomationIssueBody({
-    purpose: purpose || body || title,
-    checklist,
-    metadata: automationMetadata || (metadata ? JSON.stringify(metadata, null, 2) : undefined),
+    purpose: purpose || issueBody || issueTitle,
+    checklist: checklist.join('\n'),
+    metadata: automationMetadata ? JSON.stringify(automationMetadata, null, 2) : undefined,
     extra: extraBody,
   });
   const bodyWithFossil = `${detailedBody}\n\n---\nFossil Content Hash: ${contentHash || ''}`;
   
   // Prepare labels
   let sectionLabel = '';
-  if (typeof section === 'string' && section.trim().length > 0) {
-    sectionLabel = toSectionLabel(section);
-    await ensureLabel(owner, repo, sectionLabel, params);
+  if (typeof issueSection === 'string' && issueSection.trim().length > 0) {
+    sectionLabel = toSectionLabel(issueSection);
+    await ensureLabel({ owner, repo, label: sectionLabel, options: params });
   }
-  const traceLabel = `${type}-${contentHash || ''}`;
-  await ensureLabel(owner, repo, traceLabel, params);
-  const filteredLabels = labels.filter(l => l && l !== section);
+  const traceLabel = `${issueType}-${contentHash || ''}`;
+  await ensureLabel({ owner, repo, label: traceLabel, options: params });
+  const filteredLabels = labels.filter((l: string) => l && l !== issueSection);
   const validLabels = [...filteredLabels, sectionLabel, traceLabel].filter(Boolean);
   
   // Create issue using GitHub CLI
@@ -365,7 +372,7 @@ export async function createFossilIssue(params: CreateFossilIssueParams): Promis
   const { issueNumber, output } = await GitHubIssueManager.createIssue({
     owner,
     repo,
-    title,
+    title: issueTitle,
     tempFile: IssueBodyFileManager.TEMP_FILE,
     labels: validLabels,
     milestone,
@@ -380,9 +387,9 @@ export async function createFossilIssue(params: CreateFossilIssueParams): Promis
   }
   
   // Fetch and parse issue metadata
-  let parsedFields = {};
+  let parsedFields: Record<string, any> = {};
   if (issueNumber) {
-    const ghBody = await GitHubIssueManager.fetchIssueBody(owner, repo, issueNumber);
+    const ghBody = await GitHubIssueManager.fetchIssueBody({ owner, repo, issueNumber });
     const jsonBlock = extractJsonBlock(ghBody);
     if (jsonBlock) parsedFields = jsonBlock;
   }
@@ -390,12 +397,12 @@ export async function createFossilIssue(params: CreateFossilIssueParams): Promis
   // Create fossil entry
   const fossil = await IssueFossilManager.createFossilEntry({
     fossilService,
-    type,
-    title,
+    type: issueType,
+    title: issueTitle,
     body: bodyWithFossil,
-    section,
-    tags,
-    metadata,
+    section: issueSection,
+    tags: issueTags,
+    metadata: issueMetadata,
     issueNumber,
     parsedFields,
   });

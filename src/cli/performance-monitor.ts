@@ -1,24 +1,12 @@
 #!/usr/bin/env bun
 
 import { Command } from 'commander';
-import PerformanceMonitor, { 
+import PerformanceMonitor from '../utils/performanceMonitor.js';
+import { 
   PerformanceMonitorConfig,
   DEFAULT_PERFORMANCE_CONFIG 
-} from '../utils/performanceMonitor.js';
-import { z } from 'zod';
-
-// CLI configuration schema
-const CLIConfigSchema = z.object({
-  logDir: z.string().optional(),
-  logFile: z.string().optional(),
-  summaryFile: z.string().optional(),
-  reportFile: z.string().optional(),
-  verbose: z.boolean().optional(),
-  timeout: z.number().optional(),
-  captureOutput: z.boolean().optional(),
-});
-
-type CLIConfig = z.infer<typeof CLIConfigSchema>;
+} from '../types/performance';
+import { CLIConfigSchema, CLIConfig } from '../types/cli';
 
 // Performance monitoring CLI
 class PerformanceMonitorCLI {
@@ -272,7 +260,7 @@ program
   .option('--log-file <file>', 'Performance log file', DEFAULT_PERFORMANCE_CONFIG.logFile)
   .option('--summary-file <file>', 'Performance summary file', DEFAULT_PERFORMANCE_CONFIG.summaryFile)
   .option('--report-file <file>', 'Performance report file', DEFAULT_PERFORMANCE_CONFIG.reportFile)
-  .option('--timeout <ms>', 'Script execution timeout in milliseconds', '300000')
+  .option('--timeout <ms>', 'Script execution timeout in milliseconds', (val) => parseInt(val, 10), 300000)
   .option('--capture-output', 'Capture script output', true);
 
 // Monitor command

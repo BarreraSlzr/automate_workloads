@@ -8,7 +8,8 @@ import { LLMInsightFossil, LLMBenchmarkFossil, LLMDiscoveryFossil, AnyLLMFossil 
 /**
  * Generate a content hash for deduplication
  */
-export function generateContentHash(content: string, type: string, title: string): string {
+export function generateContentHash(params: { content: string; type: string; title: string }): string {
+  const { content, type, title } = params;
   return createHash('sha256')
     .update(`${content}${type}${title}`)
     .digest('hex')
@@ -18,8 +19,9 @@ export function generateContentHash(content: string, type: string, title: string
 /**
  * Generate a unique fossil entry ID based on content hash
  */
-function generateId(content: string, type: string, title: string): string {
-  const contentHash = generateContentHash(content, type, title);
+function generateId(params: { content: string; type: string; title: string }): string {
+  const { content, type, title } = params;
+  const contentHash = generateContentHash({ content, type, title });
   const timestamp = Date.now();
   return `fossil_${contentHash}_${timestamp}`;
 }
@@ -54,10 +56,10 @@ export function toFossilEntry(params: {
   };
   PartialContextEntrySchema.parse(safeParams);
   const now = new Date().toISOString();
-  const contentHash = generateContentHash(safeParams.content, safeParams.type, safeParams.title);
+  const contentHash = generateContentHash({ content: safeParams.content, type: safeParams.type, title: safeParams.title });
   
   return {
-    id: generateId(safeParams.content, safeParams.type, safeParams.title),
+    id: generateId({ content: safeParams.content, type: safeParams.type, title: safeParams.title }),
     type: safeParams.type,
     title: safeParams.title,
     content: safeParams.content,

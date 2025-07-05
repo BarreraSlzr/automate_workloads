@@ -43,7 +43,34 @@ import {
   ServicesEntrySchema,
   ExamplesEntrySchema,
   DeveloperSummarySchema,
-  ProjectStatusSchema
+  ProjectStatusSchema,
+  // Enhanced Commit Message System Schemas
+  EnhancedCommitValidationParamsSchema,
+  CommitAuditParamsSchema,
+  CommitFixParamsSchema,
+  CommitTrackingParamsSchema,
+  CommitTemplateCreateParamsSchema,
+  CommitTemplateFromJsonParamsSchema,
+  CommitTemplateToJsonParamsSchema,
+  CommitTemplateValidateParamsSchema,
+  CommitTemplateGenerateParamsSchema,
+  CommitMessageValidationSchema,
+  GitDiffDataSchema,
+  FileChangeSchema,
+  LLMInsightDataSchema,
+  CommitFixSchema,
+  CommitAuditDataSchema,
+  AuditReportSchema,
+  CommitMessageTemplateSchema,
+  GitDiffAnalysisParamsSchema,
+  IssuesCreateParamsSchema,
+  ValidationResultSchema,
+  FossilSummarySchema,
+  CLIConfigSchema,
+  PerformanceResultSchema,
+  TimestampFilterParamsSchema,
+  TimestampFilterCLIParamsSchema,
+  GitHubIssuesCLIArgsSchema
 } from './schemas';
 
 // PARAMS OBJECT PATTERN
@@ -173,6 +200,34 @@ export type ExamplesEntry = z.infer<typeof ExamplesEntrySchema>;
 export type DeveloperSummary = z.infer<typeof DeveloperSummarySchema>;
 export type ProjectStatus = z.infer<typeof ProjectStatusSchema>;
 
+// Enhanced Commit Message System Types
+export type EnhancedCommitValidationParams = z.infer<typeof EnhancedCommitValidationParamsSchema>;
+export type CommitAuditParams = z.infer<typeof CommitAuditParamsSchema>;
+export type CommitFixParams = z.infer<typeof CommitFixParamsSchema>;
+export type CommitTrackingParams = z.infer<typeof CommitTrackingParamsSchema>;
+export type CommitTemplateCreateParams = z.infer<typeof CommitTemplateCreateParamsSchema>;
+export type CommitTemplateFromJsonParams = z.infer<typeof CommitTemplateFromJsonParamsSchema>;
+export type CommitTemplateToJsonParams = z.infer<typeof CommitTemplateToJsonParamsSchema>;
+export type CommitTemplateValidateParams = z.infer<typeof CommitTemplateValidateParamsSchema>;
+export type CommitTemplateGenerateParams = z.infer<typeof CommitTemplateGenerateParamsSchema>;
+export type CommitMessageValidation = z.infer<typeof CommitMessageValidationSchema>;
+export type GitDiffData = z.infer<typeof GitDiffDataSchema>;
+export type FileChange = z.infer<typeof FileChangeSchema>;
+export type LLMInsightData = z.infer<typeof LLMInsightDataSchema>;
+export type CommitFix = z.infer<typeof CommitFixSchema>;
+export type CommitAuditData = z.infer<typeof CommitAuditDataSchema>;
+export type AuditReport = z.infer<typeof AuditReportSchema>;
+export type CommitMessageTemplate = z.infer<typeof CommitMessageTemplateSchema>;
+export type GitDiffAnalysisParams = z.infer<typeof GitDiffAnalysisParamsSchema>;
+export type IssuesCreateParams = z.infer<typeof IssuesCreateParamsSchema>;
+export type ValidationResult = z.infer<typeof ValidationResultSchema>;
+export type FossilSummary = z.infer<typeof FossilSummarySchema>;
+export type CLIConfig = z.infer<typeof CLIConfigSchema>;
+export type PerformanceResult = z.infer<typeof PerformanceResultSchema>;
+export type TimestampFilterParams = z.infer<typeof TimestampFilterParamsSchema>;
+export type TimestampFilterCLIParams = z.infer<typeof TimestampFilterCLIParamsSchema>;
+export type GitHubIssuesCLIArgs = z.infer<typeof GitHubIssuesCLIArgsSchema>;
+
 // Schema Exports
 export {
   UpdateProjectStatusParamsSchema,
@@ -195,5 +250,33 @@ export {
   ServicesEntrySchema,
   ExamplesEntrySchema,
   DeveloperSummarySchema,
-  ProjectStatusSchema
+  ProjectStatusSchema,
+  // Enhanced Commit Message System Schemas
+  EnhancedCommitValidationParamsSchema,
+  CommitAuditParamsSchema,
+  CommitFixParamsSchema,
+  CommitTrackingParamsSchema,
+  CommitTemplateCreateParamsSchema,
+  CommitTemplateFromJsonParamsSchema,
+  CommitTemplateToJsonParamsSchema,
+  CommitTemplateValidateParamsSchema,
+  CommitTemplateGenerateParamsSchema,
+  CommitMessageValidationSchema,
+  GitDiffDataSchema,
+  FileChangeSchema,
+  LLMInsightDataSchema,
+  CommitFixSchema,
+  CommitAuditDataSchema,
+  AuditReportSchema,
+  CommitMessageTemplateSchema,
+  GitDiffAnalysisParamsSchema,
+  IssuesCreateParamsSchema,
+  ValidationResultSchema,
+  FossilSummarySchema,
+  CLIConfigSchema,
+  PerformanceResultSchema,
+  TimestampFilterParamsSchema,
+  TimestampFilterCLIParamsSchema,
+  GitHubIssuesCLIArgsSchema
 };
+

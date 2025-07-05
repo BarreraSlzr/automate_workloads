@@ -17,16 +17,14 @@ import {
 /**
  * Extract LLM insights from roadmap tasks recursively
  */
-function* extractTaskInsights(
-  tasks: any[], 
-  parentPath: string[] = []
-): Generator<RoadmapTaskInsight> {
+function* extractTaskInsights(params: { tasks: any[]; parentPath?: string[] }): Generator<RoadmapTaskInsight> {
+  const { tasks, parentPath = [] } = params;
   for (const task of tasks) {
     const currentPath = [...parentPath, task.task];
     
     if (task.llmInsights && typeof task.llmInsights === 'object') {
-      const taskId = generateTaskId(task.task, currentPath);
-      const fossilId = generateFossilId(task.llmInsights);
+      const taskId = generateTaskId({ taskTitle: task.task, taskPath: currentPath });
+      const fossilId = generateFossilId({ llmInsights: task.llmInsights });
       
       const insight: RoadmapTaskInsight = {
         taskId,
@@ -60,7 +58,7 @@ function* extractTaskInsights(
     
     // Recursively process subtasks
     if (Array.isArray(task.subtasks)) {
-      yield* extractTaskInsights(task.subtasks, currentPath);
+      yield* extractTaskInsights({ tasks: task.subtasks, parentPath: currentPath });
     }
   }
 }
@@ -68,7 +66,8 @@ function* extractTaskInsights(
 /**
  * Generate a unique task ID based on task title and path
  */
-function generateTaskId(taskTitle: string, taskPath: string[]): string {
+function generateTaskId(params: { taskTitle: string; taskPath: string[] }): string {
+  const { taskTitle, taskPath } = params;
   const pathString = taskPath.join('-');
   return createHash('sha256')
     .update(`${taskTitle}-${pathString}`)
@@ -79,7 +78,8 @@ function generateTaskId(taskTitle: string, taskPath: string[]): string {
 /**
  * Generate a fossil ID for the LLM insight
  */
-function generateFossilId(llmInsights: any): string {
+function generateFossilId(params: { llmInsights: any }): string {
+  const { llmInsights } = params;
   const content = JSON.stringify(llmInsights);
   return createHash('sha256')
     .update(content)
@@ -90,9 +90,8 @@ function generateFossilId(llmInsights: any): string {
 /**
  * Create a collection of all roadmap insights
  */
-export async function createRoadmapInsightsCollection(
-  roadmapPath: string = 'fossils/roadmap.yml'
-): Promise<RoadmapInsightsCollection> {
+export async function createRoadmapInsightsCollection(params: { roadmapPath?: string }): Promise<RoadmapInsightsCollection> {
+  const roadmapPath = params.roadmapPath || 'fossils/roadmap.yml';
   const roadmapContent = await fs.readFile(roadmapPath, 'utf-8');
   const roadmap = yaml.load(roadmapContent) as any;
   
@@ -108,7 +107,7 @@ export async function createRoadmapInsightsCollection(
   let insightsGenerated = 0;
   
   // Extract insights and collect metadata
-  for (const insight of extractTaskInsights(roadmap.tasks || [])) {
+  for (const insight of extractTaskInsights({ tasks: roadmap.tasks || [] })) {
     insights.push(insight);
     fossilIds.push(insight.metadata.fossilId);
     
@@ -154,9 +153,8 @@ export async function createRoadmapInsightsCollection(
 /**
  * Create a web publication format for human-readable display
  */
-export function createRoadmapInsightsWebPublication(
-  collection: RoadmapInsightsCollection
-): RoadmapInsightsWebPublication {
+export function createRoadmapInsightsWebPublication(params: { collection: RoadmapInsightsCollection }): RoadmapInsightsWebPublication {
+  const { collection } = params;
   const completed = collection.insights.filter(i => i.status === 'done');
   const inProgress = collection.insights.filter(i => i.status === 'in-progress' || i.status === 'in progress');
   const planned = collection.insights.filter(i => i.status === 'planned' || i.status === 'pending');
@@ -224,10 +222,8 @@ export function createRoadmapInsightsWebPublication(
 /**
  * Generate markdown report from insights collection
  */
-export function generateInsightsMarkdownReport(
-  collection: RoadmapInsightsCollection,
-  webPublication: RoadmapInsightsWebPublication
-): string {
+export function generateInsightsMarkdownReport(params: { collection: RoadmapInsightsCollection; webPublication: RoadmapInsightsWebPublication }): string {
+  const { collection, webPublication } = params;
   const { sections } = webPublication;
   
   let markdown = `# Roadmap Progress & Insights Report\n\n`;
@@ -320,16 +316,12 @@ export function generateInsightsMarkdownReport(
 /**
  * Save insights collection and web publication to files
  */
-export async function saveInsightsOutputs(
-  collection: RoadmapInsightsCollection,
-  webPublication: RoadmapInsightsWebPublication,
-  markdownReport: string,
-  outputDir: string = 'fossils'
-): Promise<{
+export async function saveInsightsOutputs(params: { collection: RoadmapInsightsCollection; webPublication: RoadmapInsightsWebPublication; markdownReport: string; outputDir?: string }): Promise<{
   collectionFile: string;
   webPublicationFile: string;
   markdownFile: string;
 }> {
+  const { collection, webPublication, markdownReport, outputDir = 'fossils' } = params;
   await fs.mkdir(outputDir, { recursive: true });
   
   const collectionFile = path.join(outputDir, 'roadmap_insights_collection.json');

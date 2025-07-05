@@ -1,15 +1,8 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { FossilSummary } from '../types/core';
 
 const FOSSIL_DIR = path.resolve('.context-fossil/entries');
-
-export interface FossilSummary {
-  type: string;
-  title: string;
-  createdAt: string;
-  tags: string[];
-  excerpt: string;
-}
 
 export async function getFossilSummary(): Promise<FossilSummary[]> {
   const files = await fs.readdir(FOSSIL_DIR);

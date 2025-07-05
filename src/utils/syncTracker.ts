@@ -5,7 +5,8 @@ import { createFossilIssue } from './fossilIssue';
 import { isTestMode } from '../cli/repo-orchestrator';
 import { GitHubCLICommands } from './githubCliCommands';
 
-async function runGh(cmd: string, owner: string, repo: string) {
+async function runGh(params: { cmd: string; owner: string; repo: string }) {
+  const { cmd, owner, repo } = params;
   try {
     const commands = new GitHubCLICommands(owner, repo);
     const result = await commands.executeCommand(cmd);
@@ -15,51 +16,46 @@ async function runGh(cmd: string, owner: string, repo: string) {
   }
 }
 
-async function getMilestoneIdByTitle(owner: string, repo: string, title: string): Promise<string | null> {
+async function getMilestoneIdByTitle(params: { owner: string; repo: string; title: string }): Promise<string | null> {
+  const { owner, repo, title } = params;
   if (isTestMode({ owner, repo, title })) return null;
-  const out = await runGh(`gh api repos/${owner}/${repo}/milestones --jq '.[] | select(.title=="${title}") | .number'`, owner, repo);
+  const out = await runGh({ cmd: `gh api repos/${owner}/${repo}/milestones --jq '.[] | select(.title=="${title}") | .number'`, owner, repo });
   if (typeof out === "undefined" || out === null) return null;
   const first = out.split("\n")[0];
   return typeof first === "string" && first.length > 0 ? first : null;
 }
 
-async function ensureMilestone(owner: string, repo: string, name: string): Promise<string | null> {
+async function ensureMilestone(params: { owner: string; repo: string; name: string }): Promise<string | null> {
+  const { owner, repo, name } = params;
   if (isTestMode({ owner, repo, name })) return null;
-  let milestoneId: string | null = await getMilestoneIdByTitle(owner, repo, name);
+  let milestoneId: string | null = await getMilestoneIdByTitle({ owner, repo, title: name });
   if (milestoneId) {
     console.log(`✅ Milestone exists: ${name}`);
     return milestoneId;
   }
-  
-  // Use centralized GitHubCLICommands for milestone creation
   const commands = new GitHubCLICommands(owner, repo);
   const result = await commands.createMilestone({
     title: name,
     description: 'Auto-created from tracker'
   });
-  
   if (result.success) {
-    milestoneId = await getMilestoneIdByTitle(owner, repo, name);
+    milestoneId = await getMilestoneIdByTitle({ owner, repo, title: name });
     if (milestoneId) {
       console.log(`🆕 Created milestone: ${name}`);
       return milestoneId;
     }
   }
-  
   console.error(`❌ Failed to create milestone: ${name}`);
   return null;
 }
 
-async function getIssueByTitle(owner: string, repo: string, title: string): Promise<{number: string, state: string} | null> {
+async function getIssueByTitle(params: { owner: string; repo: string; title: string }): Promise<{number: string, state: string} | null> {
+  const { owner, repo, title } = params;
   if (isTestMode({ owner, repo, title })) return null;
-  if (!issueExists(owner, repo, title, 'all')) return null;
-  
-  // Use centralized GitHubCLICommands for issue listing
+  if (!issueExists({ owner, repo, title, state: 'all' })) return null;
   const commands = new GitHubCLICommands(owner, repo);
   const result = await commands.listIssues({ state: 'all' });
-  
   if (!result.success) return null;
-  
   try {
     const arr = JSON.parse(result.stdout);
     for (const issue of arr) {
@@ -71,34 +67,31 @@ async function getIssueByTitle(owner: string, repo: string, title: string): Prom
   return null;
 }
 
-async function ensureIssue(task: { section: string; text: string }, milestoneId: string | undefined, owner: string, repo: string, projectNumber: number) {
+async function ensureIssue(params: { task: { section: string; text: string }; milestoneId: string | undefined; owner: string; repo: string; projectNumber: number }) {
+  const { task, milestoneId, owner, repo, projectNumber } = params;
   if (isTestMode({ owner, repo, milestoneId, projectNumber })) return;
   if (!milestoneId || milestoneId === "") return;
-  let issue = await getIssueByTitle(owner, repo, task.text);
+  let issue = await getIssueByTitle({ owner, repo, title: task.text });
   if (issue) {
     console.log(`✅ Issue exists: #${String(issue.number ?? "")} - ${task.text}`);
     if (issue.state === "closed") {
-      // Use centralized GitHubCLICommands for issue reopening
       const commands = new GitHubCLICommands(owner, repo);
       const reopenResult = await commands.executeCommand(`gh issue reopen ${String(issue.number ?? "")} --repo ${owner}/${repo}`);
       if (reopenResult.success) {
         console.log(`🔄 Reopened issue #${String(issue.number ?? "")}`);
       }
     }
-    await addIssueToProject(String(issue.number ?? ""), owner, repo, projectNumber);
+    await addIssueToProject({ issueNumber: String(issue.number ?? ""), owner, repo, projectNumber });
     return;
   }
-  // Use fossil-backed issue creation
   const result = await createFossilIssue({
-    owner,
-    repo,
-    title: task.text,
     body: `(Auto-created from tracker section: ${task.section})`,
-    labels: [task.section],
-    milestone: task.section,
+    title: task.text,
     section: task.section,
+    metadata: { source: 'sync-tracker', trackerSection: task.section },
+    type: 'action' as const,
     tags: ['github', 'issue', task.section],
-    metadata: { trackerSection: task.section },
+    parsedFields: {}
   });
   if (result.deduplicated) {
     console.log(`⚠️ Issue already exists for fossil hash: ${result.fossilHash}`);
@@ -108,10 +101,11 @@ async function ensureIssue(task: { section: string; text: string }, milestoneId:
   }
 }
 
-async function addIssueToProject(issueNumber: string | undefined, owner: string, repo: string, projectNumber: number) {
+async function addIssueToProject(params: { issueNumber: string | undefined; owner: string; repo: string; projectNumber: number }) {
+  const { issueNumber, owner, repo, projectNumber } = params;
   if (isTestMode({ owner, repo, issueNumber, projectNumber })) return;
   if (!issueNumber || issueNumber === "") return;
-  const addResult = await runGh(`gh project item-add ${projectNumber} --owner ${owner} --issue ${String(issueNumber ?? "")}`, owner, repo);
+  const addResult = await runGh({ cmd: `gh project item-add ${projectNumber} --owner ${owner} --issue ${String(issueNumber ?? "")}`, owner, repo });
   if (addResult && !addResult.includes("already exists")) {
     console.log(`📋 Added issue #${String(issueNumber ?? "") } to project board`);
   } else {
@@ -119,11 +113,11 @@ async function addIssueToProject(issueNumber: string | undefined, owner: string,
   }
 }
 
-async function closeIssueByTitle(title: string, owner: string, repo: string) {
+async function closeIssueByTitle(params: { title: string; owner: string; repo: string }) {
+  const { title, owner, repo } = params;
   if (isTestMode({ owner, repo, title })) return;
-  const issue = await getIssueByTitle(owner, repo, title);
+  const issue = await getIssueByTitle({ owner, repo, title });
   if (issue && issue.state === "open") {
-    // Use centralized GitHubCLICommands for issue closing
     const commands = new GitHubCLICommands(owner, repo);
     const closeResult = await commands.executeCommand(`gh issue close ${String(issue.number ?? "")} --repo ${owner}/${repo}`);
     if (closeResult.success) {
@@ -132,31 +126,28 @@ async function closeIssueByTitle(title: string, owner: string, repo: string) {
   }
 }
 
-async function ensureTestOrFossilIssue(item: { type: string; name: string; file: string }, milestoneId: string | undefined, owner: string, repo: string, projectNumber: number) {
+async function ensureTestOrFossilIssue(params: { item: { type: string; name: string; file: string }; milestoneId: string | undefined; owner: string; repo: string; projectNumber: number }) {
+  const { item, milestoneId, owner, repo, projectNumber } = params;
   if (isTestMode({ owner, repo, milestoneId, projectNumber })) return;
   if (!milestoneId || milestoneId === "") return;
   const title = `Add ${item.type} for ${item.name} in ${item.file}`;
-  let issue = await getIssueByTitle(owner, repo, title);
+  let issue = await getIssueByTitle({ owner, repo, title });
   if (issue) {
     if (issue.state === "closed") {
-      // Use centralized GitHubCLICommands for issue reopening
       const commands = new GitHubCLICommands(owner, repo);
       await commands.executeCommand(`gh issue reopen ${String(issue.number ?? "")} --repo ${owner}/${repo}`);
     }
-    await addIssueToProject(String(issue.number ?? ""), owner, repo, projectNumber);
+    await addIssueToProject({ issueNumber: String(issue.number ?? ""), owner, repo, projectNumber });
     return;
   }
-  // Use fossil-backed issue creation
   const result = await createFossilIssue({
-    owner,
-    repo,
-    title,
     body: `(Auto-created for missing ${item.type} in ${item.file})`,
-    labels: [item.type],
-    milestone: milestoneId,
+    title: title,
     section: item.type,
+    metadata: { source: 'sync-tracker', file: item.file, name: item.name, type: item.type },
+    type: 'action' as const,
     tags: ['github', 'issue', item.type],
-    metadata: { file: item.file, name: item.name, type: item.type },
+    parsedFields: {}
   });
   if (result.deduplicated) {
     console.log(`⚠️ Issue already exists for fossil hash: ${result.fossilHash}`);
@@ -208,7 +199,7 @@ export async function syncTrackerWithGitHub(options: {
   const milestoneIds: Record<string, string> = {};
   for (const section of uniqueSections) {
     if (section) {
-      const msId = await ensureMilestone(options.owner, options.repo, section);
+      const msId = await ensureMilestone({ owner: options.owner, repo: options.repo, name: section });
       if (typeof msId === "string" && msId.length > 0) milestoneIds[section] = msId;
     }
   }
@@ -216,10 +207,10 @@ export async function syncTrackerWithGitHub(options: {
   for (const task of tasks) {
     const msId = String(milestoneIds[task.section] || "");
     if (!task.checked && task.section && msId.length > 0) {
-      await ensureIssue(task, msId, options.owner, options.repo, options.projectNumber);
+      await ensureIssue({ task, milestoneId: msId, owner: options.owner, repo: options.repo, projectNumber: options.projectNumber });
     }
     if (options.autoClose && task.checked) {
-      await closeIssueByTitle(task.text, options.owner, options.repo);
+      await closeIssueByTitle({ title: task.text, owner: options.owner, repo: options.repo });
     }
   }
   // --- 5. Sync missing tests/fossils from fossils/project_status.yml ---
@@ -235,12 +226,12 @@ export async function syncTrackerWithGitHub(options: {
           // Missing tests
           if (Array.isArray(fileData.functions) && typeof fileData.tests === "undefined" && testMilestone.length > 0) {
             for (const func of fileData.functions) {
-              await ensureTestOrFossilIssue({ type: "test", name: func, file: fileName }, testMilestone, options.owner, options.repo, options.projectNumber);
+              await ensureTestOrFossilIssue({ item: { type: "test", name: func, file: fileName }, milestoneId: testMilestone, owner: options.owner, repo: options.repo, projectNumber: options.projectNumber });
             }
           }
           // Missing fossilization
           if (typeof fileData.fossilized_output === "boolean" && fileData.fossilized_output === false && testMilestone.length > 0) {
-            await ensureTestOrFossilIssue({ type: "fossilization", name: fileName, file: fileName }, testMilestone, options.owner, options.repo, options.projectNumber);
+            await ensureTestOrFossilIssue({ item: { type: "fossilization", name: fileName, file: fileName }, milestoneId: testMilestone, owner: options.owner, repo: options.repo, projectNumber: options.projectNumber });
           }
         }
       }

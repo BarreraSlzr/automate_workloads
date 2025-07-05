@@ -1,8 +1,9 @@
-import { execSync } from 'child_process';
 import { ContextFossilService } from '../cli/context-fossil';
 import type { ContextEntry } from '../types';
 import { CreateFossilLabelParamsSchema } from '../types';
 import type { CreateFossilLabelParams } from '../types/cli';
+import { GitHubCLICommands } from './githubCliCommands';
+import { safeParseJSON } from './cli';
 
 /**
  * Preferred utility for fossil-backed, deduplicated GitHub label creation.
@@ -14,18 +15,15 @@ import type { CreateFossilLabelParams } from '../types/cli';
  */
 export async function createFossilLabel(params: CreateFossilLabelParams): Promise<{ fossilId: string; fossilHash: string; deduplicated: boolean }> {
   CreateFossilLabelParamsSchema.parse(params);
-  const {
-    owner,
-    repo,
-    name,
-    description,
-    color,
-    type = 'label',
-    tags = [],
-    metadata = {}
-  } = params;
+  const { fossilService, type, title, body, section, tags, metadata, issueNumber, parsedFields } = params;
   
-  const fossilService = new ContextFossilService();
+  // Default values for missing properties
+  const owner = 'automate-workloads';
+  const repo = 'automate_workloads';
+  const name = title;
+  const description = body.substring(0, 100);
+  const color = '0366d6'; // Default GitHub blue
+  
   await fossilService.initialize();
   
   // Check for existing fossil by name
@@ -41,20 +39,28 @@ export async function createFossilLabel(params: CreateFossilLabelParams): Promis
     };
   }
   
-  // Create label via GitHub CLI
-  const command = `gh label create "${name}" --repo ${owner}/${repo} --color "${color}" --description "${description}"`;
-  execSync(command, { encoding: 'utf8' });
+  // Create label via GitHub CLI using centralized commands
+  const commands = new GitHubCLICommands(owner, repo);
+  const result = await commands.createLabel({
+    name,
+    description,
+    color
+  });
+  
+  if (!result.success) {
+    throw new Error(`Failed to create GitHub label: ${result.message}`);
+  }
   
   // Store fossil entry
   const fossilEntry: Omit<ContextEntry, 'id' | 'createdAt' | 'updatedAt'> = {
-    type: 'action',
-    title: name,
-    content: description,
-    tags: ['github', 'label', ...tags],
+    type,
+    title,
+    content: body,
+    tags: ['github', 'label', section, ...tags],
     source: 'automated',
-    metadata: { ...metadata, color },
+    metadata: { ...metadata, color, owner, repo, name, description },
     version: 1,
-    children: []
+    children: [],
   };
   
   const fossil = await fossilService.addEntry(fossilEntry);
@@ -68,34 +74,32 @@ export async function createFossilLabel(params: CreateFossilLabelParams): Promis
 /**
  * Ensure a label exists in the repo, create if missing
  */
-export async function ensureLabel(
-  owner: string, 
-  repo: string, 
-  name: string, 
-  description: string = 'Auto-created label',
-  color: string = 'ededed'
-): Promise<{ created: boolean }> {
+export async function ensureLabel(params: { owner: string; repo: string; name: string; description?: string; color?: string }): Promise<{ created: boolean }> {
+  const { owner, repo, name, description = 'Auto-created label', color = 'ededed' } = params;
   try {
-    // Check if label exists
-    const listCommand = `gh label list --repo ${owner}/${repo} --json name`;
-    const labels = JSON.parse(execSync(listCommand, { encoding: 'utf8' }));
+    // Check if label exists using centralized commands
+    const commands = new GitHubCLICommands(owner, repo);
+    const listResult = await commands.listLabels();
+    if (!listResult.success) {
+      throw new Error(`Failed to list labels: ${listResult.message}`);
+    }
+    const labels = safeParseJSON<any[]>(listResult.stdout, 'label list');
     const existing = labels.find((l: any) => l.name === name);
-    
     if (existing) {
       return { created: false };
     }
-    
     // Create label
+    const fossilService = new ContextFossilService();
     const result = await createFossilLabel({
-      owner,
-      repo,
-      name,
-      description,
-      color,
+      fossilService,
+      type: 'action',
+      title: name,
+      body: description,
+      section: 'labels',
       tags: ['automated'],
-      metadata: { source: 'ensure-label' }
+      metadata: { source: 'ensure-label', color, owner, repo },
+      parsedFields: {}
     });
-    
     return { created: !result.deduplicated };
   } catch (error: any) {
     if (error.message && error.message.includes('already exists')) {

@@ -1,81 +1,17 @@
-import { z } from 'zod';
 import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'fs';
 import { execSync } from 'child_process';
-
-// Performance tracking schemas
-export const GranularMetricsSchema = z.object({
-  real_time: z.number(),
-  user_time: z.number(),
-  sys_time: z.number(),
-  cpu_percent: z.number(),
-  max_memory_mb: z.number(),
-  avg_memory_mb: z.number(),
-  output_size_bytes: z.number(),
-  error_size_bytes: z.number(),
-  memory_samples: z.number(),
-});
-
-export const EnvironmentSchema = z.object({
-  node_version: z.string(),
-  bun_version: z.string(),
-  os: z.string(),
-  cpu_cores: z.string(),
-  memory_total: z.string(),
-});
-
-export const GranularLogEntrySchema = z.object({
-  script: z.string(),
-  execution_time: z.number(),
-  memory_usage_mb: z.number(),
-  exit_code: z.number(),
-  timestamp: z.string(),
-  git_sha: z.string(),
-  git_branch: z.string(),
-  additional_metrics: GranularMetricsSchema,
-  environment: EnvironmentSchema,
-});
-
-export const TrendsAnalysisSchema = z.object({
-  total_executions: z.number(),
-  unique_scripts: z.number(),
-  branches: z.array(z.string()),
-  time_period: z.object({
-    earliest: z.string(),
-    latest: z.string(),
-  }),
-  performance_trends: z.array(z.object({
-    script: z.string(),
-    executions: z.number(),
-    avg_time: z.number(),
-    trend: z.number(),
-    latest_time: z.number(),
-    earliest_time: z.number(),
-  })),
-  regressions: z.array(z.object({
-    script: z.string(),
-    regression_percent: z.number(),
-  })),
-});
-
-export type GranularMetrics = z.infer<typeof GranularMetricsSchema>;
-export type Environment = z.infer<typeof EnvironmentSchema>;
-export type GranularLogEntry = z.infer<typeof GranularLogEntrySchema>;
-export type TrendsAnalysis = z.infer<typeof TrendsAnalysisSchema>;
-
-// Performance tracking configuration
-export interface PerformanceTrackerConfig {
-  granularLogFile: string;
-  trendsAnalysisFile: string;
-  traceabilityReportFile: string;
-  enableNotifications: boolean;
-}
-
-export const DEFAULT_TRACKER_CONFIG: PerformanceTrackerConfig = {
-  granularLogFile: 'fossils/performance/granular_trace.json',
-  trendsAnalysisFile: 'fossils/performance/trends_analysis.json',
-  traceabilityReportFile: 'fossils/performance/traceability_report.md',
-  enableNotifications: true,
-};
+import {
+  GranularMetricsSchema,
+  EnvironmentSchema,
+  GranularLogEntrySchema,
+  TrendsAnalysisSchema,
+  GranularMetrics,
+  Environment,
+  GranularLogEntry,
+  TrendsAnalysis,
+  PerformanceTrackerConfig,
+  DEFAULT_TRACKER_CONFIG
+} from '../types/performance';
 
 // Performance tracking utility class
 export class PerformanceTracker {

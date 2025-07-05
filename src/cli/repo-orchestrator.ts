@@ -40,7 +40,8 @@ export function isTestMode(options?: any) {
 }
 
 // Helper: Ensure a label exists in the repo
-async function ensureLabelExists(repo: string, label: string, color: string = 'ededed', options?: any) {
+async function ensureLabelExists(params: { repo: string; label: string; color?: string; options?: any }) {
+  const { repo, label, color = 'ededed', options } = params;
   if (isTestMode(options)) return; // skip in test/mock mode
   try {
     const [owner, repoName] = repo.split('/');
@@ -57,9 +58,10 @@ async function ensureLabelExists(repo: string, label: string, color: string = 'e
 }
 
 // Helper: Add a label to an issue
-async function addLabelToIssue(repo: string, issueNumber: number, label: string, options?: any) {
+async function addLabelToIssue(params: { repo: string; issueNumber: number; label: string; options?: any }) {
+  const { repo, issueNumber, label, options } = params;
   if (isTestMode(options)) return; // skip in test/mock mode
-  await ensureLabelExists(repo, label, 'ededed', options);
+  await ensureLabelExists({ repo, label, color: 'ededed', options });
   // Would call gh CLI to add label, but skip in test/mock mode
 }
 
@@ -865,7 +867,7 @@ class RepoOrchestratorService {
     const issues: any[] = [];
     const repo = `${repoConfig.owner}/${repoConfig.repo}`;
     const defaultLabel = 'automation';
-    ensureLabelExists(repo, defaultLabel, 'ededed');
+    ensureLabelExists({ repo, label: defaultLabel, color: 'ededed' });
     try {
       // Create issue for project tracking
       const trackingIssueData = {
@@ -1159,7 +1161,7 @@ class RepoOrchestratorService {
     if (isTestMode(this.options)) return;
     const repo = `${repoConfig.owner}/${repoConfig.repo}`;
     const defaultLabel = 'automation';
-    ensureLabelExists(repo, defaultLabel, 'ededed');
+    ensureLabelExists({ repo, label: defaultLabel, color: 'ededed' });
     try {
       const commands = new GitHubCLICommands(repoConfig.owner, repoConfig.repo);
       const issuesResult = await commands.listIssues({
@@ -1170,7 +1172,7 @@ class RepoOrchestratorService {
         const issues = JSON.parse(issuesResult.stdout);
         for (const issue of issues) {
           if (!issue.labels || issue.labels.length === 0) {
-            addLabelToIssue(repo, issue.number, defaultLabel);
+            addLabelToIssue({ repo, issueNumber: issue.number, label: defaultLabel });
           }
         }
       }

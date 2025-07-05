@@ -1,4 +1,5 @@
 import { executeCommand } from './cli';
+import { parseCLIArgs, TimestampFilterParamsSchema } from '../types/cli';
 
 export interface TimestampChange {
   file: string;
@@ -281,10 +282,10 @@ fi
  * CLI interface for timestamp filter
  */
 export async function main(): Promise<void> {
-  const args = process.argv.slice(2);
+  const options = parseCLIArgs(TimestampFilterParamsSchema, process.argv.slice(2));
   const filter = new TimestampFilter();
 
-  if (args.includes('--check')) {
+  if (options.check) {
     const analysis = await filter.analyzeTimestampChanges({ verbose: true });
     const recommendations = filter.getRecommendations(analysis);
     
@@ -294,7 +295,7 @@ export async function main(): Promise<void> {
     process.exit(analysis.hasOnlyTimestampChanges ? 0 : 1);
   }
 
-  if (args.includes('--create-hook')) {
+  if (options.createHook) {
     await filter.createGitHook();
     console.log('✅ Git hook created at .git/hooks/pre-commit');
     return;

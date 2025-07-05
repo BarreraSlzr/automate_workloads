@@ -11,7 +11,15 @@ program
   .argument('<inputYaml>', 'Path to the input YAML file (e.g., fossils/project_status.yml)')
   .option('-t, --tag <tag>', 'Tag for the curation', 'manual')
   .action(async (inputYaml, options) => {
-    await curateAndCheck({ inputYaml, outputDir: 'fossils', tag: options.tag, dryRun: false, validate: true });
+    await curateAndCheck({ 
+      owner: options.owner, 
+      repo: options.repo, 
+      metadata: options.metadata, 
+      verbose: options.verbose, 
+      dryRun: false, 
+      type: options.type,
+      tags: options.tags
+    });
   });
 
 if (import.meta.main) {

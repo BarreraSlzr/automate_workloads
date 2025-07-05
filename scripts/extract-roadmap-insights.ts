@@ -101,7 +101,7 @@ ${highImpactTasks.map(task => `- **${task.taskTitle}** (${task.status}): ${task.
   // Add owner-specific sections
   owners.forEach(owner => {
     if (owner) { // Add null check for owner
-      const ownerTasks = getInsightsByOwner(insights, owner);
+      const ownerTasks = getInsightsByOwner({ insights, owner });
       if (ownerTasks.length > 0) {
         report += `## Tasks by ${owner}
 ${ownerTasks.map(task => `- **${task.taskTitle}** (${task.status}): ${task.llmInsights.summary}`).join('\n')}
@@ -113,7 +113,7 @@ ${ownerTasks.map(task => `- **${task.taskTitle}** (${task.status}): ${task.llmIn
 
   // Add tag-specific sections
   tags.forEach(tag => {
-    const tagTasks = getInsightsByTag(insights, tag);
+    const tagTasks = getInsightsByTag({ insights, tag });
     if (tagTasks.length > 0) {
       report += `## Tasks tagged "${tag}"
 ${tagTasks.map(task => `- **${task.taskTitle}** (${task.status}): ${task.llmInsights.summary}`).join('\n')}

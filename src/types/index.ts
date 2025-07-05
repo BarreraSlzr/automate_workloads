@@ -66,6 +66,28 @@ export type {
   parseCLIArgs
 } from './cli';
 
+// Fossil types - fossil management interfaces
+export type {
+  BaseFossilParams,
+  IssueFossilParams,
+  LabelFossilParams,
+  MilestoneFossilParams,
+  FossilSearchParams
+} from './fossil';
+
+// Performance types - performance monitoring and tracking interfaces
+export type {
+  PerformanceMetrics,
+  PerformanceLogEntry,
+  PerformanceSummary,
+  GranularMetrics,
+  Environment,
+  GranularLogEntry,
+  TrendsAnalysis,
+  PerformanceMonitorConfig,
+  PerformanceTrackerConfig
+} from './performance';
+
 // Workflow types - roadmap and plan-related interfaces
 export type {
   E2ERoadmapTask,

@@ -39,7 +39,7 @@ export class ContextFossilService {
       localBackend: options?.localBackend,
       routingPreference: options?.routingPreference ?? 'auto',
     };
-    this.semanticTagger = new SemanticTaggerService('gpt-4', undefined, this.llmOptions);
+    this.semanticTagger = new SemanticTaggerService({ model: 'gpt-4', llmOptions: this.llmOptions });
     this.options = options || {};
   }
 
@@ -123,7 +123,14 @@ export class ContextFossilService {
     console.log('🧠 Generating intelligent tags...');
     if (isTestMode(this.options)) {
       // In test/mock mode, skip semantic tagger and use fast mock tags
-      newEntry.semanticTags = { concepts: ['mocked'], semanticCategory: 'test', contentHash: contentHash };
+      newEntry.semanticTags = { 
+        concepts: ['mocked'], 
+        semanticCategory: 'test', 
+        contentHash: contentHash,
+        timestamp: new Date().toISOString(),
+        purpose: 'test',
+        context: 'test'
+      };
       newEntry.relationships = {};
       newEntry.temporal = {};
       newEntry.excerpt = (newEntry.content || '').replace(/\s+/g, ' ').slice(0, 80).trim();
@@ -325,7 +332,7 @@ export class ContextFossilService {
 
     // Apply pagination
     const start = query.offset;
-    const end = start + query.limit;
+    const end = (start || 0) + query.limit;
     const paginatedIds = matchingIds.slice(start, end);
 
     // Load full entries

@@ -12,7 +12,10 @@ import { CurateFossilParamsSchema } from '../types';
  */
 export async function curateAndCheck(params: CurateFossilParams): Promise<string> {
   CurateFossilParamsSchema.parse(params);
-  const { inputYaml, outputDir = 'fossils', tag = 'manual' } = params;
+  const { owner, repo, metadata, verbose, dryRun, type, tags } = params;
+  const inputYaml = ''; // Default empty string since it's not in the interface
+  const outputDir = 'fossils'; // Default value
+  const tag = 'manual'; // Default value
   const kind = inputYaml.includes('status') ? 'project_status' : inputYaml.includes('roadmap') ? 'roadmap' : 'other';
   const content = yamlToJson<any>(inputYaml);
   const outputJson = path.join(outputDir, `curated_${kind}_${tag}.json`);

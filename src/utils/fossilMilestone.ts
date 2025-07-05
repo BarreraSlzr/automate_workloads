@@ -14,17 +14,7 @@ import { GitHubCLICommands } from './githubCliCommands';
  */
 export async function createFossilMilestone(params: CreateFossilMilestoneParams): Promise<{ milestoneNumber?: string; fossilId: string; fossilHash: string; deduplicated: boolean }> {
   CreateFossilMilestoneParamsSchema.parse(params);
-  const {
-    owner,
-    repo,
-    title,
-    description,
-    dueOn,
-    type = 'milestone',
-    tags = [],
-    metadata = {}
-  } = params;
-  const fossilService = new ContextFossilService();
+  const { fossilService, type, title, body, section, tags, metadata, issueNumber, parsedFields } = params;
   await fossilService.initialize();
   
   // Check for existing fossil by title
@@ -41,11 +31,11 @@ export async function createFossilMilestone(params: CreateFossilMilestoneParams)
   }
   
   // Create milestone via GitHub CLI using centralized commands
-  const commands = new GitHubCLICommands(owner, repo);
+  const commands = new GitHubCLICommands('automate-workloads', 'automate_workloads');
   const result = await commands.createMilestone({
     title,
-    description,
-    dueOn
+    description: body,
+    dueOn: section
   });
   
   if (!result.success) {
@@ -67,10 +57,10 @@ export async function createFossilMilestone(params: CreateFossilMilestoneParams)
   const fossilEntry: Omit<ContextEntry, 'id' | 'createdAt' | 'updatedAt'> = {
     type: 'action',
     title,
-    content: description,
+    content: body,
     tags: ['github', 'milestone', ...tags],
     source: 'automated',
-    metadata: { ...metadata, milestoneNumber, dueOn },
+    metadata: { ...metadata, milestoneNumber, dueOn: section },
     version: 1,
     children: []
   };
@@ -87,22 +77,15 @@ export async function createFossilMilestone(params: CreateFossilMilestoneParams)
 /**
  * Ensure a milestone exists in the repo, create if missing
  */
-export async function ensureMilestone(
-  owner: string, 
-  repo: string, 
-  title: string, 
-  description: string, 
-  dueOn?: string
-): Promise<{ milestoneNumber?: string; created: boolean }> {
+export async function ensureMilestone(params: { owner: string; repo: string; title: string; description: string; dueOn?: string }): Promise<{ milestoneNumber?: string; created: boolean }> {
+  const { owner, repo, title, description, dueOn } = params;
   try {
     // Check if milestone exists using centralized commands
     const commands = new GitHubCLICommands(owner, repo);
     const listResult = await commands.listMilestones();
-    
     if (!listResult.success) {
       throw new Error(`Failed to list milestones: ${listResult.message}`);
     }
-    
     let milestones: any[] = [];
     try {
       milestones = JSON.parse(listResult.stdout);
@@ -110,24 +93,22 @@ export async function ensureMilestone(
       // Handle case where output is not JSON
       console.warn('Could not parse milestone list as JSON');
     }
-    
     const existing = milestones.find((m: any) => m.title === title);
-    
     if (existing) {
       return { milestoneNumber: existing.number.toString(), created: false };
     }
-    
     // Create milestone
+    const fossilService = new ContextFossilService();
     const result = await createFossilMilestone({
-      owner,
-      repo,
-      title,
-      description,
-      dueOn,
+      fossilService,
+      type: 'action',
+      title: title,
+      body: description,
+      section: dueOn || 'general',
       tags: ['automated'],
-      metadata: { source: 'ensure-milestone' }
+      metadata: { source: 'ensure-milestone' },
+      parsedFields: {}
     });
-    
     return { 
       milestoneNumber: result.milestoneNumber, 
       created: !result.deduplicated 

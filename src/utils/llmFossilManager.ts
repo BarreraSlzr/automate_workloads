@@ -16,12 +16,13 @@ import { executeCommand } from './cli';
 import { ContextFossilService } from '../cli/context-fossil';
 import type { ContextEntry } from '../types';
 import { LLMFossilManagerParamsSchema } from '../types';
-
-// Params Object Pattern for LLM Fossil Management
-export type LLMFossilManagerParams = z.infer<typeof LLMFossilManagerParamsSchema>;
+import * as fs from 'fs/promises';
+import * as path from 'path';
+import { LLMFossilManagerParams } from '../types/llm';
 
 export class LLMFossilManager {
   private baseManager: any;
+  private fossilService: ContextFossilService;
   private params: LLMFossilManagerParams;
   private sessionInsights: any[] = [];
   private sessionMetrics: any = {
@@ -36,12 +37,38 @@ export class LLMFossilManager {
 
   constructor(params: LLMFossilManagerParams) {
     this.params = LLMFossilManagerParamsSchema.parse(params);
+    this.fossilService = new ContextFossilService();
   }
 
   static async create(params: LLMFossilManagerParams): Promise<LLMFossilManager> {
     const manager = new LLMFossilManager(params);
     manager.baseManager = await createFossilManager(params.owner, params.repo);
+    await manager.fossilService.initialize();
     return manager;
+  }
+
+  /**
+   * Store a fossil using the fossil service
+   */
+  private async storeFossil(fossil: any): Promise<void> {
+    // Create a fossil entry that can be stored by the ContextFossilService
+    const fossilEntry: Omit<ContextEntry, 'id' | 'createdAt' | 'updatedAt'> = {
+      type: fossil.type || 'llm_insight',
+      title: fossil.title || `LLM ${fossil.type || 'insight'}`,
+      content: JSON.stringify(fossil, null, 2),
+      tags: ['llm', fossil.type || 'insight', 'fossilized'],
+      source: 'automated',
+      metadata: {
+        ...fossil.metadata,
+        fossilType: fossil.type,
+        fossilId: fossil.id,
+        commitRef: fossil.commitRef
+      },
+      version: 1,
+      children: []
+    };
+
+    await this.fossilService.addEntry(fossilEntry);
   }
 
   /**
@@ -72,8 +99,8 @@ export class LLMFossilManager {
     // Validate fossil against schema
     const validatedFossil = LLMValidationFossilSchema.parse(fossil);
 
-    // Store fossil using base manager
-    await this.baseManager.storeFossil(validatedFossil);
+    // Store fossil using fossil service
+    await this.storeFossil(validatedFossil);
 
     // Update session metrics
     this.updateSessionMetrics(params.validation, params.preprocessing);
@@ -121,8 +148,8 @@ export class LLMFossilManager {
     // Validate fossil against schema
     const validatedFossil = LLMErrorPreventionFossilSchema.parse(fossil);
 
-    // Store fossil using base manager
-    await this.baseManager.storeFossil(validatedFossil);
+    // Store fossil using fossil service
+    await this.storeFossil(validatedFossil);
 
     return validatedFossil;
   }
@@ -181,8 +208,8 @@ export class LLMFossilManager {
     // Validate fossil against schema
     const validatedFossil = LLMQualityMetricsFossilSchema.parse(fossil);
 
-    // Store fossil using base manager
-    await this.baseManager.storeFossil(validatedFossil);
+    // Store fossil using fossil service
+    await this.storeFossil(validatedFossil);
 
     return validatedFossil;
   }
@@ -241,7 +268,14 @@ export class LLMFossilManager {
     if (params.sessionId) filters.sessionId = params.sessionId;
     if (params.type) filters.type = `llm-${params.type}`;
     
-    return await this.baseManager.findFossils(filters, params.limit || 100);
+    // Use fossil service to query entries instead of baseManager
+    return await this.fossilService.queryEntries({
+      search: '',
+      type: filters.type as any,
+      tags: ['llm'],
+      limit: params.limit || 100,
+      offset: 0
+    });
   }
 
   /**
@@ -413,21 +447,17 @@ export class LLMFossilManager {
   }
 
   private async exportToJSON(fossils: any[], outputPath: string): Promise<string> {
-    const fs = await import('fs/promises');
     await fs.writeFile(outputPath, JSON.stringify(fossils, null, 2));
     return outputPath;
   }
 
   private async exportToYAML(fossils: any[], outputPath: string): Promise<string> {
     const yaml = await import('yaml');
-    const fs = await import('fs/promises');
     await fs.writeFile(outputPath, yaml.stringify(fossils));
     return outputPath;
   }
 
   private async exportToCSV(fossils: any[], outputPath: string): Promise<string> {
-    const fs = await import('fs/promises');
-    
     // Convert fossils to CSV format
     const csvRows = ['timestamp,type,commitRef,isValid,qualityScore,errors,warnings'];
     
@@ -453,4 +483,31 @@ export class LLMFossilManager {
 // Convenience function for creating LLM fossil manager
 export async function createLLMFossilManager(params: LLMFossilManagerParams): Promise<LLMFossilManager> {
   return await LLMFossilManager.create(params);
+}
+
+// Convenience function for fossilizing LLM insights (backward compatibility)
+export async function fossilizeLLMInsight(params: {
+  inputHash: string;
+  validation: any;
+  preprocessing?: any;
+  metadata: {
+    model: string;
+    context?: string;
+    purpose?: string;
+    valueScore?: number;
+    validationTime: number;
+    preprocessingTime?: number;
+    totalTime: number;
+  };
+}): Promise<any> {
+  const manager = await createLLMFossilManager({
+    owner: 'automate-workloads',
+    repo: 'automate_workloads',
+    fossilStoragePath: 'fossils/llm_insights/',
+    enableAutoFossilization: true,
+    enableQualityMetrics: true,
+    enableValidationTracking: true
+  });
+  
+  return await manager.fossilizeValidation(params);
 } 

@@ -1,57 +1,26 @@
 import { LLMService } from './llm';
 import { LLMInputValidator, validateLLMInput, preprocessLLMInput, analyzeLLMContentQuality } from '../utils/llmInputValidator';
-import { createLLMFossilManager, LLMFossilManagerParams } from '../utils/llmFossilManager';
+import { createLLMFossilManager } from '../utils/llmFossilManager';
 import { createHash } from 'crypto';
-import type { OpenAIChatOptions, LLMProvider } from '../types/llm';
+import { EnhancedLLMServiceParamsSchema } from '../types/llm';
+import type { 
+  OpenAIChatOptions, 
+  LLMProvider,
+  EnhancedLLMOptions,
+  EnhancedLLMResult,
+  EnhancedLLMServiceParams
+} from '../types/llm';
 import type { InputValidationResult, InputPreprocessingResult, ContentQualityMetrics } from '../utils/llmInputValidator';
+import { getCurrentRepoOwner, getCurrentRepoName } from "../utils/cli";
 
-export interface EnhancedLLMOptions {
-  enableInputValidation?: boolean;
-  enablePreprocessing?: boolean;
-  enableQualityAnalysis?: boolean;
-  autoFixIssues?: boolean;
-  strictMode?: boolean;
-  logValidationResults?: boolean;
-  enableFossilization?: boolean;
-  fossilManagerParams?: Partial<LLMFossilManagerParams>;
-}
-
-export interface EnhancedLLMResult {
-  success: boolean;
-  response: any;
-  validation: InputValidationResult;
-  preprocessing?: InputPreprocessingResult;
-  qualityAnalysis?: ContentQualityMetrics;
-  warnings: string[];
-  errors: string[];
-  recommendations: string[];
-  metadata: {
-    originalInput: any;
-    processedInput: any;
-    validationTime: number;
-    preprocessingTime: number;
-    llmCallTime: number;
-    totalTime: number;
-  };
-}
-
-// Params Object Pattern for Enhanced LLM Service
-export const EnhancedLLMServiceParamsSchema = {
-  enableValidation: true,
-  enablePreprocessing: true,
-  enableFossilization: true,
-  enableQualityAnalysis: true,
-  fossilManagerParams: {
-    owner: 'your-org',
-    repo: 'your-repo',
-    fossilStoragePath: 'fossils/llm_insights/',
-    enableAutoFossilization: true,
-    enableQualityMetrics: true,
-    enableValidationTracking: true
-  }
-};
-
-export type EnhancedLLMServiceParams = typeof EnhancedLLMServiceParamsSchema;
+// Re-export types for external use
+export type {
+  OpenAIChatOptions,
+  LLMProvider,
+  EnhancedLLMOptions,
+  EnhancedLLMResult,
+  EnhancedLLMServiceParams
+} from '../types/llm';
 
 /**
  * Enhanced LLM Service with Error Prevention and Fossilization
@@ -63,17 +32,18 @@ export type EnhancedLLMServiceParams = typeof EnhancedLLMServiceParamsSchema;
  * 4. Quality metrics tracking
  * 5. Performance optimization
  */
-export class EnhancedLLMService extends LLMService {
+export class EnhancedLLMService {
+  private llmService: LLMService;
   private validator: LLMInputValidator;
-  private fossilManager: any;
+  private enhancedFossilManager: any;
   private params: EnhancedLLMServiceParams;
-  private sessionId: string;
+  private enhancedSessionId: string;
 
   constructor(params: Partial<EnhancedLLMServiceParams> = {}) {
-    super();
+    this.llmService = new LLMService();
     this.params = { ...EnhancedLLMServiceParamsSchema, ...params };
     this.validator = new LLMInputValidator();
-    this.sessionId = `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    this.enhancedSessionId = `enhanced-session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   }
 
   /**
@@ -81,7 +51,7 @@ export class EnhancedLLMService extends LLMService {
    */
   async initialize(): Promise<void> {
     if (this.params.enableFossilization) {
-      this.fossilManager = await createLLMFossilManager(this.params.fossilManagerParams);
+      this.enhancedFossilManager = await createLLMFossilManager(this.params.fossilManagerParams);
     }
   }
 
@@ -110,8 +80,8 @@ export class EnhancedLLMService extends LLMService {
       const validationTime = Date.now() - validationStart;
       
       // Fossilize validation result
-      if (this.params.enableFossilization && this.fossilManager) {
-        await this.fossilManager.fossilizeValidation({
+      if (this.params.enableFossilization && this.enhancedFossilManager) {
+        await this.enhancedFossilManager.fossilizeValidation({
           inputHash,
           validation,
           metadata: {
@@ -152,8 +122,8 @@ export class EnhancedLLMService extends LLMService {
         }
         
         // Fossilize preprocessing result
-        if (this.params.enableFossilization && this.fossilManager) {
-          await this.fossilManager.fossilizeValidation({
+        if (this.params.enableFossilization && this.enhancedFossilManager) {
+          await this.enhancedFossilManager.fossilizeValidation({
             inputHash: this.generateInputHash(processedInput),
             validation,
             preprocessing,
@@ -183,16 +153,16 @@ export class EnhancedLLMService extends LLMService {
         });
       }
       
-             // Step 5: Make LLM call
-       console.log('🚀 Making LLM call with validated and processed input...');
-       const callParams = {
-         ...processedInput,
-         apiKey: processedInput.apiKey || process.env.OPENAI_API_KEY || ''
-       };
-       const result = await super.callLLM(callParams);
+                   // Step 5: Make LLM call
+      console.log('🚀 Making LLM call with validated and processed input...');
+      const callParams = {
+        ...processedInput,
+        apiKey: processedInput.apiKey || process.env.OPENAI_API_KEY || ''
+      };
+      const result = await this.llmService.callLLM(callParams);
       
       // Step 6: Fossilize successful session
-      if (this.params.enableFossilization && this.fossilManager) {
+      if (this.params.enableFossilization && this.enhancedFossilManager) {
         await this.fossilizeSuccessfulSession({
           inputHash,
           originalInput: params,
@@ -212,7 +182,7 @@ export class EnhancedLLMService extends LLMService {
       console.error('❌ Enhanced LLM call failed:', error);
       
       // Fossilize failed session
-      if (this.params.enableFossilization && this.fossilManager) {
+      if (this.params.enableFossilization && this.enhancedFossilManager) {
         await this.fossilizeFailedSession({
           inputHash: this.generateInputHash(params),
           originalInput: params,
@@ -287,11 +257,11 @@ export class EnhancedLLMService extends LLMService {
     analysisPeriod: string;
     commitRefs?: string[];
   }): Promise<any> {
-    if (!this.fossilManager) {
+    if (!this.enhancedFossilManager) {
       throw new Error('Fossil manager not initialized');
     }
     
-    return await this.fossilManager.generateQualityMetrics(params);
+    return await this.enhancedFossilManager.generateQualityMetrics(params);
   }
 
   /**
@@ -302,11 +272,11 @@ export class EnhancedLLMService extends LLMService {
     outputPath: string;
     filters?: any;
   }): Promise<string> {
-    if (!this.fossilManager) {
+    if (!this.enhancedFossilManager) {
       throw new Error('Fossil manager not initialized');
     }
     
-    return await this.fossilManager.exportFossilizedData(params);
+    return await this.enhancedFossilManager.exportFossilizedData(params);
   }
 
   /**
@@ -318,12 +288,14 @@ export class EnhancedLLMService extends LLMService {
     type?: 'validation' | 'error-prevention' | 'quality-metrics';
     limit?: number;
   }): Promise<any[]> {
-    if (!this.fossilManager) {
+    if (!this.enhancedFossilManager) {
       throw new Error('Fossil manager not initialized');
     }
     
-    return await this.fossilManager.getFossilizedInsights(params);
+    return await this.enhancedFossilManager.getFossilizedInsights(params);
   }
+
+
 
   /**
    * Generate input hash for fossilization
@@ -346,12 +318,12 @@ export class EnhancedLLMService extends LLMService {
     result: any;
     totalTime: number;
   }): Promise<void> {
-    if (!this.fossilManager) return;
+    if (!this.enhancedFossilManager) return;
     
     const insights = this.generateInsightsFromSession(params);
     
-    await this.fossilManager.fossilizeErrorPreventionSession({
-      sessionId: this.sessionId,
+    await this.enhancedFossilManager.fossilizeErrorPreventionSession({
+      sessionId: this.enhancedSessionId,
       inputs: [{
         inputHash: params.inputHash,
         originalInput: params.originalInput,
@@ -380,7 +352,7 @@ export class EnhancedLLMService extends LLMService {
     error: string;
     totalTime: number;
   }): Promise<void> {
-    if (!this.fossilManager) return;
+    if (!this.enhancedFossilManager) return;
     
     const insights = [{
       category: 'structure' as const,
@@ -390,8 +362,8 @@ export class EnhancedLLMService extends LLMService {
       impact: 'Failed LLM call prevented'
     }];
     
-    await this.fossilManager.fossilizeErrorPreventionSession({
-      sessionId: this.sessionId,
+    await this.enhancedFossilManager.fossilizeErrorPreventionSession({
+      sessionId: this.enhancedSessionId,
       inputs: [{
         inputHash: params.inputHash,
         originalInput: params.originalInput,
@@ -480,13 +452,13 @@ export async function callLLMEnhanced(
   const defaultParams: Partial<EnhancedLLMServiceParams> = {
     enableValidation: true,
     enablePreprocessing: true,
-    enableFossilization: false,
+    enableFossilization: true,
     enableQualityAnalysis: true,
     fossilManagerParams: {
-      owner: 'barreraslzr',
-      repo: 'automate_workloads',
+      owner: getCurrentRepoOwner(),
+      repo: getCurrentRepoName(),
       fossilStoragePath: 'fossils/llm_insights/',
-      enableAutoFossilization: false,
+      enableAutoFossilization: true,
       enableQualityMetrics: true,
       enableValidationTracking: true
     }
@@ -512,13 +484,13 @@ export function analyzeLLMInput(
   const defaultParams: Partial<EnhancedLLMServiceParams> = {
     enableValidation: true,
     enablePreprocessing: true,
-    enableFossilization: false,
+    enableFossilization: true,
     enableQualityAnalysis: true,
     fossilManagerParams: {
-      owner: 'barreraslzr',
-      repo: 'automate_workloads',
+      owner: getCurrentRepoOwner(),
+      repo: getCurrentRepoName(),
       fossilStoragePath: 'fossils/llm_insights/',
-      enableAutoFossilization: false,
+      enableAutoFossilization: true,
       enableQualityMetrics: true,
       enableValidationTracking: true
     }

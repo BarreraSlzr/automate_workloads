@@ -2,59 +2,28 @@
 
 import { promises as fs } from 'fs';
 import path from 'path';
-import type { OpenAIChatOptions, LLMProvider } from '../types/llm';
+import { createHash } from 'crypto';
+import type { 
+  OpenAIChatOptions, 
+  LLMProvider, 
+  ChatCompletionRequestMessage,
+  LLMUsageMetrics,
+  LLMOptimizationConfig,
+  LLMCallIntelligence,
+  CallOpenAIChatParams
+} from '../types/llm';
+import { safeParseJSON, executeCommand, executeCommandJSON, getCurrentRepoName } from '../utils/cli';
 
-// Define a minimal local type for OpenAI chat messages
-export interface ChatCompletionRequestMessage {
-  role: 'system' | 'user' | 'assistant';
-  content: string;
-}
-
-export interface LLMUsageMetrics {
-  timestamp: string;
-  model: string;
-  provider: 'openai' | 'local' | 'fallback';
-  inputTokens: number;
-  outputTokens: number;
-  totalTokens: number;
-  cost: number;
-  duration: number;
-  success: boolean;
-  error?: string;
-  context: string;
-  purpose: string;
-  valueScore: number; // 0-1 score of how valuable this call was
-}
-
-export interface LLMOptimizationConfig {
-  maxTokensPerCall: number;
-  maxCostPerCall: number;
-  minValueScore: number;
-  enableLocalLLM: boolean;
-  enableCaching: boolean;
-  cacheExpiryHours: number;
-  retryAttempts: number;
-  retryDelayMs: number;
-  rateLimitDelayMs: number;
-  // New intelligent routing options
-  preferLocalLLM: boolean;
-  testMode: boolean;
-  localLLMPriority: number; // 0-1, higher = prefer local more
-  complexityThreshold: number; // 0-1, tasks above this use cloud LLM
-  costSensitivity: number; // 0-1, higher = more cost sensitive
-  // Memory-only mode for tests
-  memoryOnly: boolean;
-}
-
-export interface LLMCallIntelligence {
-  complexity: number; // 0-1, how complex the task is
-  requiresContext: boolean; // Does it need external context?
-  isCreative: boolean; // Is it creative vs analytical?
-  isTimeSensitive: boolean; // Does it need fast response?
-  canUseLocal: boolean; // Can local LLM handle this?
-  estimatedQuality: number; // 0-1, expected quality from local vs cloud
-  costBenefit: number; // 0-1, cost vs benefit ratio
-}
+// Re-export types for external use
+export type {
+  OpenAIChatOptions,
+  LLMProvider,
+  ChatCompletionRequestMessage,
+  LLMUsageMetrics,
+  LLMOptimizationConfig,
+  LLMCallIntelligence,
+  CallOpenAIChatParams
+} from '../types/llm';
 
 /**
  * Enhanced LLM service with intelligent routing and optimization
@@ -65,36 +34,302 @@ export class LLMService {
   private config: LLMOptimizationConfig;
   private providers: LLMProvider[] = [];
   private localLLMAvailable: boolean = false;
+  private fossilManager: any = null; // Will be set if fossilization is enabled
+  private sessionId: string;
 
   constructor(config: Partial<LLMOptimizationConfig> = {}) {
     this.config = {
       maxTokensPerCall: 4000,
       maxCostPerCall: 0.10,
       minValueScore: 0.3,
-      enableLocalLLM: true,
+      enableLocalLLM: false,
       enableCaching: true,
       cacheExpiryHours: 24,
       retryAttempts: 3,
       retryDelayMs: 1000,
       rateLimitDelayMs: 60000,
       // New intelligent routing defaults
-      preferLocalLLM: true,
-      testMode: process.env.NODE_ENV === 'test' || process.env.BUN_ENV === 'test',
-      localLLMPriority: 0.7, // Prefer local by default
+      preferLocalLLM: false,
+      testMode: false, // Disable test mode to ensure real LLM calls are fossilized
+      localLLMPriority: 0.0, // Never prefer local by default
       complexityThreshold: 0.6, // Use cloud for complex tasks
       costSensitivity: 0.8, // High cost sensitivity
       memoryOnly: false,
+      // New comprehensive tracing defaults
+      enableComprehensiveTracing: true,
+      enableFossilization: true,
+      enableConsoleOutput: true,
+      enableSnapshotExport: true,
+      fossilStoragePath: 'fossils/llm_insights/',
       ...config
     };
     
     this.usageLogPath = path.join(process.cwd(), '.llm-usage-log.json');
+    this.sessionId = `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     this.initializeProviders();
     
     // Only load from disk and check local LLM if not in memory-only mode
     if (!this.config.memoryOnly) {
       this.loadUsageLog();
       this.checkLocalLLM();
+      this.initializeFossilization();
     }
+
+    // Handle graceful shutdown on q^C (SIGINT) and SIGTERM
+    this.setupGracefulShutdown();
+  }
+
+  /**
+   * Initialize fossilization if enabled
+   */
+  private async initializeFossilization(): Promise<void> {
+    if (this.config.enableFossilization && this.config.fossilStoragePath) {
+      try {
+        // Dynamically import to avoid circular dependencies
+        const { createLLMFossilManager } = await import('../utils/llmFossilManager');
+        this.fossilManager = await createLLMFossilManager({
+          owner: 'automate-workloads',
+          repo: getCurrentRepoName(),
+          fossilStoragePath: this.config.fossilStoragePath,
+          enableAutoFossilization: true,
+          enableQualityMetrics: true,
+          enableValidationTracking: true
+        });
+        
+        if (this.config.enableConsoleOutput) {
+          console.log('🦴 LLM fossilization initialized for comprehensive tracing');
+        }
+      } catch (error) {
+        console.warn('⚠️ Failed to initialize LLM fossilization:', error);
+      }
+    }
+  }
+
+  /**
+   * Generate unique call ID for tracing
+   */
+  private generateCallId(): string {
+    return `call-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  /**
+   * Generate input hash for deduplication and tracing
+   */
+  private generateInputHash(input: any): string {
+    const inputString = JSON.stringify(input, Object.keys(input).sort());
+    return createHash('sha256').update(inputString).digest('hex').substring(0, 16);
+  }
+
+  /**
+   * Get current git commit reference for tracing
+   */
+  private async getCurrentCommitRef(): Promise<string> {
+    try {
+      const result = executeCommandJSON<string>('git rev-parse HEAD');
+      return result.trim();
+    } catch (error) {
+      return 'unknown';
+    }
+  }
+
+  /**
+   * Sanitize input for fossilization (remove sensitive data like API keys)
+   */
+  private sanitizeInputForFossilization(input: any): any {
+    if (!input) return input;
+    
+    const sanitized = { ...input };
+    
+    // Remove API keys and sensitive fields
+    if (sanitized.apiKey) {
+      sanitized.apiKey = '[REDACTED]';
+    }
+    if (sanitized.openaiApiKey) {
+      sanitized.openaiApiKey = '[REDACTED]';
+    }
+    if (sanitized.anthropicApiKey) {
+      sanitized.anthropicApiKey = '[REDACTED]';
+    }
+    if (sanitized.api_key) {
+      sanitized.api_key = '[REDACTED]';
+    }
+    
+    // Remove any other potential sensitive fields
+    const sensitiveFields = ['token', 'secret', 'password', 'key', 'auth'];
+    for (const field of sensitiveFields) {
+      if (sanitized[field] && typeof sanitized[field] === 'string') {
+        sanitized[field] = '[REDACTED]';
+      }
+    }
+    
+    return sanitized;
+  }
+
+  /**
+   * Fossilize LLM call for comprehensive tracing
+   */
+  private async fossilizeLLMCall(params: {
+    callId: string;
+    inputHash: string;
+    originalInput: any;
+    result: any;
+    error?: string;
+    metrics: LLMUsageMetrics;
+    validation?: any;
+    preprocessing?: any;
+    qualityAnalysis?: any;
+    insights?: any[];
+  }): Promise<void> {
+    if (!this.fossilManager || !this.config.enableFossilization) {
+      return;
+    }
+
+    try {
+      const commitRef = await this.getCurrentCommitRef();
+      
+      // Create comprehensive fossil
+      const fossil = {
+        type: 'llm-validation',
+        timestamp: new Date().toISOString(),
+        commitRef,
+        inputHash: params.inputHash,
+        callId: params.callId,
+        sessionId: this.sessionId,
+        validation: {
+          isValid: !params.error,
+          errors: params.error ? [params.error] : [],
+          warnings: [],
+          recommendations: [],
+          qualityScore: params.metrics.valueScore,
+          securityIssues: [],
+          performanceIssues: []
+        },
+        preprocessing: params.preprocessing ? {
+          success: true,
+          changes: params.preprocessing.changes || [],
+          improvements: params.preprocessing.improvements || []
+        } : undefined,
+        metadata: {
+          model: params.metrics.model,
+          context: params.metrics.context,
+          purpose: params.metrics.purpose,
+          valueScore: params.metrics.valueScore,
+          validationTime: 0,
+          preprocessingTime: 0,
+          totalTime: params.metrics.duration,
+          provider: params.metrics.provider,
+          inputTokens: params.metrics.inputTokens,
+          outputTokens: params.metrics.outputTokens,
+          totalTokens: params.metrics.totalTokens,
+          cost: params.metrics.cost
+        },
+        fossilId: `llm-validation-${Date.now()}-${params.callId}`,
+        status: params.error ? 'rejected' : 'approved',
+        tags: ['llm', 'validation', 'traceable']
+      };
+
+      // Store fossil
+      await this.fossilManager.fossilizeValidation({
+        inputHash: params.inputHash,
+        validation: fossil.validation,
+        preprocessing: fossil.preprocessing,
+        metadata: fossil.metadata
+      });
+
+      // Update metrics with fossil reference
+      params.metrics.fossilId = fossil.fossilId;
+
+      // Console output for traceability
+      if (this.config.enableConsoleOutput) {
+        console.log(`🦴 Fossilized LLM call: ${fossil.fossilId}`);
+        console.log(`   📊 Model: ${fossil.metadata.model}, Provider: ${fossil.metadata.provider}`);
+        console.log(`   💰 Cost: $${fossil.metadata.cost.toFixed(4)}, Tokens: ${fossil.metadata.totalTokens}`);
+        console.log(`   🎯 Purpose: ${fossil.metadata.purpose}, Context: ${fossil.metadata.context}`);
+        console.log(`   ⏱️ Duration: ${fossil.metadata.totalTime}ms`);
+        if (params.error) {
+          console.log(`   ❌ Error: ${params.error}`);
+        } else {
+          console.log(`   ✅ Success: ${fossil.validation.isValid ? 'Valid' : 'Invalid'}`);
+        }
+      }
+
+    } catch (error) {
+      console.warn('⚠️ Failed to fossilize LLM call:', error);
+    }
+  }
+
+  /**
+   * Export snapshot of recent LLM calls
+   */
+  private async exportSnapshot(): Promise<void> {
+    if (!this.config.enableSnapshotExport || this.usageLog.length === 0) {
+      return;
+    }
+
+    try {
+      const { LLMSnapshotExporter } = await import('../utils/llmSnapshotExporter');
+      const exporter = new LLMSnapshotExporter();
+      
+      const result = await exporter.exportSnapshot({
+        format: 'yaml',
+        includeMetadata: true,
+        includeTimestamps: true,
+        includeValidation: true,
+        includePreprocessing: true,
+        filters: {
+          dateRange: {
+            start: new Date(Date.now() - 60000).toISOString(), // Last minute
+            end: new Date().toISOString()
+          }
+        }
+      });
+
+      if (this.config.enableConsoleOutput) {
+        console.log(`📸 LLM snapshot exported: ${result.outputPath}`);
+      }
+    } catch (error) {
+      console.warn('⚠️ Failed to export LLM snapshot:', error);
+    }
+  }
+
+  /**
+   * Setup graceful shutdown handlers for q^C and SIGTERM
+   */
+  private setupGracefulShutdown(): void {
+    const gracefulShutdown = async (signal: string) => {
+      console.log(`\n🛑 Received ${signal}, shutting down gracefully...`);
+      
+      // Save current usage log (already done in trackUsage, but ensure it's saved)
+      if (!this.config.memoryOnly) {
+        try {
+          await fs.writeFile(this.usageLogPath, JSON.stringify(this.usageLog, null, 2));
+        } catch (error) {
+          console.warn('Failed to save usage log during shutdown:', error);
+        }
+      }
+      
+      // Export final snapshot if enabled
+      if (this.config.enableSnapshotExport && this.usageLog.length > 0) {
+        try {
+          await this.exportSnapshot();
+        } catch (error) {
+          console.warn('Failed to export final snapshot during shutdown:', error);
+        }
+      }
+      
+      // Log final analytics
+      const analytics = this.getUsageAnalytics();
+      if (analytics.totalCalls > 0) {
+        console.log(`📊 Final LLM Usage: ${analytics.totalCalls} calls, ${analytics.successRate * 100}% success rate`);
+        console.log(`🦴 Total fossils created: ${this.usageLog.filter(m => m.fossilId).length}`);
+      }
+      
+      console.log('✅ Graceful shutdown complete');
+      process.exit(0);
+    };
+
+    process.on('SIGINT', () => gracefulShutdown('SIGINT (Ctrl+C)'));
+    process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
   }
 
   /**
@@ -102,10 +337,12 @@ export class LLMService {
    */
   private async checkLocalLLM(): Promise<void> {
     if (this.config.enableLocalLLM) {
-      this.localLLMAvailable = await this.checkLocalLLMAvailability('ollama');
-      if (this.localLLMAvailable) {
-        console.log('✅ Local LLM (Ollama) available for cost optimization');
-      }
+      // Temporarily disable local LLM check to avoid recursive call issue
+      this.localLLMAvailable = false;
+      // this.localLLMAvailable = await this.checkLocalLLMAvailability('ollama');
+      // if (this.localLLMAvailable) {
+      //   console.log('✅ Local LLM (Ollama) available for cost optimization');
+      // }
     }
   }
 
@@ -167,12 +404,6 @@ export class LLMService {
    * Select best provider based on intelligence analysis
    */
   private async selectProvider(intelligence: LLMCallIntelligence): Promise<LLMProvider | null> {
-    // In test mode, prefer local or fallback
-    if (this.config.testMode) {
-      console.log('🧪 Test mode detected - using fallback responses');
-      return null; // Use fallback
-    }
-    
     // If local LLM can handle this and we prefer it
     if (intelligence.canUseLocal && this.config.preferLocalLLM) {
       const localProvider = this.providers.find(p => p.name === 'local-ollama');
@@ -219,7 +450,7 @@ export class LLMService {
     if (this.config.enableLocalLLM) {
       this.providers.push({
         name: 'local-ollama',
-        isAvailable: async () => this.checkLocalLLMAvailability('ollama'),
+        isAvailable: async () => this.localLLMAvailable, // Use cached result instead of recursive call
         call: this.callLocalOllama.bind(this),
         estimateTokens: this.estimateLocalTokens.bind(this),
         estimateCost: () => 0 // Local LLMs are free
@@ -232,8 +463,7 @@ export class LLMService {
    */
   private async checkLocalLLMAvailability(type: string): Promise<boolean> {
     try {
-      const { execSync } = await import('child_process');
-      execSync(`${type} --version`, { stdio: 'ignore' });
+      executeCommand(`${type} --version`, { throwOnError: false });
       return true;
     } catch {
       return false;
@@ -251,6 +481,16 @@ export class LLMService {
   }): Promise<any> {
     const startTime = Date.now();
     const { context = 'unknown', purpose = 'general', valueScore = 0.5, routingPreference = 'auto', ...llmOptions } = options;
+
+    // Generate unique identifiers for comprehensive tracing
+    const callId = this.generateCallId();
+    const inputHash = this.generateInputHash(options);
+    
+    // Console output for traceability
+    if (this.config.enableConsoleOutput) {
+      console.log(`🚀 LLM Call [${callId}]: ${purpose} (${context})`);
+      console.log(`   📝 Model: ${llmOptions.model}, Value Score: ${valueScore}`);
+    }
 
     // Apply routing preference if provided
     this.setRoutingPreference(routingPreference);
@@ -292,43 +532,118 @@ export class LLMService {
       
       const result = await this.callWithRetry(() => provider.call(llmOptions));
       
-      // Track successful usage
-      await this.trackUsage({
+      // Calculate actual metrics
+      const duration = Date.now() - startTime;
+      const actualTokens = this.estimateTokens(llmOptions.messages);
+      const outputTokens = this.estimateOutputTokens(result);
+      const totalTokens = actualTokens + outputTokens;
+      const actualCost = this.estimateCost(totalTokens, llmOptions.model);
+      
+      // Create comprehensive metrics for tracing
+      const metrics: LLMUsageMetrics = {
         timestamp: new Date().toISOString(),
         model: llmOptions.model,
         provider: provider.name as any,
-        inputTokens: estimatedTokens,
-        outputTokens: this.estimateOutputTokens(result),
-        totalTokens: estimatedTokens + this.estimateOutputTokens(result),
-        cost: this.estimateCost(estimatedTokens, llmOptions.model),
-        duration: Date.now() - startTime,
+        inputTokens: actualTokens,
+        outputTokens,
+        totalTokens,
+        cost: actualCost,
+        duration,
         success: true,
         context,
         purpose,
-        valueScore
+        valueScore,
+        callId,
+        inputHash,
+        sessionId: this.sessionId,
+        traceData: {
+          validation: { isValid: true, errors: [], warnings: [] },
+          preprocessing: { success: true, changes: [], improvements: [] },
+          qualityAnalysis: { overall: valueScore, clarity: 0.8, specificity: 0.7, completeness: 0.9 },
+          insights: []
+        }
+      };
+      
+      // Track usage
+      await this.trackUsage(metrics);
+      
+      // Fossilize successful call
+      await this.fossilizeLLMCall({
+        callId,
+        inputHash,
+        originalInput: this.sanitizeInputForFossilization(options),
+        result,
+        metrics,
+        validation: metrics.traceData?.validation,
+        preprocessing: metrics.traceData?.preprocessing,
+        qualityAnalysis: metrics.traceData?.qualityAnalysis,
+        insights: metrics.traceData?.insights
       });
+      
+      // Console output for successful completion
+      if (this.config.enableConsoleOutput) {
+        console.log(`✅ LLM Call [${callId}] completed successfully`);
+        console.log(`   📊 Tokens: ${totalTokens}, Cost: $${actualCost.toFixed(4)}, Duration: ${duration}ms`);
+      }
 
       return result;
     } catch (error) {
       lastError = error as Error;
       console.warn(`❌ ${provider.name} failed:`, error);
       
-      // Track failed usage
-      await this.trackUsage({
+      const duration = Date.now() - startTime;
+      const actualTokens = this.estimateTokens(llmOptions.messages);
+      const actualCost = this.estimateCost(actualTokens, llmOptions.model);
+      
+      // Create comprehensive metrics for failed call
+      const metrics: LLMUsageMetrics = {
         timestamp: new Date().toISOString(),
         model: llmOptions.model,
         provider: provider.name as any,
-        inputTokens: estimatedTokens,
+        inputTokens: actualTokens,
         outputTokens: 0,
-        totalTokens: estimatedTokens,
-        cost: this.estimateCost(estimatedTokens, llmOptions.model),
-        duration: Date.now() - startTime,
+        totalTokens: actualTokens,
+        cost: actualCost,
+        duration,
         success: false,
         error: (error as Error).message,
         context,
         purpose,
-        valueScore
+        valueScore,
+        callId,
+        inputHash,
+        sessionId: this.sessionId,
+        traceData: {
+          validation: { isValid: false, errors: [(error as Error).message], warnings: [] },
+          preprocessing: { success: false, changes: [], improvements: [] },
+          qualityAnalysis: { overall: 0, clarity: 0, specificity: 0, completeness: 0 },
+          insights: []
+        }
+      };
+      
+      // Track failed usage
+      await this.trackUsage(metrics);
+      
+      // Fossilize failed call
+      await this.fossilizeLLMCall({
+        callId,
+        inputHash,
+        originalInput: this.sanitizeInputForFossilization(options),
+        result: null,
+        error: (error as Error).message,
+        metrics,
+        validation: metrics.traceData?.validation,
+        preprocessing: metrics.traceData?.preprocessing,
+        qualityAnalysis: metrics.traceData?.qualityAnalysis,
+        insights: metrics.traceData?.insights
       });
+      
+      // Console output for failed completion
+      if (this.config.enableConsoleOutput) {
+        console.log(`❌ LLM Call [${callId}] failed`);
+        console.log(`   💥 Error: ${(error as Error).message}`);
+        console.log(`   📊 Tokens: ${actualTokens}, Cost: $${actualCost.toFixed(4)}, Duration: ${duration}ms`);
+      }
 
       // If it's a rate limit, wait before trying next provider
       if (this.isRateLimitError(error)) {
@@ -488,7 +803,7 @@ export class LLMService {
   private async loadUsageLog(): Promise<void> {
     try {
       const data = await fs.readFile(this.usageLogPath, 'utf-8');
-      this.usageLog = JSON.parse(data);
+      this.usageLog = safeParseJSON(data, 'usageLog');
     } catch {
       this.usageLog = [];
     }
@@ -644,16 +959,13 @@ ${this.generateRecommendations(analytics)}
   }
 
   private async callLocalOllama(options: OpenAIChatOptions): Promise<any> {
-    const { execSync } = await import('child_process');
-    
     const prompt = options.messages.map(m => `${m.role}: ${m.content}`).join('\n');
-    const result = execSync(`ollama run ${options.model} "${prompt}"`, { 
-      encoding: 'utf-8',
-      maxBuffer: 1024 * 1024 // 1MB buffer
+    const result = executeCommand(`ollama run ${options.model} "${prompt}"`, { 
+      timeout: 60000 // 60 second timeout for LLM calls
     });
     
     return {
-      choices: [{ message: { content: result.trim() } }]
+      choices: [{ message: { content: result.stdout.trim() } }]
     };
   }
 
@@ -694,20 +1006,16 @@ ${this.generateRecommendations(analytics)}
       this.config.preferLocalLLM = false;
       this.config.complexityThreshold = 0.0; // Always use cloud
     } else {
-      // auto
-      this.config.preferLocalLLM = true;
+      // auto (now prefer cloud by default)
+      this.config.preferLocalLLM = false;
       this.config.complexityThreshold = 0.6;
     }
   }
 }
 
 // Backward compatibility - keep the original function
-export async function callOpenAIChat({
-  model,
-  apiKey,
-  messages,
-  ...options
-}: OpenAIChatOptions): Promise<any> {
+export async function callOpenAIChat(params: CallOpenAIChatParams): Promise<any> {
+  const { model, apiKey, messages, ...options } = params;
   const llmService = new LLMService();
   return llmService.callLLM({
     model,

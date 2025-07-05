@@ -9,13 +9,13 @@ async function main() {
   const labels = ["maintenance", "demo"];
   // Use fossil-backed issue creation
   const result = await createFossilIssue({
-    owner,
-    repo,
-    title,
-    body,
-    labels,
-    tags: labels,
-    metadata: { createdBy: 'automation' },
+    body: body,
+    title: title,
+    section: 'demo',
+    metadata: { source: 'demo-issue-cli' },
+    type: 'action',
+    tags: ['demo', 'automation'],
+    parsedFields: {}
   });
   if (result.deduplicated) {
     console.log(`⚠️ Issue already exists for fossil hash: ${result.fossilHash} (Fossil ID: ${result.fossilId})`);

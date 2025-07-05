@@ -162,19 +162,13 @@ export class GitHubService {
       const { createFossilIssue } = await import('../utils/fossilIssue');
       
       const result = await createFossilIssue({
-        owner: this.owner,
-        repo: this.repo,
-        title,
-        body,
-        labels: options.labels || [],
-        milestone: options.milestone,
-        section: options.section,
+        body: body,
+        title: title,
+        section: options.section || 'general',
+        metadata: { source: 'github-service', ...options.metadata },
         type: 'action',
         tags: ['github-service'],
-        metadata: { source: 'github-service', originalOptions: options },
-        purpose: body || title,
-        checklist: options.checklist,
-        automationMetadata: options.metadata ? JSON.stringify(options.metadata, null, 2) : undefined
+        parsedFields: {}
       });
       
       if (result.deduplicated) {
@@ -370,6 +364,6 @@ export class GitHubService {
   issueExistsByTitle(title: string, state: 'open' | 'all' = 'open'): boolean {
     // Use the shared utility
     const { issueExists } = require('../utils/cli');
-    return issueExists(this.owner, this.repo, title, state);
+    return issueExists({ owner: this.owner, repo: this.repo, title, state });
   }
 } 
