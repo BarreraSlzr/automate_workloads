@@ -48,7 +48,7 @@ async function promptForApproval(artifact: LLMInsightFossil): Promise<boolean> {
   return new Promise((resolve) => {
     process.stdin.setEncoding('utf-8');
     process.stdin.once('data', (data) => {
-      const answer = data.trim().toLowerCase();
+      const answer = data.toString().trim().toLowerCase();
       resolve(answer === '' || answer === 'y' || answer === 'yes');
     });
   });
@@ -174,18 +174,22 @@ async function advancedReviewCLI(candidates: InsightCandidate[]): Promise<Insigh
       }
       
       if (command.startsWith('details ')) {
-        const num = parseInt(command.split(' ')[1]) - 1;
-        if (num >= 0 && num < candidates.length) {
-          const candidate = candidates[num];
-          if (candidate) {
-            console.log('\n' + '='.repeat(60));
-            console.log(`DETAILS: ${candidate.file}`);
-            console.log('='.repeat(60));
-            console.log(`Hash: ${candidate.artifact.inputHash}`);
-            console.log(`Commit: ${candidate.artifact.commitRef}`);
-            console.log(`Prompt: ${candidate.artifact.prompt}`);
-            console.log(`Response: ${candidate.artifact.response}`);
-            console.log('='.repeat(60));
+        const parts = command.split(' ');
+        const numStr = parts[1];
+        if (numStr) {
+          const num = parseInt(numStr) - 1;
+          if (num >= 0 && num < candidates.length) {
+            const candidate = candidates[num];
+            if (candidate) {
+              console.log('\n' + '='.repeat(60));
+              console.log(`DETAILS: ${candidate.file}`);
+              console.log('='.repeat(60));
+              console.log(`Hash: ${candidate.artifact.inputHash}`);
+              console.log(`Commit: ${candidate.artifact.commitRef}`);
+              console.log(`Prompt: ${candidate.artifact.prompt}`);
+              console.log(`Response: ${candidate.artifact.response}`);
+              console.log('='.repeat(60));
+            }
           }
         }
         promptForCommand();
@@ -194,16 +198,21 @@ async function advancedReviewCLI(candidates: InsightCandidate[]): Promise<Insigh
       
       if (command.includes('-')) {
         const parts = command.split('-');
-        const start = parseInt(parts[0] || '0');
-        const end = parseInt(parts[1] || '0');
-        if (!isNaN(start) && !isNaN(end) && start >= 0 && end < candidates.length) {
-          for (let i = start; i <= end; i++) {
-            if (candidates[i]) {
-              candidates[i].approved = true;
+        const startStr = parts[0];
+        const endStr = parts[1];
+        if (startStr && endStr) {
+          const start = parseInt(startStr);
+          const end = parseInt(endStr);
+          if (!isNaN(start) && !isNaN(end) && start >= 0 && end < candidates.length) {
+            for (let i = start; i <= end; i++) {
+              const candidate = candidates[i];
+              if (candidate) {
+                candidate.approved = true;
+              }
             }
+            console.log(`✅ Approved insights ${start + 1}-${end + 1}`);
+            displayStatus(candidates);
           }
-          console.log(`✅ Approved insights ${start + 1}-${end + 1}`);
-          displayStatus(candidates);
         }
         promptForCommand();
         return;
@@ -211,10 +220,13 @@ async function advancedReviewCLI(candidates: InsightCandidate[]): Promise<Insigh
       
       const num = parseInt(command) - 1;
       if (num >= 0 && num < candidates.length) {
-        candidates[num].approved = !candidates[num].approved;
-        const status = candidates[num].approved ? '✅ APPROVED' : '❌ REJECTED';
-        console.log(`${status}: ${candidates[num].file}`);
-        displayStatus(candidates);
+        const candidate = candidates[num];
+        if (candidate) {
+          candidate.approved = !candidate.approved;
+          const status = candidate.approved ? '✅ APPROVED' : '❌ REJECTED';
+          console.log(`${status}: ${candidate.file}`);
+          displayStatus(candidates);
+        }
       }
       
       promptForCommand();

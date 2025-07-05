@@ -1,8 +1,8 @@
-import { execSync } from 'child_process';
 import { ContextFossilService } from '../cli/context-fossil';
 import type { ContextEntry } from '../types';
 import { CreateFossilMilestoneParamsSchema } from '../types';
 import type { CreateFossilMilestoneParams } from '../types/cli';
+import { GitHubCLICommands } from './githubCliCommands';
 
 /**
  * Preferred utility for fossil-backed, deduplicated GitHub milestone creation.
@@ -40,15 +40,28 @@ export async function createFossilMilestone(params: CreateFossilMilestoneParams)
     };
   }
   
-  // Create milestone via GitHub API
-  let command = `gh api repos/${owner}/${repo}/milestones --method POST --field title="${title}" --field description="${description}"`;
-  if (dueOn) {
-    command += ` --field due_on="${new Date(dueOn).toISOString()}"`;
+  // Create milestone via GitHub CLI using centralized commands
+  const commands = new GitHubCLICommands(owner, repo);
+  const result = await commands.createMilestone({
+    title,
+    description,
+    dueOn
+  });
+  
+  if (!result.success) {
+    throw new Error(`Failed to create GitHub milestone: ${result.message}`);
   }
   
-  const result = execSync(command, { encoding: 'utf8' });
-  const milestoneData = JSON.parse(result);
-  const milestoneNumber = milestoneData.number?.toString();
+  // Parse milestone data from output
+  let milestoneNumber: string | undefined;
+  try {
+    const milestoneData = JSON.parse(result.stdout);
+    milestoneNumber = milestoneData.number?.toString();
+  } catch {
+    // Fallback: try to extract from stdout if JSON parsing fails
+    const match = result.stdout.match(/Milestone #(\d+)/);
+    milestoneNumber = match ? match[1] : undefined;
+  }
   
   // Store fossil entry
   const fossilEntry: Omit<ContextEntry, 'id' | 'createdAt' | 'updatedAt'> = {
@@ -82,9 +95,22 @@ export async function ensureMilestone(
   dueOn?: string
 ): Promise<{ milestoneNumber?: string; created: boolean }> {
   try {
-    // Check if milestone exists
-    const listCommand = `gh api repos/${owner}/${repo}/milestones --field state=open`;
-    const milestones = JSON.parse(execSync(listCommand, { encoding: 'utf8' }));
+    // Check if milestone exists using centralized commands
+    const commands = new GitHubCLICommands(owner, repo);
+    const listResult = await commands.listMilestones();
+    
+    if (!listResult.success) {
+      throw new Error(`Failed to list milestones: ${listResult.message}`);
+    }
+    
+    let milestones: any[] = [];
+    try {
+      milestones = JSON.parse(listResult.stdout);
+    } catch {
+      // Handle case where output is not JSON
+      console.warn('Could not parse milestone list as JSON');
+    }
+    
     const existing = milestones.find((m: any) => m.title === title);
     
     if (existing) {

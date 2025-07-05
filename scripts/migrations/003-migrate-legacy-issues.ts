@@ -6,6 +6,7 @@ import { extractJsonBlock, checklistToMarkdown, metadataToMarkdown } from '../..
 import { GitHubService } from '../../src/services/github';
 import path from 'path';
 import { callOpenAIChat } from '../../src/services/llm';
+import { GitHubCLICommands } from '../../src/utils/githubCliCommands';
 
 function parseLegacySections(body: string) {
   const purposeMatch = body.match(/### Purpose\n([\s\S]*?)(\n###|$)/);
@@ -159,6 +160,10 @@ async function migrate() {
   }
   const issues = response.data;
   let migrated = 0;
+  
+  // Initialize GitHub CLI commands
+  const commands = new GitHubCLICommands(owner, repo);
+  
   for (const issue of issues) {
     let parsed = parseLegacySections(issue.body || '');
     let usedLLM = false;
@@ -175,15 +180,22 @@ async function migrate() {
     });
     const tempFile = `.migrated-issue-body-${issue.number}.md`;
     fs.writeFileSync(tempFile, newBody);
-    execSync(`gh issue edit ${issue.number} --body-file ${tempFile}`);
-    fs.unlinkSync(tempFile);
-    if (usedLLM) {
-      console.log(`🤖 LLM guidance used for issue #${issue.number}: ${issue.title}`);
-      console.log('LLM suggestion:', parsed);
+    
+    // Use centralized GitHubCLICommands for issue editing
+    const editResult = await commands.executeCommand(`gh issue edit ${issue.number} --body-file ${tempFile}`);
+    if (!editResult.success) {
+      console.error(`❌ Failed to update issue #${issue.number}: ${editResult.message}`);
     } else {
-      console.log(`✅ Migrated issue #${issue.number}: ${issue.title}`);
+      if (usedLLM) {
+        console.log(`🤖 LLM guidance used for issue #${issue.number}: ${issue.title}`);
+        console.log('LLM suggestion:', parsed);
+      } else {
+        console.log(`✅ Migrated issue #${issue.number}: ${issue.title}`);
+      }
+      migrated++;
     }
-    migrated++;
+    
+    fs.unlinkSync(tempFile);
   }
   console.log(`\nMigration complete. Migrated ${migrated} issues.`);
 }
@@ -209,7 +221,18 @@ if (process.argv[2] === '--update' && process.argv[3] && process.argv[4]) {
     });
     const tempFile = `.update-issue-body-${issueNumber}.md`;
     fs.writeFileSync(tempFile, newBody);
-    execSync(`gh issue edit ${issueNumber} --body-file ${tempFile}`);
+    
+    // Use centralized GitHubCLICommands for issue editing
+    const owner = process.env.GITHUB_OWNER || 'BarreraSlzr';
+    const repo = process.env.GITHUB_REPO || 'automate_workloads';
+    const commands = new GitHubCLICommands(owner, repo);
+    const editResult = await commands.executeCommand(`gh issue edit ${issueNumber} --body-file ${tempFile}`);
+    
+    if (!editResult.success) {
+      console.error(`❌ Failed to update issue #${issueNumber}: ${editResult.message}`);
+      process.exit(1);
+    }
+    
     fs.unlinkSync(tempFile);
     console.log(`✅ Updated issue #${issueNumber} with LLM-processed markdown.`);
     process.exit(0);

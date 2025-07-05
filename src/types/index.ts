@@ -196,6 +196,21 @@ export {
   CreateFossilMilestoneParamsSchema,
   CheckExistingFossilParamsSchema,
   CreateFossilEntryParamsSchema,
+  // Fossil Manager Schemas
+  BaseFossilParamsSchema,
+  IssueFossilParamsSchema,
+  LabelFossilParamsSchema,
+  MilestoneFossilParamsSchema,
+  // LLM Input Validator Schemas
+  MessageSchema,
+  LLMInputSchema,
+  // LLM Fossil Manager Schemas
+  LLMFossilManagerParamsSchema,
+  // Visual Diagram Generator Schemas
+  WorkflowStepSchema,
+  ComponentSchema,
+  RiskSchema,
+  DependencySchema,
 } from './schemas';
 
 // LLM types - language model interfaces

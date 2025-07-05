@@ -13,7 +13,12 @@ test('fossilizes an LLM insight', async () => {
     model: 'gpt-4',
     provider: 'openai',
     excerpt: 'Test insight',
+    promptId: 'test-prompt-123',
+    promptVersion: '1.0',
     prompt: 'What is AI?',
+    systemMessage: 'You are a helpful assistant.',
+    inputHash: 'abc123',
+    commitRef: 'main',
     response: 'AI is ...',
   };
   const file = await fossilizeLLMInsight(fossil);

@@ -7,34 +7,14 @@
  */
 
 import { z } from 'zod';
+import { 
+  WorkflowStepSchema,
+  ComponentSchema,
+  RiskSchema,
+  DependencySchema
+} from '../types';
 
-// Schema definitions for diagram generation
-export const WorkflowStepSchema = z.object({
-  step: z.string(),
-  description: z.string().optional(),
-  type: z.enum(['start', 'process', 'decision', 'end']).default('process'),
-  style: z.string().optional(),
-});
-
-export const ComponentSchema = z.object({
-  name: z.string(),
-  items: z.array(z.string()),
-  style: z.string().optional(),
-});
-
-export const RiskSchema = z.object({
-  risk: z.string(),
-  impact: z.enum(['low', 'medium', 'high', 'critical']),
-  probability: z.enum(['low', 'medium', 'high']),
-  mitigation: z.string(),
-});
-
-export const DependencySchema = z.object({
-  name: z.string(),
-  type: z.enum(['blocking', 'dependent', 'related']),
-  description: z.string().optional(),
-});
-
+// Type definitions for diagram generation
 export type WorkflowStep = z.infer<typeof WorkflowStepSchema>;
 export type Component = z.infer<typeof ComponentSchema>;
 export type Risk = z.infer<typeof RiskSchema>;

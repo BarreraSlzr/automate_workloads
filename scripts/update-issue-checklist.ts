@@ -1,9 +1,9 @@
 #!/usr/bin/env bun
 import { updateMarkdownChecklist, ChecklistUpdate, extractJsonBlock, checklistToMarkdown, metadataToMarkdown } from "../src/utils/markdownChecklist";
-import { execSync } from "child_process";
 import * as fs from "fs";
 import { ContextFossilService } from '../src/cli/context-fossil';
 import type { ContextEntry } from '../src/types';
+import { GitHubCLICommands } from '../src/utils/githubCliCommands';
 
 // Usage: bun scripts/update-issue-checklist.ts <issue_number>
 // Pass checklist updates as env var: CHECKLIST_UPDATES='{"Task A":true,"Task B":false}'
@@ -26,8 +26,16 @@ if (import.meta.main) {
     process.exit(1);
   }
 
-  // 1. Fetch the current issue body
-  const body = execSync(`gh issue view ${issueNumber} --json body -q ".body"`).toString();
+  // Initialize GitHub CLI commands
+  const commands = new GitHubCLICommands('barreraslzr', 'automate_workloads');
+
+  // 1. Fetch the current issue body using centralized commands
+  const bodyResult = await commands.executeCommand(`gh issue view ${issueNumber} --json body -q ".body"`);
+  if (!bodyResult.success) {
+    console.error(`Failed to fetch issue body: ${bodyResult.message}`);
+    process.exit(1);
+  }
+  const body = bodyResult.stdout;
 
   // 2. Update the checklist
   const updatedBody = updateMarkdownChecklist(body, updates);
@@ -36,8 +44,13 @@ if (import.meta.main) {
   const tempFile = `.issue_body_${issueNumber}.md`;
   fs.writeFileSync(tempFile, updatedBody);
 
-  // 4. Update the issue on GitHub
-  execSync(`gh issue edit ${issueNumber} --body-file ${tempFile}`);
+  // 4. Update the issue on GitHub using centralized commands
+  const editResult = await commands.executeCommand(`gh issue edit ${issueNumber} --body-file ${tempFile}`);
+  if (!editResult.success) {
+    console.error(`Failed to update issue: ${editResult.message}`);
+    fs.unlinkSync(tempFile);
+    process.exit(1);
+  }
 
   console.log(`Updated issue #${issueNumber} checklist with:`, updates);
   fs.unlinkSync(tempFile);
@@ -46,9 +59,15 @@ if (import.meta.main) {
   (async () => {
     const fossil = new ContextFossilService();
     await fossil.initialize();
-    // Fetch the updated issue body
-    const ghBody = execSync(`gh issue view ${issueNumber} --json title,body,number,state,labels,assignees,created_at,updated_at -q "."`).toString();
-    const issue = JSON.parse(ghBody);
+    
+    // Fetch the updated issue body using centralized commands
+    const ghBodyResult = await commands.executeCommand(`gh issue view ${issueNumber} --json title,body,number,state,labels,assignees,created_at,updated_at -q "."`);
+    if (!ghBodyResult.success) {
+      console.error(`Failed to fetch updated issue: ${ghBodyResult.message}`);
+      return;
+    }
+    
+    const issue = JSON.parse(ghBodyResult.stdout);
     const labels = Array.isArray(issue.labels)
       ? issue.labels.map((l: any) => typeof l === 'string' ? l : (l && typeof l.name === 'string' ? l.name : String(l)))
       : [];

@@ -1,14 +1,13 @@
 import * as fs from "fs";
 import * as yaml from "js-yaml";
-import { execSync } from "child_process";
 import { issueExists } from './cli';
 import { createFossilIssue } from './fossilIssue';
 import { isTestMode } from '../cli/repo-orchestrator';
 import { GitHubCLICommands } from './githubCliCommands';
 
-async function runGh(cmd: string) {
+async function runGh(cmd: string, owner: string, repo: string) {
   try {
-    const commands = new GitHubCLICommands('barreraslzr', 'automate_workloads');
+    const commands = new GitHubCLICommands(owner, repo);
     const result = await commands.executeCommand(cmd);
     return result.success ? result.stdout.trim() : null;
   } catch (e) {
@@ -18,7 +17,7 @@ async function runGh(cmd: string) {
 
 async function getMilestoneIdByTitle(owner: string, repo: string, title: string): Promise<string | null> {
   if (isTestMode({ owner, repo, title })) return null;
-  const out = await runGh(`gh api repos/${owner}/${repo}/milestones --jq '.[] | select(.title=="${title}") | .number'`);
+  const out = await runGh(`gh api repos/${owner}/${repo}/milestones --jq '.[] | select(.title=="${title}") | .number'`, owner, repo);
   if (typeof out === "undefined" || out === null) return null;
   const first = out.split("\n")[0];
   return typeof first === "string" && first.length > 0 ? first : null;
@@ -31,24 +30,38 @@ async function ensureMilestone(owner: string, repo: string, name: string): Promi
     console.log(`✅ Milestone exists: ${name}`);
     return milestoneId;
   }
-  await runGh(`gh api repos/${owner}/${repo}/milestones -f title='${name}' -f description='Auto-created from tracker'`);
-  milestoneId = await getMilestoneIdByTitle(owner, repo, name);
-  if (milestoneId) {
-    console.log(`🆕 Created milestone: ${name}`);
-    return milestoneId;
-  } else {
-    console.error(`❌ Failed to create milestone: ${name}`);
-    return null;
+  
+  // Use centralized GitHubCLICommands for milestone creation
+  const commands = new GitHubCLICommands(owner, repo);
+  const result = await commands.createMilestone({
+    title: name,
+    description: 'Auto-created from tracker'
+  });
+  
+  if (result.success) {
+    milestoneId = await getMilestoneIdByTitle(owner, repo, name);
+    if (milestoneId) {
+      console.log(`🆕 Created milestone: ${name}`);
+      return milestoneId;
+    }
   }
+  
+  console.error(`❌ Failed to create milestone: ${name}`);
+  return null;
 }
 
 async function getIssueByTitle(owner: string, repo: string, title: string): Promise<{number: string, state: string} | null> {
   if (isTestMode({ owner, repo, title })) return null;
   if (!issueExists(owner, repo, title, 'all')) return null;
-  const out = await runGh(`gh issue list --repo ${owner}/${repo} --state all --search "${title}" --json number,title,state`);
-  if (!out) return null;
+  
+  // Use centralized GitHubCLICommands for issue listing
+  const commands = new GitHubCLICommands(owner, repo);
+  const result = await commands.listIssues({ state: 'all' });
+  
+  if (!result.success) return null;
+  
   try {
-    const arr = JSON.parse(out);
+    const arr = JSON.parse(result.stdout);
     for (const issue of arr) {
       if (issue.title.trim() === title.trim()) {
         return { number: String(issue.number), state: issue.state };
@@ -65,8 +78,12 @@ async function ensureIssue(task: { section: string; text: string }, milestoneId:
   if (issue) {
     console.log(`✅ Issue exists: #${String(issue.number ?? "")} - ${task.text}`);
     if (issue.state === "closed") {
-      await runGh(`gh issue reopen ${String(issue.number ?? "")} --repo ${owner}/${repo}`);
-      console.log(`🔄 Reopened issue #${String(issue.number ?? "")}`);
+      // Use centralized GitHubCLICommands for issue reopening
+      const commands = new GitHubCLICommands(owner, repo);
+      const reopenResult = await commands.executeCommand(`gh issue reopen ${String(issue.number ?? "")} --repo ${owner}/${repo}`);
+      if (reopenResult.success) {
+        console.log(`🔄 Reopened issue #${String(issue.number ?? "")}`);
+      }
     }
     await addIssueToProject(String(issue.number ?? ""), owner, repo, projectNumber);
     return;
@@ -94,7 +111,7 @@ async function ensureIssue(task: { section: string; text: string }, milestoneId:
 async function addIssueToProject(issueNumber: string | undefined, owner: string, repo: string, projectNumber: number) {
   if (isTestMode({ owner, repo, issueNumber, projectNumber })) return;
   if (!issueNumber || issueNumber === "") return;
-  const addResult = await runGh(`gh project item-add ${projectNumber} --owner ${owner} --issue ${String(issueNumber ?? "")}`);
+  const addResult = await runGh(`gh project item-add ${projectNumber} --owner ${owner} --issue ${String(issueNumber ?? "")}`, owner, repo);
   if (addResult && !addResult.includes("already exists")) {
     console.log(`📋 Added issue #${String(issueNumber ?? "") } to project board`);
   } else {
@@ -106,8 +123,12 @@ async function closeIssueByTitle(title: string, owner: string, repo: string) {
   if (isTestMode({ owner, repo, title })) return;
   const issue = await getIssueByTitle(owner, repo, title);
   if (issue && issue.state === "open") {
-    await runGh(`gh issue close ${String(issue.number ?? "")} --repo ${owner}/${repo}`);
-    console.log(`✅ Closed issue #${String(issue.number ?? "")} for checked-off item: ${title}`);
+    // Use centralized GitHubCLICommands for issue closing
+    const commands = new GitHubCLICommands(owner, repo);
+    const closeResult = await commands.executeCommand(`gh issue close ${String(issue.number ?? "")} --repo ${owner}/${repo}`);
+    if (closeResult.success) {
+      console.log(`✅ Closed issue #${String(issue.number ?? "")} for checked-off item: ${title}`);
+    }
   }
 }
 
@@ -118,7 +139,9 @@ async function ensureTestOrFossilIssue(item: { type: string; name: string; file:
   let issue = await getIssueByTitle(owner, repo, title);
   if (issue) {
     if (issue.state === "closed") {
-      await runGh(`gh issue reopen ${String(issue.number ?? "")} --repo ${owner}/${repo}`);
+      // Use centralized GitHubCLICommands for issue reopening
+      const commands = new GitHubCLICommands(owner, repo);
+      await commands.executeCommand(`gh issue reopen ${String(issue.number ?? "")} --repo ${owner}/${repo}`);
     }
     await addIssueToProject(String(issue.number ?? ""), owner, repo, projectNumber);
     return;

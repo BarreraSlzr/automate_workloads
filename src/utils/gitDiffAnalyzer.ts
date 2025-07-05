@@ -108,7 +108,7 @@ export class GitDiffAnalyzer {
       if (!block.trim()) continue;
       
       const lines = block.split('\n');
-      const filePath = this.extractFilePath(lines[0]);
+      const filePath = this.extractFilePath(lines[0] || '');
       
       if (!filePath) continue;
       
@@ -432,11 +432,14 @@ Focus on:
     const lines = content.split('\n');
     
     for (let i = 0; i < lines.length; i++) {
-      if (pattern.test(lines[i])) {
+      const line = lines[i];
+      if (!line) continue;
+      
+      if (pattern.test(line)) {
         matches.push({
           file: filePath,
           line: i + 1,
-          content: lines[i].trim(),
+          content: line.trim(),
           context: lines.slice(Math.max(0, i - 2), i + 3).join('\n'),
           relevance: 1.0
         });

@@ -8,7 +8,7 @@ import { LLMInsightFossil, LLMBenchmarkFossil, LLMDiscoveryFossil, AnyLLMFossil 
 /**
  * Generate a content hash for deduplication
  */
-function generateContentHash(content: string, type: string, title: string): string {
+export function generateContentHash(content: string, type: string, title: string): string {
   return createHash('sha256')
     .update(`${content}${type}${title}`)
     .digest('hex')

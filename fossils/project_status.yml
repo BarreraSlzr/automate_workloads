@@ -463,7 +463,7 @@ project_status:
             functions:
               - 'SemanticTaggerService: implemented'
             fossilized_output: false
-            tests: &ref_31
+            tests: &ref_32
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/services/semantic-tagger.test.ts
         - github.ts:
@@ -472,7 +472,7 @@ project_status:
               - 'GitHubService: implemented'
               - 'loadAndFillAutomationTemplate: implemented'
             fossilized_output: false
-            tests: &ref_32
+            tests: &ref_33
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/types/index.test.ts
               - >-
@@ -496,9 +496,11 @@ project_status:
               - 'LLMService: implemented'
               - 'callOpenAIChat: implemented'
             fossilized_output: false
-            tests: &ref_33
+            tests: &ref_34
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/types/index.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/utils/llmInputValidator.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/llm-plan.test.ts
               - >-
@@ -517,9 +519,25 @@ project_status:
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/services/semantic-tagger.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/llm-fossilization.integration.test.ts
+        - llmEnhanced.ts:
+            functions:
+              - 'EnhancedLLMService: implemented'
+              - 'for: implemented'
+              - 'createEnhancedLLMService: implemented'
+              - 'for: implemented'
+              - 'callLLMEnhanced: implemented'
+              - 'for: implemented'
+              - 'analyzeLLMInput: implemented'
+            fossilized_output: false
     utils:
       path: src/utils
       files:
+        - llmFossilManager.ts:
+            functions:
+              - 'LLMFossilManager: implemented'
+              - 'for: implemented'
+              - 'createLLMFossilManager: implemented'
+            fossilized_output: false
         - fossilIssue.ts:
             functions:
               - 'IssueBodyFileManager: implemented'
@@ -549,6 +567,34 @@ project_status:
             functions:
               - 'roadmapToMarkdown: implemented'
             fossilized_output: false
+        - visualDiagramGenerator.ts:
+            functions:
+              - 'generateWorkflowDiagram: implemented'
+              - 'generateArchitectureDiagram: implemented'
+              - 'generateDependencyDiagram: implemented'
+              - 'generateRiskDiagram: implemented'
+              - 'generateSequenceDiagram: implemented'
+              - 'generateProgressDiagram: implemented'
+              - 'generateSystemOverviewDiagram: implemented'
+              - 'generateDecisionTreeDiagram: implemented'
+              - 'generateVisualIssueBody: implemented'
+              - 'generateVisualFossilPublication: implemented'
+              - 'shouldIncludeVisuals: implemented'
+              - 'extractVisualContext: implemented'
+            fossilized_output: false
+        - llmInputValidator.ts:
+            functions:
+              - 'LLMInputValidator: implemented'
+              - 'for: implemented'
+              - 'validateLLMInput: implemented'
+              - 'for: implemented'
+              - 'preprocessLLMInput: implemented'
+              - 'for: implemented'
+              - 'analyzeLLMContentQuality: implemented'
+            fossilized_output: false
+            tests: &ref_27
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/utils/llmInputValidator.test.ts
         - githubFossilManager.ts:
             functions:
               - 'GitHubFossilManager: implemented'
@@ -573,7 +619,7 @@ project_status:
               - 'createServiceResponse: implemented'
               - 'issueExists: implemented'
             fossilized_output: false
-            tests: &ref_27
+            tests: &ref_28
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/llm-plan.test.ts
               - >-
@@ -603,7 +649,7 @@ project_status:
               - 'checklistToMarkdown: implemented'
               - 'metadataToMarkdown: implemented'
             fossilized_output: false
-            tests: &ref_28
+            tests: &ref_29
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/utils/markdownChecklist.test.ts
         - yamlToJson.ts:
@@ -633,7 +679,7 @@ project_status:
               - 'fossilizeLLMBenchmark: implemented'
               - 'fossilizeLLMDiscovery: implemented'
             fossilized_output: true
-            tests: &ref_29
+            tests: &ref_30
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/utils/fossilize.test.ts
               - >-
@@ -644,6 +690,11 @@ project_status:
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/repo-orchestrator-fossilization.integration.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/fossilization-workflow.e2e.test.ts
+        - typeSchemaValidator.ts:
+            functions:
+              - 'TypeSchemaValidator: implemented'
+              - 'runTypeSchemaValidation: implemented'
+            fossilized_output: false
         - timestampFilter.ts:
             functions:
               - 'TimestampFilter: implemented'
@@ -664,7 +715,7 @@ project_status:
               - 'parseChecklistUpdates: implemented'
               - 'generateUpdateReport: implemented'
             fossilized_output: false
-            tests: &ref_30
+            tests: &ref_31
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/utils/checklistUpdater.test.ts
         - githubCliCommands.ts:
@@ -708,7 +759,10 @@ project_status:
       path: src/types
       files:
         - llmFossil.ts:
-            functions: []
+            functions:
+              - 'createLLMValidationFossil: implemented'
+              - 'createLLMErrorPreventionFossil: implemented'
+              - 'createLLMQualityMetricsFossil: implemented'
             fossilized_output: false
             tests:
               - >-
@@ -795,6 +849,8 @@ project_status:
             tests:
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/types/index.test.ts
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/utils/llmInputValidator.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/llm-plan.test.ts
               - >-
@@ -975,10 +1031,20 @@ project_status:
               - 'collectCompletedTasks: implemented'
               - 'main: implemented'
             fossilized_output: false
+        - precommit-validate.ts:
+            functions:
+              - 'has: implemented'
+              - 'to: implemented'
+              - 'determineSchemaForFile: implemented'
+            fossilized_output: false
         - generate-llm-insights.ts:
             functions:
               - 'isPlaceholder: implemented'
               - 'generateLLMInsight: implemented'
+              - 'main: implemented'
+            fossilized_output: false
+        - validate-types-schemas.ts:
+            functions:
               - 'main: implemented'
             fossilized_output: false
         - llm-issue-manager.sh:
@@ -1380,6 +1446,13 @@ developer_summary:
       hasTests: true
       testFiles: *ref_25
   utils:
+    - file: src/utils/llmFossilManager.ts
+      functions:
+        - LLMFossilManager
+        - for
+        - createLLMFossilManager
+      hasTests: false
+      testFiles: []
     - file: src/utils/fossilIssue.ts
       functions:
         - IssueBodyFileManager
@@ -1409,6 +1482,33 @@ developer_summary:
         - roadmapToMarkdown
       hasTests: false
       testFiles: []
+    - file: src/utils/visualDiagramGenerator.ts
+      functions:
+        - generateWorkflowDiagram
+        - generateArchitectureDiagram
+        - generateDependencyDiagram
+        - generateRiskDiagram
+        - generateSequenceDiagram
+        - generateProgressDiagram
+        - generateSystemOverviewDiagram
+        - generateDecisionTreeDiagram
+        - generateVisualIssueBody
+        - generateVisualFossilPublication
+        - shouldIncludeVisuals
+        - extractVisualContext
+      hasTests: false
+      testFiles: []
+    - file: src/utils/llmInputValidator.ts
+      functions:
+        - LLMInputValidator
+        - for
+        - validateLLMInput
+        - for
+        - preprocessLLMInput
+        - for
+        - analyzeLLMContentQuality
+      hasTests: true
+      testFiles: *ref_27
     - file: src/utils/githubFossilManager.ts
       functions:
         - GitHubFossilManager
@@ -1436,7 +1536,7 @@ developer_summary:
         - createServiceResponse
         - issueExists
       hasTests: true
-      testFiles: *ref_27
+      testFiles: *ref_28
     - file: src/utils/gitDiffAnalyzer.ts
       functions:
         - GitDiffAnalyzer
@@ -1449,7 +1549,7 @@ developer_summary:
         - checklistToMarkdown
         - metadataToMarkdown
       hasTests: true
-      testFiles: *ref_28
+      testFiles: *ref_29
     - file: src/utils/yamlToJson.ts
       functions:
         - yamlToJson
@@ -1479,7 +1579,13 @@ developer_summary:
         - fossilizeLLMBenchmark
         - fossilizeLLMDiscovery
       hasTests: true
-      testFiles: *ref_29
+      testFiles: *ref_30
+    - file: src/utils/typeSchemaValidator.ts
+      functions:
+        - TypeSchemaValidator
+        - runTypeSchemaValidation
+      hasTests: false
+      testFiles: []
     - file: src/utils/timestampFilter.ts
       functions:
         - TimestampFilter
@@ -1501,7 +1607,7 @@ developer_summary:
         - parseChecklistUpdates
         - generateUpdateReport
       hasTests: true
-      testFiles: *ref_30
+      testFiles: *ref_31
     - file: src/utils/githubCliCommands.ts
       functions:
         - GitHubCLICommands
@@ -1527,36 +1633,49 @@ developer_summary:
       functions:
         - SemanticTaggerService
       hasTests: true
-      testFiles: *ref_31
+      testFiles: *ref_32
     - file: src/services/github.ts
       functions:
         - for
         - GitHubService
         - loadAndFillAutomationTemplate
       hasTests: true
-      testFiles: *ref_32
+      testFiles: *ref_33
     - file: src/services/llm.ts
       functions:
         - LLMService
         - callOpenAIChat
       hasTests: true
-      testFiles: *ref_33
+      testFiles: *ref_34
+    - file: src/services/llmEnhanced.ts
+      functions:
+        - EnhancedLLMService
+        - for
+        - createEnhancedLLMService
+        - for
+        - callLLMEnhanced
+        - for
+        - analyzeLLMInput
+      hasTests: false
+      testFiles: []
   examples: []
   summary:
     totalCLI: 21
-    totalUtils: 18
-    totalServices: 3
+    totalUtils: 22
+    totalServices: 4
     totalExamples: 0
     testedCLI: 10
-    testedUtils: 5
+    testedUtils: 6
     testedServices: 3
-    coverage: 43
+    coverage: 40
   recommendations:
     - 'Priority 1: Test CLI commands'
     - '- src/cli/create-fossil-issue.ts (0 commands)'
     - '- src/cli/llm-execute.ts (0 commands)'
     - '- src/cli/track-progress.ts (2 commands)'
     - 'Priority 2: Test utility functions'
+    - '- src/utils/llmFossilManager.ts (3 functions)'
     - '- src/utils/syncTracker.ts (9 functions)'
     - '- src/utils/roadmapToMarkdown.ts (1 functions)'
-    - '- src/utils/githubFossilManager.ts (1 functions)'
+    - 'Priority 3: Test services'
+    - '- src/services/llmEnhanced.ts (7 functions)'

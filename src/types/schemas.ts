@@ -5,6 +5,117 @@ import { z, ZodError } from 'zod';
 export { ZodError };
 export { z };
 
+// ============================================================================
+// FOSSIL MANAGER SCHEMAS (moved from src/utils/fossilManager.ts)
+// ============================================================================
+
+export const BaseFossilParamsSchema = z.object({
+  owner: z.string().min(1),
+  repo: z.string().min(1),
+  type: z.string().min(1),
+  tags: z.array(z.string()).default([]),
+  metadata: z.record(z.any()).default({}),
+  dryRun: z.boolean().default(false),
+  verbose: z.boolean().default(false),
+});
+
+export const IssueFossilParamsSchema = BaseFossilParamsSchema.extend({
+  title: z.string().min(1).max(256),
+  body: z.string().optional(),
+  labels: z.array(z.string()).default([]),
+  milestone: z.string().optional(),
+  section: z.string().optional(),
+  purpose: z.string().optional(),
+  checklist: z.string().optional(),
+  automationMetadata: z.string().optional(),
+  extraBody: z.string().optional(),
+});
+
+export const LabelFossilParamsSchema = BaseFossilParamsSchema.extend({
+  name: z.string().min(1).max(50),
+  description: z.string().max(100),
+  color: z.string().regex(/^[0-9a-fA-F]{6}$/),
+});
+
+export const MilestoneFossilParamsSchema = BaseFossilParamsSchema.extend({
+  title: z.string().min(1).max(100),
+  description: z.string().max(200),
+  dueOn: z.string().optional(),
+});
+
+// ============================================================================
+// LLM INPUT VALIDATOR SCHEMAS (moved from src/utils/llmInputValidator.ts)
+// ============================================================================
+
+export const MessageSchema = z.object({
+  role: z.enum(['system', 'user', 'assistant']),
+  content: z.string().min(1),
+});
+
+export const LLMInputSchema = z.object({
+  model: z.string().min(1, 'Model name is required'),
+  messages: z.array(MessageSchema).min(1, 'At least one message is required'),
+  temperature: z.number().min(0).max(2).optional(),
+  max_tokens: z.number().positive().optional(),
+  top_p: z.number().min(0).max(1).optional(),
+  frequency_penalty: z.number().min(-2).max(2).optional(),
+  presence_penalty: z.number().min(-2).max(2).optional(),
+  stop: z.union([z.string(), z.array(z.string())]).optional(),
+  logit_bias: z.record(z.number()).optional(),
+  user: z.string().optional(),
+  n: z.number().positive().optional(),
+  stream: z.boolean().optional(),
+  suffix: z.string().optional(),
+  echo: z.boolean().optional(),
+  logprobs: z.number().min(0).max(5).optional(),
+  best_of: z.number().positive().optional(),
+});
+
+// ============================================================================
+// LLM FOSSIL MANAGER SCHEMAS (moved from src/utils/llmFossilManager.ts)
+// ============================================================================
+
+export const LLMFossilManagerParamsSchema = z.object({
+  owner: z.string().min(1, 'Repository owner is required'),
+  repo: z.string().min(1, 'Repository name is required'),
+  commitRef: z.string().optional(),
+  sessionId: z.string().optional(),
+  fossilStoragePath: z.string().default('fossils/llm_insights/'),
+  enableAutoFossilization: z.boolean().default(true),
+  enableQualityMetrics: z.boolean().default(true),
+  enableValidationTracking: z.boolean().default(true)
+});
+
+// ============================================================================
+// VISUAL DIAGRAM GENERATOR SCHEMAS (moved from src/utils/visualDiagramGenerator.ts)
+// ============================================================================
+
+export const WorkflowStepSchema = z.object({
+  step: z.string(),
+  description: z.string().optional(),
+  type: z.enum(['start', 'process', 'decision', 'end']).default('process'),
+  style: z.string().optional(),
+});
+
+export const ComponentSchema = z.object({
+  name: z.string(),
+  items: z.array(z.string()),
+  style: z.string().optional(),
+});
+
+export const RiskSchema = z.object({
+  risk: z.string(),
+  impact: z.enum(['low', 'medium', 'high', 'critical']),
+  probability: z.enum(['low', 'medium', 'high']),
+  mitigation: z.string(),
+});
+
+export const DependencySchema = z.object({
+  name: z.string(),
+  type: z.enum(['blocking', 'dependent', 'related']),
+  description: z.string().optional(),
+});
+
 // CLI Schemas
 // Used in: docs/TYPE_AND_SCHEMA_PATTERNS.md
 export const BaseCLIArgsSchema = z.object({
@@ -240,12 +351,6 @@ export const MilestoneSchema = z.object({
   id: z.string(),
   title: z.string(),
   dueDate: z.string().optional(),
-});
-export const RiskSchema = z.object({
-  id: z.string(),
-  description: z.string(),
-  likelihood: z.string(),
-  impact: z.string(),
 });
 export const TimelineSchema = z.object({
   start: z.string(),
