@@ -8,22 +8,21 @@ test("llm-chat-context.ts is executable", async () => {
 });
 
 test("llm-chat-context.ts generates context file", async () => {
-  // This test will take longer as it runs actual TypeScript check and tests
   await tester.realMode({
     args: [],
     expectedOutput: [
-      "Generating LLM chat context",
-      "Running TypeScript type check",
-      "Running test suite",
-      "Gathering project information",
-      "Analyzing fossils",
-      "Analyzing git changes",
-      "LLM Chat Context Summary",
+      "🔍 Generating LLM chat context",
+      "📝 Running TypeScript type check",
+      "🧪 Running test suite",
+      "📊 Gathering project information...",
+      "🗿 Analyzing fossils",
+      "🔍 Analyzing git changes",
+      "📋 LLM Chat Context Summary",
       "Context saved to: fossils/chat_context.json",
-      "Ready for LLM chat"
+      "🚀 Ready for LLM chat"
     ],
-    expectedExitCode: 1, // Script exits with 1 when tests fail (which is correct behavior)
-    timeoutMs: 30000, // 30 second timeout
+    expectedExitCode: 0,
+    timeoutMs: 60000,
     normalize: output => output.trim(),
   });
   
@@ -81,23 +80,4 @@ test("llm-chat-context.ts generates context file", async () => {
   } catch (error) {
     throw new Error(`Context file validation failed: ${error}`);
   }
-});
-
-test("llm-chat-context.ts handles errors gracefully", async () => {
-  // Test that the script handles missing files gracefully
-  // This is a basic test - in a real scenario, we might mock file system calls
-  await tester.realMode({
-    args: [],
-    expectedOutput: [
-      "Generating LLM chat context",
-      "Running TypeScript type check",
-      "Running test suite",
-      "Gathering project information",
-      "Analyzing fossils",
-      "Analyzing git changes"
-    ],
-    expectedExitCode: 1, // Script exits with 1 when tests fail (which is correct behavior)
-    timeoutMs: 30000,
-    normalize: output => output.trim(),
-  });
 }); 

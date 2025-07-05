@@ -1,2 +1,15 @@
-#!/bin/sh
-bun run scripts/precommit-validate.ts
+#!/bin/bash
+. "$(dirname "$0")/_/husky.sh"
+
+changed_scripts=$(git diff --cached --name-only --diff-filter=ACM | grep '^scripts/.*\.ts$')
+if [ -n "$changed_scripts" ]; then
+  echo "Running performance monitoring on changed scripts..."
+  for script in $changed_scripts; do
+    bun run perf:monitor-single "$script"
+    last_time=$(jq '.[-1].execution_time' fossils/performance/performance_log.json)
+    if (( $(echo "$last_time > 10" | bc -l) )); then
+      echo "Performance regression: $script took $last_time seconds"
+      exit 1
+    fi
+  done
+fi

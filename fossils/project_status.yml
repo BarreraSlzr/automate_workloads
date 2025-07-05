@@ -32,7 +32,7 @@ project_status:
               - name: roadmap
                 options: *ref_0
                 required: *ref_1
-            tests: &ref_16
+            tests: &ref_18
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/scripts.e2e.test.ts
         - create-fossil-issue.ts:
@@ -43,7 +43,7 @@ project_status:
             functions: []
             fossilized_output: false
             cli_details: []
-            tests: &ref_17
+            tests: &ref_19
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/examples.e2e.test.ts
         - llm-execute.ts:
@@ -80,7 +80,7 @@ project_status:
               - 'runIssuesCreate: implemented'
             fossilized_output: false
             cli_details: []
-            tests: &ref_18
+            tests: &ref_20
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/issues-create.test.ts
         - github-issues.ts:
@@ -90,7 +90,7 @@ project_status:
               - 'main: implemented'
             fossilized_output: false
             cli_details: []
-            tests: &ref_19
+            tests: &ref_21
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-issues.integration.test.ts
         - issues-fossilize.ts:
@@ -187,7 +187,7 @@ project_status:
               - name: list
                 options: *ref_4
                 required: *ref_5
-            tests: &ref_20
+            tests: &ref_22
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/issues-create.test.ts
         - llm-plan.ts:
@@ -234,7 +234,7 @@ project_status:
               - name: review-comments
                 options: *ref_6
                 required: *ref_7
-            tests: &ref_21
+            tests: &ref_23
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/llm-plan.test.ts
               - >-
@@ -308,7 +308,7 @@ project_status:
               - name: analyze-patterns
                 options: *ref_8
                 required: *ref_9
-            tests: &ref_22
+            tests: &ref_24
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/services/llm.test.ts
         - llm-analyze.ts:
@@ -348,6 +348,46 @@ project_status:
               - name: create-expected
                 options: *ref_10
                 required: *ref_11
+        - performance-monitor.ts:
+            functions:
+              - 'PerformanceMonitorCLI: implemented'
+            fossilized_output: false
+            cli_commands:
+              - 'batch: implemented'
+              - 'summary: implemented'
+              - 'report: implemented'
+              - 'insights: implemented'
+              - 'clean: implemented'
+              - 'list: implemented'
+            cli_details:
+              - name: batch
+                options: &ref_12
+                  - '-v, --verbose'
+                  - '--log-dir <dir>'
+                  - '--log-file <file>'
+                  - '--summary-file <file>'
+                  - '--report-file <file>'
+                  - '--timeout <ms>'
+                  - '--capture-output'
+                required: &ref_13 []
+              - name: summary
+                options: *ref_12
+                required: *ref_13
+              - name: report
+                options: *ref_12
+                required: *ref_13
+              - name: insights
+                options: *ref_12
+                required: *ref_13
+              - name: clean
+                options: *ref_12
+                required: *ref_13
+              - name: list
+                options: *ref_12
+                required: *ref_13
+            tests: &ref_25
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/performance-monitor.test.ts
         - analyze-git-diff.ts:
             functions:
               - 'showHelp: implemented'
@@ -364,7 +404,7 @@ project_status:
               - 'validate: implemented'
             cli_details:
               - name: create
-                options: &ref_12
+                options: &ref_14
                   - '--create-labels'
                   - '--create-milestones'
                   - '--create-issues'
@@ -373,15 +413,15 @@ project_status:
                   - '--verbose'
                   - '--test'
                   - '--verbose'
-                required: &ref_13
+                required: &ref_15
                   - '--owner <owner>'
                   - '--repo <repo>'
                   - '--roadmap <path>'
                   - '--roadmap <path>'
               - name: validate
-                options: *ref_12
-                required: *ref_13
-            tests: &ref_23
+                options: *ref_14
+                required: *ref_15
+            tests: &ref_26
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/github-fossil-automation.integration.test.ts
         - ensure-demo-issue.ts:
@@ -401,7 +441,7 @@ project_status:
                   - '-o, --output <file>'
                   - '-s, --synthesize'
                 required: []
-            tests: &ref_24
+            tests: &ref_27
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/gather-context.integration.test.ts
         - sync-tracker.ts:
@@ -431,7 +471,7 @@ project_status:
               - 'fossilize: implemented'
             cli_details:
               - name: orchestrate
-                options: &ref_14
+                options: &ref_16
                   - '-b, --branch <branch>'
                   - '-w, --workflow <workflow>'
                   - '-c, --context <context>'
@@ -446,14 +486,14 @@ project_status:
                   - '--no-fossilize'
                   - '--test'
                   - '--mock'
-                required: &ref_15 []
+                required: &ref_17 []
               - name: analyze
-                options: *ref_14
-                required: *ref_15
+                options: *ref_16
+                required: *ref_17
               - name: fossilize
-                options: *ref_14
-                required: *ref_15
-            tests: &ref_25
+                options: *ref_16
+                required: *ref_17
+            tests: &ref_28
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/repo-orchestrator.test.ts
     services:
@@ -463,7 +503,7 @@ project_status:
             functions:
               - 'SemanticTaggerService: implemented'
             fossilized_output: false
-            tests: &ref_32
+            tests: &ref_35
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/services/semantic-tagger.test.ts
         - github.ts:
@@ -472,7 +512,7 @@ project_status:
               - 'GitHubService: implemented'
               - 'loadAndFillAutomationTemplate: implemented'
             fossilized_output: false
-            tests: &ref_33
+            tests: &ref_36
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/types/index.test.ts
               - >-
@@ -496,7 +536,9 @@ project_status:
               - 'LLMService: implemented'
               - 'callOpenAIChat: implemented'
             fossilized_output: false
-            tests: &ref_34
+            tests: &ref_37
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/types/schemas.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/types/index.test.ts
               - >-
@@ -562,6 +604,11 @@ project_status:
               - 'for: implemented'
               - 'createLLMFossilManager: implemented'
             fossilized_output: false
+        - performanceMonitor.ts:
+            functions:
+              - 'PerformanceMonitor: implemented'
+              - 'runPerformanceMonitorCLI: implemented'
+            fossilized_output: false
         - roadmapInsightsExtractor.ts:
             functions:
               - 'generateTaskId: implemented'
@@ -581,7 +628,7 @@ project_status:
               - 'generateAutomationIssueBody: implemented'
               - 'createFossilIssue: implemented'
             fossilized_output: false
-            tests: &ref_26
+            tests: &ref_29
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/issues-create.test.ts
         - syncTracker.ts:
@@ -625,7 +672,7 @@ project_status:
               - 'for: implemented'
               - 'analyzeLLMContentQuality: implemented'
             fossilized_output: false
-            tests: &ref_27
+            tests: &ref_30
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/utils/llmInputValidator.test.ts
         - githubFossilManager.ts:
@@ -652,7 +699,7 @@ project_status:
               - 'createServiceResponse: implemented'
               - 'issueExists: implemented'
             fossilized_output: false
-            tests: &ref_28
+            tests: &ref_31
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/cli/llm-plan.test.ts
               - >-
@@ -682,7 +729,7 @@ project_status:
               - 'checklistToMarkdown: implemented'
               - 'metadataToMarkdown: implemented'
             fossilized_output: false
-            tests: &ref_29
+            tests: &ref_32
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/utils/markdownChecklist.test.ts
         - yamlToJson.ts:
@@ -712,7 +759,7 @@ project_status:
               - 'fossilizeLLMBenchmark: implemented'
               - 'fossilizeLLMDiscovery: implemented'
             fossilized_output: true
-            tests: &ref_30
+            tests: &ref_33
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/utils/fossilize.test.ts
               - >-
@@ -723,6 +770,11 @@ project_status:
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/repo-orchestrator-fossilization.integration.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/fossilization-workflow.e2e.test.ts
+        - performanceTracker.ts:
+            functions:
+              - 'PerformanceTracker: implemented'
+              - 'runPerformanceTrackerCLI: implemented'
+            fossilized_output: false
         - typeSchemaValidator.ts:
             functions:
               - 'TypeSchemaValidator: implemented'
@@ -748,7 +800,7 @@ project_status:
               - 'parseChecklistUpdates: implemented'
               - 'generateUpdateReport: implemented'
             fossilized_output: false
-            tests: &ref_31
+            tests: &ref_34
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/utils/checklistUpdater.test.ts
         - githubCliCommands.ts:
@@ -799,6 +851,8 @@ project_status:
             fossilized_output: false
             tests:
               - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/types/schemas.test.ts
+              - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/llm-fossilization.integration.test.ts
         - external.ts:
             functions: []
@@ -833,6 +887,8 @@ project_status:
             fossilized_output: false
             tests:
               - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/types/schemas.test.ts
+              - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/core/config.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-workflow.test.ts
@@ -848,6 +904,8 @@ project_status:
             functions: []
             fossilized_output: false
             tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/types/schemas.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/integration/transversal-fossil-github-sync.integration.test.ts
               - >-
@@ -879,10 +937,15 @@ project_status:
         - schemas.ts:
             functions: []
             fossilized_output: true
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/types/schemas.test.ts
         - llm.ts:
             functions: []
             fossilized_output: false
             tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/types/schemas.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/types/index.test.ts
               - >-
@@ -911,6 +974,8 @@ project_status:
             functions: []
             fossilized_output: false
             tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/types/schemas.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/core/config.test.ts
               - >-
@@ -1041,6 +1106,13 @@ project_status:
             tests:
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/scripts.e2e.test.ts
+        - performance-notifications.sh:
+            functions:
+              - 'with: implemented'
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/performance-notifications.test.ts
         - precommit-llm-insight.ts:
             functions:
               - 'getStagedFiles: implemented'
@@ -1124,6 +1196,13 @@ project_status:
             functions:
               - 'main: implemented'
             fossilized_output: false
+        - performance-monitor.sh:
+            functions:
+              - 'with: implemented'
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/performance-monitor.test.ts
         - validate-fresh-insights.ts:
             functions:
               - 'validateInsight: implemented'
@@ -1239,6 +1318,13 @@ project_status:
             tests:
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/scripts.e2e.test.ts
+        - performance-insights.sh:
+            functions:
+              - 'with: implemented'
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/performance-insights.test.ts
         - fossil-summary-md.ts:
             functions:
               - 'main: implemented'
@@ -1393,7 +1479,7 @@ developer_summary:
         - roadmap
       functions: []
       hasTests: true
-      testFiles: *ref_16
+      testFiles: *ref_18
     - file: src/cli/create-fossil-issue.ts
       commands: []
       functions: []
@@ -1403,7 +1489,7 @@ developer_summary:
       commands: []
       functions: []
       hasTests: true
-      testFiles: *ref_17
+      testFiles: *ref_19
     - file: src/cli/llm-execute.ts
       commands: []
       functions: []
@@ -1428,7 +1514,7 @@ developer_summary:
       functions:
         - runIssuesCreate
       hasTests: true
-      testFiles: *ref_18
+      testFiles: *ref_20
     - file: src/cli/github-issues.ts
       commands: []
       functions:
@@ -1436,7 +1522,7 @@ developer_summary:
         - showHelp
         - main
       hasTests: true
-      testFiles: *ref_19
+      testFiles: *ref_21
     - file: src/cli/issues-fossilize.ts
       commands: []
       functions:
@@ -1465,7 +1551,7 @@ developer_summary:
       functions:
         - ContextFossilService
       hasTests: true
-      testFiles: *ref_20
+      testFiles: *ref_22
     - file: src/cli/llm-plan.ts
       commands:
         - decompose
@@ -1478,7 +1564,7 @@ developer_summary:
         - findShellScripts
         - for
       hasTests: true
-      testFiles: *ref_21
+      testFiles: *ref_23
     - file: src/cli/llm-usage.ts
       commands:
         - report
@@ -1492,7 +1578,7 @@ developer_summary:
       functions:
         - monitorUsage
       hasTests: true
-      testFiles: *ref_22
+      testFiles: *ref_24
     - file: src/cli/llm-analyze.ts
       commands: []
       functions: []
@@ -1506,6 +1592,18 @@ developer_summary:
       functions: []
       hasTests: false
       testFiles: []
+    - file: src/cli/performance-monitor.ts
+      commands:
+        - batch
+        - summary
+        - report
+        - insights
+        - clean
+        - list
+      functions:
+        - PerformanceMonitorCLI
+      hasTests: true
+      testFiles: *ref_25
     - file: src/cli/analyze-git-diff.ts
       commands: []
       functions:
@@ -1521,7 +1619,7 @@ developer_summary:
         - validate
       functions: []
       hasTests: true
-      testFiles: *ref_23
+      testFiles: *ref_26
     - file: src/cli/ensure-demo-issue.ts
       commands: []
       functions:
@@ -1534,7 +1632,7 @@ developer_summary:
       functions:
         - ContextGatheringService
       hasTests: true
-      testFiles: *ref_24
+      testFiles: *ref_27
     - file: src/cli/sync-tracker.ts
       commands:
         - sync-tracker
@@ -1555,7 +1653,7 @@ developer_summary:
         - getInvocation
         - fossilizeEntry
       hasTests: true
-      testFiles: *ref_25
+      testFiles: *ref_28
   utils:
     - file: src/utils/roadmapInsightsAccessor.ts
       functions:
@@ -1587,6 +1685,12 @@ developer_summary:
         - createLLMFossilManager
       hasTests: false
       testFiles: []
+    - file: src/utils/performanceMonitor.ts
+      functions:
+        - PerformanceMonitor
+        - runPerformanceMonitorCLI
+      hasTests: false
+      testFiles: []
     - file: src/utils/roadmapInsightsExtractor.ts
       functions:
         - generateTaskId
@@ -1607,7 +1711,7 @@ developer_summary:
         - generateAutomationIssueBody
         - createFossilIssue
       hasTests: true
-      testFiles: *ref_26
+      testFiles: *ref_29
     - file: src/utils/syncTracker.ts
       functions:
         - runGh
@@ -1652,7 +1756,7 @@ developer_summary:
         - for
         - analyzeLLMContentQuality
       hasTests: true
-      testFiles: *ref_27
+      testFiles: *ref_30
     - file: src/utils/githubFossilManager.ts
       functions:
         - GitHubFossilManager
@@ -1680,7 +1784,7 @@ developer_summary:
         - createServiceResponse
         - issueExists
       hasTests: true
-      testFiles: *ref_28
+      testFiles: *ref_31
     - file: src/utils/gitDiffAnalyzer.ts
       functions:
         - GitDiffAnalyzer
@@ -1693,7 +1797,7 @@ developer_summary:
         - checklistToMarkdown
         - metadataToMarkdown
       hasTests: true
-      testFiles: *ref_29
+      testFiles: *ref_32
     - file: src/utils/yamlToJson.ts
       functions:
         - yamlToJson
@@ -1723,7 +1827,13 @@ developer_summary:
         - fossilizeLLMBenchmark
         - fossilizeLLMDiscovery
       hasTests: true
-      testFiles: *ref_30
+      testFiles: *ref_33
+    - file: src/utils/performanceTracker.ts
+      functions:
+        - PerformanceTracker
+        - runPerformanceTrackerCLI
+      hasTests: false
+      testFiles: []
     - file: src/utils/typeSchemaValidator.ts
       functions:
         - TypeSchemaValidator
@@ -1751,7 +1861,7 @@ developer_summary:
         - parseChecklistUpdates
         - generateUpdateReport
       hasTests: true
-      testFiles: *ref_31
+      testFiles: *ref_34
     - file: src/utils/githubCliCommands.ts
       functions:
         - GitHubCLICommands
@@ -1777,20 +1887,20 @@ developer_summary:
       functions:
         - SemanticTaggerService
       hasTests: true
-      testFiles: *ref_32
+      testFiles: *ref_35
     - file: src/services/github.ts
       functions:
         - for
         - GitHubService
         - loadAndFillAutomationTemplate
       hasTests: true
-      testFiles: *ref_33
+      testFiles: *ref_36
     - file: src/services/llm.ts
       functions:
         - LLMService
         - callOpenAIChat
       hasTests: true
-      testFiles: *ref_34
+      testFiles: *ref_37
     - file: src/services/llmEnhanced.ts
       functions:
         - EnhancedLLMService
@@ -1804,14 +1914,14 @@ developer_summary:
       testFiles: []
   examples: []
   summary:
-    totalCLI: 21
-    totalUtils: 24
+    totalCLI: 22
+    totalUtils: 26
     totalServices: 4
     totalExamples: 0
-    testedCLI: 10
+    testedCLI: 11
     testedUtils: 6
     testedServices: 3
-    coverage: 39
+    coverage: 38
   recommendations:
     - 'Priority 1: Test CLI commands'
     - '- src/cli/create-fossil-issue.ts (0 commands)'
@@ -1820,6 +1930,6 @@ developer_summary:
     - 'Priority 2: Test utility functions'
     - '- src/utils/roadmapInsightsAccessor.ts (19 functions)'
     - '- src/utils/llmFossilManager.ts (3 functions)'
-    - '- src/utils/roadmapInsightsExtractor.ts (6 functions)'
+    - '- src/utils/performanceMonitor.ts (2 functions)'
     - 'Priority 3: Test services'
     - '- src/services/llmEnhanced.ts (7 functions)'

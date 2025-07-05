@@ -1,0 +1,49 @@
+name: Performance Monitoring
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+
+jobs:
+  performance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Type check
+        run: bun run type-check
+
+      - name: Run tests
+        run: bun test
+
+      - name: Run Performance Monitoring (Batch)
+        run: bun run perf:monitor-batch scripts "*.ts"
+
+      - name: Generate Performance Summary
+        run: bun run perf:summary
+
+      - name: Generate Performance Report
+        run: bun run perf:report
+
+      - name: Fail if Any Script Exceeds Threshold
+        run: |
+          summary=$(cat fossils/performance/performance_summary.json)
+          max_time=$(echo "$summary" | jq '.slowest_execution')
+          if (( $(echo "$max_time > 10" | bc -l) )); then
+            echo "A script exceeded the 10s threshold!"
+            exit 1
+          fi
+
+      - name: Upload Performance Fossils
+        uses: actions/upload-artifact@v3
+        with:
+          name: performance-fossils
+          path: fossils/performance/ 

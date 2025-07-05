@@ -6,6 +6,13 @@
 import { execSync, spawnSync } from "child_process";
 import type { ServiceResponse } from "../types";
 
+// TEST VIOLATION: This type should be in src/types/ but is here to test validation
+export interface TestViolationType {
+  name: string;
+  value: number;
+  description: string;
+}
+
 /**
  * Options for executing CLI commands
  */
@@ -125,6 +132,27 @@ export function executeCommandJSON<T>(
     return JSON.parse(result.stdout) as T;
   } catch (error) {
     throw new Error(`Failed to parse JSON output: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
+
+/**
+ * Safely parses JSON with error handling
+ * 
+ * @param {string} jsonString - JSON string to parse
+ * @param {string} context - Context for error messages
+ * @returns {T} Parsed JSON object
+ * @throws {Error} If parsing fails
+ * 
+ * @example
+ * ```typescript
+ * const data = safeParseJSON<MyType>(jsonString, 'package.json');
+ * ```
+ */
+export function safeParseJSON<T>(jsonString: string, context: string = 'JSON'): T {
+  try {
+    return JSON.parse(jsonString) as T;
+  } catch (error) {
+    throw new Error(`Failed to parse ${context}: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
 

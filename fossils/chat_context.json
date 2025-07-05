@@ -1,9 +1,9 @@
 {
-  "timestamp": "2025-07-04T22:34:49-06:00",
+  "timestamp": "2025-07-04T23:44:37-06:00",
   "validation": {
     "typescript": {
       "status": "pass",
-      "duration": 7070
+      "duration": 3869
     },
     "tests": {
       "status": "pass",
@@ -11,7 +11,7 @@
       "passed": 3,
       "failed": 0,
       "skipped": 0,
-      "duration": 10
+      "duration": 12
     }
   },
   "project": {
@@ -19,17 +19,17 @@
     "version": "1.0.0",
     "description": "A comprehensive automation ecosystem integrating GitHub, Twitter, Gmail, Buffer, and Obsidian with Bun and TypeScript",
     "lastCommit": {
-      "hash": "1c197c263bd1450769e3714c4af789e9cf1d4194",
-      "message": "refactor(roadmap): remove LLM insights and streamline roadmap structure",
+      "hash": "ba43c21e56e6c3f70e4ffbd97757c8f1c0a270d2",
+      "message": "chore(analysis): add git diff analysis and LLM usage logs",
       "author": "Emmanuel Barrera Salazar (BarreraSlzr)",
-      "date": "2025-07-04 19:25:25 -0600"
+      "date": "2025-07-04 22:36:31 -0600"
     },
     "recentChanges": [
-      "refactor(roadmap): remove LLM insights and streamline roadmap structure",
-      "docs(examples): add advanced LLM, fossilization, and roadmap insight documentation and utilities",
-      "feat(fossil): enhance fossil and roadmap automation, update LLM fossil types",
-      "feat(validation): add comprehensive type and schema validation system",
-      "feat: improve LLM insights in roadmap with comprehensive analysis framework"
+      "chore(analysis): add git diff analysis and LLM usage logs",
+      "feat(fossils): update roadmap and insights with new architecture",
+      "docs(guides): update API reference and development guide",
+      "docs(migration): add comprehensive LLM insights migration documentation",
+      "refactor(scripts): update roadmap insights scripts for new architecture"
     ],
     "openIssues": 30,
     "pendingTasks": 203
@@ -48,22 +48,20 @@
       "summary": "No unstaged changes"
     },
     "untracked": [
-      ".llm-usage-log.json",
-      "diff-analysis.json",
-      "docs/ROADMAP_LLM_INSIGHTS_MIGRATION.md",
-      "docs/ROADMAP_LLM_INSIGHTS_MIGRATION_SUMMARY.md",
-      "fossils/backups/roadmap_with_llm_insights_2025-07-04T18-35-18-06-00.yml",
-      "fossils/chat_context.json",
-      "fossils/roadmap_insights/FRESH_INSIGHTS_GENERATION_SUMMARY.md",
-      "fossils/roadmap_insights/roadmap_insights_report.md",
-      "fossils/roadmap_insights/roadmap_insights_summary.json",
-      "fossils/roadmap_insights_validation.json",
-      "scripts/analyze-roadmap-llm-insights.ts",
-      "scripts/generate-fresh-llm-insights-simple.ts",
-      "scripts/generate-fresh-llm-insights.ts",
-      "scripts/remove-llm-insights-from-roadmap.ts",
-      "scripts/validate-fresh-insights.ts",
-      "src/utils/roadmapInsightsAccessor.ts"
+      ".github/workflows/performance-monitoring.yml",
+      ".github/workflows/performance-tracking.yml",
+      "docs/PERFORMANCE_MONITORING_GUIDE.md",
+      "docs/PERFORMANCE_TRACEABILITY_GUIDE.md",
+      "fossils/performance/performance_data.json",
+      "scripts/performance-insights.sh",
+      "scripts/performance-monitor.sh",
+      "scripts/performance-notifications.sh",
+      "src/cli/performance-monitor.ts",
+      "src/utils/performanceMonitor.ts",
+      "src/utils/performanceTracker.ts",
+      "tests/unit/scripts/performance-insights.test.ts",
+      "tests/unit/scripts/performance-monitor.test.ts",
+      "tests/unit/scripts/performance-notifications.test.ts"
     ],
     "branch": "master",
     "ahead": 0,
@@ -97,6 +95,6 @@
   "recommendations": [
     "Run \"bun test\" for comprehensive test validation",
     "Consider addressing open issues to reduce technical debt",
-    "Consider adding 16 untracked files to .gitignore or staging them"
+    "Consider adding 14 untracked files to .gitignore or staging them"
   ]
 }

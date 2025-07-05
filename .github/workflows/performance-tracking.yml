@@ -1,0 +1,190 @@
+name: Performance Tracking & Analysis
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [master, main]
+
+jobs:
+  performance-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Full history for comparison
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Run Performance Monitoring
+        run: bun run perf:monitor-batch scripts "*.ts"
+
+      - name: Generate Performance Summary
+        run: bun run perf:summary
+
+      - name: Generate Performance Report
+        run: bun run perf:report
+
+      - name: Analyze Performance Changes
+        run: |
+          # Get current performance data
+          current_summary=$(cat fossils/performance/performance_summary.json)
+          
+          # Get baseline from main branch (if this is a PR)
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            git fetch origin main
+            git checkout origin/main -- fossils/performance/performance_summary.json || echo "{}" > fossils/performance/baseline_summary.json
+            baseline_summary=$(cat fossils/performance/baseline_summary.json)
+          else
+            baseline_summary="{}"
+          fi
+          
+          # Calculate differences
+          current_avg=$(echo "$current_summary" | jq -r '.average_execution_time // 0')
+          baseline_avg=$(echo "$baseline_summary" | jq -r '.average_execution_time // 0')
+          
+          if [ "$baseline_avg" != "0" ] && [ "$baseline_avg" != "null" ]; then
+            change_percent=$(echo "scale=2; ($current_avg - $baseline_avg) / $baseline_avg * 100" | bc -l)
+            echo "PERFORMANCE_CHANGE=$change_percent" >> $GITHUB_ENV
+            echo "BASELINE_AVG=$baseline_avg" >> $GITHUB_ENV
+            echo "CURRENT_AVG=$current_avg" >> $GITHUB_ENV
+          else
+            echo "PERFORMANCE_CHANGE=0" >> $GITHUB_ENV
+            echo "BASELINE_AVG=0" >> $GITHUB_ENV
+            echo "CURRENT_AVG=$current_avg" >> $GITHUB_ENV
+          fi
+
+      - name: Generate Performance Comment
+        if: github.event_name == 'pull_request'
+        run: |
+          current_summary=$(cat fossils/performance/performance_summary.json)
+          current_avg=${{ env.CURRENT_AVG }}
+          baseline_avg=${{ env.BASELINE_AVG }}
+          change_percent=${{ env.PERFORMANCE_CHANGE }}
+          
+          # Create detailed comment
+          cat > performance_comment.md << EOF
+          ## 📊 Performance Analysis Report
+          
+          ### Executive Summary
+          - **Total Scripts Monitored**: $(echo "$current_summary" | jq -r '.total_executions // 0')
+          - **Success Rate**: $(echo "$current_summary" | jq -r '.success_rate // 0 | round')%
+          - **Average Execution Time**: ${current_avg}s
+          
+          ### Performance Changes
+          EOF
+          
+          if [ "$baseline_avg" != "0" ]; then
+            if (( $(echo "$change_percent > 5" | bc -l) )); then
+              echo "⚠️ **Performance Regression Detected**: +${change_percent}% slower than baseline" >> performance_comment.md
+            elif (( $(echo "$change_percent < -5" | bc -l) )); then
+              echo "🚀 **Performance Improvement**: ${change_percent}% faster than baseline" >> performance_comment.md
+            else
+              echo "✅ **Performance Stable**: ${change_percent}% change from baseline" >> performance_comment.md
+            fi
+          else
+            echo "📈 **Baseline Established**: First performance measurement" >> performance_comment.md
+          fi
+          
+          cat >> performance_comment.md << EOF
+          
+          ### Detailed Metrics
+          - **Fastest Script**: $(echo "$current_summary" | jq -r '.fastest_execution // 0')s
+          - **Slowest Script**: $(echo "$current_summary" | jq -r '.slowest_execution // 0')s
+          - **Total Execution Time**: $(echo "$current_summary" | jq -r '.total_execution_time // 0 | round')s
+          
+          ### Script Performance Breakdown
+          $(echo "$current_summary" | jq -r '.script_performance // [] | .[] | "- **\(.script)**: \(.executions) runs, avg \(.average_time | round)s, \(.success_rate | round)% success"' 2>/dev/null || echo "No script data available")
+          
+          ### Recommendations
+          EOF
+          
+          # Add recommendations based on performance data
+          if (( $(echo "$current_avg > 5" | bc -l) )); then
+            echo "- 🔍 Consider profiling slow scripts with \`bun --inspect\`" >> performance_comment.md
+          fi
+          
+          success_rate=$(echo "$current_summary" | jq -r '.success_rate // 0')
+          if (( $(echo "$success_rate < 90" | bc -l) )); then
+            echo "- 🧪 Review failing scripts and improve error handling" >> performance_comment.md
+          fi
+          
+          echo "- 📊 View detailed report in artifacts" >> performance_comment.md
+          echo "- 🔄 Performance data is fossilized for historical tracking" >> performance_comment.md
+          
+          # Post comment to PR
+          gh pr comment ${{ github.event.pull_request.number }} --body-file performance_comment.md
+
+      - name: Check Performance Thresholds
+        run: |
+          summary=$(cat fossils/performance/performance_summary.json)
+          max_time=$(echo "$summary" | jq -r '.slowest_execution // 0')
+          success_rate=$(echo "$summary" | jq -r '.success_rate // 0')
+          
+          # Set thresholds
+          max_time_threshold=15
+          success_rate_threshold=85
+          
+          failed=false
+          
+          if (( $(echo "$max_time > $max_time_threshold" | bc -l) )); then
+            echo "❌ Performance threshold exceeded: slowest script took ${max_time}s (limit: ${max_time_threshold}s)"
+            failed=true
+          fi
+          
+          if (( $(echo "$success_rate < $success_rate_threshold" | bc -l) )); then
+            echo "❌ Success rate threshold not met: ${success_rate}% (minimum: ${success_rate_threshold}%)"
+            failed=true
+          fi
+          
+          if [ "$failed" = true ]; then
+            exit 1
+          fi
+          
+          echo "✅ All performance thresholds met"
+
+      - name: Upload Performance Fossils
+        uses: actions/upload-artifact@v3
+        with:
+          name: performance-fossils-${{ github.sha }}
+          path: fossils/performance/
+          retention-days: 30
+
+      - name: Archive Performance Data
+        run: |
+          # Create timestamped archive
+          timestamp=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
+          mkdir -p fossils/performance/archive
+          cp fossils/performance/*.json fossils/performance/archive/
+          cp fossils/performance/*.md fossils/performance/archive/
+          
+          # Create performance history
+          echo "{\"timestamp\": \"$timestamp\", \"sha\": \"${{ github.sha }}\", \"branch\": \"${{ github.ref_name }}\", \"summary\": $(cat fossils/performance/performance_summary.json)}" >> fossils/performance/performance_history.json
+
+      - name: Generate Performance Trends
+        run: |
+          # Create Mermaid chart for performance trends
+          cat > fossils/performance/performance_trends.md << EOF
+          # Performance Trends
+          
+          Generated on: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          
+          ## Execution Time Trends
+          
+          \`\`\`mermaid
+          graph TD
+              A[Performance History] --> B[Average Execution Time]
+              B --> C[Trend Analysis]
+              C --> D[Regression Detection]
+              C --> E[Improvement Tracking]
+          \`\`\`
+          
+          ## Recent Performance Data
+          
+          $(tail -5 fossils/performance/performance_history.json 2>/dev/null || echo "No historical data available")
+          EOF 
