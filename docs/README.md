@@ -368,7 +368,7 @@ This project is licensed under the MIT License - see the [LICENSE](../LICENSE) f
 ## Integration Testing
 - Integration tests for all major shell scripts are required and included in the `tests/integration/` directory.
 - Integration tests are included in coverage metrics and must be maintained as part of overall test coverage.
-- Pre-commit hooks run all integration tests and block commits if any fail.
+- Pre-commit hooks use a unified validation system that runs comprehensive checks and blocks commits on any failure.
 
 ## Best Practices
 - **Argument Validation:** Always check that required arguments (e.g., owner, repo) are provided and non-empty in scripts.
@@ -381,9 +381,16 @@ bun test tests/integration --coverage
 ```
 
 ## Pre-commit Expectations
-- All integration tests must pass before commit.
-- Coverage metrics include integration tests.
-- New scripts/features must include corresponding integration tests. 
+
+The unified pre-commit system (`bun run precommit:unified`) validates:
+
+- ✅ TypeScript type checking (`bun run tsc --noEmit`)
+- ✅ Schema and pattern validation (`bun run validate:pre-commit`)
+- ✅ Evolving footprint updates (`bun run footprint:evolving --update true`)
+- ✅ Commit message validation (`bun run scripts/commit-message-validator.ts --pre-commit --strict`)
+- ✅ Optional LLM insight generation (`bun run scripts/precommit-llm-insight.ts`)
+
+All validation steps must pass before commits are allowed. 
 
 ## Repository Orchestrator: Unified Planning & Automation
 

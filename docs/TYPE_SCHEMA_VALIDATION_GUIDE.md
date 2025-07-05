@@ -181,6 +181,9 @@ bun run validate:pre-commit
 
 # All validations (types, schemas, pre-commit, type-check)
 bun run validate:all
+
+# Unified pre-commit (recommended)
+bun run precommit:unified
 ```
 
 ### Test Scripts
@@ -215,7 +218,7 @@ To set up pre-commit validation:
 ```bash
 # Add to .git/hooks/pre-commit
 #!/bin/sh
-bun run validate:pre-commit
+bun run precommit:unified
 ```
 
 2. Make it executable:

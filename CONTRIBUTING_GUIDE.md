@@ -6,7 +6,7 @@ A comprehensive guide for contributing to the automation ecosystem that integrat
 - All integration tests are **local** (no `remote-repo` or cross-repo simulation).
 - Integration tests are **required** for all major shell scripts and must be included in `tests/integration/`.
 - Integration tests are included in **coverage metrics** and must be maintained as part of overall test coverage.
-- **Pre-commit hooks** run all integration tests and block commits if any fail or if coverage drops below the expected threshold.
+- **Pre-commit hooks** use a unified validation system that runs comprehensive checks and blocks commits on any failure.
 - **Best practices:**
   - Always validate required arguments in shell scripts.
   - Use timeouts for all external commands (e.g., `gh`, `bun`, `jq`) to prevent hangs.
@@ -17,6 +17,7 @@ A comprehensive guide for contributing to the automation ecosystem that integrat
 - [🎯 LLM-Friendly Documented Goals](#-llm-friendly-documented-goals)
 - [🚀 Quick Start for Contributors](#-quick-start-for-contributors)
 - [🔧 Development Workflow](#-development-workflow)
+- [🔒 Pre-commit Workflow](#-pre-commit-workflow)
 - [🤖 LLM Integration Patterns](#-llm-integration-patterns)
 - [📊 Plan-to-Action Workflow](#-plan-to-action-workflow)
 - [🔄 Automation Scripts](#-automation-scripts)
@@ -198,6 +199,72 @@ bun run dev:setup
 
 # 4. Make your changes
 # ... your code changes ...
+
+---
+
+## 🔒 Pre-commit Workflow
+
+### Unified Pre-commit System
+
+The project uses a **single unified pre-commit entry point** that runs comprehensive validation:
+
+```bash
+bun run precommit:unified
+```
+
+### What the Pre-commit Hook Does
+
+The pre-commit hook (`.husky/pre-commit`) runs the following validation steps in order:
+
+1. **Timestamp Filter Check** - Blocks commits with only timestamp changes
+2. **TypeScript Type Checking** - Validates all TypeScript types (`bun run type-check`)
+3. **Type and Schema Cohesion** - Ensures schema consistency (`bun run validate:types-schemas-cohesion`)
+4. **Linting** - Code style validation (`bun run lint`)
+5. **Test Suite** - Runs all tests (`bun test`)
+6. **Pre-commit Validation** - Comprehensive validation (`bun run validate:pre-commit`)
+7. **Enhanced Commit Message Validation** - Validates commit message format
+8. **Type and Schema Validation** - Strict schema validation
+9. **Fossil/Plan Validation** - Validates JSON fossil and plan files
+10. **Performance Monitoring** - Monitors changed scripts for performance issues
+
+### Optional Steps (Non-blocking)
+
+- **Fossilization** - Saves validation and performance results
+- **LLM Insights** - Generates AI insights for changed files
+- **Fossilization Summary** - Updates fossilization summary
+
+### Manual Pre-commit Testing
+
+You can test the pre-commit workflow manually:
+
+```bash
+# Run the unified pre-commit script
+bun run precommit:unified
+
+# Or run individual validation steps
+bun run type-check
+bun run validate:pre-commit
+bun run footprint:evolving --update true
+```
+
+### Troubleshooting Pre-commit Issues
+
+If pre-commit fails:
+
+1. **Check the error message** - Each step shows clear success/failure indicators
+2. **Run individual steps** - Test each validation step separately
+3. **Fix validation issues** - Address any type, schema, or test failures
+4. **Re-run pre-commit** - Use `bun run precommit:unified` to test again
+
+### Legacy Scripts Removed
+
+All legacy pre-commit scripts have been removed:
+- ❌ `scripts/pre-commit-footprint.sh` (removed)
+- ❌ `scripts/pre-commit-evolving-footprint.sh` (removed)
+- ❌ `footprint:pre-commit` script (removed)
+- ❌ `footprint:evolving:pre-commit` script (removed)
+
+The unified approach provides better consistency, maintainability, and comprehensive validation coverage.
 
 # 5. Test your changes
 bun run test

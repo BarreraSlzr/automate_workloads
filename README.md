@@ -21,8 +21,20 @@ bun test tests/integration --coverage
 ```
 
 ## Pre-commit Workflow
-- Pre-commit hooks will run type-checks, linting (if configured), **all integration tests**, and coverage checks.
-- Commits are blocked if any integration test fails or coverage drops below the expected threshold.
+- Pre-commit hooks use a **single unified entry point** that runs comprehensive validation:
+
+```sh
+bun run precommit:unified
+```
+
+This script performs:
+- ✅ TypeScript type checking (`bun run tsc --noEmit`)
+- ✅ Schema and pattern validation (`bun run validate:pre-commit`)
+- ✅ Evolving footprint updates (`bun run footprint:evolving --update true`)
+- ✅ Commit message validation (`bun run scripts/commit-message-validator.ts --pre-commit --strict`)
+- ✅ Optional LLM insight generation (`bun run scripts/precommit-llm-insight.ts`)
+
+**All legacy pre-commit scripts have been removed and replaced with the unified approach.**
 
 ## Learnings
 - All automation and integration is now local; avoid duplicating or simulating remote-repo structures.
@@ -181,6 +193,9 @@ bun run repo:monitor barreraslzr automate_workloads
 
 # Run the QA workflow
 bun run qa:workflow
+
+# Test the unified pre-commit workflow
+bun run precommit:unified
 
 # Create a new plan (unified orchestrator)
 bun run repo-orchestrator orchestrate <owner> <repo> --workflow plan --plan-mode both --output plan.json
@@ -766,6 +781,9 @@ Below is a sample of available actions. For full details, arguments, and categor
 | test:audit          | Audit        | Run audit shell script                           | `bun run test:audit`                 |
 | ci                  | CI           | Run CI pipeline (unit tests + audit)             | `bun run ci`                         |
 | llm:plan review-comments | LLM | Generate LLM-powered review comments for a PR | `bun run llm:plan review-comments 123` |
+| precommit:unified | Pre-commit | Run unified pre-commit validation | `bun run precommit:unified` |
+| footprint:evolving | Footprint | Update evolving footprint | `bun run footprint:evolving --update true` |
+| footprint:validate | Footprint | Validate footprint files | `bun run footprint:validate` |
 
 See the YAML manifest for the full, up-to-date list and for LLMs to programmatically access all actions.
 
