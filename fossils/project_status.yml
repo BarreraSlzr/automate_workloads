@@ -514,6 +514,8 @@ project_status:
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-issue-manager.test.ts
               - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/llm-chat-context.test.ts
+              - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/services/llm.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/services/semantic-tagger.test.ts
@@ -532,11 +534,42 @@ project_status:
     utils:
       path: src/utils
       files:
+        - roadmapInsightsAccessor.ts:
+            functions:
+              - 'generateTaskId: implemented'
+              - 'loadInsightsCollection: implemented'
+              - 'saveInsightsCollection: implemented'
+              - 'findTaskInsights: implemented'
+              - 'findTaskInsightsByTitle: implemented'
+              - 'getTaskInsights: implemented'
+              - 'getInsightsByStatus: implemented'
+              - 'getInsightsByTag: implemented'
+              - 'getInsightsByOwner: implemented'
+              - 'getInsightsByMilestone: implemented'
+              - 'getHighImpactInsights: implemented'
+              - 'getInsightsWithBlockers: implemented'
+              - 'getCompletedTaskInsights: implemented'
+              - 'getInProgressTaskInsights: implemented'
+              - 'getPlannedTaskInsights: implemented'
+              - 'getPendingTaskInsights: implemented'
+              - 'getInsightsWithDeadlines: implemented'
+              - 'getInsightsByCategory: implemented'
+              - 'getInsightsSummary: implemented'
+            fossilized_output: false
         - llmFossilManager.ts:
             functions:
               - 'LLMFossilManager: implemented'
               - 'for: implemented'
               - 'createLLMFossilManager: implemented'
+            fossilized_output: false
+        - roadmapInsightsExtractor.ts:
+            functions:
+              - 'generateTaskId: implemented'
+              - 'generateFossilId: implemented'
+              - 'createRoadmapInsightsCollection: implemented'
+              - 'createRoadmapInsightsWebPublication: implemented'
+              - 'generateInsightsMarkdownReport: implemented'
+              - 'saveInsightsOutputs: implemented'
             fossilized_output: false
         - fossilIssue.ts:
             functions:
@@ -770,6 +803,9 @@ project_status:
         - external.ts:
             functions: []
             fossilized_output: false
+        - roadmapInsights.ts:
+            functions: []
+            fossilized_output: false
         - github.ts:
             functions: []
             fossilized_output: false
@@ -864,6 +900,8 @@ project_status:
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/automation/llm-issue-manager.test.ts
               - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/llm-chat-context.test.ts
+              - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/services/llm.test.ts
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/services/semantic-tagger.test.ts
@@ -891,6 +929,13 @@ project_status:
     scripts:
       path: scripts
       files:
+        - remove-llm-insights-from-roadmap.ts:
+            functions:
+              - 'removeLLMInsights: implemented'
+              - 'createBackup: implemented'
+              - 'addCleaningMetadata: implemented'
+              - 'main: implemented'
+            fossilized_output: false
         - setup.sh:
             functions: []
             fossilized_output: false
@@ -919,6 +964,28 @@ project_status:
             functions:
               - 'ensureDir: implemented'
               - 'moveFile: implemented'
+            fossilized_output: false
+        - generate-fresh-llm-insights-simple.ts:
+            functions:
+              - 'generateTaskId: implemented'
+              - 'walkTasks: implemented'
+              - 'generateSimpleInsight: implemented'
+              - 'determineCategory: implemented'
+              - 'determineImpact: implemented'
+              - 'generateSummary: implemented'
+              - 'generateBlockers: implemented'
+              - 'generateRecommendations: implemented'
+              - 'generateWebInsights: implemented'
+              - 'main: implemented'
+            fossilized_output: false
+        - analyze-roadmap-llm-insights.ts:
+            functions:
+              - 'generateTaskId: implemented'
+              - 'analyzeTask: implemented'
+              - 'analyzeMilestone: implemented'
+              - 'analyzeOverallProgress: implemented'
+              - 'extractAllTasks: implemented'
+              - 'main: implemented'
             fossilized_output: false
         - migrate-legacy-issues.ts:
             functions:
@@ -1019,6 +1086,14 @@ project_status:
             tests:
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/scripts.e2e.test.ts
+        - generate-fresh-llm-insights.ts:
+            functions:
+              - 'generateTaskId: implemented'
+              - 'walkTasks: implemented'
+              - 'generateLLMInsight: implemented'
+              - 'generateWebInsights: implemented'
+              - 'main: implemented'
+            fossilized_output: false
         - cleanup-fossils.ts:
             functions:
               - 'main: implemented'
@@ -1028,7 +1103,9 @@ project_status:
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/scripts.e2e.test.ts
         - publish-roadmap-insights.ts:
             functions:
-              - 'collectCompletedTasks: implemented'
+              - 'generateBlogPost: implemented'
+              - 'generatePublicAPI: implemented'
+              - 'generateRSSEntry: implemented'
               - 'main: implemented'
             fossilized_output: false
         - precommit-validate.ts:
@@ -1045,6 +1122,20 @@ project_status:
             fossilized_output: false
         - validate-types-schemas.ts:
             functions:
+              - 'main: implemented'
+            fossilized_output: false
+        - validate-fresh-insights.ts:
+            functions:
+              - 'validateInsight: implemented'
+              - 'validateAllInsights: implemented'
+              - 'generateValidationReport: implemented'
+              - 'main: implemented'
+            fossilized_output: false
+        - clean-roadmap-llm-insights.ts:
+            functions:
+              - 'generateFossilId: implemented'
+              - 'cleanTaskInsights: implemented'
+              - 'addCleaningMetadata: implemented'
               - 'main: implemented'
             fossilized_output: false
         - llm-issue-manager.sh:
@@ -1155,6 +1246,20 @@ project_status:
             tests:
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/e2e/scripts.e2e.test.ts
+        - llm-chat-context.ts:
+            functions:
+              - 'runTypeScriptCheck: implemented'
+              - 'runTests: implemented'
+              - 'getProjectInfo: implemented'
+              - 'getFossilsInfo: implemented'
+              - 'getGitChanges: implemented'
+              - 'getEnvironmentInfo: implemented'
+              - 'generateRecommendations: implemented'
+              - 'main: implemented'
+            fossilized_output: false
+            tests:
+              - >-
+                /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/llm-chat-context.test.ts
         - quick-status.sh:
             functions: []
             fossilized_output: false
@@ -1173,6 +1278,12 @@ project_status:
             tests:
               - >-
                 /Users/emmanuelbarrera/Projects/automate_workloads/tests/unit/scripts/monitoring/check-issues.test.ts
+        - extract-roadmap-insights.ts:
+            functions:
+              - 'generateMarkdownReport: implemented'
+              - 'generateJsonSummary: implemented'
+              - 'main: implemented'
+            fossilized_output: false
         - publish-project-status.ts:
             functions:
               - 'main: implemented'
@@ -1446,11 +1557,44 @@ developer_summary:
       hasTests: true
       testFiles: *ref_25
   utils:
+    - file: src/utils/roadmapInsightsAccessor.ts
+      functions:
+        - generateTaskId
+        - loadInsightsCollection
+        - saveInsightsCollection
+        - findTaskInsights
+        - findTaskInsightsByTitle
+        - getTaskInsights
+        - getInsightsByStatus
+        - getInsightsByTag
+        - getInsightsByOwner
+        - getInsightsByMilestone
+        - getHighImpactInsights
+        - getInsightsWithBlockers
+        - getCompletedTaskInsights
+        - getInProgressTaskInsights
+        - getPlannedTaskInsights
+        - getPendingTaskInsights
+        - getInsightsWithDeadlines
+        - getInsightsByCategory
+        - getInsightsSummary
+      hasTests: false
+      testFiles: []
     - file: src/utils/llmFossilManager.ts
       functions:
         - LLMFossilManager
         - for
         - createLLMFossilManager
+      hasTests: false
+      testFiles: []
+    - file: src/utils/roadmapInsightsExtractor.ts
+      functions:
+        - generateTaskId
+        - generateFossilId
+        - createRoadmapInsightsCollection
+        - createRoadmapInsightsWebPublication
+        - generateInsightsMarkdownReport
+        - saveInsightsOutputs
       hasTests: false
       testFiles: []
     - file: src/utils/fossilIssue.ts
@@ -1661,21 +1805,21 @@ developer_summary:
   examples: []
   summary:
     totalCLI: 21
-    totalUtils: 22
+    totalUtils: 24
     totalServices: 4
     totalExamples: 0
     testedCLI: 10
     testedUtils: 6
     testedServices: 3
-    coverage: 40
+    coverage: 39
   recommendations:
     - 'Priority 1: Test CLI commands'
     - '- src/cli/create-fossil-issue.ts (0 commands)'
     - '- src/cli/llm-execute.ts (0 commands)'
     - '- src/cli/track-progress.ts (2 commands)'
     - 'Priority 2: Test utility functions'
+    - '- src/utils/roadmapInsightsAccessor.ts (19 functions)'
     - '- src/utils/llmFossilManager.ts (3 functions)'
-    - '- src/utils/syncTracker.ts (9 functions)'
-    - '- src/utils/roadmapToMarkdown.ts (1 functions)'
+    - '- src/utils/roadmapInsightsExtractor.ts (6 functions)'
     - 'Priority 3: Test services'
     - '- src/services/llmEnhanced.ts (7 functions)'

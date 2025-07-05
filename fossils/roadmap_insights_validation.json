@@ -1,0 +1,2241 @@
+{
+  "generatedAt": "2025-07-04T18:50:44-06:00",
+  "collectionSource": "fossils/roadmap_insights_collection.json",
+  "validation": {
+    "total": 277,
+    "valid": 277,
+    "invalid": 0,
+    "errors": 0,
+    "warnings": 0,
+    "info": 0,
+    "results": [
+      {
+        "taskId": "b229108c2534",
+        "taskTitle": "Project Setup, Onboarding, and Audit Readiness",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "9b628f9fbb32",
+        "taskTitle": "Provide comprehensive setup script and onboarding documentation for local development",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "8003ab04bde7",
+        "taskTitle": "Document and promote setup_status.yml as canonical, programmatic, and auditable project setup fossil",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "5db9b014d805",
+        "taskTitle": "Update integration tests to use real repo",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "3e376a5ceb02",
+        "taskTitle": "Replace all test-owner/test-repo references",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "1fa373b38262",
+        "taskTitle": "Add GitHub CLI auth check",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "450b46a4c2ff",
+        "taskTitle": "Document fossilization workflow",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "bfa1f14e8eef",
+        "taskTitle": "Automate roadmap to GitHub issue/project sync",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "3de279fd40c2",
+        "taskTitle": "Generate Markdown from YAML for GitHub issue body",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "fee5db8b7b7c",
+        "taskTitle": "Create/update issues for each roadmap task",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "386549cacda6",
+        "taskTitle": "Sync milestones with roadmap deadlines",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "f7c593aae578",
+        "taskTitle": "Prototype Gist-based fossilization for account-level fossils",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "09cb6194656d",
+        "taskTitle": "Research Gist API and authentication",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "fc547444839d",
+        "taskTitle": "Implement Gist fossilization utility",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "56a89799b408",
+        "taskTitle": "E2E test for Gist-based fossilization",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "72da31061e29",
+        "taskTitle": "Tag all test-created issues/labels for cleanup",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "5f69e57b1924",
+        "taskTitle": "Add reporting/cleanup scripts for test artifacts",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "1f8b6b373d00",
+        "taskTitle": "Set up script to automatically curate test outputs as fossils",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "80ea65983afb",
+        "taskTitle": "Handle .temp-fossil-content-*.json, .temp-issue-body-*.md, fossils/curated_roadmap_demo_*.json as first-class curated fossils",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "75af6b599d3c",
+        "taskTitle": "Identify all other test output file patterns and locations",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "740448000d3d",
+        "taskTitle": "Audit all test output files and stop writing any that are not used for fossil curation, context gathering, or traceability",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "3b3cb8a793e9",
+        "taskTitle": "Implement script to collect and curate outputs as fossils",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "ec5db30864c0",
+        "taskTitle": "Integrate script into test/CI workflow",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "2538aecefcdf",
+        "taskTitle": "Document the workflow and update onboarding/CONTRIBUTING docs",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "b20db91dbc81",
+        "taskTitle": "Refuse or clean up any output files with timestamped filenames; only allow stable, canonical filenames for curated fossils",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "8a496b580a17",
+        "taskTitle": "Integrate E2E tests into CI pipeline",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "7892d26bb105",
+        "taskTitle": "Save this roadmap as a fossil or issue for LLM/human reference",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "3f8d885f53c0",
+        "taskTitle": "Document all E2E insights, code preferences, and automation patterns",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "06760321e9e0",
+        "taskTitle": "Enforce schema-driven Params and runtime validation in all utilities",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "eccaa48c6702",
+        "taskTitle": "Add PARAMS OBJECT PATTERN docs to cli.ts and CONTRIBUTING_GUIDE.md",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "c986dfc57025",
+        "taskTitle": "Add Zod schema and runtime validation to curateAndCheck",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "3dc397b32132",
+        "taskTitle": "Add Zod schema and runtime validation to createFossilIssue",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "483c9270cb3e",
+        "taskTitle": "Add Zod schema and runtime validation to createFossilLabel",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "bd7e48cbe87f",
+        "taskTitle": "Add Zod schema and runtime validation to createFossilMilestone",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "e7319b6c271b",
+        "taskTitle": "Add Zod schema and runtime validation to toFossilEntry (fossilize.ts)",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "4eb1912fa095",
+        "taskTitle": "Add Zod schema and runtime validation to syncTrackerWithGitHub (syncTracker.ts)",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "8e1dfeb7b6f5",
+        "taskTitle": "Audit and refactor other utilities for Params/schema pattern",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "009b6f65054b",
+        "taskTitle": "Refactor all CLI/scripts/examples to use new Params types",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "b881d0bcda92",
+        "taskTitle": "Add/extend unit tests for runtime validation (invalid/valid params)",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "2af6e2345d8f",
+        "taskTitle": "Add/extend integration/E2E tests for CLI/scripts",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "92d5dea61c91",
+        "taskTitle": "Document the pattern in code comments and onboarding docs",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "04945d65dc67",
+        "taskTitle": "Audit and enforce schema-driven, object params pattern in all utilities",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "f56a4cb458b1",
+        "taskTitle": "Centralize all schemas in src/types/schemas.ts",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "64e144153c75",
+        "taskTitle": "Refactor all CLI/scripts/examples to use new Params types",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "21f87d83941b",
+        "taskTitle": "Add/extend unit and E2E tests for runtime validation",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "150dc2fa11e3",
+        "taskTitle": "Document the pattern in code comments and onboarding docs",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "b96928debd38",
+        "taskTitle": "Canonical fossilization of roadmap.yml and project_status.yml",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "27d4c60e0cde",
+        "taskTitle": "Validate current roadmap.yml and project_status.yml for schema and completeness",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "f72551dfb4d2",
+        "taskTitle": "Move roadmap.yml and project_status.yml to fossils/ (use mv, not cp)",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "4dc9215a4248",
+        "taskTitle": "Update fossils/README.md and add doc comments to the YAMLs",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "9512e8b030ea",
+        "taskTitle": "Update all scripts, tests, and CI to use fossils/roadmap.yml and fossils/project_status.yml",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "d427dfca4362",
+        "taskTitle": "Remove or archive demo/test fossils (curated_roadmap_demo_*.json)",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "42512267ce6e",
+        "taskTitle": "Mark this transition as done in roadmap.yml",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "97f58c12d589",
+        "taskTitle": "Validate the new fossils in CI/E2E",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "b0e02d8e1ffb",
+        "taskTitle": "Update onboarding docs and recommendations as needed",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "acd0e1e4174c",
+        "taskTitle": "Scaffold E2E tests for fossilization and LLM insights workflow",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "9b960479240c",
+        "taskTitle": "Define YAML schema and validation rules for both fossils",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "43010c6cb0f8",
+        "taskTitle": "Implement E2E test to check schema and required fields",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "7f288b8aec3d",
+        "taskTitle": "Add test to assert minimum coverage and fossilization thresholds",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "480ca2b7f4ae",
+        "taskTitle": "Add regression test to compare current and previous fossils",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "28171fa7ae3b",
+        "taskTitle": "Integrate LLM insights validation (presence, format, actionable content)",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "26a961e967e3",
+        "taskTitle": "Document E2E workflow and update onboarding/CONTRIBUTING docs",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "3a4b402f0d09",
+        "taskTitle": "Handle OpenAI API rate limit errors (429) in all LLM utilities",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "4848f5671471",
+        "taskTitle": "Implement retry and backoff in callOpenAIChat",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "d4eae6176c3d",
+        "taskTitle": "Add user-facing error messages and delay notifications in CLI/scripts",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "d9dece7779b6",
+        "taskTitle": "Update all consumers (SemanticTaggerService, LLMPlanningService, scripts) to handle rate limits gracefully",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "919dbf79f231",
+        "taskTitle": "Add/extend tests for rate limit scenarios",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "9d59dcb2ccf9",
+        "taskTitle": "Refactor test to only write curated fossil outputs",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "5ed0c67fa0dd",
+        "taskTitle": "Identify a test that writes .temp-fossil-content-*.json or .temp-issue-body-*.md",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "0de099426e20",
+        "taskTitle": "Update the test to only write output if it is a curated fossil or referenced artifact",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "92b460c05659",
+        "taskTitle": "Verify the test and output comply with the new policy",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "9d174a62a090",
+        "taskTitle": "Ensure no timestamped or mock/demo files are written to the repo; only stable, canonical filenames are used",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "2e96756998fb",
+        "taskTitle": "Enhance local LLM support for automation ecosystem",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "e89d7f6a853f",
+        "taskTitle": "Implement happy-path local LLM integration and testing (Ollama-first, extensible)",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "b85f049a344e",
+        "taskTitle": "Create LocalLLMService abstraction with pluggable backend support",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "8583f8e3494c",
+        "taskTitle": "Integrate local LLM usage into CLI (llm-usage or new command)",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "a9974510a748",
+        "taskTitle": "Add integration tests for happy-path (Ollama) and backend switching",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "e983e5711289",
+        "taskTitle": "Reference roadmap.yml task in test descriptions/comments for traceability",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "49f47b3dacd0",
+        "taskTitle": "Document setup, usage, and test mapping in onboarding/docs",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "1ca059e0542a",
+        "taskTitle": "Enhance intelligent routing and cost optimization",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "4af1cd643299",
+        "taskTitle": "Refine complexity analysis for better local/cloud routing decisions",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "9cd8352c0f82",
+        "taskTitle": "Add task-specific model selection (e.g., code generation vs content analysis)",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "ee3cac4e5d07",
+        "taskTitle": "Implement adaptive cost thresholds based on usage patterns",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "d929bf51a33e",
+        "taskTitle": "Add performance monitoring and automatic provider switching",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "16f87eaaf45f",
+        "taskTitle": "Integrate local LLM with fossilization workflows",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "a21d454cc08a",
+        "taskTitle": "Test and optimize local LLM for semantic tagging tasks",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "58465c7f1d44",
+        "taskTitle": "Implement local LLM support for content generation and summarization",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "b194a1b8d12a",
+        "taskTitle": "Add local LLM support for fossil curation and validation",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "d98bc252011a",
+        "taskTitle": "Create fallback strategies for complex fossilization tasks",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "223f3908dd88",
+        "taskTitle": "Add CLI tools for local LLM management",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "907db7be90cb",
+        "taskTitle": "Add model management commands (list, install, remove, test)",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "867347f379f8",
+        "taskTitle": "Implement performance benchmarking and comparison tools",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "4ee512b0ccfc",
+        "taskTitle": "Add configuration management for local LLM settings",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "607d58e25690",
+        "taskTitle": "Create usage analytics specific to local LLM performance",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "c6764188c70c",
+        "taskTitle": "Implement caching and optimization for local LLM",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "db7f774f003b",
+        "taskTitle": "Implement response caching for repeated queries",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "fc78a1a4fdcb",
+        "taskTitle": "Add prompt optimization and template management",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "20da55dc7d20",
+        "taskTitle": "Implement batch processing for multiple LLM calls",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "0e595a91486e",
+        "taskTitle": "Add memory management and resource optimization",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "329d69c56009",
+        "taskTitle": "Add comprehensive testing and validation",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "877a8e00cb25",
+        "taskTitle": "Add unit tests for local LLM provider implementations",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "bbf14bb72699",
+        "taskTitle": "Create integration tests for local LLM with fossilization workflows",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "80fbf804aa1a",
+        "taskTitle": "Implement performance benchmarking tests",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "127a879f064a",
+        "taskTitle": "Add fallback and error handling tests",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "2c5f6b097ed5",
+        "taskTitle": "Document local LLM setup and usage patterns",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "d8df7f75c2c3",
+        "taskTitle": "Create setup guide for Ollama and other local LLM providers",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "c2cd367f78a8",
+        "taskTitle": "Document best practices for local LLM configuration",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "a5f0b5e5ade6",
+        "taskTitle": "Add troubleshooting guide for common local LLM issues",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "8bd41f8326b7",
+        "taskTitle": "Create performance optimization guide",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "bb78c3b1a925",
+        "taskTitle": "Fossilize LLM insights, benchmarks, and model discovery results",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "6ae94c81084e",
+        "taskTitle": "Design schema and storage location for LLM insights/benchmarks fossils",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "20f8023101f7",
+        "taskTitle": "Implement scripts/utilities to generate and curate these fossils",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "1cc072300e12",
+        "taskTitle": "Integrate fossilization of insights/benchmarks into LLM workflows and tests",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "ce40c2b9e73e",
+        "taskTitle": "Reference fossilized insights/benchmarks in roadmap and documentation",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "c12e3c55a983",
+        "taskTitle": "Add onboarding/docs section for fossil usage and auditing",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "272ee08008ce",
+        "taskTitle": "Remove semantic tag test LLM patching/simulation once local Ollama model is connected",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "08c44db41bc2",
+        "taskTitle": "Enforce Canonical Fossil Artifact Policy and Curation Workflow",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "f8a3501b3ee4",
+        "taskTitle": "Update curation script to remove fossil_content.json and ensure curated_roadmap_demo.json is a programmatic export of roadmap.yml",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "44d021106a72",
+        "taskTitle": "Document the canonical fossil artifact policy in onboarding and CONTRIBUTING docs",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "1e303fa1b58a",
+        "taskTitle": "Refactor tests to only write output files if they are curated fossils or referenced artifacts",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "ae5b39c3060f",
+        "taskTitle": "Integrate the curation script into CI to enforce artifact policy post-test",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "9a975f11e6f7",
+        "taskTitle": "Clarify and document the canonical use of .context-fossil/entries for versioned fossil artifacts",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "d4c3859dec6b",
+        "taskTitle": "Prohibit timestamped filenames for all canonical fossils, exports, and reports; require stable filenames and cleanup of any timestamped or test/demo outputs",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "4a7fa2a20fd0",
+        "taskTitle": "Automate public markdown and JSON generation from project_status.yml",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "f1b05bcd368e",
+        "taskTitle": "Automate fossil-to-markdown/json workflow with GitHub Actions/CI",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "bf18362e2c3c",
+        "taskTitle": "Fossilize prompts/system messages and publish as needed",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "501c7bc75c1d",
+        "taskTitle": "Integrate local LLM for context gathering and fossilization",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "86f22ee46d89",
+        "taskTitle": "Close Documentation Gaps and Improve Coherence Across All Docs",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "094f057f10d3",
+        "taskTitle": "Update API_REFERENCE.md to promote fossil-backed creation and deprecate direct CLI calls",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "d6492b78b41c",
+        "taskTitle": "Add prominent fossil-backed creation section with examples",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "c3f2c02c594e",
+        "taskTitle": "Mark GitHubService.createIssue as deprecated with migration guide",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "3a9acc6e33f6",
+        "taskTitle": "Add fossil deduplication and progress tracking documentation",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "14ffa8d91c65",
+        "taskTitle": "Update all CLI examples to use fossil-backed utilities",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "b394da9be8c1",
+        "taskTitle": "Document intelligent tagging system and LLM integration patterns",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "1e216a28194b",
+        "taskTitle": "Add intelligent tagging section to API_REFERENCE.md",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "ec963032ccd8",
+        "taskTitle": "Document semantic tagging CLI commands and patterns",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "ef4d56a04740",
+        "taskTitle": "Update COMPLETE_AUTOMATION_ECOSYSTEM.md with tagging integration",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "8304a5abdbf1",
+        "taskTitle": "Add tagging examples to DEVELOPMENT_GUIDE.md",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "73fb9438642f",
+        "taskTitle": "Centralize and document GitHubCLICommands utility patterns",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "e85fc221c52d",
+        "taskTitle": "Update CLI_COMMAND_INSIGHTS.md with GitHubCLICommands examples",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "131de6cd9d9d",
+        "taskTitle": "Add GitHubCLICommands section to API_REFERENCE.md",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "16f9f9059963",
+        "taskTitle": "Update DEVELOPMENT_GUIDE.md with centralized CLI patterns",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "02c05f5a7857",
+        "taskTitle": "Ensure all CLI examples use GitHubCLICommands",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "cecae6c848d1",
+        "taskTitle": "Document comprehensive validation patterns with Zod schemas",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "7ded5634303c",
+        "taskTitle": "Add validation patterns section to API_REFERENCE.md",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "bce50b0730f0",
+        "taskTitle": "Update DEVELOPMENT_GUIDE.md with Zod validation examples",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "690d4051e618",
+        "taskTitle": "Document Params object pattern in all relevant docs",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "6610795dc8d0",
+        "taskTitle": "Add validation error handling documentation",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "e41f21d157f5",
+        "taskTitle": "Create comprehensive local LLM setup and usage documentation",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "14e5f5e8421e",
+        "taskTitle": "Add local LLM setup guide to API_REFERENCE.md",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "2c5766874534",
+        "taskTitle": "Create local LLM troubleshooting and best practices guide",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "d27e6524c18d",
+        "taskTitle": "Update COMPLETE_AUTOMATION_ECOSYSTEM.md with local LLM integration",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "e1bb50cced61",
+        "taskTitle": "Add local LLM examples to DEVELOPMENT_GUIDE.md",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "905155850b4b",
+        "taskTitle": "Complete fossil publication workflow documentation",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "7f5e3b4a1426",
+        "taskTitle": "Update FOSSIL_PUBLICATION_WORKFLOW.md with complete examples",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "0cb19b5db4df",
+        "taskTitle": "Add publication workflow to API_REFERENCE.md",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "248cdcabf5d2",
+        "taskTitle": "Document folder structure and naming conventions",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "b683b6bbf3da",
+        "taskTitle": "Add future integration patterns (React/MDX/Next.js)",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "799b659f1916",
+        "taskTitle": "Standardize error handling documentation across all docs",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "4adcec17903b",
+        "taskTitle": "Add comprehensive error handling section to API_REFERENCE.md",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "5c0354634f02",
+        "taskTitle": "Update DEVELOPMENT_GUIDE.md with error handling patterns",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "0b5c9709b182",
+        "taskTitle": "Document error handling in CLI_COMMAND_INSIGHTS.md",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "e301d654f113",
+        "taskTitle": "Add error handling examples to all relevant docs",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "354635901ad3",
+        "taskTitle": "Document fossil-first test output policy and patterns",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "d24ae244f09f",
+        "taskTitle": "Add fossil-first test policy to DEVELOPMENT_GUIDE.md",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "63442c0f5345",
+        "taskTitle": "Document test output patterns in TESTING_LEARNINGS.md",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "1d5d711e5c92",
+        "taskTitle": "Add test output examples and best practices",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "5d291c15958b",
+        "taskTitle": "Update CONTRIBUTING_GUIDE.md with test output requirements",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "396972fcf8e6",
+        "taskTitle": "Create documentation coherence checklist and validation",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "5af09ca5bd1f",
+        "taskTitle": "Create documentation coherence checklist",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "486fd8d23a7a",
+        "taskTitle": "Add documentation validation to CI process",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "553839e3890b",
+        "taskTitle": "Create documentation update workflow",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "8131f5867da4",
+        "taskTitle": "Add documentation review process",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "e6c6c4c20b11",
+        "taskTitle": "Complete Remaining Documentation Improvements and Validation",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "5399fc45fe2f",
+        "taskTitle": "Enhanced Fossil Management and Versioning System",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "fbb603c57146",
+        "taskTitle": "Implement Fossil Versioning and History Tracking",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "4ac181e5f760",
+        "taskTitle": "Design FossilVersion interface with version, timestamp, changes, author, and metadata fields",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "7618f39d8e12",
+        "taskTitle": "Implement version tracking utilities in fossilize.ts",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "7cc4a4447fdc",
+        "taskTitle": "Add version history to all fossil creation and update operations",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "4e3f07dde852",
+        "taskTitle": "Create version comparison and diff utilities",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "e18958d04f5b",
+        "taskTitle": "Add version rollback capabilities",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "25c7988f5bf1",
+        "taskTitle": "Implement Fossil Search and Filtering System",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "dd24f54d791f",
+        "taskTitle": "Design FossilSearchParams interface with query, tags, dateRange, type, status, and filters",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "9a751f48c441",
+        "taskTitle": "Implement search utilities with full-text and metadata search",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "14aa55869139",
+        "taskTitle": "Add CLI commands for fossil search and filtering",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "712a4465010b",
+        "taskTitle": "Create search result formatting and export options",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "7e519755adb5",
+        "taskTitle": "Add search result caching for performance",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "08927af94c26",
+        "taskTitle": "Implement Fossil Export/Import Capabilities",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "5cff8584e1fd",
+        "taskTitle": "Design FossilExportOptions interface with format, metadata, history, and filters",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "7f63236a0597",
+        "taskTitle": "Implement export utilities for JSON, YAML, and Markdown formats",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "c3c333286af4",
+        "taskTitle": "Add import utilities with validation and conflict resolution",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "a2f19b833bef",
+        "taskTitle": "Create bulk export/import capabilities for fossil collections",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "588752ccbf2f",
+        "taskTitle": "Add export/import CLI commands with progress tracking",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "3cddb0cebd98",
+        "taskTitle": "Advanced Automation and Workflow Scheduling",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "73fc9e04bccf",
+        "taskTitle": "Implement Scheduled Automation Workflows",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "f24ffed3516d",
+        "taskTitle": "Design ScheduledWorkflow interface with id, name, schedule, cronExpression, triggers, actions, and enabled",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "6c9daa7c0b5b",
+        "taskTitle": "Implement workflow scheduler with cron parsing and execution",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "a5120920c76e",
+        "taskTitle": "Add workflow persistence and state management",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "eaf1c0476965",
+        "taskTitle": "Create workflow validation and conflict detection",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "75289dcdeaa7",
+        "taskTitle": "Add CLI commands for workflow management",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "a077aed5b6e8",
+        "taskTitle": "Implement Conditional Automation Triggers",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "b0233b0d629c",
+        "taskTitle": "Design AutomationTrigger interface with type, conditions, metadata, and enabled",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "a07f7b63c9cc",
+        "taskTitle": "Implement trigger evaluation engine with condition parsing",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "a9854a2adf8a",
+        "taskTitle": "Add GitHub webhook integration for event triggers",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "bdf46e3cc404",
+        "taskTitle": "Create trigger chaining and dependency management",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "436d337f60b0",
+        "taskTitle": "Add trigger testing and validation utilities",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "d7bf6157af29",
+        "taskTitle": "Implement Automation Analytics and Reporting",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "7c694dfbb02f",
+        "taskTitle": "Design AutomationMetrics interface with successRate, avgExecutionTime, errorRate, lastExecution, totalExecutions, costAnalysis",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "a2e411f2d764",
+        "taskTitle": "Implement metrics collection and storage",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "708be34420d4",
+        "taskTitle": "Create analytics dashboard and reporting utilities",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "711e45fe83f0",
+        "taskTitle": "Add cost analysis and optimization recommendations",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "1fcfa86f1ba2",
+        "taskTitle": "Create performance monitoring and alerting",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "1cecfab482d6",
+        "taskTitle": "Enhanced User Experience and Developer Tools",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "e3e285db9812",
+        "taskTitle": "Implement Interactive Tutorials and Setup Wizards",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "ae2fcf0da60b",
+        "taskTitle": "Design GuidedSetupWizard interface with steps, currentStep, progress, and validation",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "09f72f0b45ce",
+        "taskTitle": "Design SetupStep interface with id, title, description, type, required, validation, helpText, and examples",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "a030f028c269",
+        "taskTitle": "Implement interactive CLI with mode, suggestions, autoComplete, and helpContext",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "b7bc4d0a250f",
+        "taskTitle": "Create tutorial content for common workflows",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "94bc3ae96f15",
+        "taskTitle": "Add progress tracking and resume capabilities",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "c94f35bcdebd",
+        "taskTitle": "Implement VSCode Extension",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "05552c8402bf",
+        "taskTitle": "Design VSCodeExtension interface with commands, snippets, diagnostics, hoverProviders, and completionProviders",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "df31e1ef3d0b",
+        "taskTitle": "Implement fossil creation and management commands",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "0556b9b80b1b",
+        "taskTitle": "Add fossil syntax highlighting and validation",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "7cd935d31571",
+        "taskTitle": "Create fossil templates and snippets",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "1cfcbadfd374",
+        "taskTitle": "Add fossil search and navigation features",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "6b830e143618",
+        "taskTitle": "Add support for remote repository analysis and curation (Codespaces, SSH, remote containers)",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "36e52f2718da",
+        "taskTitle": "Test extension in remote and hybrid environments",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "696c587ae7d9",
+        "taskTitle": "Document remote use cases and edge case handling",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "a8272012a236",
+        "taskTitle": "Reinforce YAML→JSON→Markdown→Frontend Pipeline",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "51ed8b391275",
+        "taskTitle": "Implement YAML→JSON transformation utility",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "2534ba49a0a5",
+        "taskTitle": "Implement JSON→Markdown generator with frontmatter",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "8bcc2298874d",
+        "taskTitle": "Document and prototype Markdown→MDX/React integration",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "d95079a16686",
+        "taskTitle": "Add examples for Next.js/Remix/Tanstack Table consumption of fossil data",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "5be96f3ef533",
+        "taskTitle": "Create a \"future integration\" section listing possible frontend approaches",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "9fc571ee87d8",
+        "taskTitle": "Document all integration points and revisit/prioritize as project evolves",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "68d9fa6add8b",
+        "taskTitle": "Cohesion & Integration",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "839463ef0560",
+        "taskTitle": "Map dependencies and integration points between all major features",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "a1bb8db817c0",
+        "taskTitle": "Add regular roadmap review for cohesion and scope",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "087995108241",
+        "taskTitle": "Document how each feature supports the core fossilization/publication workflow",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "f7c7de168e1d",
+        "taskTitle": "Consolidate or clarify overlapping features as needed",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "fe7c0831499e",
+        "taskTitle": "Integrate LLM Insights for Completed Tasks",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "cc071606cddc",
+        "taskTitle": "Update roadmap.yml schema and examples to include llmInsights",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "35e38a4d596b",
+        "taskTitle": "Document usage in API_REFERENCE.md and DEVELOPMENT_GUIDE.md",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "ff492d4c1732",
+        "taskTitle": "Update publication/export scripts to include llmInsights in JSON/Markdown",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "4ab79bccc415",
+        "taskTitle": "Add onboarding and reporting examples using llmInsights",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "82c7b4be1820",
+        "taskTitle": "Embrace Event Loop Pattern for Roadmap Automation",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "82ed9dce43ec",
+        "taskTitle": "Refactor roadmap management scripts to support event loop pattern",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "0455ee2f0eda",
+        "taskTitle": "Update documentation to describe event loop-driven roadmap",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "e8812d1666e2",
+        "taskTitle": "Ensure all new automation scopes are added as event loop events",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "cf4c4e657206",
+        "taskTitle": "Review and update existing tasks to fit event loop model",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "c7110eadba4d",
+        "taskTitle": "Explore Future Valuable LLM Automation Scopes (Event Loop Process)",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "e84eb7a3e97d",
+        "taskTitle": "Automated Testing: LLM-Generated Test Cases (Event Loop #1)",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "64cf0acde703",
+        "taskTitle": "Security Automation: Proactive Security Scanning (Event Loop #2)",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "53a573be6340",
+        "taskTitle": "Performance Optimization: Continuous Analysis (Event Loop #3)",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "3ce6a0896128",
+        "taskTitle": "Documentation Generation: Auto-Generate from Code Changes (Event Loop #4)",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "f0300467bd56",
+        "taskTitle": "Monitoring & Alerting: LLM-Powered Insights (Event Loop #5)",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "5a1a4b7d7687",
+        "taskTitle": "Team Collaboration: LLM-Assisted Coordination (Event Loop #6)",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "30e459fe655b",
+        "taskTitle": "Deployment Optimization: LLM-Suggested Strategies (Event Loop #7)",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "544b078114d0",
+        "taskTitle": "Compliance Automation: Automated Checking and Reporting (Event Loop #8)",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "c4ca1d336914",
+        "taskTitle": "Event Loop Orchestration and Coordination",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "2bd48b800e65",
+        "taskTitle": "Complete LLM Insight Generation and Management System",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "27a992c48ef8",
+        "taskTitle": "Implement External Review Services Integration",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "9cc8992472e5",
+        "taskTitle": "Implement external review service connectors",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "1765f35dca21",
+        "taskTitle": "Create review workflow automation",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "2563bd9cde09",
+        "taskTitle": "Add review status tracking and notifications",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "01dca7f943f5",
+        "taskTitle": "Enhance Advanced Task Matching Algorithms",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "86f3dd9b12b1",
+        "taskTitle": "Implement LLM-powered task matching",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "8ad8b9b04fe3",
+        "taskTitle": "Add embedding-based similarity matching",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "e3b714e345e6",
+        "taskTitle": "Implement sophisticated matching algorithms",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "7bb9386e7d56",
+        "taskTitle": "Implement Sophisticated Scope-Based Grouping",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "361d8ec8cedc",
+        "taskTitle": "Enhance commit message scope analysis",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "331551c24497",
+        "taskTitle": "Implement intelligent scope-based grouping",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "9a1e0b9911aa",
+        "taskTitle": "Add scope-based insight aggregation",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "0fe81ecacec9",
+        "taskTitle": "Add Comprehensive Testing and Validation",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "e0a832cf0bed",
+        "taskTitle": "Add integration tests for external review integration",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "95ce285b9038",
+        "taskTitle": "Add performance tests for advanced matching algorithms",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      },
+      {
+        "taskId": "13e59fb3b318",
+        "taskTitle": "Validate complete LLM insight workflow",
+        "valid": true,
+        "errors": [],
+        "warnings": [],
+        "info": []
+      }
+    ],
+    "summary": {
+      "total": 277,
+      "completed": 73,
+      "inProgress": 11,
+      "planned": 190,
+      "pending": 2,
+      "highImpact": 0,
+      "withBlockers": 14,
+      "withDeadlines": 12
+    }
+  },
+  "report": "# LLM Insights Validation Report\n\nGenerated: 2025-07-04T18:50:44-06:00\n\n## Summary\n- **Total Insights**: 277\n- **Valid**: 277 (100%)\n- **Invalid**: 0 (0%)\n- **Total Errors**: 0\n- **Total Warnings**: 0\n- **Total Info**: 0\n\n## Quality Metrics\n- **Error Rate**: 0%\n- **Warning Rate**: 0%\n- **Overall Quality Score**: 100%\n\n## Task Summary\n- **Total Tasks**: undefined\n- **Completed**: undefined\n- **In Progress**: undefined\n- **Planned**: undefined\n- **Pending**: undefined\n- **High Impact**: undefined\n- **With Blockers**: undefined\n\n## Validation Results\n\n### All Valid Insights (277)\n\n- **Project Setup, Onboarding, and Audit Readiness** (b229108c2534)\n- **Provide comprehensive setup script and onboarding documentation for local development** (9b628f9fbb32)\n- **Document and promote setup_status.yml as canonical, programmatic, and auditable project setup fossil** (8003ab04bde7)\n- **Update integration tests to use real repo** (5db9b014d805)\n- **Replace all test-owner/test-repo references** (3e376a5ceb02)\n- **Add GitHub CLI auth check** (1fa373b38262)\n- **Document fossilization workflow** (450b46a4c2ff)\n- **Automate roadmap to GitHub issue/project sync** (bfa1f14e8eef)\n- **Generate Markdown from YAML for GitHub issue body** (3de279fd40c2)\n- **Create/update issues for each roadmap task** (fee5db8b7b7c)\n- **Sync milestones with roadmap deadlines** (386549cacda6)\n- **Prototype Gist-based fossilization for account-level fossils** (f7c593aae578)\n- **Research Gist API and authentication** (09cb6194656d)\n- **Implement Gist fossilization utility** (fc547444839d)\n- **E2E test for Gist-based fossilization** (56a89799b408)\n- **Tag all test-created issues/labels for cleanup** (72da31061e29)\n- **Add reporting/cleanup scripts for test artifacts** (5f69e57b1924)\n- **Set up script to automatically curate test outputs as fossils** (1f8b6b373d00)\n- **Handle .temp-fossil-content-*.json, .temp-issue-body-*.md, fossils/curated_roadmap_demo_*.json as first-class curated fossils** (80ea65983afb)\n- **Identify all other test output file patterns and locations** (75af6b599d3c)\n- **Audit all test output files and stop writing any that are not used for fossil curation, context gathering, or traceability** (740448000d3d)\n- **Implement script to collect and curate outputs as fossils** (3b3cb8a793e9)\n- **Integrate script into test/CI workflow** (ec5db30864c0)\n- **Document the workflow and update onboarding/CONTRIBUTING docs** (2538aecefcdf)\n- **Refuse or clean up any output files with timestamped filenames; only allow stable, canonical filenames for curated fossils** (b20db91dbc81)\n- **Integrate E2E tests into CI pipeline** (8a496b580a17)\n- **Save this roadmap as a fossil or issue for LLM/human reference** (7892d26bb105)\n- **Document all E2E insights, code preferences, and automation patterns** (3f8d885f53c0)\n- **Enforce schema-driven Params and runtime validation in all utilities** (06760321e9e0)\n- **Add PARAMS OBJECT PATTERN docs to cli.ts and CONTRIBUTING_GUIDE.md** (eccaa48c6702)\n- **Add Zod schema and runtime validation to curateAndCheck** (c986dfc57025)\n- **Add Zod schema and runtime validation to createFossilIssue** (3dc397b32132)\n- **Add Zod schema and runtime validation to createFossilLabel** (483c9270cb3e)\n- **Add Zod schema and runtime validation to createFossilMilestone** (bd7e48cbe87f)\n- **Add Zod schema and runtime validation to toFossilEntry (fossilize.ts)** (e7319b6c271b)\n- **Add Zod schema and runtime validation to syncTrackerWithGitHub (syncTracker.ts)** (4eb1912fa095)\n- **Audit and refactor other utilities for Params/schema pattern** (8e1dfeb7b6f5)\n- **Refactor all CLI/scripts/examples to use new Params types** (009b6f65054b)\n- **Add/extend unit tests for runtime validation (invalid/valid params)** (b881d0bcda92)\n- **Add/extend integration/E2E tests for CLI/scripts** (2af6e2345d8f)\n- **Document the pattern in code comments and onboarding docs** (92d5dea61c91)\n- **Audit and enforce schema-driven, object params pattern in all utilities** (04945d65dc67)\n- **Centralize all schemas in src/types/schemas.ts** (f56a4cb458b1)\n- **Refactor all CLI/scripts/examples to use new Params types** (64e144153c75)\n- **Add/extend unit and E2E tests for runtime validation** (21f87d83941b)\n- **Document the pattern in code comments and onboarding docs** (150dc2fa11e3)\n- **Canonical fossilization of roadmap.yml and project_status.yml** (b96928debd38)\n- **Validate current roadmap.yml and project_status.yml for schema and completeness** (27d4c60e0cde)\n- **Move roadmap.yml and project_status.yml to fossils/ (use mv, not cp)** (f72551dfb4d2)\n- **Update fossils/README.md and add doc comments to the YAMLs** (4dc9215a4248)\n- **Update all scripts, tests, and CI to use fossils/roadmap.yml and fossils/project_status.yml** (9512e8b030ea)\n- **Remove or archive demo/test fossils (curated_roadmap_demo_*.json)** (d427dfca4362)\n- **Mark this transition as done in roadmap.yml** (42512267ce6e)\n- **Validate the new fossils in CI/E2E** (97f58c12d589)\n- **Update onboarding docs and recommendations as needed** (b0e02d8e1ffb)\n- **Scaffold E2E tests for fossilization and LLM insights workflow** (acd0e1e4174c)\n- **Define YAML schema and validation rules for both fossils** (9b960479240c)\n- **Implement E2E test to check schema and required fields** (43010c6cb0f8)\n- **Add test to assert minimum coverage and fossilization thresholds** (7f288b8aec3d)\n- **Add regression test to compare current and previous fossils** (480ca2b7f4ae)\n- **Integrate LLM insights validation (presence, format, actionable content)** (28171fa7ae3b)\n- **Document E2E workflow and update onboarding/CONTRIBUTING docs** (26a961e967e3)\n- **Handle OpenAI API rate limit errors (429) in all LLM utilities** (3a4b402f0d09)\n- **Implement retry and backoff in callOpenAIChat** (4848f5671471)\n- **Add user-facing error messages and delay notifications in CLI/scripts** (d4eae6176c3d)\n- **Update all consumers (SemanticTaggerService, LLMPlanningService, scripts) to handle rate limits gracefully** (d9dece7779b6)\n- **Add/extend tests for rate limit scenarios** (919dbf79f231)\n- **Refactor test to only write curated fossil outputs** (9d59dcb2ccf9)\n- **Identify a test that writes .temp-fossil-content-*.json or .temp-issue-body-*.md** (5ed0c67fa0dd)\n- **Update the test to only write output if it is a curated fossil or referenced artifact** (0de099426e20)\n- **Verify the test and output comply with the new policy** (92b460c05659)\n- **Ensure no timestamped or mock/demo files are written to the repo; only stable, canonical filenames are used** (9d174a62a090)\n- **Enhance local LLM support for automation ecosystem** (2e96756998fb)\n- **Implement happy-path local LLM integration and testing (Ollama-first, extensible)** (e89d7f6a853f)\n- **Create LocalLLMService abstraction with pluggable backend support** (b85f049a344e)\n- **Integrate local LLM usage into CLI (llm-usage or new command)** (8583f8e3494c)\n- **Add integration tests for happy-path (Ollama) and backend switching** (a9974510a748)\n- **Reference roadmap.yml task in test descriptions/comments for traceability** (e983e5711289)\n- **Document setup, usage, and test mapping in onboarding/docs** (49f47b3dacd0)\n- **Enhance intelligent routing and cost optimization** (1ca059e0542a)\n- **Refine complexity analysis for better local/cloud routing decisions** (4af1cd643299)\n- **Add task-specific model selection (e.g., code generation vs content analysis)** (9cd8352c0f82)\n- **Implement adaptive cost thresholds based on usage patterns** (ee3cac4e5d07)\n- **Add performance monitoring and automatic provider switching** (d929bf51a33e)\n- **Integrate local LLM with fossilization workflows** (16f87eaaf45f)\n- **Test and optimize local LLM for semantic tagging tasks** (a21d454cc08a)\n- **Implement local LLM support for content generation and summarization** (58465c7f1d44)\n- **Add local LLM support for fossil curation and validation** (b194a1b8d12a)\n- **Create fallback strategies for complex fossilization tasks** (d98bc252011a)\n- **Add CLI tools for local LLM management** (223f3908dd88)\n- **Add model management commands (list, install, remove, test)** (907db7be90cb)\n- **Implement performance benchmarking and comparison tools** (867347f379f8)\n- **Add configuration management for local LLM settings** (4ee512b0ccfc)\n- **Create usage analytics specific to local LLM performance** (607d58e25690)\n- **Implement caching and optimization for local LLM** (c6764188c70c)\n- **Implement response caching for repeated queries** (db7f774f003b)\n- **Add prompt optimization and template management** (fc78a1a4fdcb)\n- **Implement batch processing for multiple LLM calls** (20da55dc7d20)\n- **Add memory management and resource optimization** (0e595a91486e)\n- **Add comprehensive testing and validation** (329d69c56009)\n- **Add unit tests for local LLM provider implementations** (877a8e00cb25)\n- **Create integration tests for local LLM with fossilization workflows** (bbf14bb72699)\n- **Implement performance benchmarking tests** (80fbf804aa1a)\n- **Add fallback and error handling tests** (127a879f064a)\n- **Document local LLM setup and usage patterns** (2c5f6b097ed5)\n- **Create setup guide for Ollama and other local LLM providers** (d8df7f75c2c3)\n- **Document best practices for local LLM configuration** (c2cd367f78a8)\n- **Add troubleshooting guide for common local LLM issues** (a5f0b5e5ade6)\n- **Create performance optimization guide** (8bd41f8326b7)\n- **Fossilize LLM insights, benchmarks, and model discovery results** (bb78c3b1a925)\n- **Design schema and storage location for LLM insights/benchmarks fossils** (6ae94c81084e)\n- **Implement scripts/utilities to generate and curate these fossils** (20f8023101f7)\n- **Integrate fossilization of insights/benchmarks into LLM workflows and tests** (1cc072300e12)\n- **Reference fossilized insights/benchmarks in roadmap and documentation** (ce40c2b9e73e)\n- **Add onboarding/docs section for fossil usage and auditing** (c12e3c55a983)\n- **Remove semantic tag test LLM patching/simulation once local Ollama model is connected** (272ee08008ce)\n- **Enforce Canonical Fossil Artifact Policy and Curation Workflow** (08c44db41bc2)\n- **Update curation script to remove fossil_content.json and ensure curated_roadmap_demo.json is a programmatic export of roadmap.yml** (f8a3501b3ee4)\n- **Document the canonical fossil artifact policy in onboarding and CONTRIBUTING docs** (44d021106a72)\n- **Refactor tests to only write output files if they are curated fossils or referenced artifacts** (1e303fa1b58a)\n- **Integrate the curation script into CI to enforce artifact policy post-test** (ae5b39c3060f)\n- **Clarify and document the canonical use of .context-fossil/entries for versioned fossil artifacts** (9a975f11e6f7)\n- **Prohibit timestamped filenames for all canonical fossils, exports, and reports; require stable filenames and cleanup of any timestamped or test/demo outputs** (d4c3859dec6b)\n- **Automate public markdown and JSON generation from project_status.yml** (4a7fa2a20fd0)\n- **Automate fossil-to-markdown/json workflow with GitHub Actions/CI** (f1b05bcd368e)\n- **Fossilize prompts/system messages and publish as needed** (bf18362e2c3c)\n- **Integrate local LLM for context gathering and fossilization** (501c7bc75c1d)\n- **Close Documentation Gaps and Improve Coherence Across All Docs** (86f22ee46d89)\n- **Update API_REFERENCE.md to promote fossil-backed creation and deprecate direct CLI calls** (094f057f10d3)\n- **Add prominent fossil-backed creation section with examples** (d6492b78b41c)\n- **Mark GitHubService.createIssue as deprecated with migration guide** (c3f2c02c594e)\n- **Add fossil deduplication and progress tracking documentation** (3a9acc6e33f6)\n- **Update all CLI examples to use fossil-backed utilities** (14ffa8d91c65)\n- **Document intelligent tagging system and LLM integration patterns** (b394da9be8c1)\n- **Add intelligent tagging section to API_REFERENCE.md** (1e216a28194b)\n- **Document semantic tagging CLI commands and patterns** (ec963032ccd8)\n- **Update COMPLETE_AUTOMATION_ECOSYSTEM.md with tagging integration** (ef4d56a04740)\n- **Add tagging examples to DEVELOPMENT_GUIDE.md** (8304a5abdbf1)\n- **Centralize and document GitHubCLICommands utility patterns** (73fb9438642f)\n- **Update CLI_COMMAND_INSIGHTS.md with GitHubCLICommands examples** (e85fc221c52d)\n- **Add GitHubCLICommands section to API_REFERENCE.md** (131de6cd9d9d)\n- **Update DEVELOPMENT_GUIDE.md with centralized CLI patterns** (16f9f9059963)\n- **Ensure all CLI examples use GitHubCLICommands** (02c05f5a7857)\n- **Document comprehensive validation patterns with Zod schemas** (cecae6c848d1)\n- **Add validation patterns section to API_REFERENCE.md** (7ded5634303c)\n- **Update DEVELOPMENT_GUIDE.md with Zod validation examples** (bce50b0730f0)\n- **Document Params object pattern in all relevant docs** (690d4051e618)\n- **Add validation error handling documentation** (6610795dc8d0)\n- **Create comprehensive local LLM setup and usage documentation** (e41f21d157f5)\n- **Add local LLM setup guide to API_REFERENCE.md** (14e5f5e8421e)\n- **Create local LLM troubleshooting and best practices guide** (2c5766874534)\n- **Update COMPLETE_AUTOMATION_ECOSYSTEM.md with local LLM integration** (d27e6524c18d)\n- **Add local LLM examples to DEVELOPMENT_GUIDE.md** (e1bb50cced61)\n- **Complete fossil publication workflow documentation** (905155850b4b)\n- **Update FOSSIL_PUBLICATION_WORKFLOW.md with complete examples** (7f5e3b4a1426)\n- **Add publication workflow to API_REFERENCE.md** (0cb19b5db4df)\n- **Document folder structure and naming conventions** (248cdcabf5d2)\n- **Add future integration patterns (React/MDX/Next.js)** (b683b6bbf3da)\n- **Standardize error handling documentation across all docs** (799b659f1916)\n- **Add comprehensive error handling section to API_REFERENCE.md** (4adcec17903b)\n- **Update DEVELOPMENT_GUIDE.md with error handling patterns** (5c0354634f02)\n- **Document error handling in CLI_COMMAND_INSIGHTS.md** (0b5c9709b182)\n- **Add error handling examples to all relevant docs** (e301d654f113)\n- **Document fossil-first test output policy and patterns** (354635901ad3)\n- **Add fossil-first test policy to DEVELOPMENT_GUIDE.md** (d24ae244f09f)\n- **Document test output patterns in TESTING_LEARNINGS.md** (63442c0f5345)\n- **Add test output examples and best practices** (1d5d711e5c92)\n- **Update CONTRIBUTING_GUIDE.md with test output requirements** (5d291c15958b)\n- **Create documentation coherence checklist and validation** (396972fcf8e6)\n- **Create documentation coherence checklist** (5af09ca5bd1f)\n- **Add documentation validation to CI process** (486fd8d23a7a)\n- **Create documentation update workflow** (553839e3890b)\n- **Add documentation review process** (8131f5867da4)\n- **Complete Remaining Documentation Improvements and Validation** (e6c6c4c20b11)\n- **Enhanced Fossil Management and Versioning System** (5399fc45fe2f)\n- **Implement Fossil Versioning and History Tracking** (fbb603c57146)\n- **Design FossilVersion interface with version, timestamp, changes, author, and metadata fields** (4ac181e5f760)\n- **Implement version tracking utilities in fossilize.ts** (7618f39d8e12)\n- **Add version history to all fossil creation and update operations** (7cc4a4447fdc)\n- **Create version comparison and diff utilities** (4e3f07dde852)\n- **Add version rollback capabilities** (e18958d04f5b)\n- **Implement Fossil Search and Filtering System** (25c7988f5bf1)\n- **Design FossilSearchParams interface with query, tags, dateRange, type, status, and filters** (dd24f54d791f)\n- **Implement search utilities with full-text and metadata search** (9a751f48c441)\n- **Add CLI commands for fossil search and filtering** (14aa55869139)\n- **Create search result formatting and export options** (712a4465010b)\n- **Add search result caching for performance** (7e519755adb5)\n- **Implement Fossil Export/Import Capabilities** (08927af94c26)\n- **Design FossilExportOptions interface with format, metadata, history, and filters** (5cff8584e1fd)\n- **Implement export utilities for JSON, YAML, and Markdown formats** (7f63236a0597)\n- **Add import utilities with validation and conflict resolution** (c3c333286af4)\n- **Create bulk export/import capabilities for fossil collections** (a2f19b833bef)\n- **Add export/import CLI commands with progress tracking** (588752ccbf2f)\n- **Advanced Automation and Workflow Scheduling** (3cddb0cebd98)\n- **Implement Scheduled Automation Workflows** (73fc9e04bccf)\n- **Design ScheduledWorkflow interface with id, name, schedule, cronExpression, triggers, actions, and enabled** (f24ffed3516d)\n- **Implement workflow scheduler with cron parsing and execution** (6c9daa7c0b5b)\n- **Add workflow persistence and state management** (a5120920c76e)\n- **Create workflow validation and conflict detection** (eaf1c0476965)\n- **Add CLI commands for workflow management** (75289dcdeaa7)\n- **Implement Conditional Automation Triggers** (a077aed5b6e8)\n- **Design AutomationTrigger interface with type, conditions, metadata, and enabled** (b0233b0d629c)\n- **Implement trigger evaluation engine with condition parsing** (a07f7b63c9cc)\n- **Add GitHub webhook integration for event triggers** (a9854a2adf8a)\n- **Create trigger chaining and dependency management** (bdf46e3cc404)\n- **Add trigger testing and validation utilities** (436d337f60b0)\n- **Implement Automation Analytics and Reporting** (d7bf6157af29)\n- **Design AutomationMetrics interface with successRate, avgExecutionTime, errorRate, lastExecution, totalExecutions, costAnalysis** (7c694dfbb02f)\n- **Implement metrics collection and storage** (a2e411f2d764)\n- **Create analytics dashboard and reporting utilities** (708be34420d4)\n- **Add cost analysis and optimization recommendations** (711e45fe83f0)\n- **Create performance monitoring and alerting** (1fcfa86f1ba2)\n- **Enhanced User Experience and Developer Tools** (1cecfab482d6)\n- **Implement Interactive Tutorials and Setup Wizards** (e3e285db9812)\n- **Design GuidedSetupWizard interface with steps, currentStep, progress, and validation** (ae2fcf0da60b)\n- **Design SetupStep interface with id, title, description, type, required, validation, helpText, and examples** (09f72f0b45ce)\n- **Implement interactive CLI with mode, suggestions, autoComplete, and helpContext** (a030f028c269)\n- **Create tutorial content for common workflows** (b7bc4d0a250f)\n- **Add progress tracking and resume capabilities** (94bc3ae96f15)\n- **Implement VSCode Extension** (c94f35bcdebd)\n- **Design VSCodeExtension interface with commands, snippets, diagnostics, hoverProviders, and completionProviders** (05552c8402bf)\n- **Implement fossil creation and management commands** (df31e1ef3d0b)\n- **Add fossil syntax highlighting and validation** (0556b9b80b1b)\n- **Create fossil templates and snippets** (7cd935d31571)\n- **Add fossil search and navigation features** (1cfcbadfd374)\n- **Add support for remote repository analysis and curation (Codespaces, SSH, remote containers)** (6b830e143618)\n- **Test extension in remote and hybrid environments** (36e52f2718da)\n- **Document remote use cases and edge case handling** (696c587ae7d9)\n- **Reinforce YAML→JSON→Markdown→Frontend Pipeline** (a8272012a236)\n- **Implement YAML→JSON transformation utility** (51ed8b391275)\n- **Implement JSON→Markdown generator with frontmatter** (2534ba49a0a5)\n- **Document and prototype Markdown→MDX/React integration** (8bcc2298874d)\n- **Add examples for Next.js/Remix/Tanstack Table consumption of fossil data** (d95079a16686)\n- **Create a \"future integration\" section listing possible frontend approaches** (5be96f3ef533)\n- **Document all integration points and revisit/prioritize as project evolves** (9fc571ee87d8)\n- **Cohesion & Integration** (68d9fa6add8b)\n- **Map dependencies and integration points between all major features** (839463ef0560)\n- **Add regular roadmap review for cohesion and scope** (a1bb8db817c0)\n- **Document how each feature supports the core fossilization/publication workflow** (087995108241)\n- **Consolidate or clarify overlapping features as needed** (f7c7de168e1d)\n- **Integrate LLM Insights for Completed Tasks** (fe7c0831499e)\n- **Update roadmap.yml schema and examples to include llmInsights** (cc071606cddc)\n- **Document usage in API_REFERENCE.md and DEVELOPMENT_GUIDE.md** (35e38a4d596b)\n- **Update publication/export scripts to include llmInsights in JSON/Markdown** (ff492d4c1732)\n- **Add onboarding and reporting examples using llmInsights** (4ab79bccc415)\n- **Embrace Event Loop Pattern for Roadmap Automation** (82c7b4be1820)\n- **Refactor roadmap management scripts to support event loop pattern** (82ed9dce43ec)\n- **Update documentation to describe event loop-driven roadmap** (0455ee2f0eda)\n- **Ensure all new automation scopes are added as event loop events** (e8812d1666e2)\n- **Review and update existing tasks to fit event loop model** (cf4c4e657206)\n- **Explore Future Valuable LLM Automation Scopes (Event Loop Process)** (c7110eadba4d)\n- **Automated Testing: LLM-Generated Test Cases (Event Loop #1)** (e84eb7a3e97d)\n- **Security Automation: Proactive Security Scanning (Event Loop #2)** (64cf0acde703)\n- **Performance Optimization: Continuous Analysis (Event Loop #3)** (53a573be6340)\n- **Documentation Generation: Auto-Generate from Code Changes (Event Loop #4)** (3ce6a0896128)\n- **Monitoring & Alerting: LLM-Powered Insights (Event Loop #5)** (f0300467bd56)\n- **Team Collaboration: LLM-Assisted Coordination (Event Loop #6)** (5a1a4b7d7687)\n- **Deployment Optimization: LLM-Suggested Strategies (Event Loop #7)** (30e459fe655b)\n- **Compliance Automation: Automated Checking and Reporting (Event Loop #8)** (544b078114d0)\n- **Event Loop Orchestration and Coordination** (c4ca1d336914)\n- **Complete LLM Insight Generation and Management System** (2bd48b800e65)\n- **Implement External Review Services Integration** (27a992c48ef8)\n- **Implement external review service connectors** (9cc8992472e5)\n- **Create review workflow automation** (1765f35dca21)\n- **Add review status tracking and notifications** (2563bd9cde09)\n- **Enhance Advanced Task Matching Algorithms** (01dca7f943f5)\n- **Implement LLM-powered task matching** (86f3dd9b12b1)\n- **Add embedding-based similarity matching** (8ad8b9b04fe3)\n- **Implement sophisticated matching algorithms** (e3b714e345e6)\n- **Implement Sophisticated Scope-Based Grouping** (7bb9386e7d56)\n- **Enhance commit message scope analysis** (361d8ec8cedc)\n- **Implement intelligent scope-based grouping** (331551c24497)\n- **Add scope-based insight aggregation** (9a1e0b9911aa)\n- **Add Comprehensive Testing and Validation** (0fe81ecacec9)\n- **Add integration tests for external review integration** (e0a832cf0bed)\n- **Add performance tests for advanced matching algorithms** (95ce285b9038)\n- **Validate complete LLM insight workflow** (13e59fb3b318)\n"
+}

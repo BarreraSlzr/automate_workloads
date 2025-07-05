@@ -1271,6 +1271,51 @@ tasks:
       Ensure all events integrate with existing fossilization workflows.
     deadline: {}
     milestone: Future LLM Automation Scopes
+  - task: Create Fast-Runnable LLM Chat Context Script
+    status: done
+    owner: emmanuelbarrera
+    tags:
+      - immediate-actions
+      - llm-integration
+      - automation
+      - chat-context
+    context: >
+      ✅ COMPLETED: Created `scripts/llm-chat-context.ts` - a fast-runnable script that:
+      1. Runs TypeScript type checking (bun run tsc --noEmit)
+      2. Runs test suite (bun test)
+      3. Gathers valuable context for chat output execution
+      4. Provides structured output for LLM consumption
+      
+      The script generates comprehensive project context including:
+      - Validation status (TypeScript errors, test results, coverage)
+      - Project information (version, last commit, recent changes, open issues)
+      - Fossils analysis (roadmap tasks, project status, insights)
+      - Environment information (Node/Bun versions, platform)
+      - Intelligent recommendations based on current state
+      
+      Output is saved to `fossils/chat_context.json` for LLM consumption.
+      Added to package.json as `bun run llm:chat-context`.
+      
+      This enables developers to quickly get comprehensive project context
+      before engaging in LLM chat sessions, ensuring informed conversations.
+    subtasks:
+      - task: Create TypeScript script with validation and context gathering
+        status: done
+      - task: Add comprehensive project analysis and fossil inspection
+        status: done
+      - task: Implement intelligent recommendations system
+        status: done
+      - task: Add script to package.json for easy execution
+        status: done
+      - task: Test script functionality and output quality
+        status: done
+    milestone: Immediate Actions
+    labels:
+      - automation
+      - llm
+      - context
+      - validation
+
   - task: Complete LLM Insight Generation and Management System
     status: planned
     owner: emmanuelbarrera

@@ -1,0 +1,102 @@
+{
+  "timestamp": "2025-07-04T22:34:49-06:00",
+  "validation": {
+    "typescript": {
+      "status": "pass",
+      "duration": 7070
+    },
+    "tests": {
+      "status": "pass",
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "duration": 10
+    }
+  },
+  "project": {
+    "name": "automate_workloads",
+    "version": "1.0.0",
+    "description": "A comprehensive automation ecosystem integrating GitHub, Twitter, Gmail, Buffer, and Obsidian with Bun and TypeScript",
+    "lastCommit": {
+      "hash": "1c197c263bd1450769e3714c4af789e9cf1d4194",
+      "message": "refactor(roadmap): remove LLM insights and streamline roadmap structure",
+      "author": "Emmanuel Barrera Salazar (BarreraSlzr)",
+      "date": "2025-07-04 19:25:25 -0600"
+    },
+    "recentChanges": [
+      "refactor(roadmap): remove LLM insights and streamline roadmap structure",
+      "docs(examples): add advanced LLM, fossilization, and roadmap insight documentation and utilities",
+      "feat(fossil): enhance fossil and roadmap automation, update LLM fossil types",
+      "feat(validation): add comprehensive type and schema validation system",
+      "feat: improve LLM insights in roadmap with comprehensive analysis framework"
+    ],
+    "openIssues": 30,
+    "pendingTasks": 203
+  },
+  "gitChanges": {
+    "staged": {
+      "files": [],
+      "additions": 0,
+      "deletions": 0,
+      "summary": "No staged changes"
+    },
+    "unstaged": {
+      "files": [],
+      "additions": 0,
+      "deletions": 0,
+      "summary": "No unstaged changes"
+    },
+    "untracked": [
+      ".llm-usage-log.json",
+      "diff-analysis.json",
+      "docs/ROADMAP_LLM_INSIGHTS_MIGRATION.md",
+      "docs/ROADMAP_LLM_INSIGHTS_MIGRATION_SUMMARY.md",
+      "fossils/backups/roadmap_with_llm_insights_2025-07-04T18-35-18-06-00.yml",
+      "fossils/chat_context.json",
+      "fossils/roadmap_insights/FRESH_INSIGHTS_GENERATION_SUMMARY.md",
+      "fossils/roadmap_insights/roadmap_insights_report.md",
+      "fossils/roadmap_insights/roadmap_insights_summary.json",
+      "fossils/roadmap_insights_validation.json",
+      "scripts/analyze-roadmap-llm-insights.ts",
+      "scripts/generate-fresh-llm-insights-simple.ts",
+      "scripts/generate-fresh-llm-insights.ts",
+      "scripts/remove-llm-insights-from-roadmap.ts",
+      "scripts/validate-fresh-insights.ts",
+      "src/utils/roadmapInsightsAccessor.ts"
+    ],
+    "branch": "master",
+    "ahead": 0,
+    "behind": 0
+  },
+  "fossils": {
+    "roadmap": {
+      "totalTasks": 282,
+      "completed": 79,
+      "inProgress": 11,
+      "planned": 190,
+      "pending": 2
+    },
+    "projectStatus": {
+      "modules": 0,
+      "cliCommands": 2,
+      "automationScripts": 0
+    },
+    "insights": {
+      "total": 277,
+      "lastGenerated": "2025-07-04T18:50:42-06:00"
+    }
+  },
+  "environment": {
+    "nodeVersion": "v22.6.0",
+    "bunVersion": "1.2.17",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "workingDirectory": "/Users/emmanuelbarrera/Projects/automate_workloads"
+  },
+  "recommendations": [
+    "Run \"bun test\" for comprehensive test validation",
+    "Consider addressing open issues to reduce technical debt",
+    "Consider adding 16 untracked files to .gitignore or staging them"
+  ]
+}
