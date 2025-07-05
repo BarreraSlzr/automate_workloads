@@ -1,0 +1,49 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "templateId": "feat-cli-1751707479332",
+    "createdAt": "2025-07-05T03:24:39-06:00",
+    "author": "Emmanuel Barrera Salazar (BarreraSlzr)",
+    "validator": "enhanced-pre-commit-validator"
+  },
+  "commit": {
+    "type": "feat",
+    "scope": "cli",
+    "description": "add enhanced commit validation system",
+    "footer": "",
+    "breakingChange": false,
+    "issues": []
+  },
+  "llmInsights": {
+    "reference": "insight-feat-cli-1751707479332",
+    "summary": "Commit feat(cli): add enhanced commit validation system",
+    "impact": "medium",
+    "category": "feature",
+    "blockers": [],
+    "recommendations": [
+      "Add tests for the new feature",
+      "Update documentation",
+      "Test CLI functionality",
+      "Update help documentation"
+    ],
+    "automationOpportunities": [
+      "Automate CLI testing"
+    ],
+    "roadmapImpact": {
+      "level": "medium",
+      "affectedTasks": [],
+      "newTasks": [],
+      "completedTasks": []
+    },
+    "automationScope": [
+      "cli"
+    ]
+  },
+  "audit": {
+    "timestamp": "2025-07-05T03:24:39-06:00",
+    "score": 80,
+    "valid": true,
+    "metadataComplete": true,
+    "suggestions": []
+  }
+}

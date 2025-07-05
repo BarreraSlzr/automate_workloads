@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: exclude-blog-content
+        name: Exclude blog content from main branch
+        entry: bash -c 'if git diff --cached --name-only | grep -q "docs/blog/"; then echo "Error: Blog content should not be committed to main branch. Use blog branches instead."; exit 1; fi'
+        language: system
+        stages: [commit]
+        files: ^docs/blog/ 

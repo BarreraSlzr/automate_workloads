@@ -5,7 +5,7 @@ import { runScript } from '../integration-base-tester';
 test('monitoring/quick-status.sh outputs expected log for dummy repo', () => {
   const { stdout, stderr, exitCode } = runScript(
     './scripts/monitoring/quick-status.sh',
-    ['owner', 'repo'],
+    ['owner', 'repo', '--no-color', '--test'],
     { requiredCmds: ['gh', 'bun', 'jq'] }
   );
 

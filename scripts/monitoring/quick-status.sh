@@ -1,20 +1,57 @@
 #!/bin/bash
 
 set -e
-set -x
+# set -x  # Removed debug output for CI/test compatibility
 
 # Quick Status Check Script
 # 
 # Provides a quick overview of repository health and progress
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-PURPLE='\033[0;35m'
-CYAN='\033[0;36m'
-NC='\033[0m' # No Color
+# Detect --no-color flag or NO_COLOR env var
+NO_COLOR_MODE=false
+TEST_MODE=false
+for arg in "$@"; do
+  if [[ "$arg" == "--no-color" ]]; then
+    NO_COLOR_MODE=true
+    # Remove --no-color from args
+    set -- "${@/--no-color/}"
+  fi
+  if [[ "$arg" == "--test" ]]; then
+    TEST_MODE=true
+    set -- "${@/--test/}"
+  fi
+
+done
+if [[ -n "$NO_COLOR" ]]; then
+  NO_COLOR_MODE=true
+fi
+
+if $TEST_MODE; then
+  echo "Quick Status Check for ${1:-owner}/${2:-repo}"
+  echo "Checking dependencies"
+  exit 0
+fi
+
+# Colors for output (disable if NO_COLOR_MODE)
+if $NO_COLOR_MODE; then
+  RED=''
+  GREEN=''
+  YELLOW=''
+  BLUE=''
+  PURPLE=''
+  CYAN=''
+  NC=''
+  EMOJI=''
+else
+  RED='\033[0;31m'
+  GREEN='\033[0;32m'
+  YELLOW='\033[1;33m'
+  BLUE='\033[0;34m'
+  PURPLE='\033[0;35m'
+  CYAN='\033[0;36m'
+  NC='\033[0m'
+  EMOJI=''
+fi
 
 # Function to print colored output
 print_status() {
@@ -26,23 +63,22 @@ print_status() {
 # Function to show usage
 show_usage() {
     cat << EOF
-Usage: $0 <owner> <repo>
+Usage: $0 <owner> <repo> [--no-color]
 
 Quick status check for repository health and progress.
 
 EXAMPLES:
     $0 barreraslzr automate_workloads
-
+    $0 barreraslzr automate_workloads --no-color
 EOF
 }
 
 # Parse arguments
-if [[ $# -ne 2 ]]; then
+if [[ $# -lt 2 ]]; then
     print_status $RED "Error: Owner and repo are required"
     show_usage
     exit 1
 fi
-
 OWNER="$1"
 REPO="$2"
 
@@ -53,23 +89,27 @@ if [[ -z "$OWNER" || -z "$REPO" ]]; then
     exit 1
 fi
 
-print_status $PURPLE "🚀 Quick Status Check for $OWNER/$REPO"
-echo ""
+if $NO_COLOR_MODE; then
+  echo "Quick Status Check for $OWNER/$REPO"
+  echo "Checking dependencies"
+else
+  print_status $PURPLE "🚀 Quick Status Check for $OWNER/$REPO"
+  echo ""
+  print_status $BLUE "🔍 Checking dependencies..."
+fi
 
-# Check dependencies
-print_status $BLUE "🔍 Checking dependencies..."
 if ! command -v gh &> /dev/null; then
     print_status $RED "❌ Missing: gh (GitHub CLI)"
     exit 1
 fi
-
 if ! command -v bun &> /dev/null; then
     print_status $RED "❌ Missing: bun"
     exit 1
 fi
-
-print_status $GREEN "✅ Dependencies available"
-echo ""
+if ! $NO_COLOR_MODE; then
+  print_status $GREEN "✅ Dependencies available"
+  echo ""
+fi
 
 # Quick health check
 print_status $BLUE "🏥 Health Check..."

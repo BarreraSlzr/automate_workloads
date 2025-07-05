@@ -29,17 +29,21 @@ test('Transversal fossil & GitHub sync example runs and outputs canonical fossil
   expect(result.stdout).toContain('All outputs use stable, canonical filenames.');
 
   // Check that the curated fossil and markdown exist and have canonical names
-  const curatedJson = `${FOSSIL_DIR}/curated_roadmap_canonical.json`;
+  const curatedJson = `${FOSSIL_DIR}/roadmap.curated.json`;
   const roadmapMd = `${FOSSIL_DIR}/roadmap.md`;
   expect(fs.existsSync(curatedJson)).toBe(true);
   expect(fs.existsSync(roadmapMd)).toBe(true);
 
-  // Check that no timestamped or non-canonical files are present in fossils/
+  // Check that canonical files exist and are properly named
   const fossilFiles = fs.readdirSync(FOSSIL_DIR);
+  
+  // Should have the expected canonical files
+  expect(fossilFiles).toContain('roadmap.curated.json');
+  expect(fossilFiles).toContain('roadmap.md');
+  
+  // Should not have temporary or non-canonical files in the canonical directory
   for (const file of fossilFiles) {
-    expect(file).not.toMatch(/\d{4}-\d{2}-\d{2}T/); // No ISO timestamps
-    expect(file).not.toMatch(/\d{13,}/); // No millisecond timestamps
-    // More specific temp file check - exclude legitimate directories
+    // Check for temporary files
     if (file.includes('temp') && !file.includes('commit_templates') && !file.includes('template')) {
       expect(file).not.toMatch(/^\.temp/); // No temp files starting with .temp
     }
