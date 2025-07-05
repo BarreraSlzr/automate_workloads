@@ -3,57 +3,205 @@
 /**
  * Extract Roadmap Insights Script
  * 
- * Extracts LLM insights from roadmap.yml and creates separate fossil files
- * for better human readability and web publication.
+ * Extracts and formats LLM insights from the collection files for reporting,
+ * documentation, and analysis. This replaces the old approach of accessing
+ * insights directly from roadmap tasks.
  */
 
+import { promises as fs } from 'fs';
+import path from 'path';
+import { formatISO } from 'date-fns';
 import { 
-  createRoadmapInsightsCollection,
-  createRoadmapInsightsWebPublication,
-  generateInsightsMarkdownReport,
-  saveInsightsOutputs
-} from '../src/utils/roadmapInsightsExtractor';
+  loadInsightsCollection,
+  getCompletedTaskInsights,
+  getInProgressTaskInsights,
+  getPlannedTaskInsights,
+  getInsightsWithBlockers,
+  getHighImpactInsights,
+  getInsightsByOwner,
+  getInsightsByTag,
+  getInsightsSummary
+} from '../src/utils/roadmapInsightsAccessor';
+import type { RoadmapTaskInsight } from '../src/types/roadmapInsights';
 
-async function main() {
-  console.log('🔍 Extracting LLM insights from roadmap...');
-  
-  try {
-    // Create insights collection
-    const collection = await createRoadmapInsightsCollection();
-    console.log(`✅ Extracted ${collection.insights.length} insights from roadmap`);
-    
-    // Create web publication format
-    const webPublication = createRoadmapInsightsWebPublication(collection);
-    console.log('✅ Generated web publication format');
-    
-    // Generate markdown report
-    const markdownReport = generateInsightsMarkdownReport(collection, webPublication);
-    console.log('✅ Generated markdown report');
-    
-    // Save all outputs
-    const outputs = await saveInsightsOutputs(collection, webPublication, markdownReport);
-    
-    console.log('\n📊 Summary:');
-    console.log(`- Total tasks with insights: ${collection.summary.totalTasks}`);
-    console.log(`- Completed tasks: ${collection.summary.completedTasks}`);
-    console.log(`- Pending tasks: ${collection.summary.pendingTasks}`);
-    console.log(`- Insights generated: ${collection.summary.insightsGenerated}`);
-    console.log(`- Active milestones: ${collection.summary.milestones.length}`);
-    console.log(`- Active owners: ${collection.summary.owners.length}`);
-    
-    console.log('\n📁 Generated files:');
-    console.log(`- Collection: ${outputs.collectionFile}`);
-    console.log(`- Web publication: ${outputs.webPublicationFile}`);
-    console.log(`- Markdown report: ${outputs.markdownFile}`);
-    
-    console.log('\n✅ Roadmap insights extraction completed successfully!');
-    
-  } catch (error) {
-    console.error('❌ Error extracting roadmap insights:', error);
-    process.exit(1);
+const OUTPUT_DIR = 'fossils/roadmap_insights';
+
+/**
+ * Generate a comprehensive markdown report from insights
+ */
+function generateMarkdownReport(insights: RoadmapTaskInsight[]): string {
+  const summary = getInsightsSummary(insights);
+  const completedTasks = getCompletedTaskInsights(insights);
+  const inProgressTasks = getInProgressTaskInsights(insights);
+  const plannedTasks = getPlannedTaskInsights(insights);
+  const tasksWithBlockers = getInsightsWithBlockers(insights);
+  const highImpactTasks = getHighImpactInsights(insights);
+
+  // Get unique owners and tags
+  const owners = [...new Set(insights.map(i => i.owner).filter(Boolean))];
+  const tags = [...new Set(insights.flatMap(i => i.tags || []))];
+
+  let report = `# Roadmap LLM Insights Report
+
+Generated: ${formatISO(new Date())}
+Total Tasks: ${summary.total}
+
+## Summary
+- **Completed**: ${summary.completed}
+- **In Progress**: ${summary.inProgress}
+- **Planned**: ${summary.planned}
+- **Pending**: ${summary.pending}
+- **High Impact**: ${summary.highImpact}
+- **With Blockers**: ${summary.withBlockers}
+
+## Completed Tasks
+${completedTasks.map(task => `- **${task.taskTitle}**: ${task.llmInsights.summary}`).join('\n')}
+
+## In Progress Tasks
+${inProgressTasks.map(task => `- **${task.taskTitle}**: ${task.llmInsights.summary}`).join('\n')}
+
+## Planned Tasks
+${plannedTasks.map(task => `- **${task.taskTitle}**: ${task.llmInsights.summary}`).join('\n')}
+
+## Detailed Task Analysis
+
+`;
+
+  // Add detailed analysis for each task
+  insights.forEach(task => {
+    report += `### ${task.taskTitle}
+- **Status**: ${task.status}
+- **Owner**: ${task.owner || 'Unassigned'}
+- **Milestone**: ${task.milestone || 'No milestone'}
+- **Tags**: ${(task.tags || []).join(', ') || 'None'}
+- **Summary**: ${task.llmInsights.summary}
+- **Impact**: ${task.llmInsights.impact}
+- **Blockers**: ${task.llmInsights.blockers}
+- **Recommendations**: ${task.llmInsights.recommendations}
+${task.llmInsights.deadline ? `- **Deadline**: ${task.llmInsights.deadline}` : ''}
+
+`;
+  });
+
+  // Add sections for blockers and high impact tasks
+  if (tasksWithBlockers.length > 0) {
+    report += `## Tasks with Blockers
+${tasksWithBlockers.map(task => `- **${task.taskTitle}**: ${task.llmInsights.blockers}`).join('\n')}
+
+`;
   }
+
+  if (highImpactTasks.length > 0) {
+    report += `## High Impact Tasks
+${highImpactTasks.map(task => `- **${task.taskTitle}** (${task.status}): ${task.llmInsights.summary}`).join('\n')}
+
+`;
+  }
+
+  // Add owner-specific sections
+  owners.forEach(owner => {
+    if (owner) { // Add null check for owner
+      const ownerTasks = getInsightsByOwner(insights, owner);
+      if (ownerTasks.length > 0) {
+        report += `## Tasks by ${owner}
+${ownerTasks.map(task => `- **${task.taskTitle}** (${task.status}): ${task.llmInsights.summary}`).join('\n')}
+
+`;
+      }
+    }
+  });
+
+  // Add tag-specific sections
+  tags.forEach(tag => {
+    const tagTasks = getInsightsByTag(insights, tag);
+    if (tagTasks.length > 0) {
+      report += `## Tasks tagged "${tag}"
+${tagTasks.map(task => `- **${task.taskTitle}** (${task.status}): ${task.llmInsights.summary}`).join('\n')}
+
+`;
+    }
+  });
+
+  return report;
 }
 
-if (import.meta.main) {
-  main();
+/**
+ * Generate a JSON summary report
+ */
+function generateJsonSummary(insights: RoadmapTaskInsight[]): any {
+  const summary = getInsightsSummary(insights);
+  
+  return {
+    generatedAt: formatISO(new Date()),
+    summary,
+    insights: insights.map(insight => ({
+      taskId: insight.taskId,
+      taskTitle: insight.taskTitle,
+      taskPath: insight.taskPath,
+      status: insight.status,
+      milestone: insight.milestone,
+      owner: insight.owner,
+      tags: insight.tags,
+      llmInsights: {
+        summary: insight.llmInsights.summary,
+        impact: insight.llmInsights.impact,
+        blockers: insight.llmInsights.blockers,
+        recommendations: insight.llmInsights.recommendations,
+        deadline: insight.llmInsights.deadline
+      },
+      metadata: {
+        generatedAt: insight.metadata.generatedAt,
+        model: insight.metadata.model,
+        provider: insight.metadata.provider,
+        fossilId: insight.metadata.fossilId
+      }
+    }))
+  };
+}
+
+async function main() {
+  console.log('🔄 Extracting roadmap insights from collection...');
+  
+  // Load insights collection
+  const collection = await loadInsightsCollection();
+  const insights = collection.insights;
+  
+  if (insights.length === 0) {
+    console.log('⚠️  No insights found in collection. Run generate-fresh-llm-insights.ts first.');
+    return;
+  }
+  
+  console.log(`📋 Found ${insights.length} insights to process`);
+  
+  // Ensure output directory exists
+  await fs.mkdir(OUTPUT_DIR, { recursive: true });
+  
+  // Generate markdown report
+  const markdownReport = generateMarkdownReport(insights);
+  const markdownPath = path.join(OUTPUT_DIR, 'roadmap_insights_report.md');
+  await fs.writeFile(markdownPath, markdownReport, 'utf-8');
+  console.log(`✅ Generated markdown report: ${markdownPath}`);
+  
+  // Generate JSON summary
+  const jsonSummary = generateJsonSummary(insights);
+  const jsonPath = path.join(OUTPUT_DIR, 'roadmap_insights_summary.json');
+  await fs.writeFile(jsonPath, JSON.stringify(jsonSummary, null, 2), 'utf-8');
+  console.log(`✅ Generated JSON summary: ${jsonPath}`);
+  
+  // Print summary to console
+  const summary = getInsightsSummary(insights);
+  console.log('\n📊 Insights Summary:');
+  console.log(`  Total tasks: ${summary.total}`);
+  console.log(`  Completed: ${summary.completed}`);
+  console.log(`  In Progress: ${summary.inProgress}`);
+  console.log(`  Planned: ${summary.planned}`);
+  console.log(`  Pending: ${summary.pending}`);
+  console.log(`  High Impact: ${summary.highImpact}`);
+  console.log(`  With Blockers: ${summary.withBlockers}`);
+  
+  console.log('\n✅ Roadmap insights extraction completed!');
+}
+
+if (require.main === module) {
+  main().catch(console.error);
 } 
