@@ -1,0 +1,177 @@
+name: Automated Release Notes
+
+on:
+  push:
+    tags:
+      - 'v*'
+  release:
+    types: [published]
+
+jobs:
+  generate-release-notes:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v1
+      with:
+        bun-version: latest
+    
+    - name: Install dependencies
+      run: bun install
+    
+    - name: Get version and tag info
+      id: version
+      run: |
+        if [[ $GITHUB_REF == refs/tags/* ]]; then
+          VERSION=${GITHUB_REF#refs/tags/}
+        else
+          VERSION=$(node -p "require('./package.json').version")
+        fi
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "tag=$VERSION" >> $GITHUB_OUTPUT
+    
+    - name: Analyze commits and generate changelog
+      run: |
+        echo "📝 Analyzing commits for release ${{ steps.version.outputs.version }}..."
+        
+        # Get commits since last tag
+        PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD~1 2>/dev/null || echo "")
+        
+        if [ -n "$PREVIOUS_TAG" ]; then
+          COMMIT_RANGE="$PREVIOUS_TAG..HEAD"
+        else
+          COMMIT_RANGE="HEAD~50..HEAD"
+        fi
+        
+        # Generate changelog from commits
+        bun run scripts/generate-changelog.ts --version ${{ steps.version.outputs.version }} --range "$COMMIT_RANGE" || echo "Changelog generation failed"
+        
+        # Analyze commit patterns
+        bun run scripts/analyze-commit-patterns.ts --range "$COMMIT_RANGE" || echo "Commit analysis failed"
+    
+    - name: Run comprehensive tests
+      run: |
+        echo "🧪 Running comprehensive test suite..."
+        
+        # Run all tests with coverage
+        bun test --coverage
+        
+        # Run integration tests
+        bun test tests/integration/
+        
+        # Run E2E tests
+        bun test tests/e2e/
+        
+        # Generate test report
+        bun run scripts/generate-test-report.ts || echo "Test report generation failed"
+    
+    - name: Generate release notes
+      run: |
+        echo "📋 Generating release notes..."
+        
+        # Generate comprehensive release notes
+        bun run scripts/generate-release-notes.ts \
+          --version ${{ steps.version.outputs.version }} \
+          --changelog fossils/changelog.json \
+          --test-report fossils/test_report.json \
+          --roadmap-progress fossils/roadmap_progress_report.md || echo "Release notes generation failed"
+    
+    - name: Create GitHub release
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.version.outputs.version }}
+        release_name: Release ${{ steps.version.outputs.version }}
+        body_path: fossils/release_notes.md
+        draft: false
+        prerelease: false
+    
+    - name: Update changelog
+      run: |
+        echo "📝 Updating changelog..."
+        
+        # Update main changelog file
+        bun run scripts/update-main-changelog.ts \
+          --version ${{ steps.version.outputs.version }} \
+          --release-notes fossils/release_notes.md || echo "Changelog update failed"
+        
+        # Update roadmap with release info
+        bun run scripts/update-roadmap-release.ts \
+          --version ${{ steps.version.outputs.version }} || echo "Roadmap update failed"
+    
+    - name: Generate release summary
+      run: |
+        echo "📊 Generating release summary..."
+        
+                 # Create release summary
+         bun run scripts/generate-release-summary.ts --version ${{ steps.version.outputs.version }} || echo "Release summary generation failed"
+    
+    - name: Commit release artifacts
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        # Add release artifacts
+        git add fossils/release_notes.md
+        git add fossils/release_summary.md
+        git add fossils/test_report.json
+        git add fossils/changelog.json
+        git add CHANGELOG.md
+        git add fossils/roadmap.yml
+        
+        # Commit if there are changes
+        if git diff --staged --quiet; then
+          echo "No release artifacts to commit"
+        else
+          git commit -m "📦 Release ${{ steps.version.outputs.version }}: Automated release notes and artifacts [skip ci]
+
+          - Generate comprehensive release notes
+          - Update changelog and roadmap
+          - Include test results and metrics
+          - Create release summary"
+          git push
+        fi
+    
+    - name: Upload release artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-artifacts-${{ steps.version.outputs.version }}
+        path: |
+          fossils/release_notes.md
+          fossils/release_summary.md
+          fossils/test_report.json
+          fossils/changelog.json
+          fossils/roadmap_progress_report.md
+        retention-days: 90
+    
+    - name: Notify release completion
+      run: |
+        echo "## 🎉 Release ${{ steps.version.outputs.version }} Completed" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Generated Artifacts:" >> $GITHUB_STEP_SUMMARY
+        echo "- **Release Notes**: fossils/release_notes.md" >> $GITHUB_STEP_SUMMARY
+        echo "- **Release Summary**: fossils/release_summary.md" >> $GITHUB_STEP_SUMMARY
+        echo "- **Test Report**: fossils/test_report.json" >> $GITHUB_STEP_SUMMARY
+        echo "- **Changelog**: fossils/changelog.json" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Extract key metrics
+        if [ -f "fossils/release_summary.md" ]; then
+          echo "### Key Metrics:" >> $GITHUB_STEP_SUMMARY
+          grep -E "^- \*\*.*\*\*:" fossils/release_summary.md | head -5 >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Next Steps:" >> $GITHUB_STEP_SUMMARY
+        echo "- Review release notes and test results" >> $GITHUB_STEP_SUMMARY
+        echo "- Share release with stakeholders" >> $GITHUB_STEP_SUMMARY
+        echo "- Update external documentation if needed" >> $GITHUB_STEP_SUMMARY 

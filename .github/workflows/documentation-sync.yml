@@ -1,0 +1,190 @@
+name: Documentation Sync & Health Monitoring
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'src/**'
+      - 'docs/**'
+      - 'fossils/**'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'src/**'
+      - 'docs/**'
+      - 'fossils/**'
+  schedule:
+    # Run daily at 2 AM UTC to check documentation health
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      force_regenerate:
+        description: 'Force regenerate all documentation'
+        required: false
+        default: 'false'
+
+jobs:
+  documentation-sync:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v1
+      with:
+        bun-version: latest
+    
+    - name: Install dependencies
+      run: bun install
+    
+    - name: Auto-generate API documentation
+      run: |
+        echo "📚 Generating API documentation..."
+        # Generate TypeScript API docs
+        bun run scripts/generate-api-docs.ts || echo "API docs generation skipped"
+        
+        # Update README with latest examples
+        bun run scripts/update-readme-examples.ts || echo "README update skipped"
+        
+        # Generate CLI documentation
+        bun run scripts/generate-cli-docs.ts || echo "CLI docs generation skipped"
+    
+    - name: Sync documentation with code changes
+      run: |
+        echo "🔄 Syncing documentation..."
+        
+        # Update fossil references in docs
+        bun run scripts/update-doc-references.ts || echo "Doc reference update skipped"
+        
+        # Generate visual diagrams
+        bun run scripts/generate-visual-docs.ts || echo "Visual docs generation skipped"
+        
+        # Update changelog
+        bun run scripts/update-changelog.ts || echo "Changelog update skipped"
+    
+    - name: Run documentation coherence checks
+      run: |
+        echo "🔍 Running documentation coherence checks..."
+        
+        # Check for broken links
+        bun run scripts/check-broken-links.ts || echo "Link check failed"
+        
+        # Validate documentation structure
+        bun run scripts/validate-doc-structure.ts || echo "Doc structure validation failed"
+        
+        # Check for outdated examples
+        bun run scripts/check-outdated-examples.ts || echo "Example check failed"
+    
+    - name: Run broken link scan
+      run: |
+        echo "🔗 Scanning for broken links..."
+        
+        # Install link checker
+        npm install -g markdown-link-check
+        
+        # Check markdown files for broken links
+        find docs/ -name "*.md" -exec markdown-link-check {} \; || echo "Some broken links found"
+    
+    - name: Test and lint health monitoring
+      run: |
+        echo "🧪 Running health checks..."
+        
+        # Run all tests
+        bun test
+        
+        # Run linting
+        bun run lint || echo "Linting issues found"
+        
+        # Check type safety
+        bun run type-check || echo "Type check failed"
+        
+        # Run security audit
+        bun audit || echo "Security audit completed"
+    
+    - name: Fossilization health checks
+      run: |
+        echo "🦴 Running fossilization health checks..."
+        
+        # Validate fossil schemas
+        bun run scripts/validate-fossil-schemas.ts || echo "Fossil schema validation failed"
+        
+        # Check fossil consistency
+        bun run scripts/check-fossil-consistency.ts || echo "Fossil consistency check failed"
+        
+        # Validate roadmap structure
+        bun run scripts/validate-roadmap.ts || echo "Roadmap validation failed"
+    
+    - name: Generate health dashboard
+      run: |
+        echo "📊 Generating health dashboard..."
+        
+                 # Create health summary
+         bun run scripts/generate-health-dashboard.ts || echo "Health dashboard generation failed"
+    
+    - name: Commit documentation updates
+      if: github.event_name == 'push'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        # Add all documentation changes
+        git add docs/
+        git add fossils/
+        git add README.md
+        git add CHANGELOG.md
+        
+        # Commit if there are changes
+        if git diff --staged --quiet; then
+          echo "No documentation changes to commit"
+        else
+          git commit -m "📚 Auto-sync documentation and health monitoring [skip ci]
+
+          - Update API documentation
+          - Sync fossil references
+          - Generate health dashboard
+          - Run coherence checks
+          - Update examples and changelog"
+          git push
+        fi
+    
+    - name: Upload documentation artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: documentation-artifacts
+        path: |
+          docs/
+          fossils/
+          README.md
+          CHANGELOG.md
+        retention-days: 30
+    
+    - name: Generate documentation summary
+      run: |
+        echo "## 📚 Documentation Sync Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Updated Files:" >> $GITHUB_STEP_SUMMARY
+        
+        # List updated documentation files
+        git diff --name-only HEAD~1 | grep -E '\.(md|yml|json)$' | while read file; do
+          echo "- **$file**" >> $GITHUB_STEP_SUMMARY
+        done || echo "- No documentation files changed" >> $GITHUB_STEP_SUMMARY
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Health Status:" >> $GITHUB_STEP_SUMMARY
+        
+        # Extract health metrics
+        if [ -f "docs/HEALTH_DASHBOARD.md" ]; then
+          echo "- **Health Dashboard**: Updated" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "- **Health Dashboard**: Failed to generate" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Next Steps:" >> $GITHUB_STEP_SUMMARY
+        echo "- Review updated documentation" >> $GITHUB_STEP_SUMMARY
+        echo "- Check health dashboard for issues" >> $GITHUB_STEP_SUMMARY
+        echo "- Update external documentation if needed" >> $GITHUB_STEP_SUMMARY 

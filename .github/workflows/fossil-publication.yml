@@ -1,0 +1,117 @@
+name: Fossil Publication Automation
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'fossils/**'
+      - 'src/utils/roadmapInsightsExtractor.ts'
+      - 'scripts/extract-roadmap-insights.ts'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'fossils/**'
+      - 'src/utils/roadmapInsightsExtractor.ts'
+      - 'scripts/extract-roadmap-insights.ts'
+  workflow_dispatch:
+    inputs:
+      force_regenerate:
+        description: 'Force regenerate all publications'
+        required: false
+        default: 'false'
+
+jobs:
+  extract-and-publish:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v1
+      with:
+        bun-version: latest
+    
+    - name: Install dependencies
+      run: bun install
+    
+    - name: Extract roadmap insights
+      run: bun run scripts/extract-roadmap-insights.ts
+    
+    - name: Clean roadmap LLM insights
+      run: bun run scripts/clean-roadmap-llm-insights.ts
+    
+    - name: Validate generated files
+      run: |
+        echo "Validating generated files..."
+        if [ ! -f "fossils/roadmap_insights_collection.json" ]; then
+          echo "❌ roadmap_insights_collection.json not found"
+          exit 1
+        fi
+        if [ ! -f "fossils/roadmap_insights_web.json" ]; then
+          echo "❌ roadmap_insights_web.json not found"
+          exit 1
+        fi
+        if [ ! -f "fossils/roadmap_progress_report.md" ]; then
+          echo "❌ roadmap_progress_report.md not found"
+          exit 1
+        fi
+        echo "✅ All generated files validated"
+    
+    - name: Run tests
+      run: bun test
+    
+    - name: Commit and push changes
+      if: github.event_name == 'push'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add fossils/roadmap_insights_collection.json
+        git add fossils/roadmap_insights_web.json
+        git add fossils/roadmap_progress_report.md
+        git add fossils/roadmap.yml
+        git commit -m "🤖 Auto-publish fossils: Extract insights and clean roadmap [skip ci]" || echo "No changes to commit"
+        git push
+    
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: fossil-publications
+        path: |
+          fossils/roadmap_insights_collection.json
+          fossils/roadmap_insights_web.json
+          fossils/roadmap_progress_report.md
+        retention-days: 30
+    
+    - name: Generate summary
+      run: |
+        echo "## 📊 Fossil Publication Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Generated Files:" >> $GITHUB_STEP_SUMMARY
+        echo "- **Collection**: fossils/roadmap_insights_collection.json" >> $GITHUB_STEP_SUMMARY
+        echo "- **Web Publication**: fossils/roadmap_insights_web.json" >> $GITHUB_STEP_SUMMARY
+        echo "- **Markdown Report**: fossils/roadmap_progress_report.md" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Extract summary from collection file
+        if [ -f "fossils/roadmap_insights_collection.json" ]; then
+          echo "### Insights Summary:" >> $GITHUB_STEP_SUMMARY
+          TOTAL=$(jq '.summary.totalTasks' fossils/roadmap_insights_collection.json)
+          COMPLETED=$(jq '.summary.completedTasks' fossils/roadmap_insights_collection.json)
+          PENDING=$(jq '.summary.pendingTasks' fossils/roadmap_insights_collection.json)
+          INSIGHTS=$(jq '.summary.insightsGenerated' fossils/roadmap_insights_collection.json)
+          
+          echo "- **Total Tasks**: $TOTAL" >> $GITHUB_STEP_SUMMARY
+          echo "- **Completed**: $COMPLETED" >> $GITHUB_STEP_SUMMARY
+          echo "- **Pending**: $PENDING" >> $GITHUB_STEP_SUMMARY
+          echo "- **Insights Generated**: $INSIGHTS" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Next Steps:" >> $GITHUB_STEP_SUMMARY
+        echo "- Review generated insights in the artifacts" >> $GITHUB_STEP_SUMMARY
+        echo "- Update documentation with new progress report" >> $GITHUB_STEP_SUMMARY
+        echo "- Share insights with stakeholders" >> $GITHUB_STEP_SUMMARY 
