@@ -10,12 +10,17 @@ This document describes the canonical workflow for publishing curated project st
 
 - **YAML**: The canonical, curated, CI-stamped source of truth (e.g., `fossils/project_status.yml`).
 - **JSON**: Machine-readable, API/automation-friendly export (e.g., `fossils/public/api/project_status_public.json`).
-- **Markdown**: Human/public/blog/docs-ready, metadata-rich markdown (e.g., `fossils/public/blog/project_status.post.md`).
+- **Markdown**: Human/public/blog/docs-ready, metadata-rich markdown with visual elements (e.g., `fossils/public/blog/project_status.post.md`).
 
 ### Why This Pattern?
 - **YAML** is best for curation, versioning, and CI validation.
 - **JSON** enables programmatic access, public APIs, and metadata-driven automation.
-- **Markdown** is ideal for human consumption, blogs, docs, and can be enriched with frontmatter for future React/MDX/Next.js/Remix/TanStack integrations.
+- **Markdown** is ideal for human consumption, blogs, docs, and can be enriched with frontmatter and Mermaid diagrams for future React/MDX/Next.js/Remix/TanStack integrations.
+
+### Visual Enhancement
+- **Mermaid Diagrams**: Automatically generated workflow, architecture, and relationship diagrams
+- **Status Indicators**: Visual progress tracking and health indicators
+- **Audience-Specific Visuals**: Tailored diagrams for technical, management, and stakeholder audiences
 
 ---
 
@@ -68,11 +73,41 @@ fossils/
 1. **Update YAML fossil** (e.g., `fossils/project_status.yml`) via automation or manual curation.
 2. **Run publication script** (TypeScript, using luxon/date-fns for timestamps):
    - Reads YAML
-   - Generates `fossils/public/blog/project_status.post.md` (with frontmatter)
-   - Generates `fossils/public/api/project_status_public.json` (with metadata)
+   - Analyzes content for visual opportunities
+   - Generates `fossils/public/blog/project_status.post.md` (with frontmatter and Mermaid diagrams)
+   - Generates `fossils/public/api/project_status_public.json` (with metadata and visual references)
 3. **Outputs are CI-stamped, ready for publication, API, or further automation.**
 4. **(Future)**: GitHub Actions/CI automates this process, validates outputs, and publishes to docs/blog/API.
 5. **(Future)**: Prompts/system messages are fossilized in `fossils/prompts/` and published as needed.
+
+### Visual Publication Example
+
+```mermaid
+graph TD
+    A[YAML Fossil] --> B[Content Analysis]
+    B --> C[Visual Generation]
+    C --> D[Enhanced Markdown]
+    C --> E[Enhanced JSON]
+    D --> F[Public Documentation]
+    E --> G[API Endpoints]
+    
+    subgraph "Visual Analysis"
+        H[Workflow Detection]
+        I[Architecture Analysis]
+        J[Relationship Mapping]
+    end
+    
+    B --> H
+    B --> I
+    B --> J
+    H --> C
+    I --> C
+    J --> C
+    
+    style A fill:#fff3e0
+    style F fill:#e8f5e8
+    style G fill:#e3f2fd
+```
 
 ---
 
@@ -83,6 +118,7 @@ fossils/
 - **Integrate with CI/GitHub Actions for validation and publication**
 - **Extend to prompt/system message fossilization and public API endpoints**
 - **Leverage metadata-rich markdown/JSON for future React/MDX/Next.js/Remix/TanStack integrations**
+- **Implement visual documentation standards** (see [Visual Documentation Standards](./VISUAL_DOCUMENTATION_STANDARDS.md))
 
 ---
 

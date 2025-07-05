@@ -32,7 +32,7 @@ tasks:
           done:
             retrospective: Documentation task completed successfully. Review for lessons learned and optimization opportunities.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.468Z'
+            completedAt: "2025-07-04T21:44:31.468Z"
       - task: Document and promote setup_status.yml as canonical, programmatic, and auditable project setup fossil
         status: done
         owner: emmanuelbarrera
@@ -51,7 +51,7 @@ tasks:
           done:
             retrospective: Fossil-based automation successfully implemented. Fossil workflow established and operational.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.468Z'
+            completedAt: "2025-07-04T21:44:31.468Z"
     milestone: Immediate Actions
     issues:
       - 201
@@ -67,11 +67,11 @@ tasks:
       blockers: None - task completed successfully.
       recommendations: Document lessons learned and consider optimization opportunities.
       impact: Positive - task objectives achieved and deliverables completed.
-      deadline: ''
+      deadline: ""
       done:
         retrospective: Task completed successfully. Review for lessons learned and optimization opportunities.
         insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-        completedAt: '2025-07-04T21:48:25.063Z'
+        completedAt: "2025-07-04T21:48:25.063Z"
   - task: Update integration tests to use real repo
     status: done
     issues:
@@ -97,11 +97,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Testing infrastructure successfully implemented. Testing operational.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.468Z'
+            completedAt: "2025-07-04T21:44:31.468Z"
       - task: Add GitHub CLI auth check
         status: pending
         issues:
@@ -112,7 +112,7 @@ tasks:
           blockers: Task status unclear - review requirements and dependencies.
           recommendations: Review task requirements and create implementation plan.
           impact: Unknown - impact assessment pending task review.
-          deadline: ''
+          deadline: ""
     deadline: 2024-07-10T00:00:00.000Z
     milestone: E2E Test Refactor
     llmInsights:
@@ -126,7 +126,7 @@ tasks:
       done:
         retrospective: Testing infrastructure successfully implemented. Testing operational.
         insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-        completedAt: '2025-07-04T21:44:31.468Z'
+        completedAt: "2025-07-04T21:44:31.468Z"
   - task: Document fossilization workflow
     status: done
     owner: llm+human
@@ -151,7 +151,7 @@ tasks:
       done:
         retrospective: Fossil-based automation successfully implemented. Fossil workflow established and operational.
         insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-        completedAt: '2025-07-04T21:44:31.468Z'
+        completedAt: "2025-07-04T21:44:31.468Z"
   - task: Automate roadmap to GitHub issue/project sync
     status: done
     owner: emmanuelbarrera
@@ -174,11 +174,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Task completed successfully. Review for lessons learned and optimization opportunities.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.468Z'
+            completedAt: "2025-07-04T21:44:31.468Z"
       - task: Create/update issues for each roadmap task
         status: partial
         llmInsights:
@@ -188,7 +188,7 @@ tasks:
           blockers: Partial implementation - review scope and requirements.
           recommendations: Assess remaining work and prioritize completion of critical subtasks.
           impact: Partial - some benefits achieved, full impact pending completion.
-          deadline: ''
+          deadline: ""
       - task: Sync milestones with roadmap deadlines
         status: pending
         llmInsights:
@@ -196,7 +196,7 @@ tasks:
           blockers: Task status unclear - review requirements and dependencies.
           recommendations: Review task requirements and create implementation plan.
           impact: Unknown - impact assessment pending task review.
-          deadline: ''
+          deadline: ""
     milestone: Automation Sync
     llmInsights:
       summary: >-
@@ -205,11 +205,11 @@ tasks:
       blockers: None - task completed successfully.
       recommendations: Document lessons learned and consider optimization opportunities.
       impact: Positive - task objectives achieved and deliverables completed.
-      deadline: ''
+      deadline: ""
       done:
         retrospective: Task completed successfully. Review for lessons learned and optimization opportunities.
         insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-        completedAt: '2025-07-04T21:44:31.468Z'
+        completedAt: "2025-07-04T21:44:31.468Z"
   - task: Prototype Gist-based fossilization for account-level fossils
     status: planned
     owner: emmanuelbarrera
@@ -222,7 +222,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Implement Gist fossilization utility
         status: planned
         llmInsights:
@@ -230,7 +230,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: E2E test for Gist-based fossilization
         status: planned
         llmInsights:
@@ -238,14 +238,14 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
     milestone: Gist Integration
     llmInsights:
       summary: low priority fossilization task planned for future implementation. low impact anticipated.
       blockers: Task not yet started - no current blockers.
       recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
       impact: Potential - impact will be assessed once implementation begins.
-      deadline: ''
+      deadline: ""
   - task: Tag all test-created issues/labels for cleanup
     status: done
     owner: emmanuelbarrera
@@ -258,11 +258,11 @@ tasks:
       blockers: None - task completed successfully.
       recommendations: Document lessons learned and consider optimization opportunities.
       impact: Positive - task objectives achieved and deliverables completed.
-      deadline: ''
+      deadline: ""
       done:
         retrospective: Testing infrastructure successfully implemented. Testing operational.
         insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-        completedAt: '2025-07-04T21:44:31.469Z'
+        completedAt: "2025-07-04T21:44:31.469Z"
   - task: Add reporting/cleanup scripts for test artifacts
     status: done
     owner: emmanuelbarrera
@@ -275,11 +275,11 @@ tasks:
       blockers: None - task completed successfully.
       recommendations: Document lessons learned and consider optimization opportunities.
       impact: Positive - task objectives achieved and deliverables completed.
-      deadline: ''
+      deadline: ""
       done:
         retrospective: Testing infrastructure successfully implemented. Testing operational.
         insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-        completedAt: '2025-07-04T21:44:31.469Z'
+        completedAt: "2025-07-04T21:44:31.469Z"
   - task: Set up script to automatically curate test outputs as fossils
     status: in progress
     owner: emmanuelbarrera
@@ -305,7 +305,7 @@ tasks:
           blockers: Fossil implementation ongoing. Ensure schema validation and CI integration.
           recommendations: Continue fossil pattern implementation. Ensure schema validation and CI integration.
           impact: In progress - impact will be assessed upon completion.
-          deadline: ''
+          deadline: ""
       - task: Identify all other test output file patterns and locations
         status: in progress
         llmInsights:
@@ -313,7 +313,7 @@ tasks:
           blockers: Active development blockers may exist - review current progress.
           recommendations: Continue focused development. Consider breaking down remaining work if needed.
           impact: In progress - impact will be assessed upon completion.
-          deadline: ''
+          deadline: ""
       - task: >-
           Audit all test output files and stop writing any that are not used for fossil curation, context gathering, or
           traceability
@@ -323,7 +323,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Implement script to collect and curate outputs as fossils
         status: planned
         llmInsights:
@@ -331,7 +331,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Integrate script into test/CI workflow
         status: planned
         llmInsights:
@@ -339,7 +339,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Document the workflow and update onboarding/CONTRIBUTING docs
         status: planned
         llmInsights:
@@ -347,7 +347,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: >-
           Refuse or clean up any output files with timestamped filenames; only allow stable, canonical filenames for
           curated fossils
@@ -357,7 +357,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - high impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
     recommendation: Automate curation post-test; only write files that are curated fossils or referenced artifacts
     preference: Store curated outputs in fossils/ or a dedicated directory
     llmInsights:
@@ -365,7 +365,7 @@ tasks:
       blockers: Active development blockers may exist - review current progress.
       recommendations: Continue focused development. Consider breaking down remaining work if needed.
       impact: In progress - impact will be assessed upon completion.
-      deadline: ''
+      deadline: ""
   - task: Integrate E2E tests into CI pipeline
     status: done
     owner: emmanuelbarrera
@@ -378,11 +378,11 @@ tasks:
       blockers: None - task completed successfully.
       recommendations: Document lessons learned and consider optimization opportunities.
       impact: Positive - task objectives achieved and deliverables completed.
-      deadline: ''
+      deadline: ""
       done:
         retrospective: Testing infrastructure successfully implemented. Testing operational.
         insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-        completedAt: '2025-07-04T21:44:31.469Z'
+        completedAt: "2025-07-04T21:44:31.469Z"
   - task: Save this roadmap as a fossil or issue for LLM/human reference
     status: done
     owner: emmanuelbarrera
@@ -395,11 +395,11 @@ tasks:
       blockers: None - task completed successfully.
       recommendations: Document lessons learned and consider optimization opportunities.
       impact: Positive - task objectives achieved and deliverables completed.
-      deadline: ''
+      deadline: ""
       done:
         retrospective: Fossil-based automation successfully implemented. Fossil workflow established and operational.
         insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-        completedAt: '2025-07-04T21:44:31.469Z'
+        completedAt: "2025-07-04T21:44:31.469Z"
   - task: Document all E2E insights, code preferences, and automation patterns
     status: done
     owner: emmanuelbarrera
@@ -412,11 +412,11 @@ tasks:
       blockers: None - task completed successfully.
       recommendations: Document lessons learned and consider optimization opportunities.
       impact: Positive - task objectives achieved and deliverables completed.
-      deadline: ''
+      deadline: ""
       done:
         retrospective: Testing infrastructure successfully implemented. Testing operational.
         insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-        completedAt: '2025-07-04T21:44:31.469Z'
+        completedAt: "2025-07-04T21:44:31.469Z"
   - task: Enforce schema-driven Params and runtime validation in all utilities
     status: in progress
     owner: emmanuelbarrera
@@ -433,11 +433,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Documentation task completed successfully. Review for lessons learned and optimization opportunities.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.469Z'
+            completedAt: "2025-07-04T21:44:31.469Z"
       - task: Add Zod schema and runtime validation to curateAndCheck
         status: done
         llmInsights:
@@ -447,11 +447,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Fossil-based automation successfully implemented. Fossil workflow established and operational.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.469Z'
+            completedAt: "2025-07-04T21:44:31.469Z"
       - task: Add Zod schema and runtime validation to createFossilIssue
         status: done
         llmInsights:
@@ -461,11 +461,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Fossil-based automation successfully implemented. Fossil workflow established and operational.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.469Z'
+            completedAt: "2025-07-04T21:44:31.469Z"
       - task: Add Zod schema and runtime validation to createFossilLabel
         status: done
         llmInsights:
@@ -475,11 +475,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Fossil-based automation successfully implemented. Fossil workflow established and operational.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.469Z'
+            completedAt: "2025-07-04T21:44:31.469Z"
       - task: Add Zod schema and runtime validation to createFossilMilestone
         status: done
         llmInsights:
@@ -489,11 +489,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Fossil-based automation successfully implemented. Fossil workflow established and operational.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.469Z'
+            completedAt: "2025-07-04T21:44:31.469Z"
       - task: Add Zod schema and runtime validation to toFossilEntry (fossilize.ts)
         status: in progress
         llmInsights:
@@ -501,7 +501,7 @@ tasks:
           blockers: Fossil implementation ongoing. Ensure schema validation and CI integration.
           recommendations: Continue fossil pattern implementation. Ensure schema validation and CI integration.
           impact: In progress - impact will be assessed upon completion.
-          deadline: ''
+          deadline: ""
       - task: Add Zod schema and runtime validation to syncTrackerWithGitHub (syncTracker.ts)
         status: planned
         llmInsights:
@@ -509,7 +509,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Audit and refactor other utilities for Params/schema pattern
         status: in progress
         llmInsights:
@@ -517,7 +517,7 @@ tasks:
           blockers: Active development blockers may exist - review current progress.
           recommendations: Continue focused development. Consider breaking down remaining work if needed.
           impact: In progress - impact will be assessed upon completion.
-          deadline: ''
+          deadline: ""
       - task: Refactor all CLI/scripts/examples to use new Params types
         status: in progress
         llmInsights:
@@ -525,7 +525,7 @@ tasks:
           blockers: Active development blockers may exist - review current progress.
           recommendations: Continue focused development. Consider breaking down remaining work if needed.
           impact: In progress - impact will be assessed upon completion.
-          deadline: ''
+          deadline: ""
       - task: Add/extend unit tests for runtime validation (invalid/valid params)
         status: in progress
         llmInsights:
@@ -533,7 +533,7 @@ tasks:
           blockers: Active development blockers may exist - review current progress.
           recommendations: Continue focused development. Consider breaking down remaining work if needed.
           impact: In progress - impact will be assessed upon completion.
-          deadline: ''
+          deadline: ""
       - task: Add/extend integration/E2E tests for CLI/scripts
         status: planned
         llmInsights:
@@ -541,7 +541,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Document the pattern in code comments and onboarding docs
         status: done
         llmInsights:
@@ -551,11 +551,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Documentation task completed successfully. Review for lessons learned and optimization opportunities.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.469Z'
+            completedAt: "2025-07-04T21:44:31.469Z"
     deadline: 2024-07-15T00:00:00.000Z
     milestone: Type-Safe Automation Refactor
     llmInsights:
@@ -567,7 +567,7 @@ tasks:
   - task: Audit and enforce schema-driven, object params pattern in all utilities
     status: done
     owner: emmanuelbarrera
-    context: >-
+    context: >
       All major utilities in src/utils (curateAndCheck, toFossilEntry, createFossilIssue, createFossilLabel,
       createFossilMilestone, PlanValidator, githubCliCommands) use Zod schemas and object params.
     issues: []
@@ -587,11 +587,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Task completed successfully. Review for lessons learned and optimization opportunities.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.469Z'
+            completedAt: "2025-07-04T21:44:31.469Z"
       - task: Refactor all CLI/scripts/examples to use new Params types
         status: in progress
         llmInsights:
@@ -599,7 +599,7 @@ tasks:
           blockers: Active development blockers may exist - review current progress.
           recommendations: Continue focused development. Consider breaking down remaining work if needed.
           impact: In progress - impact will be assessed upon completion.
-          deadline: ''
+          deadline: ""
       - task: Add/extend unit and E2E tests for runtime validation
         status: in progress
         llmInsights:
@@ -607,7 +607,7 @@ tasks:
           blockers: Active development blockers may exist - review current progress.
           recommendations: Continue focused development. Consider breaking down remaining work if needed.
           impact: In progress - impact will be assessed upon completion.
-          deadline: ''
+          deadline: ""
       - task: Document the pattern in code comments and onboarding docs
         status: done
         llmInsights:
@@ -617,11 +617,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Documentation task completed successfully. Review for lessons learned and optimization opportunities.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.469Z'
+            completedAt: "2025-07-04T21:44:31.469Z"
     milestone: Type-Safe Automation Refactor
     llmInsights:
       summary: >-
@@ -630,11 +630,11 @@ tasks:
       blockers: None - task completed successfully.
       recommendations: Document lessons learned and consider optimization opportunities.
       impact: Positive - task objectives achieved and deliverables completed.
-      deadline: ''
+      deadline: ""
       done:
         retrospective: Task completed successfully. Review for lessons learned and optimization opportunities.
         insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-        completedAt: '2025-07-04T21:44:31.469Z'
+        completedAt: "2025-07-04T21:44:31.469Z"
   - task: Canonical fossilization of roadmap.yml and project_status.yml
     status: done
     owner: emmanuelbarrera
@@ -655,11 +655,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Task completed successfully. Review for lessons learned and optimization opportunities.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.469Z'
+            completedAt: "2025-07-04T21:44:31.469Z"
       - task: Move roadmap.yml and project_status.yml to fossils/ (use mv, not cp)
         status: done
         llmInsights:
@@ -669,11 +669,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Fossil-based automation successfully implemented. Fossil workflow established and operational.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.469Z'
+            completedAt: "2025-07-04T21:44:31.469Z"
       - task: Update fossils/README.md and add doc comments to the YAMLs
         status: done
         llmInsights:
@@ -683,11 +683,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Fossil-based automation successfully implemented. Fossil workflow established and operational.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.469Z'
+            completedAt: "2025-07-04T21:44:31.469Z"
       - task: Update all scripts, tests, and CI to use fossils/roadmap.yml and fossils/project_status.yml
         status: done
         llmInsights:
@@ -697,11 +697,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Testing infrastructure successfully implemented. Testing operational.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.469Z'
+            completedAt: "2025-07-04T21:44:31.469Z"
       - task: Remove or archive demo/test fossils (curated_roadmap_demo_*.json)
         status: done
         llmInsights:
@@ -711,11 +711,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Testing infrastructure successfully implemented. Testing operational.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.469Z'
+            completedAt: "2025-07-04T21:44:31.469Z"
       - task: Mark this transition as done in roadmap.yml
         status: done
         llmInsights:
@@ -725,11 +725,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Task completed successfully. Review for lessons learned and optimization opportunities.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.469Z'
+            completedAt: "2025-07-04T21:44:31.469Z"
       - task: Validate the new fossils in CI/E2E
         status: done
         llmInsights:
@@ -739,11 +739,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Testing infrastructure successfully implemented. Testing operational.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.469Z'
+            completedAt: "2025-07-04T21:44:31.469Z"
       - task: Update onboarding docs and recommendations as needed
         status: done
         llmInsights:
@@ -753,11 +753,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Documentation task completed successfully. Review for lessons learned and optimization opportunities.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.469Z'
+            completedAt: "2025-07-04T21:44:31.469Z"
     key_points:
       - >-
         project_status.yml is generated/updated by scripts/update-project-status.ts and is a canonical, curated fossil
@@ -775,11 +775,11 @@ tasks:
       blockers: None - task completed successfully.
       recommendations: Document lessons learned and consider optimization opportunities.
       impact: Positive - task objectives achieved and deliverables completed.
-      deadline: ''
+      deadline: ""
       done:
         retrospective: Fossil-based automation successfully implemented. Fossil workflow established and operational.
         insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-        completedAt: '2025-07-04T21:44:31.469Z'
+        completedAt: "2025-07-04T21:44:31.469Z"
   - task: Scaffold E2E tests for fossilization and LLM insights workflow
     status: planned
     owner: emmanuelbarrera
@@ -799,7 +799,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Implement E2E test to check schema and required fields
         status: planned
         llmInsights:
@@ -807,7 +807,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Add test to assert minimum coverage and fossilization thresholds
         status: planned
         llmInsights:
@@ -815,7 +815,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Add regression test to compare current and previous fossils
         status: planned
         llmInsights:
@@ -823,7 +823,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Integrate LLM insights validation (presence, format, actionable content)
         status: planned
         llmInsights:
@@ -831,7 +831,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Document E2E workflow and update onboarding/CONTRIBUTING docs
         status: planned
         llmInsights:
@@ -839,14 +839,14 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
     milestone: Fossilization E2E & LLM Integration
     llmInsights:
       summary: medium priority testing task planned for future implementation. medium impact anticipated.
       blockers: Task not yet started - no current blockers.
       recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
       impact: Potential - impact will be assessed once implementation begins.
-      deadline: ''
+      deadline: ""
   - task: Handle OpenAI API rate limit errors (429) in all LLM utilities
     status: planned
     owner: emmanuelbarrera
@@ -867,7 +867,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Add user-facing error messages and delay notifications in CLI/scripts
         status: planned
         llmInsights:
@@ -875,7 +875,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Update all consumers (SemanticTaggerService, LLMPlanningService, scripts) to handle rate limits gracefully
         status: planned
         llmInsights:
@@ -883,7 +883,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Add/extend tests for rate limit scenarios
         status: planned
         llmInsights:
@@ -891,14 +891,14 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
     milestone: LLM API Robustness
     llmInsights:
       summary: low priority llm-integration task planned for future implementation. low impact anticipated.
       blockers: Task not yet started - no current blockers.
       recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
       impact: Potential - impact will be assessed once implementation begins.
-      deadline: ''
+      deadline: ""
   - task: Refactor test to only write curated fossil outputs
     status: planned
     owner: emmanuelbarrera
@@ -916,7 +916,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Update the test to only write output if it is a curated fossil or referenced artifact
         status: planned
         llmInsights:
@@ -924,7 +924,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Verify the test and output comply with the new policy
         status: planned
         llmInsights:
@@ -932,7 +932,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Ensure no timestamped or mock/demo files are written to the repo; only stable, canonical filenames are used
         status: planned
         llmInsights:
@@ -940,7 +940,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - high impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
     recommendation: Use as a template for refactoring other tests
     preference: All test outputs must be curated fossils or referenced artifacts
     llmInsights:
@@ -948,7 +948,7 @@ tasks:
       blockers: Task not yet started - no current blockers.
       recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
       impact: Potential - impact will be assessed once implementation begins.
-      deadline: ''
+      deadline: ""
   - task: Enhance local LLM support for automation ecosystem
     status: planned
     owner: emmanuelbarrera
@@ -982,13 +982,13 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: >-
                   LLM integration successfully completed. LLM automation now available for intelligent task processing
                   and insights.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
           - task: Integrate local LLM usage into CLI (llm-usage or new command)
             status: done
             llmInsights:
@@ -998,13 +998,13 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: >-
                   LLM integration successfully completed. LLM automation now available for intelligent task processing
                   and insights.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
           - task: Add integration tests for happy-path (Ollama) and backend switching
             status: done
             llmInsights:
@@ -1014,11 +1014,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Testing infrastructure successfully implemented. Testing operational.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
           - task: Reference roadmap.yml task in test descriptions/comments for traceability
             status: done
             llmInsights:
@@ -1028,11 +1028,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Testing infrastructure successfully implemented. Testing operational.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
           - task: Document setup, usage, and test mapping in onboarding/docs
             status: done
             llmInsights:
@@ -1042,11 +1042,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Documentation task completed successfully. Review for lessons learned and optimization opportunities.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
         llmInsights:
           summary: >-
             Task completed successfully with medium impact. testing category task achieved objectives and is now
@@ -1054,11 +1054,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Testing infrastructure successfully implemented. Testing operational.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.469Z'
+            completedAt: "2025-07-04T21:44:31.469Z"
       - task: Enhance intelligent routing and cost optimization
         status: done
         context: >
@@ -1077,11 +1077,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Task completed successfully. Review for lessons learned and optimization opportunities.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
           - task: Add task-specific model selection (e.g., code generation vs content analysis)
             status: planned
             llmInsights:
@@ -1089,7 +1089,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Implement adaptive cost thresholds based on usage patterns
             status: planned
             llmInsights:
@@ -1097,7 +1097,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add performance monitoring and automatic provider switching
             status: planned
             llmInsights:
@@ -1105,7 +1105,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
         llmInsights:
           summary: >-
             Task completed successfully with low impact. implementation category task achieved objectives and is now
@@ -1113,11 +1113,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Task completed successfully. Review for lessons learned and optimization opportunities.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.469Z'
+            completedAt: "2025-07-04T21:44:31.469Z"
       - task: Integrate local LLM with fossilization workflows
         status: planned
         context: >
@@ -1131,7 +1131,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Implement local LLM support for content generation and summarization
             status: done
             context: >
@@ -1145,13 +1145,13 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: >-
                   LLM integration successfully completed. LLM automation now available for intelligent task processing
                   and insights.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
           - task: Add local LLM support for fossil curation and validation
             status: planned
             context: >
@@ -1163,7 +1163,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Create fallback strategies for complex fossilization tasks
             status: planned
             llmInsights:
@@ -1171,13 +1171,13 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
         llmInsights:
           summary: low priority fossilization task planned for future implementation. low impact anticipated.
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Add CLI tools for local LLM management
         status: planned
         context: >
@@ -1191,7 +1191,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Implement performance benchmarking and comparison tools
             status: planned
             llmInsights:
@@ -1199,7 +1199,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add configuration management for local LLM settings
             status: planned
             llmInsights:
@@ -1207,7 +1207,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Create usage analytics specific to local LLM performance
             status: planned
             llmInsights:
@@ -1215,13 +1215,13 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
         llmInsights:
           summary: low priority llm-integration task planned for future implementation. low impact anticipated.
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Implement caching and optimization for local LLM
         status: planned
         context: >
@@ -1235,7 +1235,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add prompt optimization and template management
             status: planned
             llmInsights:
@@ -1243,7 +1243,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Implement batch processing for multiple LLM calls
             status: planned
             llmInsights:
@@ -1251,7 +1251,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add memory management and resource optimization
             status: planned
             llmInsights:
@@ -1259,13 +1259,13 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
         llmInsights:
           summary: low priority llm-integration task planned for future implementation. low impact anticipated.
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Add comprehensive testing and validation
         status: planned
         context: >
@@ -1279,7 +1279,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Create integration tests for local LLM with fossilization workflows
             status: planned
             llmInsights:
@@ -1287,7 +1287,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Implement performance benchmarking tests
             status: planned
             llmInsights:
@@ -1295,7 +1295,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add fallback and error handling tests
             status: planned
             llmInsights:
@@ -1303,13 +1303,13 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
         llmInsights:
           summary: medium priority testing task planned for future implementation. medium impact anticipated.
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Document local LLM setup and usage patterns
         status: planned
         context: >
@@ -1323,7 +1323,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Document best practices for local LLM configuration
             status: planned
             llmInsights:
@@ -1331,7 +1331,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add troubleshooting guide for common local LLM issues
             status: planned
             llmInsights:
@@ -1339,7 +1339,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Create performance optimization guide
             status: planned
             llmInsights:
@@ -1347,13 +1347,13 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
         llmInsights:
           summary: low priority llm-integration task planned for future implementation. low impact anticipated.
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Fossilize LLM insights, benchmarks, and model discovery results
         status: done
         context: >
@@ -1369,11 +1369,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Fossil-based automation successfully implemented. Fossil workflow established and operational.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
           - task: Implement scripts/utilities to generate and curate these fossils
             status: done
             llmInsights:
@@ -1383,11 +1383,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Fossil-based automation successfully implemented. Fossil workflow established and operational.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
           - task: Integrate fossilization of insights/benchmarks into LLM workflows and tests
             status: done
             llmInsights:
@@ -1397,11 +1397,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Testing infrastructure successfully implemented. Testing operational.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
           - task: Reference fossilized insights/benchmarks in roadmap and documentation
             status: done
             llmInsights:
@@ -1411,11 +1411,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Documentation task completed successfully. Review for lessons learned and optimization opportunities.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
           - task: Add onboarding/docs section for fossil usage and auditing
             status: done
             llmInsights:
@@ -1425,11 +1425,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Documentation task completed successfully. Review for lessons learned and optimization opportunities.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
         llmInsights:
           summary: >-
             Task completed successfully with high impact. fossilization category task achieved objectives and is now
@@ -1437,11 +1437,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Fossil-based automation successfully implemented. Fossil workflow established and operational.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.469Z'
+            completedAt: "2025-07-04T21:44:31.469Z"
     key_points:
       - Current implementation has basic Ollama support but needs enhancement for production automation
       - Focus on intelligent routing, cost optimization, and seamless integration with existing workflows
@@ -1480,7 +1480,7 @@ tasks:
       blockers: Task not yet started - no current blockers.
       recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
       impact: Potential - impact will be assessed once implementation begins.
-      deadline: ''
+      deadline: ""
   - task: Enforce Canonical Fossil Artifact Policy and Curation Workflow
     tags:
       - immediate-actions
@@ -1515,7 +1515,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Document the canonical fossil artifact policy in onboarding and CONTRIBUTING docs
         status: planned
         llmInsights:
@@ -1523,7 +1523,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - high impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Refactor tests to only write output files if they are curated fossils or referenced artifacts
         status: planned
         llmInsights:
@@ -1531,7 +1531,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Integrate the curation script into CI to enforce artifact policy post-test
         status: planned
         llmInsights:
@@ -1539,7 +1539,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Clarify and document the canonical use of .context-fossil/entries for versioned fossil artifacts
         status: planned
         llmInsights:
@@ -1547,7 +1547,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - high impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: >-
           Prohibit timestamped filenames for all canonical fossils, exports, and reports; require stable filenames and
           cleanup of any timestamped or test/demo outputs
@@ -1557,13 +1557,13 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - high impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
     llmInsights:
       summary: low priority fossilization task planned for future implementation. high impact anticipated.
       blockers: Task not yet started - no current blockers.
       recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
       impact: Potential - high impact will be assessed once implementation begins.
-      deadline: ''
+      deadline: ""
   - task: Automate public markdown and JSON generation from project_status.yml
     status: planned
     owner: emmanuelbarrera
@@ -1580,7 +1580,7 @@ tasks:
       blockers: Task not yet started - no current blockers.
       recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
       impact: Potential - impact will be assessed once implementation begins.
-      deadline: ''
+      deadline: ""
   - task: Automate fossil-to-markdown/json workflow with GitHub Actions/CI
     status: planned
     owner: emmanuelbarrera
@@ -1598,7 +1598,7 @@ tasks:
       blockers: Task not yet started - no current blockers.
       recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
       impact: Potential - impact will be assessed once implementation begins.
-      deadline: ''
+      deadline: ""
   - task: Fossilize prompts/system messages and publish as needed
     status: planned
     owner: emmanuelbarrera
@@ -1614,7 +1614,7 @@ tasks:
       blockers: Task not yet started - no current blockers.
       recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
       impact: Potential - impact will be assessed once implementation begins.
-      deadline: ''
+      deadline: ""
   - task: Integrate local LLM for context gathering and fossilization
     status: planned
     owner: emmanuelbarrera
@@ -1629,7 +1629,7 @@ tasks:
       blockers: Task not yet started - no current blockers.
       recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
       impact: Potential - impact will be assessed once implementation begins.
-      deadline: ''
+      deadline: ""
   - task: Close Documentation Gaps and Improve Coherence Across All Docs
     status: in progress
     owner: emmanuelbarrera
@@ -1694,11 +1694,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Fossil-based automation successfully implemented. Fossil workflow established and operational.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
           - task: Mark GitHubService.createIssue as deprecated with migration guide
             status: done
             llmInsights:
@@ -1708,11 +1708,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Task completed successfully. Review for lessons learned and optimization opportunities.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
           - task: Add fossil deduplication and progress tracking documentation
             status: done
             llmInsights:
@@ -1722,11 +1722,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Documentation task completed successfully. Review for lessons learned and optimization opportunities.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
           - task: Update all CLI examples to use fossil-backed utilities
             status: done
             llmInsights:
@@ -1736,11 +1736,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Fossil-based automation successfully implemented. Fossil workflow established and operational.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
         llmInsights:
           summary: >-
             Task completed successfully with high impact. fossilization category task achieved objectives and is now
@@ -1748,11 +1748,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Fossil-based automation successfully implemented. Fossil workflow established and operational.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.469Z'
+            completedAt: "2025-07-04T21:44:31.469Z"
       - task: Document intelligent tagging system and LLM integration patterns
         status: planned
         context: >
@@ -1767,7 +1767,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Document semantic tagging CLI commands and patterns
             status: planned
             llmInsights:
@@ -1775,7 +1775,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Update COMPLETE_AUTOMATION_ECOSYSTEM.md with tagging integration
             status: planned
             llmInsights:
@@ -1783,7 +1783,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add tagging examples to DEVELOPMENT_GUIDE.md
             status: planned
             llmInsights:
@@ -1791,13 +1791,13 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
         llmInsights:
           summary: low priority llm-integration task planned for future implementation. low impact anticipated.
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Centralize and document GitHubCLICommands utility patterns
         status: done
         context: >
@@ -1814,11 +1814,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Task completed successfully. Review for lessons learned and optimization opportunities.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
           - task: Add GitHubCLICommands section to API_REFERENCE.md
             status: done
             llmInsights:
@@ -1828,11 +1828,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Task completed successfully. Review for lessons learned and optimization opportunities.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
           - task: Update DEVELOPMENT_GUIDE.md with centralized CLI patterns
             status: done
             llmInsights:
@@ -1842,11 +1842,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Task completed successfully. Review for lessons learned and optimization opportunities.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
           - task: Ensure all CLI examples use GitHubCLICommands
             status: done
             llmInsights:
@@ -1856,11 +1856,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Task completed successfully. Review for lessons learned and optimization opportunities.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
         llmInsights:
           summary: >-
             Task completed successfully with low impact. implementation category task achieved objectives and is now
@@ -1868,11 +1868,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Task completed successfully. Review for lessons learned and optimization opportunities.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.469Z'
+            completedAt: "2025-07-04T21:44:31.469Z"
       - task: Document comprehensive validation patterns with Zod schemas
         status: done
         context: >
@@ -1888,11 +1888,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Task completed successfully. Review for lessons learned and optimization opportunities.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
           - task: Update DEVELOPMENT_GUIDE.md with Zod validation examples
             status: done
             llmInsights:
@@ -1902,11 +1902,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Task completed successfully. Review for lessons learned and optimization opportunities.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
           - task: Document Params object pattern in all relevant docs
             status: done
             llmInsights:
@@ -1916,11 +1916,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Documentation task completed successfully. Review for lessons learned and optimization opportunities.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
           - task: Add validation error handling documentation
             status: done
             llmInsights:
@@ -1930,11 +1930,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Documentation task completed successfully. Review for lessons learned and optimization opportunities.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
         llmInsights:
           summary: >-
             Task completed successfully with low impact. implementation category task achieved objectives and is now
@@ -1942,11 +1942,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Task completed successfully. Review for lessons learned and optimization opportunities.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.469Z'
+            completedAt: "2025-07-04T21:44:31.469Z"
       - task: Create comprehensive local LLM setup and usage documentation
         status: planned
         context: >
@@ -1960,7 +1960,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Create local LLM troubleshooting and best practices guide
             status: planned
             llmInsights:
@@ -1968,7 +1968,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Update COMPLETE_AUTOMATION_ECOSYSTEM.md with local LLM integration
             status: planned
             llmInsights:
@@ -1976,7 +1976,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add local LLM examples to DEVELOPMENT_GUIDE.md
             status: planned
             llmInsights:
@@ -1984,13 +1984,13 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
         llmInsights:
           summary: low priority documentation task planned for future implementation. medium impact anticipated.
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Complete fossil publication workflow documentation
         status: planned
         context: >
@@ -2004,7 +2004,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add publication workflow to API_REFERENCE.md
             status: planned
             llmInsights:
@@ -2012,7 +2012,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Document folder structure and naming conventions
             status: planned
             llmInsights:
@@ -2020,7 +2020,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add future integration patterns (React/MDX/Next.js)
             status: planned
             llmInsights:
@@ -2028,13 +2028,13 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
         llmInsights:
           summary: low priority documentation task planned for future implementation. medium impact anticipated.
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Standardize error handling documentation across all docs
         status: done
         context: >
@@ -2050,11 +2050,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Task completed successfully. Review for lessons learned and optimization opportunities.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
           - task: Update DEVELOPMENT_GUIDE.md with error handling patterns
             status: done
             llmInsights:
@@ -2064,11 +2064,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Task completed successfully. Review for lessons learned and optimization opportunities.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
           - task: Document error handling in CLI_COMMAND_INSIGHTS.md
             status: done
             llmInsights:
@@ -2078,11 +2078,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Task completed successfully. Review for lessons learned and optimization opportunities.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
           - task: Add error handling examples to all relevant docs
             status: done
             llmInsights:
@@ -2092,11 +2092,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Documentation task completed successfully. Review for lessons learned and optimization opportunities.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
         llmInsights:
           summary: >-
             Task completed successfully with medium impact. documentation category task achieved objectives and is now
@@ -2104,11 +2104,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Documentation task completed successfully. Review for lessons learned and optimization opportunities.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.469Z'
+            completedAt: "2025-07-04T21:44:31.469Z"
       - task: Document fossil-first test output policy and patterns
         status: done
         context: >
@@ -2124,11 +2124,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Testing infrastructure successfully implemented. Testing operational.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
           - task: Document test output patterns in TESTING_LEARNINGS.md
             status: done
             llmInsights:
@@ -2138,11 +2138,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Testing infrastructure successfully implemented. Testing operational.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
           - task: Add test output examples and best practices
             status: done
             llmInsights:
@@ -2152,11 +2152,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Testing infrastructure successfully implemented. Testing operational.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
           - task: Update CONTRIBUTING_GUIDE.md with test output requirements
             status: done
             llmInsights:
@@ -2166,11 +2166,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Testing infrastructure successfully implemented. Testing operational.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
         llmInsights:
           summary: >-
             Task completed successfully with medium impact. testing category task achieved objectives and is now
@@ -2178,11 +2178,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Testing infrastructure successfully implemented. Testing operational.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.469Z'
+            completedAt: "2025-07-04T21:44:31.469Z"
       - task: Create documentation coherence checklist and validation
         status: done
         context: >
@@ -2198,11 +2198,11 @@ tasks:
               blockers: None - task completed successfully.
               recommendations: Document lessons learned and consider optimization opportunities.
               impact: Positive - task objectives achieved and deliverables completed.
-              deadline: ''
+              deadline: ""
               done:
                 retrospective: Documentation task completed successfully. Review for lessons learned and optimization opportunities.
                 insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-                completedAt: '2025-07-04T21:44:31.469Z'
+                completedAt: "2025-07-04T21:44:31.469Z"
           - task: Add documentation validation to CI process
             status: planned
             llmInsights:
@@ -2210,7 +2210,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Create documentation update workflow
             status: planned
             llmInsights:
@@ -2218,7 +2218,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add documentation review process
             status: planned
             llmInsights:
@@ -2226,7 +2226,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
         llmInsights:
           summary: >-
             Task completed successfully with medium impact. documentation category task achieved objectives and is now
@@ -2234,11 +2234,11 @@ tasks:
           blockers: None - task completed successfully.
           recommendations: Document lessons learned and consider optimization opportunities.
           impact: Positive - task objectives achieved and deliverables completed.
-          deadline: ''
+          deadline: ""
           done:
             retrospective: Documentation task completed successfully. Review for lessons learned and optimization opportunities.
             insights: Consider documenting patterns and utilities for reuse in similar future tasks.
-            completedAt: '2025-07-04T21:44:31.469Z'
+            completedAt: "2025-07-04T21:44:31.469Z"
     key_points:
       - All documentation must promote fossil-backed creation as the primary pattern
       - Intelligent tagging and LLM integration must be comprehensively documented
@@ -2296,7 +2296,7 @@ tasks:
       blockers: Task not yet started - no current blockers.
       recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
       impact: Potential - impact will be assessed once implementation begins.
-      deadline: ''
+      deadline: ""
   - task: Enhanced Fossil Management and Versioning System
     status: planned
     owner: emmanuelbarrera
@@ -2336,7 +2336,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Implement version tracking utilities in fossilize.ts
             status: planned
             llmInsights:
@@ -2344,7 +2344,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add version history to all fossil creation and update operations
             status: planned
             llmInsights:
@@ -2352,7 +2352,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Create version comparison and diff utilities
             status: planned
             llmInsights:
@@ -2360,7 +2360,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add version rollback capabilities
             status: planned
             llmInsights:
@@ -2368,13 +2368,13 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
         llmInsights:
           summary: low priority fossilization task planned for future implementation. low impact anticipated.
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Implement Fossil Search and Filtering System
         status: planned
         context: >
@@ -2389,7 +2389,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Implement search utilities with full-text and metadata search
             status: planned
             llmInsights:
@@ -2397,7 +2397,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add CLI commands for fossil search and filtering
             status: planned
             llmInsights:
@@ -2405,7 +2405,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Create search result formatting and export options
             status: planned
             llmInsights:
@@ -2413,7 +2413,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add search result caching for performance
             status: planned
             llmInsights:
@@ -2421,13 +2421,13 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
         llmInsights:
           summary: low priority fossilization task planned for future implementation. low impact anticipated.
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Implement Fossil Export/Import Capabilities
         status: planned
         context: >
@@ -2442,7 +2442,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Implement export utilities for JSON, YAML, and Markdown formats
             status: planned
             llmInsights:
@@ -2450,7 +2450,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add import utilities with validation and conflict resolution
             status: planned
             llmInsights:
@@ -2458,7 +2458,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Create bulk export/import capabilities for fossil collections
             status: planned
             llmInsights:
@@ -2466,7 +2466,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add export/import CLI commands with progress tracking
             status: planned
             llmInsights:
@@ -2474,13 +2474,13 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
         llmInsights:
           summary: low priority fossilization task planned for future implementation. low impact anticipated.
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
     key_points:
       - Versioning enables full audit trails and change history
       - Search/filtering provides powerful discovery capabilities
@@ -2542,7 +2542,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Implement workflow scheduler with cron parsing and execution
             status: planned
             llmInsights:
@@ -2550,7 +2550,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add workflow persistence and state management
             status: planned
             llmInsights:
@@ -2558,7 +2558,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Create workflow validation and conflict detection
             status: planned
             llmInsights:
@@ -2566,7 +2566,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add CLI commands for workflow management
             status: planned
             llmInsights:
@@ -2574,13 +2574,13 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
         llmInsights:
           summary: low priority automation task planned for future implementation. low impact anticipated.
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Implement Conditional Automation Triggers
         status: planned
         context: >
@@ -2594,7 +2594,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Implement trigger evaluation engine with condition parsing
             status: planned
             llmInsights:
@@ -2602,7 +2602,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add GitHub webhook integration for event triggers
             status: planned
             llmInsights:
@@ -2610,7 +2610,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Create trigger chaining and dependency management
             status: planned
             llmInsights:
@@ -2618,7 +2618,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add trigger testing and validation utilities
             status: planned
             llmInsights:
@@ -2626,13 +2626,13 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
         llmInsights:
           summary: low priority automation task planned for future implementation. low impact anticipated.
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Implement Automation Analytics and Reporting
         status: planned
         context: >
@@ -2649,7 +2649,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Implement metrics collection and storage
             status: planned
             llmInsights:
@@ -2657,7 +2657,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Create analytics dashboard and reporting utilities
             status: planned
             llmInsights:
@@ -2665,7 +2665,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add cost analysis and optimization recommendations
             status: planned
             llmInsights:
@@ -2673,7 +2673,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Create performance monitoring and alerting
             status: planned
             llmInsights:
@@ -2681,13 +2681,13 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
         llmInsights:
           summary: low priority automation task planned for future implementation. low impact anticipated.
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
     key_points:
       - Scheduled workflows enable time-based automation
       - Conditional triggers support event-driven automation
@@ -2747,7 +2747,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Design SetupStep interface with id, title, description, type, required, validation, helpText, and examples
             status: planned
             llmInsights:
@@ -2755,7 +2755,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Implement interactive CLI with mode, suggestions, autoComplete, and helpContext
             status: planned
             llmInsights:
@@ -2763,7 +2763,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Create tutorial content for common workflows
             status: planned
             llmInsights:
@@ -2771,7 +2771,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add progress tracking and resume capabilities
             status: planned
             llmInsights:
@@ -2779,13 +2779,13 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
         llmInsights:
           summary: low priority implementation task planned for future implementation. low impact anticipated.
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Implement VSCode Extension
         status: planned
         context: >
@@ -2817,7 +2817,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Implement fossil creation and management commands
             status: planned
             llmInsights:
@@ -2825,7 +2825,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add fossil syntax highlighting and validation
             status: planned
             llmInsights:
@@ -2833,7 +2833,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Create fossil templates and snippets
             status: planned
             llmInsights:
@@ -2841,7 +2841,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add fossil search and navigation features
             status: planned
             llmInsights:
@@ -2849,7 +2849,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add support for remote repository analysis and curation (Codespaces, SSH, remote containers)
             status: planned
             llmInsights:
@@ -2857,7 +2857,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Test extension in remote and hybrid environments
             status: planned
             llmInsights:
@@ -2865,7 +2865,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Document remote use cases and edge case handling
             status: planned
             llmInsights:
@@ -2873,13 +2873,13 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
         llmInsights:
           summary: medium priority ux-developer-tools task planned for future implementation. low impact anticipated.
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Reinforce YAML→JSON→Markdown→Frontend Pipeline
         status: planned
         context: >
@@ -2894,7 +2894,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Implement JSON→Markdown generator with frontmatter
             status: planned
             llmInsights:
@@ -2902,7 +2902,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Document and prototype Markdown→MDX/React integration
             status: planned
             llmInsights:
@@ -2910,7 +2910,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add examples for Next.js/Remix/Tanstack Table consumption of fossil data
             status: planned
             llmInsights:
@@ -2918,7 +2918,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Create a "future integration" section listing possible frontend approaches
             status: planned
             llmInsights:
@@ -2926,7 +2926,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Document all integration points and revisit/prioritize as project evolves
             status: planned
             llmInsights:
@@ -2934,13 +2934,13 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
         llmInsights:
           summary: low priority implementation task planned for future implementation. low impact anticipated.
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Cohesion & Integration
         status: planned
         context: >
@@ -2956,7 +2956,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Add regular roadmap review for cohesion and scope
             status: planned
             llmInsights:
@@ -2964,7 +2964,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Document how each feature supports the core fossilization/publication workflow
             status: planned
             llmInsights:
@@ -2972,7 +2972,7 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - high impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
           - task: Consolidate or clarify overlapping features as needed
             status: planned
             llmInsights:
@@ -2980,13 +2980,13 @@ tasks:
               blockers: Task not yet started - no current blockers.
               recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
               impact: Potential - impact will be assessed once implementation begins.
-              deadline: ''
+              deadline: ""
         llmInsights:
           summary: low priority implementation task planned for future implementation. low impact anticipated.
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
     key_points:
       - Interactive tutorials improve onboarding experience
       - VSCode extension provides editor integration
@@ -3023,7 +3023,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Document usage in API_REFERENCE.md and DEVELOPMENT_GUIDE.md
         status: planned
         llmInsights:
@@ -3031,7 +3031,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Update publication/export scripts to include llmInsights in JSON/Markdown
         status: planned
         llmInsights:
@@ -3039,7 +3039,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Add onboarding and reporting examples using llmInsights
         status: planned
         llmInsights:
@@ -3047,7 +3047,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
     milestone: LLM-Driven Retrospectives
     labels:
       - llm
@@ -3059,7 +3059,7 @@ tasks:
       blockers: Task not yet started - no current blockers.
       recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
       impact: Potential - impact will be assessed once implementation begins.
-      deadline: ''
+      deadline: ""
   - task: Embrace Event Loop Pattern for Roadmap Automation
     status: planned
     owner: emmanuelbarrera
@@ -3086,7 +3086,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - transformative impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Update documentation to describe event loop-driven roadmap
         status: planned
         llmInsights:
@@ -3094,7 +3094,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - transformative impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Ensure all new automation scopes are added as event loop events
         status: planned
         llmInsights:
@@ -3102,7 +3102,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - transformative impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Review and update existing tasks to fit event loop model
         status: planned
         llmInsights:
@@ -3110,7 +3110,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - transformative impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
     key_points:
       - Roadmap is now managed as an event loop
       - Each scope is an event; completion can trigger new events
@@ -3125,7 +3125,7 @@ tasks:
       blockers: Task not yet started - no current blockers.
       recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
       impact: Potential - transformative impact will be assessed once implementation begins.
-      deadline: ''
+      deadline: ""
   - task: Explore Future Valuable LLM Automation Scopes (Event Loop Process)
     status: planned
     owner: emmanuelbarrera
@@ -3156,7 +3156,7 @@ tasks:
 
       - Trigger phase: Generate new roadmap tasks based on insights (next event queue)
     subtasks:
-      - task: 'Automated Testing: LLM-Generated Test Cases (Event Loop #1)'
+      - task: "Automated Testing: LLM-Generated Test Cases (Event Loop #1)"
         status: planned
         context: >
           Research and prototype LLM-generated test cases based on code changes. This event loop process will analyze
@@ -3166,8 +3166,8 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - transformative impact will be assessed once implementation begins.
-          deadline: ''
-      - task: 'Security Automation: Proactive Security Scanning (Event Loop #2)'
+          deadline: ""
+      - task: "Security Automation: Proactive Security Scanning (Event Loop #2)"
         status: planned
         context: >
           Research and prototype LLM-powered security scanning and vulnerability assessment. This event loop will
@@ -3177,8 +3177,8 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - transformative impact will be assessed once implementation begins.
-          deadline: ''
-      - task: 'Performance Optimization: Continuous Analysis (Event Loop #3)'
+          deadline: ""
+      - task: "Performance Optimization: Continuous Analysis (Event Loop #3)"
         status: planned
         context: >
           Research and prototype LLM-powered performance analysis and optimization suggestions. This event loop will
@@ -3188,8 +3188,8 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - transformative impact will be assessed once implementation begins.
-          deadline: ''
-      - task: 'Documentation Generation: Auto-Generate from Code Changes (Event Loop #4)'
+          deadline: ""
+      - task: "Documentation Generation: Auto-Generate from Code Changes (Event Loop #4)"
         status: planned
         context: >
           Research and prototype LLM-powered documentation generation based on code changes. This event loop will
@@ -3199,8 +3199,8 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - transformative impact will be assessed once implementation begins.
-          deadline: ''
-      - task: 'Monitoring & Alerting: LLM-Powered Insights (Event Loop #5)'
+          deadline: ""
+      - task: "Monitoring & Alerting: LLM-Powered Insights (Event Loop #5)"
         status: planned
         context: >
           Research and prototype LLM-powered monitoring insights and alert optimization. This event loop will analyze
@@ -3210,8 +3210,8 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - transformative impact will be assessed once implementation begins.
-          deadline: ''
-      - task: 'Team Collaboration: LLM-Assisted Coordination (Event Loop #6)'
+          deadline: ""
+      - task: "Team Collaboration: LLM-Assisted Coordination (Event Loop #6)"
         status: planned
         context: >
           Research and prototype LLM-assisted team coordination and communication. This event loop will analyze team
@@ -3221,8 +3221,8 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - transformative impact will be assessed once implementation begins.
-          deadline: ''
-      - task: 'Deployment Optimization: LLM-Suggested Strategies (Event Loop #7)'
+          deadline: ""
+      - task: "Deployment Optimization: LLM-Suggested Strategies (Event Loop #7)"
         status: planned
         context: >
           Research and prototype LLM-suggested deployment strategies and rollback plans. This event loop will analyze
@@ -3232,8 +3232,8 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - transformative impact will be assessed once implementation begins.
-          deadline: ''
-      - task: 'Compliance Automation: Automated Checking and Reporting (Event Loop #8)'
+          deadline: ""
+      - task: "Compliance Automation: Automated Checking and Reporting (Event Loop #8)"
         status: planned
         context: >
           Research and prototype automated compliance checking and reporting. This event loop will analyze compliance
@@ -3243,7 +3243,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - transformative impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
       - task: Event Loop Orchestration and Coordination
         status: planned
         context: >
@@ -3254,7 +3254,7 @@ tasks:
           blockers: Task not yet started - no current blockers.
           recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
           impact: Potential - transformative impact will be assessed once implementation begins.
-          deadline: ''
+          deadline: ""
     key_points:
       - Each scope follows the event loop pattern: research → prototype → integrate → document → trigger
       - Completed events trigger new roadmap tasks, creating a self-sustaining ecosystem
@@ -3277,3 +3277,194 @@ tasks:
       recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
       impact: Potential - transformative impact will be assessed once implementation begins.
       deadline: 2024-12-31T00:00:00.000Z
+  - task: Complete LLM Insight Generation and Management System
+    status: planned
+    owner: emmanuelbarrera
+    tags:
+      - immediate-actions
+      - llm-insights
+      - automation
+    context: >
+      Complete the remaining enhancements to the LLM insight generation and management system. The core system is
+      implemented and functional, but several advanced features need to be added for production readiness and
+      comprehensive automation.
+
+      **Current Status:**
+      ✅ Pre-commit/CI script with advanced CLI review
+      ✅ LLM insight generation for roadmap tasks
+      ✅ Fossil deduplication and semantic similarity
+      ✅ Multiple export formats (JSON, YAML, Markdown)
+      ✅ Batch processing capabilities
+      ✅ Local LLM integration with fallback
+
+      **Remaining Work:**
+      🔄 External review integration (schemas defined, implementation needed)
+      🔄 Advanced task matching algorithms (basic matching exists)
+      🔄 Sophisticated scope-based grouping (basic implementation exists)
+    subtasks:
+      - task: Implement External Review Services Integration
+        status: planned
+        context: >
+          Complete the external review integration by implementing actual service connections, review workflows,
+          and automation for external review platforms. Currently only schemas are defined.
+        subtasks:
+          - task: Implement external review service connectors
+            status: planned
+            llmInsights:
+              summary: low priority implementation task planned for future implementation. low impact anticipated.
+              blockers: Task not yet started - no current blockers.
+              recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
+              impact: Potential - impact will be assessed once implementation begins.
+              deadline: ""
+          - task: Create review workflow automation
+            status: planned
+            llmInsights:
+              summary: low priority automation task planned for future implementation. low impact anticipated.
+              blockers: Task not yet started - no current blockers.
+              recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
+              impact: Potential - impact will be assessed once implementation begins.
+              deadline: ""
+          - task: Add review status tracking and notifications
+            status: planned
+            llmInsights:
+              summary: low priority implementation task planned for future implementation. low impact anticipated.
+              blockers: Task not yet started - no current blockers.
+              recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
+              impact: Potential - impact will be assessed once implementation begins.
+              deadline: ""
+        llmInsights:
+          summary: low priority implementation task planned for future implementation. low impact anticipated.
+          blockers: Task not yet started - no current blockers.
+          recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
+          impact: Potential - impact will be assessed once implementation begins.
+          deadline: ""
+      - task: Enhance Advanced Task Matching Algorithms
+        status: planned
+        context: >
+          Enhance the existing basic task matching with LLM-powered matching, embedding-based similarity,
+          and sophisticated matching algorithms. Current matching is basic file path matching.
+        subtasks:
+          - task: Implement LLM-powered task matching
+            status: planned
+            llmInsights:
+              summary: low priority llm-integration task planned for future implementation. low impact anticipated.
+              blockers: Task not yet started - no current blockers.
+              recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
+              impact: Potential - impact will be assessed once implementation begins.
+              deadline: ""
+          - task: Add embedding-based similarity matching
+            status: planned
+            llmInsights:
+              summary: low priority llm-integration task planned for future implementation. low impact anticipated.
+              blockers: Task not yet started - no current blockers.
+              recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
+              impact: Potential - impact will be assessed once implementation begins.
+              deadline: ""
+          - task: Implement sophisticated matching algorithms
+            status: planned
+            llmInsights:
+              summary: low priority implementation task planned for future implementation. low impact anticipated.
+              blockers: Task not yet started - no current blockers.
+              recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
+              impact: Potential - impact will be assessed once implementation begins.
+              deadline: ""
+        llmInsights:
+          summary: low priority llm-integration task planned for future implementation. low impact anticipated.
+          blockers: Task not yet started - no current blockers.
+          recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
+          impact: Potential - impact will be assessed once implementation begins.
+          deadline: ""
+      - task: Implement Sophisticated Scope-Based Grouping
+        status: planned
+        context: >
+          Enhance the basic commit message analysis with sophisticated scope-based insight grouping,
+          advanced scope analysis, and intelligent grouping algorithms.
+        subtasks:
+          - task: Enhance commit message scope analysis
+            status: planned
+            llmInsights:
+              summary: low priority implementation task planned for future implementation. low impact anticipated.
+              blockers: Task not yet started - no current blockers.
+              recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
+              impact: Potential - impact will be assessed once implementation begins.
+              deadline: ""
+          - task: Implement intelligent scope-based grouping
+            status: planned
+            llmInsights:
+              summary: low priority implementation task planned for future implementation. low impact anticipated.
+              blockers: Task not yet started - no current blockers.
+              recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
+              impact: Potential - impact will be assessed once implementation begins.
+              deadline: ""
+          - task: Add scope-based insight aggregation
+            status: planned
+            llmInsights:
+              summary: low priority implementation task planned for future implementation. low impact anticipated.
+              blockers: Task not yet started - no current blockers.
+              recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
+              impact: Potential - impact will be assessed once implementation begins.
+              deadline: ""
+        llmInsights:
+          summary: low priority implementation task planned for future implementation. low impact anticipated.
+          blockers: Task not yet started - no current blockers.
+          recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
+          impact: Potential - impact will be assessed once implementation begins.
+          deadline: ""
+      - task: Add Comprehensive Testing and Validation
+        status: planned
+        context: >
+          Add comprehensive testing for all new LLM insight features, including integration tests,
+          performance tests, and validation of the complete workflow.
+        subtasks:
+          - task: Add integration tests for external review integration
+            status: planned
+            llmInsights:
+              summary: medium priority testing task planned for future implementation. medium impact anticipated.
+              blockers: Task not yet started - no current blockers.
+              recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
+              impact: Potential - impact will be assessed once implementation begins.
+              deadline: ""
+          - task: Add performance tests for advanced matching algorithms
+            status: planned
+            llmInsights:
+              summary: medium priority testing task planned for future implementation. medium impact anticipated.
+              blockers: Task not yet started - no current blockers.
+              recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
+              impact: Potential - impact will be assessed once implementation begins.
+              deadline: ""
+          - task: Validate complete LLM insight workflow
+            status: planned
+            llmInsights:
+              summary: medium priority testing task planned for future implementation. medium impact anticipated.
+              blockers: Task not yet started - no current blockers.
+              recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
+              impact: Potential - impact will be assessed once implementation begins.
+              deadline: ""
+        llmInsights:
+          summary: medium priority testing task planned for future implementation. medium impact anticipated.
+          blockers: Task not yet started - no current blockers.
+          recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
+          impact: Potential - impact will be assessed once implementation begins.
+          deadline: ""
+    key_points:
+      - Core LLM insight system is complete and functional
+      - External review integration needs actual service implementation
+      - Advanced matching algorithms will enhance task correlation
+      - Sophisticated scope analysis will improve insight organization
+      - Comprehensive testing ensures production readiness
+    recommendation: >
+      Prioritize external review integration first as it provides immediate value for team collaboration.
+      Then enhance task matching algorithms for better insight correlation.
+      Finally implement sophisticated scope analysis for improved organization.
+    preference: >
+      Prefer incremental implementation with clear validation at each step.
+      Focus on features that provide immediate value and improve existing workflows.
+      Ensure all enhancements integrate seamlessly with the existing fossil system.
+    deadline: 2024-08-30T00:00:00.000Z
+    milestone: LLM Insight System Completion
+    llmInsights:
+      summary: low priority implementation task planned for future implementation. medium impact anticipated.
+      blockers: Task not yet started - no current blockers.
+      recommendations: Begin with research and planning phase. Consider creating detailed subtasks and timeline.
+      impact: Potential - impact will be assessed once implementation begins.
+      deadline: 2024-08-30T00:00:00.000Z

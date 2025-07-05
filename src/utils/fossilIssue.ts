@@ -66,27 +66,86 @@ async function ensureLabel(owner: string, repo: string, label: string, options?:
 
 /**
  * Generate a detailed issue body matching the automation_task.yml template.
+ * Enhanced with visual elements for better human audit and understanding.
  */
 function generateAutomationIssueBody({
   purpose,
   checklist,
   metadata,
   extra,
+  visualContext,
 }: {
   purpose: string;
   checklist?: string;
   metadata?: string;
   extra?: string;
+  visualContext?: {
+    workflow?: string[];
+    dependencies?: string[];
+    risks?: Array<{ risk: string; impact: string; mitigation: string }>;
+  };
 }): string {
-  return [
-    '## Automation Task',
+  const sections = [
+    '## 🤖 Automation Task',
     'This issue was created automatically by a script or bot to track automation-related work.',
     '',
     `### Purpose\n${purpose}`,
+  ];
+
+  // Add visual workflow if provided
+  if (visualContext?.workflow) {
+    sections.push(
+      '\n### Workflow',
+      '```mermaid',
+      'graph TD',
+      ...visualContext.workflow.map((step, i) => `    ${String.fromCharCode(65 + i)}[${step}]`),
+      ...visualContext.workflow.map((_, i) => 
+        i < visualContext.workflow!.length - 1 
+          ? `    ${String.fromCharCode(65 + i)} --> ${String.fromCharCode(66 + i)}`
+          : ''
+      ).filter(Boolean),
+      '```'
+    );
+  }
+
+  // Add dependencies diagram if provided
+  if (visualContext?.dependencies) {
+    sections.push(
+      '\n### Dependencies',
+      '```mermaid',
+      'graph LR',
+      ...visualContext.dependencies.map((dep, i) => `    ${String.fromCharCode(65 + i)}[${dep}]`),
+      ...visualContext.dependencies.map((_, i) => 
+        i < visualContext.dependencies!.length - 1 
+          ? `    ${String.fromCharCode(65 + i)} --> ${String.fromCharCode(66 + i)}`
+          : ''
+      ).filter(Boolean),
+      '```'
+    );
+  }
+
+  // Add risk assessment if provided
+  if (visualContext?.risks) {
+    sections.push(
+      '\n### Risk Assessment',
+      '```mermaid',
+      'graph TD',
+      ...visualContext.risks.map((risk, i) => [
+        `    ${String.fromCharCode(65 + i)}[${risk.risk}]`,
+        `    ${String.fromCharCode(65 + i)} --> ${String.fromCharCode(66 + i)}[Impact: ${risk.impact}]`,
+        `    ${String.fromCharCode(66 + i)} --> ${String.fromCharCode(67 + i)}[Mitigation: ${risk.mitigation}]`
+      ]).flat(),
+      '```'
+    );
+  }
+
+  sections.push(
     checklist ? `\n### Checklist\n${checklist}` : '',
     metadata ? `\n### Automation Metadata\n${metadata}` : '',
-    extra ? `\n${extra}` : '',
-  ].filter(Boolean).join('\n');
+    extra ? `\n${extra}` : ''
+  );
+
+  return sections.filter(Boolean).join('\n');
 }
 
 /**

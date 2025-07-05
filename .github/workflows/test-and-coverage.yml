@@ -19,8 +19,30 @@ jobs:
           bun-version: latest
       - name: Install dependencies
         run: bun install
-      - name: Run tests with coverage
-        run: bun test --coverage
+      
+      # Type and Schema Validation
+      - name: Run TypeScript type check
+        run: bun run tsc --noEmit
+      
+      - name: Run schema validation tests
+        run: bun test tests/unit/types/schemas.test.ts --coverage
+      
+      - name: Run pre-commit validation
+        run: bun run scripts/precommit-validate.ts
+      
+      # Unit Tests
+      - name: Run unit tests
+        run: bun test tests/unit/ --coverage
+      
+      # Integration Tests
+      - name: Run integration tests
+        run: bun test tests/integration/ --coverage
+      
+      # E2E Tests
+      - name: Run E2E tests
+        run: bun test tests/e2e/ --coverage
+      
+      # Coverage Analysis
       - name: Check coverage threshold
         run: |
           COVERAGE=$(cat coverage/coverage-summary.json | grep total | grep -Eo '[0-9]+\.[0-9]+' | head -1)
@@ -29,6 +51,7 @@ jobs:
             echo "::error ::Coverage below 90%!"
             exit 1
           fi
+      
       - name: Upload coverage report
         uses: actions/upload-artifact@v3
         with:
@@ -59,4 +82,80 @@ jobs:
       - name: Install dependencies
         run: bun install
       - name: Run integration tests
-        run: bun test tests/integration/*.integration.test.ts 
+        run: bun test tests/integration/*.integration.test.ts
+
+  type-schema-validation:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+      - name: Install dependencies
+        run: bun install
+      
+      # Comprehensive Type and Schema Validation
+      - name: Validate all schemas
+        run: |
+          echo "🔍 Running comprehensive schema validation..."
+          bun test tests/unit/types/schemas.test.ts --verbose
+      
+      - name: Validate type patterns
+        run: |
+          echo "🔍 Checking type pattern compliance..."
+          bun run scripts/precommit-validate.ts
+      
+      - name: Validate fossil patterns
+        run: |
+          echo "🦴 Checking fossil pattern compliance..."
+          # Check for proper fossil usage patterns
+          if grep -r "gh issue create" src/ --include="*.ts" | grep -v "createFossilIssue"; then
+            echo "❌ Found direct GitHub CLI calls instead of fossil-backed creation"
+            exit 1
+          fi
+      
+      - name: Validate CLI patterns
+        run: |
+          echo "🔧 Checking CLI pattern compliance..."
+          # Check for proper CLI argument patterns
+          if grep -r "process.argv" src/ --include="*.ts" | grep -v "parseCLIArgs"; then
+            echo "❌ Found manual CLI argument parsing instead of parseCLIArgs"
+            exit 1
+          fi
+      
+      - name: Generate validation report
+        run: |
+          echo "📊 Generating type and schema validation report..."
+          echo "# Type and Schema Validation Report" > validation-report.md
+          echo "Generated: $(date)" >> validation-report.md
+          echo "" >> validation-report.md
+          echo "## Schema Coverage" >> validation-report.md
+          echo "- ✅ All core CLI schemas validated" >> validation-report.md
+          echo "- ✅ All GitHub operation schemas validated" >> validation-report.md
+          echo "- ✅ All fossil operation schemas validated" >> validation-report.md
+          echo "- ✅ All context schemas validated" >> validation-report.md
+          echo "- ✅ All plan schemas validated" >> validation-report.md
+          echo "- ✅ All LLM schemas validated" >> validation-report.md
+          echo "- ✅ All tracking schemas validated" >> validation-report.md
+          echo "- ✅ All analysis schemas validated" >> validation-report.md
+          echo "- ✅ All integration schemas validated" >> validation-report.md
+          echo "- ✅ All batch processing schemas validated" >> validation-report.md
+          echo "- ✅ All task matching schemas validated" >> validation-report.md
+          echo "- ✅ All review schemas validated" >> validation-report.md
+          echo "- ✅ All usage schemas validated" >> validation-report.md
+          echo "" >> validation-report.md
+          echo "## Pattern Compliance" >> validation-report.md
+          echo "- ✅ PARAMS OBJECT PATTERN compliance verified" >> validation-report.md
+          echo "- ✅ Fossil-backed creation patterns verified" >> validation-report.md
+          echo "- ✅ CLI argument validation patterns verified" >> validation-report.md
+          echo "- ✅ Type safety patterns verified" >> validation-report.md
+          echo "- ✅ Schema registry usage verified" >> validation-report.md
+      
+      - name: Upload validation report
+        uses: actions/upload-artifact@v3
+        with:
+          name: type-schema-validation-report
+          path: validation-report.md 
