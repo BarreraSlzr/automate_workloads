@@ -1,15 +1,18 @@
 #!/bin/bash
-. "$(dirname "$0")/_/husky.sh"
-
-changed_scripts=$(git diff --cached --name-only --diff-filter=ACM | grep '^scripts/.*\.ts$')
+echo "DEBUG: Pre-commit hook starting..."
+changed_scripts=$(git diff --cached --name-only --diff-filter=ACM | grep '^scripts/.*\.ts$' || true)
+echo "DEBUG: Changed scripts: '$changed_scripts'"
 if [ -n "$changed_scripts" ]; then
   echo "Running performance monitoring on changed scripts..."
   for script in $changed_scripts; do
+    echo "DEBUG: Monitoring script: $script"
     bun run perf:monitor-single "$script"
     last_time=$(jq '.[-1].execution_time' fossils/performance/performance_log.json)
+    echo "DEBUG: Last execution time: $last_time"
     if (( $(echo "$last_time > 10" | bc -l) )); then
       echo "Performance regression: $script took $last_time seconds"
       exit 1
     fi
   done
 fi
+echo "DEBUG: Pre-commit hook completed successfully"
