@@ -3,7 +3,7 @@
 # ============================================================================
 summary:
   status: done
-  lastUpdated: "2025-07-05T08:08:46Z"
+  lastUpdated: "2025-07-07T23:09:15Z"
   notes: |-
     This file is updated after each setup step. Statuses: planned, in-progress, done, failed.
     See README.md for troubleshooting and onboarding instructions.
@@ -12,57 +12,57 @@ steps:
   bun:
     status: done
     version: 1.2.17
-    lastChecked: "2025-07-05T08:08:42Z"
+    lastChecked: "2025-07-07T23:09:10Z"
     notes: Bun is installed.
   github_cli:
     status: done
     version: 2.74.2
-    lastChecked: "2025-07-05T08:08:42Z"
+    lastChecked: "2025-07-07T23:09:10Z"
     notes: GitHub CLI is installed.
   ollama:
     status: done
     version: ""
-    lastChecked: "2025-07-05T08:08:42Z"
+    lastChecked: "2025-07-07T23:09:10Z"
     notes: Ollama is installed and server running.
   ollama_models:
     llama2:
       status: done
-      lastChecked: "2025-07-05T08:08:42Z"
+      lastChecked: "2025-07-07T23:09:10Z"
       notes: Code-focused LLM for code generation and completion.
       version: ""
     mistral:
       status: done
-      lastChecked: "2025-07-05T08:08:43Z"
+      lastChecked: "2025-07-07T23:09:12Z"
       notes: Code-focused LLM for code generation and completion.
       version: ""
     phi3:
       status: done
-      lastChecked: "2025-07-05T08:08:44Z"
+      lastChecked: "2025-07-07T23:09:13Z"
       notes: Code-focused LLM for code generation and completion.
       version: ""
     codellama:
       status: done
-      lastChecked: "2025-07-05T08:08:45Z"
+      lastChecked: "2025-07-07T23:09:14Z"
       notes: Code-focused LLM for code generation and completion.
       version: ""
   llm_provider:
     status: done
     version: ""
-    lastChecked: "2025-07-05T08:08:42Z"
+    lastChecked: "2025-07-07T23:09:10Z"
     notes: Ollama is available with at least one model.
   dependencies:
     status: done
     version: ""
-    lastChecked: "2025-07-05T08:08:46Z"
+    lastChecked: "2025-07-07T23:09:15Z"
     notes: Dependencies installed.
   env_file:
     status: done
     version: ""
-    lastChecked: "2025-07-05T08:08:46Z"
+    lastChecked: "2025-07-07T23:09:15Z"
     notes: .env present.
   fossil_storage:
     status: done
     version: ""
-    lastChecked: "2025-07-05T08:08:46Z"
+    lastChecked: "2025-07-07T23:09:15Z"
     notes: Fossil storage present.
 # Add new steps as needed for onboarding, CI, or additional tools.
