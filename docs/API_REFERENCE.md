@@ -850,6 +850,22 @@ bun run repo-orchestrator orchestrate <owner> <repo> --workflow plan --plan-mode
 
 ## 🦴 LLM Fossilization Utilities
 
+> ⚠️ **Warning:** LLM fossilization is temporarily disabled due to a circular dependency issue. A permanent fix is in progress. The canonical pattern requiring explicit owner/repo parameters is still required for all LLMService and fossilization utility usage.
+
+### ML-Ready Fallback Funnel for LLM Calls
+
+When fossilization is disabled or fails (due to circular dependency, memory leak, or process loop risk), **LLMService** and related utilities must:
+
+- **Fall back to a minimal, ML-ready review funnel**: Instead of returning a generic mock, the system returns a canonical fallback response that is:
+  - Traceable (includes metadata about the fallback event)
+  - Minimal (no side effects, no unnecessary data)
+  - Safe for downstream ML review and audit
+- **Log the fallback event**: All fallback events are logged for auditability and future review.
+- **Avoid memory leaks and process loops**: The fallback path must never introduce infinite recursion, circular dependencies, or resource leaks, even under integration or test conditions.
+- **Test Philosophy**: Tests should verify that the fallback path is robust, traceable, and ML-ready—not just a dummy value. Integration tests should simulate fossilization failures and confirm the fallback is safe and auditable.
+
+> This ensures that even when fossilization is unavailable, all LLM calls remain ML-ready, traceable, and safe for audit and review.
+
 ### Types
 - `LLMInsightFossil`, `LLMBenchmarkFossil`, `LLMDiscoveryFossil` (see `src/types/llmFossil.ts`)
 
@@ -914,7 +930,11 @@ PREFER_LOCAL_LLM=true  # Default preference
 ```typescript
 import { LLMService } from '../src/services/llm';
 
-const llmService = new LLMService();
+const llmService = new LLMService({
+  // Required owner/repo parameters (prevents circular dependency)
+  owner: 'BarreraSlzr',
+  repo: 'automate_workloads'
+});
 
 // Use local LLM for simple tasks
 const result = await llmService.callLLM({
@@ -1056,7 +1076,11 @@ bun run src/cli/llm-usage.ts --local-backend llama.cpp --prefer-local
 
 ```typescript
 import { LLMService } from '../src/services/llm';
-const llmService = new LLMService();
+const llmService = new LLMService({
+  // Required owner/repo parameters (prevents circular dependency)
+  owner: 'BarreraSlzr',
+  repo: 'automate_workloads'
+});
 llmService.setRoutingPreference('auto'); // or 'local', 'cloud'
 const result = await llmService.callLLM({
   model: 'gpt-4',

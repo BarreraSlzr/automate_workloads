@@ -245,3 +245,5 @@ Organized by type and purpose:
 - ✅ **Context Fossils**: Fully implemented
 
 This unified workflow ensures that all GitHub objects and project artifacts are processed consistently through the canonical fossil manager, providing complete traceability, deduplication, and ML-ready data structures. 
+
+> **Note:** All transitions use canonical utilities and are enforced by the validator. Deprecated patterns (direct execSync, JSON.parse, ad-hoc scripts) are blocked. 

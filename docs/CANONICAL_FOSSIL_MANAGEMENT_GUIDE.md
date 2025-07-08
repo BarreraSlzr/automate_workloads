@@ -628,173 +628,6 @@ A dedicated audit/refactor utility is provided to enforce the ephemeral pattern 
   - **Canonical**: ML-ready, referenced, and validated.
   - **Human-facing**: Markdown/MDX, for documentation or audit.
 
-## 🎯 Expected Outcomes
-
-### Quantitative Benefits
-- **Reduced File Count**: From 672 files to ~50-100 active files
-- **Improved Performance**: Faster fossil queries and analysis
-- **Reduced Storage**: More efficient storage usage
-- **Better Organization**: Clear structure and discoverability
-
-### Qualitative Benefits
-- **Enhanced Context**: Richer, more comprehensive commit context
-- **Improved Traceability**: Better links between commits and context
-- **Reduced Maintenance**: Easier to manage and maintain
-- **Better Collaboration**: Clearer context for LLM-human collaboration
-
-### Long-Term Benefits
-- **Scalable Growth**: Sustainable growth patterns
-- **Maintained Value**: Preserved context value without bloat
-- **Future-Proof**: Adaptable to changing needs
-- **Knowledge Preservation**: Better preservation of important context
-
-## 🔧 Implementation Commands
-
-### **Update Canonical Fossils**
-```bash
-# Update validation results
-bun run src/cli/canonical-fossil-manager.ts update-validation
-
-# Update performance results
-bun run src/cli/canonical-fossil-manager.ts update-performance
-
-# Update analysis results
-bun run src/cli/canonical-fossil-manager.ts update-analysis
-
-# Update test results
-bun run src/cli/canonical-fossil-manager.ts update-test
-```
-
-### **Generate YAML Context**
-```bash
-# Generate YAML context for ML processes
-bun run src/cli/canonical-fossil-manager.ts generate-yaml
-```
-
-### **Git Diff Analysis**
-```bash
-# Run git diff analysis for traceability
-bun run src/cli/canonical-fossil-manager.ts git-diff-analysis
-```
-
-### **Automatic Cleanup**
-```bash
-# Run automatic cleanup
-bun run validate:unified
-
-# Check cleanup recommendations
-bun run scripts/check-fossil-cleanup.ts
-```
-
-## 📊 Fossil Types and Purposes
-
-### **Canonical Fossils (Core)**
-| File | Purpose | Update Trigger | Filename Pattern |
-|------|---------|----------------|------------------|
-| `validation-results.json` | Current validation state | Pre-commit | Stable |
-| `performance-results.json` | Current performance metrics | Pre-commit | Stable |
-| `analysis-results.json` | Current analysis insights | Analysis runs | Stable |
-| `test_results.json` | Current test results | Test runs | Stable |
-
-### **Context Fossils (ML Ready)**
-| File | Purpose | Update Trigger | Filename Pattern |
-|------|---------|----------------|------------------|
-| `canonical-context.yml` | Human-LLM chat context | Pre-commit | Stable |
-| `commit-context.yml` | Per-commit context | Pre-commit | Stable |
-
-### **Project State Fossils (Reference)**
-| File | Purpose | Update Trigger | Filename Pattern |
-|------|---------|----------------|------------------|
-| `project_status.yml` | Project implementation state | Manual/Auto | Stable |
-| `setup_status.yml` | Development environment state | Setup scripts | Stable |
-| `roadmap.yml` | Project direction | Manual/Auto | Stable |
-
-### **Archive Fossils (Historical)**
-| File | Purpose | Update Trigger | Filename Pattern |
-|------|---------|----------------|------------------|
-| `*-{timestamp}.json` | Historical versions | Canonical updates | Timestamped |
-
-## 🔍 Traceability and Cohesion
-
-### **Git Diff Analysis Process**
-1. **Pre-commit**: Capture staged and unstaged changes
-2. **Fossil Filtering**: Identify fossil-related changes
-3. **Traceability Fossil**: Create traceability record
-4. **ML Integration**: Feed to ML processes for pattern recognition
-
-### **Cohesion Tracking**
-- **Cross-references**: Fossils reference related fossils
-- **Metadata consistency**: Standardized metadata across all fossils
-- **Version tracking**: All fossils have version information
-- **Transversal value**: Calculated value for ML processes
-
-### **ML Process Integration**
-- **YAML context**: Human-readable format for LLM chat
-- **Structured data**: JSON format for ML workflows
-- **Transversal value**: Numeric value for ML scoring
-- **Historical patterns**: Archive data for ML training
-
-## 🚀 Future Enhancements
-
-### **Planned Improvements**
-- [ ] **ML-powered fossil analysis**: Automatic pattern recognition
-- [ ] **Cross-fossil correlation**: Automatic linking of related fossils
-- [ ] **Predictive fossilization**: ML-driven fossil creation
-- [ ] **Automated cleanup**: ML-driven fossil cleanup
-- [ ] **Enhanced traceability**: Git blame integration for fossil changes
-
-### **Integration Points**
-- [ ] **CI/CD pipelines**: Automated fossil updates
-- [ ] **LLM services**: Direct fossil consumption
-- [ ] **ML workflows**: Structured data feeds
-- [ ] **Human review**: YAML context for human analysis
-
-## 📋 Maintenance Guidelines
-
-### **Regular Tasks**
-1. **Monitor fossil growth**: Track total fossil count and size
-2. **Review canonical fossils**: Ensure they reflect current state
-3. **Archive cleanup**: Remove old archives when no longer needed
-4. **YAML context validation**: Ensure context is accurate and useful
-
-### **Quality Standards**
-1. **Schema compliance**: All fossils must follow defined schemas
-2. **Content quality**: Fossils must provide valuable, distinct context
-3. **Traceability**: Fossils must be traceable to their source
-4. **Cohesion**: Related fossils must be properly linked
-5. **Transversal value**: Fossils must have meaningful transversal value
-
-### **Cleanup Policies**
-1. **Archive retention**: Keep archives for 1 year by default
-2. **Size limits**: Monitor total fossil directory size
-3. **Duplicate detection**: Remove duplicate fossils
-4. **Orphan cleanup**: Remove fossils not referenced in git history
-
-## ✅ Success Metrics
-
-### Growth Management
-- **File Count**: Maintain <100 active fossils
-- **Growth Rate**: <5 new fossils per week
-- **Archive Rate**: >80% of fossils archived after 30 days
-
-### Context Quality
-- **Completeness**: >90% of commits have complete context
-- **Relevance**: >85% of context is relevant to commit
-- **Actionability**: >80% of recommendations are actionable
-
-### Performance
-- **Query Speed**: <1 second for context retrieval
-- **Storage Efficiency**: <20MB total fossil storage
-- **Maintenance Time**: <30 minutes per week for fossil management
-
-### 📋 Naming Standard (2025)
-
-- **Prefix**: Information source (llm., ml., human., etc.)
-- **Topic**: Concise, topic-driven name (analysis, performance, actionable_insights, etc.)
-- **Extension**: .json (machine), .yml (config/context), .md (human-facing)
-- **No hyphens, camelCase, or ambiguous names**
-- **Examples**: llm.analysis.json, ml.analysis.json, human.actionable_insights.md, performance.json, llm.performance.json, ml.performance.json
-
 ## Ephemeral Pattern Enforcement & Audit Utility
 
 A dedicated audit/refactor utility is provided to enforce the ephemeral pattern for all temp/original/backup files/scripts. This utility detects, renames, and moves files to follow the ephemeral convention, ensuring .gitignore compliance and project cleanliness. Integrate this as a DX transversal utility and run it pre-commit or in CI to maintain canonical standards.
@@ -2427,4 +2260,1013 @@ A dedicated audit/refactor utility is provided to enforce the ephemeral pattern 
 
 ### Canonical Fossil File Table (2025, ML-Ready, Canonical-Only)
 
-| #  |
+| #  | File/Folder                                               | Purpose/Type                    | Status/Notes                                                                                 |
+|----|-----------------------------------------------------------|----------------------------------|---------------------------------------------------------------------------------------------|
+| 1  | `fossils/roadmap.yml`                                    | Project roadmap (YAML)           | Canonical, referenced in all planning                                                        |
+| 2  | `fossils/project_status.yml`                             | Project status (YAML)            | Canonical, referenced in status checks                                                       |
+| 3  | `fossils/setup_status.yml`                               | Setup/onboarding status          | Canonical, updated by onboarding scripts                                                     |
+| 4  | `fossils/footprint.json`                                 | File footprint (full)            | **Exceeds limit**: Split/Archive recommended                                                |
+| 5  | `fossils/footprint-results.json`                         | File footprint (results)         | **Exceeds limit**: Split/Archive recommended                                                |
+| 6  | `fossils/analysis-results.json`                          | Analysis summary                 | Canonical, ML-ready                                                                         |
+| 7  | `fossils/llm_insights/llm.analysis.json`                 | LLM insights (JSON)              | Canonical, ML-ready                                                                         |
+| 8  | `fossils/llm_insights/llm.performance.json`              | LLM performance                  | Canonical, ML-ready                                                                         |
+| 9  | `fossils/ml_insights/ml.analysis.json`                   | ML insights (JSON)               | Canonical, ML-ready                                                                         |
+| 10 | `fossils/ml_insights/ml.performance.json`                | ML performance                   | Canonical, ML-ready                                                                         |
+| 11 | `fossils/human_insights/human.actionable_insights.md`    | Human insights                   | Canonical, human-facing                                                                     |
+| 12 | `fossils/performance/performance.json`                   | Performance metrics              | Canonical, ML-ready                                                                         |
+| 13 | `fossils/performance/performance.md`                     | Performance report               | Human-facing, summary                                                                       |
+| 14 | `fossils/monitoring/monitoring.json`                     | Monitoring metrics               | Canonical, ML-ready                                                                         |
+| 15 | `fossils/monitoring/monitoring.md`                       | Monitoring report                | Human-facing, summary                                                                       |
+| 16 | `fossils/tests/integration_tests.yml`                    | Integration test results         | Canonical, ML-ready                                                                         |
+| 17 | `fossils/tests/unit_tests.json`                          | Unit test results                | Canonical, ML-ready                                                                         |
+| 18 | `fossils/tests/performance_tests.md`                     | Test performance report          | Human-facing, summary                                                                       |
+| 19 | `fossils/context/canonical_context.yml`                  | LLM/ML context                   | Canonical, ML-ready, for LLM chat                                                           |
+| 20 | `fossils/context/commit-context.yml`                     | Per-commit context               | Canonical, ML-ready, for traceability                                                       |
+| 21 | `fossils/commit_audits/commit_audits.summary.json`       | Commit audits                    | Canonical, ML-ready                                                                         |
+| 22 | `fossils/traceability/current_traceability.json`         | Traceability                     | Canonical, ML-ready                                                                         |
+| 23 | `fossils/structure_definition.yml`                       | Structure definition             | Canonical, ML-ready                                                                         |
+| 24 | `fossils/FOSSIL_STRUCTURE_TREE_DIAGRAM.md`               | Structure diagram                | Human-facing, summary                                                                       |
+| 25 | `fossils/CURRENT_FOSSIL_STRUCTURE_SOURCE_OF_TRUTH.md`    | Source of truth                  | Canonical, ML-ready                                                                         |
+| 26 | `fossils/readme.md`                                      | Fossil system readme             | Human-facing, summary                                                                       |
+| 27 | `fossils/roadmap/roadmap_insights_report.md`             | Roadmap insights report          | Human-facing, summary                                                                       |
+| 28 | `fossils/roadmap/roadmap_progress.md`                    | Roadmap progress                 | Human-facing, summary                                                                       |
+| 29 | `fossils/roadmap/roadmap.md`                             | Roadmap markdown                 | Human-facing, summary                                                                       |
+| 30 | `fossils/ephemeral/address/llm.draft.patterns.project_concepts.yml` | LLM draft patterns | Ephemeral, ML/LLM context, **review for canonicalization**                                  |
+| 31 | `fossils/commit_audits/batch-execution-*.json`           | Batch commit audits (JSON)       | **Exceeds limit**: Archive or summarize older entries                                       |
+| 32 | `fossils/commit_audits/batch-audit-plan-*.json`          | Batch audit plans (JSON)         | **Exceeds limit**: Archive or summarize older entries                                       |
+| 33 | `fossils/commit_audits/batch-execution-*.yml`            | Batch commit audits (YAML)       | Archive or summarize as needed                                                              |
+| 34 | `fossils/commit_audits/batch-audit-plan-*.yml`           | Batch audit plans (YAML)         | Archive or summarize as needed                                                              |
+| 35 | `fossils/roadmap.llm.insights.json`                      | Roadmap LLM insights             | **Exceeds limit**: Split/Archive recommended                                                |
+| 36 | `fossils/roadmap_insights.json`                          | Roadmap insights (JSON)          | **Exceeds limit**: Split/Archive recommended                                                |
+| 37 | `fossils/roadmap.insights_summary.json`                  | Roadmap insights summary         | **Exceeds limit**: Split/Archive recommended                                                |
+| 38 | `fossils/roadmap.insights.web.json`                      | Roadmap insights (web)           | **Exceeds limit**: Split/Archive recommended                                                |
+| 39 | `fossils/roadmap.insights.api.json`                      | Roadmap insights (API)           | **Exceeds limit**: Split/Archive recommended                                                |
+| 40 | `fossils/structure_definition.yml`                       | Structure definition             | Canonical, ML-ready                                                                         |
+| 41 | `fossils/context/patterns/project_concepts.yml`          | Project concept patterns         | Canonical, ML-ready                                                                         |
+| 42 | `fossils/validation.json`                                | Validation results               | Canonical, ML-ready                                                                         |
+| 43 | `fossils/monitoring/performance_data.json`               | Monitoring performance data      | Canonical, ML-ready                                                                         |
+| 44 | `fossils/monitoring/test_monitoring_data.json`           | Test monitoring data             | Canonical, ML-ready                                                                         |
+| 45 | `fossils/ml.analysis.json`                               | ML analysis                      | Canonical, ML-ready                                                                         |
+| 46 | `fossils/llm.snapshots.json`                             | LLM snapshots                    | Canonical, ML-ready                                                                         |
+| 47 | `fossils/llm-snapshots.json`                             | LLM snapshots (alt)              | Canonical, ML-ready                                                                         |
+| 48 | `fossils/llm_snapshots.json`                             | LLM snapshots (alt)              | Canonical, ML-ready                                                                         |
+| 49 | `fossils/coverage_report.json`                           | Coverage report                  | Canonical, ML-ready                                                                         |
+| 50 | (reserved for new high-value fossil)                     | (TBD)                            | Only add if it meets all criteria above                                                     |
+
+- **Legend:**
+  - **Exceeds limit**: File is over 500 lines/128KB (recommended) or 1000 lines/256KB (hard limit); split, archive, or summarize.
+  - **Ephemeral**: Not canonical; review for promotion or cleanup.
+  - **Canonical**: ML-ready, referenced, and validated.
+  - **Human-facing**: Markdown/MDX, for documentation or audit.
+
+## Ephemeral Pattern Enforcement & Audit Utility
+
+A dedicated audit/refactor utility is provided to enforce the ephemeral pattern for all temp/original/backup files/scripts. This utility detects, renames, and moves files to follow the ephemeral convention, ensuring .gitignore compliance and project cleanliness. Integrate this as a DX transversal utility and run it pre-commit or in CI to maintain canonical standards.
+
+- **Run:** `bun run scripts/audit-ephemeral-pattern.ts`
+- **Purpose:** Enforces ephemeral pattern, prevents bloat and ambiguity.
+- **Integration:** Recommended for all contributors and CI workflows.
+- **See also:** [Ephemeral Context Management Guide](./ephemeral/address/ephemeral_context_management.md)
+
+## 🆕 Canonical Fossil File Limit and Management Policy (2025-07)
+
+### 50-File Limit: Canonical, ML-Ready Fossils Only
+
+- **Maximum of 50 active canonical fossils** in the main fossil structure (see table below).
+- **Each fossil must:**
+  - Be ML-ready, canonical, and follow naming conventions
+  - Serve a unique, high-value purpose (no redundancy)
+  - Be referenced in roadmap, project status, or automation scripts
+  - Have a clear schema and excerpt/metadata for auditability
+  - Not exceed 500 lines or 128KB (recommended); hard limit: 1000 lines/256KB
+- **Policy:**
+  - Only add a new fossil if it replaces/archives an existing one or is required for a new, high-value context
+  - If the limit is reached, archive or consolidate existing fossils before adding new ones
+  - Use the canonical fossil manager for all changes
+- **Enforcement:**
+  - Pre-commit validator and canonical fossil manager check file count and size/line limits
+  - Commits exceeding these limits are blocked with clear error messages
+
+### Canonical Fossil File Table (2025, ML-Ready, Canonical-Only)
+
+| #  | File/Folder                                               | Purpose/Type                    | Status/Notes                                                                                 |
+|----|-----------------------------------------------------------|----------------------------------|---------------------------------------------------------------------------------------------|
+| 1  | `fossils/roadmap.yml`                                    | Project roadmap (YAML)           | Canonical, referenced in all planning                                                        |
+| 2  | `fossils/project_status.yml`                             | Project status (YAML)            | Canonical, referenced in status checks                                                       |
+| 3  | `fossils/setup_status.yml`                               | Setup/onboarding status          | Canonical, updated by onboarding scripts                                                     |
+| 4  | `fossils/footprint.json`                                 | File footprint (full)            | **Exceeds limit**: Split/Archive recommended                                                |
+| 5  | `fossils/footprint-results.json`                         | File footprint (results)         | **Exceeds limit**: Split/Archive recommended                                                |
+| 6  | `fossils/analysis-results.json`                          | Analysis summary                 | Canonical, ML-ready                                                                         |
+| 7  | `fossils/llm_insights/llm.analysis.json`                 | LLM insights (JSON)              | Canonical, ML-ready                                                                         |
+| 8  | `fossils/llm_insights/llm.performance.json`              | LLM performance                  | Canonical, ML-ready                                                                         |
+| 9  | `fossils/ml_insights/ml.analysis.json`                   | ML insights (JSON)               | Canonical, ML-ready                                                                         |
+| 10 | `fossils/ml_insights/ml.performance.json`                | ML performance                   | Canonical, ML-ready                                                                         |
+| 11 | `fossils/human_insights/human.actionable_insights.md`    | Human insights                   | Canonical, human-facing                                                                     |
+| 12 | `fossils/performance/performance.json`                   | Performance metrics              | Canonical, ML-ready                                                                         |
+| 13 | `fossils/performance/performance.md`                     | Performance report               | Human-facing, summary                                                                       |
+| 14 | `fossils/monitoring/monitoring.json`                     | Monitoring metrics               | Canonical, ML-ready                                                                         |
+| 15 | `fossils/monitoring/monitoring.md`                       | Monitoring report                | Human-facing, summary                                                                       |
+| 16 | `fossils/tests/integration_tests.yml`                    | Integration test results         | Canonical, ML-ready                                                                         |
+| 17 | `fossils/tests/unit_tests.json`                          | Unit test results                | Canonical, ML-ready                                                                         |
+| 18 | `fossils/tests/performance_tests.md`                     | Test performance report          | Human-facing, summary                                                                       |
+| 19 | `fossils/context/canonical_context.yml`                  | LLM/ML context                   | Canonical, ML-ready, for LLM chat                                                           |
+| 20 | `fossils/context/commit-context.yml`                     | Per-commit context               | Canonical, ML-ready, for traceability                                                       |
+| 21 | `fossils/commit_audits/commit_audits.summary.json`       | Commit audits                    | Canonical, ML-ready                                                                         |
+| 22 | `fossils/traceability/current_traceability.json`         | Traceability                     | Canonical, ML-ready                                                                         |
+| 23 | `fossils/structure_definition.yml`                       | Structure definition             | Canonical, ML-ready                                                                         |
+| 24 | `fossils/FOSSIL_STRUCTURE_TREE_DIAGRAM.md`               | Structure diagram                | Human-facing, summary                                                                       |
+| 25 | `fossils/CURRENT_FOSSIL_STRUCTURE_SOURCE_OF_TRUTH.md`    | Source of truth                  | Canonical, ML-ready                                                                         |
+| 26 | `fossils/readme.md`                                      | Fossil system readme             | Human-facing, summary                                                                       |
+| 27 | `fossils/roadmap/roadmap_insights_report.md`             | Roadmap insights report          | Human-facing, summary                                                                       |
+| 28 | `fossils/roadmap/roadmap_progress.md`                    | Roadmap progress                 | Human-facing, summary                                                                       |
+| 29 | `fossils/roadmap/roadmap.md`                             | Roadmap markdown                 | Human-facing, summary                                                                       |
+| 30 | `fossils/ephemeral/address/llm.draft.patterns.project_concepts.yml` | LLM draft patterns | Ephemeral, ML/LLM context, **review for canonicalization**                                  |
+| 31 | `fossils/commit_audits/batch-execution-*.json`           | Batch commit audits (JSON)       | **Exceeds limit**: Archive or summarize older entries                                       |
+| 32 | `fossils/commit_audits/batch-audit-plan-*.json`          | Batch audit plans (JSON)         | **Exceeds limit**: Archive or summarize older entries                                       |
+| 33 | `fossils/commit_audits/batch-execution-*.yml`            | Batch commit audits (YAML)       | Archive or summarize as needed                                                              |
+| 34 | `fossils/commit_audits/batch-audit-plan-*.yml`           | Batch audit plans (YAML)         | Archive or summarize as needed                                                              |
+| 35 | `fossils/roadmap.llm.insights.json`                      | Roadmap LLM insights             | **Exceeds limit**: Split/Archive recommended                                                |
+| 36 | `fossils/roadmap_insights.json`                          | Roadmap insights (JSON)          | **Exceeds limit**: Split/Archive recommended                                                |
+| 37 | `fossils/roadmap.insights_summary.json`                  | Roadmap insights summary         | **Exceeds limit**: Split/Archive recommended                                                |
+| 38 | `fossils/roadmap.insights.web.json`                      | Roadmap insights (web)           | **Exceeds limit**: Split/Archive recommended                                                |
+| 39 | `fossils/roadmap.insights.api.json`                      | Roadmap insights (API)           | **Exceeds limit**: Split/Archive recommended                                                |
+| 40 | `fossils/structure_definition.yml`                       | Structure definition             | Canonical, ML-ready                                                                         |
+| 41 | `fossils/context/patterns/project_concepts.yml`          | Project concept patterns         | Canonical, ML-ready                                                                         |
+| 42 | `fossils/validation.json`                                | Validation results               | Canonical, ML-ready                                                                         |
+| 43 | `fossils/monitoring/performance_data.json`               | Monitoring performance data      | Canonical, ML-ready                                                                         |
+| 44 | `fossils/monitoring/test_monitoring_data.json`           | Test monitoring data             | Canonical, ML-ready                                                                         |
+| 45 | `fossils/ml.analysis.json`                               | ML analysis                      | Canonical, ML-ready                                                                         |
+| 46 | `fossils/llm.snapshots.json`                             | LLM snapshots                    | Canonical, ML-ready                                                                         |
+| 47 | `fossils/llm-snapshots.json`                             | LLM snapshots (alt)              | Canonical, ML-ready                                                                         |
+| 48 | `fossils/llm_snapshots.json`                             | LLM snapshots (alt)              | Canonical, ML-ready                                                                         |
+| 49 | `fossils/coverage_report.json`                           | Coverage report                  | Canonical, ML-ready                                                                         |
+| 50 | (reserved for new high-value fossil)                     | (TBD)                            | Only add if it meets all criteria above                                                     |
+
+- **Legend:**
+  - **Exceeds limit**: File is over 500 lines/128KB (recommended) or 1000 lines/256KB (hard limit); split, archive, or summarize.
+  - **Ephemeral**: Not canonical; review for promotion or cleanup.
+  - **Canonical**: ML-ready, referenced, and validated.
+  - **Human-facing**: Markdown/MDX, for documentation or audit.
+
+## Ephemeral Pattern Enforcement & Audit Utility
+
+A dedicated audit/refactor utility is provided to enforce the ephemeral pattern for all temp/original/backup files/scripts. This utility detects, renames, and moves files to follow the ephemeral convention, ensuring .gitignore compliance and project cleanliness. Integrate this as a DX transversal utility and run it pre-commit or in CI to maintain canonical standards.
+
+- **Run:** `bun run scripts/audit-ephemeral-pattern.ts`
+- **Purpose:** Enforces ephemeral pattern, prevents bloat and ambiguity.
+- **Integration:** Recommended for all contributors and CI workflows.
+- **See also:** [Ephemeral Context Management Guide](./ephemeral/address/ephemeral_context_management.md)
+
+## 🆕 Canonical Fossil File Limit and Management Policy (2025-07)
+
+### 50-File Limit: Canonical, ML-Ready Fossils Only
+
+- **Maximum of 50 active canonical fossils** in the main fossil structure (see table below).
+- **Each fossil must:**
+  - Be ML-ready, canonical, and follow naming conventions
+  - Serve a unique, high-value purpose (no redundancy)
+  - Be referenced in roadmap, project status, or automation scripts
+  - Have a clear schema and excerpt/metadata for auditability
+  - Not exceed 500 lines or 128KB (recommended); hard limit: 1000 lines/256KB
+- **Policy:**
+  - Only add a new fossil if it replaces/archives an existing one or is required for a new, high-value context
+  - If the limit is reached, archive or consolidate existing fossils before adding new ones
+  - Use the canonical fossil manager for all changes
+- **Enforcement:**
+  - Pre-commit validator and canonical fossil manager check file count and size/line limits
+  - Commits exceeding these limits are blocked with clear error messages
+
+### Canonical Fossil File Table (2025, ML-Ready, Canonical-Only)
+
+| #  | File/Folder                                               | Purpose/Type                    | Status/Notes                                                                                 |
+|----|-----------------------------------------------------------|----------------------------------|---------------------------------------------------------------------------------------------|
+| 1  | `fossils/roadmap.yml`                                    | Project roadmap (YAML)           | Canonical, referenced in all planning                                                        |
+| 2  | `fossils/project_status.yml`                             | Project status (YAML)            | Canonical, referenced in status checks                                                       |
+| 3  | `fossils/setup_status.yml`                               | Setup/onboarding status          | Canonical, updated by onboarding scripts                                                     |
+| 4  | `fossils/footprint.json`                                 | File footprint (full)            | **Exceeds limit**: Split/Archive recommended                                                |
+| 5  | `fossils/footprint-results.json`                         | File footprint (results)         | **Exceeds limit**: Split/Archive recommended                                                |
+| 6  | `fossils/analysis-results.json`                          | Analysis summary                 | Canonical, ML-ready                                                                         |
+| 7  | `fossils/llm_insights/llm.analysis.json`                 | LLM insights (JSON)              | Canonical, ML-ready                                                                         |
+| 8  | `fossils/llm_insights/llm.performance.json`              | LLM performance                  | Canonical, ML-ready                                                                         |
+| 9  | `fossils/ml_insights/ml.analysis.json`                   | ML insights (JSON)               | Canonical, ML-ready                                                                         |
+| 10 | `fossils/ml_insights/ml.performance.json`                | ML performance                   | Canonical, ML-ready                                                                         |
+| 11 | `fossils/human_insights/human.actionable_insights.md`    | Human insights                   | Canonical, human-facing                                                                     |
+| 12 | `fossils/performance/performance.json`                   | Performance metrics              | Canonical, ML-ready                                                                         |
+| 13 | `fossils/performance/performance.md`                     | Performance report               | Human-facing, summary                                                                       |
+| 14 | `fossils/monitoring/monitoring.json`                     | Monitoring metrics               | Canonical, ML-ready                                                                         |
+| 15 | `fossils/monitoring/monitoring.md`                       | Monitoring report                | Human-facing, summary                                                                       |
+| 16 | `fossils/tests/integration_tests.yml`                    | Integration test results         | Canonical, ML-ready                                                                         |
+| 17 | `fossils/tests/unit_tests.json`                          | Unit test results                | Canonical, ML-ready                                                                         |
+| 18 | `fossils/tests/performance_tests.md`                     | Test performance report          | Human-facing, summary                                                                       |
+| 19 | `fossils/context/canonical_context.yml`                  | LLM/ML context                   | Canonical, ML-ready, for LLM chat                                                           |
+| 20 | `fossils/context/commit-context.yml`                     | Per-commit context               | Canonical, ML-ready, for traceability                                                       |
+| 21 | `fossils/commit_audits/commit_audits.summary.json`       | Commit audits                    | Canonical, ML-ready                                                                         |
+| 22 | `fossils/traceability/current_traceability.json`         | Traceability                     | Canonical, ML-ready                                                                         |
+| 23 | `fossils/structure_definition.yml`                       | Structure definition             | Canonical, ML-ready                                                                         |
+| 24 | `fossils/FOSSIL_STRUCTURE_TREE_DIAGRAM.md`               | Structure diagram                | Human-facing, summary                                                                       |
+| 25 | `fossils/CURRENT_FOSSIL_STRUCTURE_SOURCE_OF_TRUTH.md`    | Source of truth                  | Canonical, ML-ready                                                                         |
+| 26 | `fossils/readme.md`                                      | Fossil system readme             | Human-facing, summary                                                                       |
+| 27 | `fossils/roadmap/roadmap_insights_report.md`             | Roadmap insights report          | Human-facing, summary                                                                       |
+| 28 | `fossils/roadmap/roadmap_progress.md`                    | Roadmap progress                 | Human-facing, summary                                                                       |
+| 29 | `fossils/roadmap/roadmap.md`                             | Roadmap markdown                 | Human-facing, summary                                                                       |
+| 30 | `fossils/ephemeral/address/llm.draft.patterns.project_concepts.yml` | LLM draft patterns | Ephemeral, ML/LLM context, **review for canonicalization**                                  |
+| 31 | `fossils/commit_audits/batch-execution-*.json`           | Batch commit audits (JSON)       | **Exceeds limit**: Archive or summarize older entries                                       |
+| 32 | `fossils/commit_audits/batch-audit-plan-*.json`          | Batch audit plans (JSON)         | **Exceeds limit**: Archive or summarize older entries                                       |
+| 33 | `fossils/commit_audits/batch-execution-*.yml`            | Batch commit audits (YAML)       | Archive or summarize as needed                                                              |
+| 34 | `fossils/commit_audits/batch-audit-plan-*.yml`           | Batch audit plans (YAML)         | Archive or summarize as needed                                                              |
+| 35 | `fossils/roadmap.llm.insights.json`                      | Roadmap LLM insights             | **Exceeds limit**: Split/Archive recommended                                                |
+| 36 | `fossils/roadmap_insights.json`                          | Roadmap insights (JSON)          | **Exceeds limit**: Split/Archive recommended                                                |
+| 37 | `fossils/roadmap.insights_summary.json`                  | Roadmap insights summary         | **Exceeds limit**: Split/Archive recommended                                                |
+| 38 | `fossils/roadmap.insights.web.json`                      | Roadmap insights (web)           | **Exceeds limit**: Split/Archive recommended                                                |
+| 39 | `fossils/roadmap.insights.api.json`                      | Roadmap insights (API)           | **Exceeds limit**: Split/Archive recommended                                                |
+| 40 | `fossils/structure_definition.yml`                       | Structure definition             | Canonical, ML-ready                                                                         |
+| 41 | `fossils/context/patterns/project_concepts.yml`          | Project concept patterns         | Canonical, ML-ready                                                                         |
+| 42 | `fossils/validation.json`                                | Validation results               | Canonical, ML-ready                                                                         |
+| 43 | `fossils/monitoring/performance_data.json`               | Monitoring performance data      | Canonical, ML-ready                                                                         |
+| 44 | `fossils/monitoring/test_monitoring_data.json`           | Test monitoring data             | Canonical, ML-ready                                                                         |
+| 45 | `fossils/ml.analysis.json`                               | ML analysis                      | Canonical, ML-ready                                                                         |
+| 46 | `fossils/llm.snapshots.json`                             | LLM snapshots                    | Canonical, ML-ready                                                                         |
+| 47 | `fossils/llm-snapshots.json`                             | LLM snapshots (alt)              | Canonical, ML-ready                                                                         |
+| 48 | `fossils/llm_snapshots.json`                             | LLM snapshots (alt)              | Canonical, ML-ready                                                                         |
+| 49 | `fossils/coverage_report.json`                           | Coverage report                  | Canonical, ML-ready                                                                         |
+| 50 | (reserved for new high-value fossil)                     | (TBD)                            | Only add if it meets all criteria above                                                     |
+
+- **Legend:**
+  - **Exceeds limit**: File is over 500 lines/128KB (recommended) or 1000 lines/256KB (hard limit); split, archive, or summarize.
+  - **Ephemeral**: Not canonical; review for promotion or cleanup.
+  - **Canonical**: ML-ready, referenced, and validated.
+  - **Human-facing**: Markdown/MDX, for documentation or audit.
+
+## Ephemeral Pattern Enforcement & Audit Utility
+
+A dedicated audit/refactor utility is provided to enforce the ephemeral pattern for all temp/original/backup files/scripts. This utility detects, renames, and moves files to follow the ephemeral convention, ensuring .gitignore compliance and project cleanliness. Integrate this as a DX transversal utility and run it pre-commit or in CI to maintain canonical standards.
+
+- **Run:** `bun run scripts/audit-ephemeral-pattern.ts`
+- **Purpose:** Enforces ephemeral pattern, prevents bloat and ambiguity.
+- **Integration:** Recommended for all contributors and CI workflows.
+- **See also:** [Ephemeral Context Management Guide](./ephemeral/address/ephemeral_context_management.md)
+
+## 🆕 Canonical Fossil File Limit and Management Policy (2025-07)
+
+### 50-File Limit: Canonical, ML-Ready Fossils Only
+
+- **Maximum of 50 active canonical fossils** in the main fossil structure (see table below).
+- **Each fossil must:**
+  - Be ML-ready, canonical, and follow naming conventions
+  - Serve a unique, high-value purpose (no redundancy)
+  - Be referenced in roadmap, project status, or automation scripts
+  - Have a clear schema and excerpt/metadata for auditability
+  - Not exceed 500 lines or 128KB (recommended); hard limit: 1000 lines/256KB
+- **Policy:**
+  - Only add a new fossil if it replaces/archives an existing one or is required for a new, high-value context
+  - If the limit is reached, archive or consolidate existing fossils before adding new ones
+  - Use the canonical fossil manager for all changes
+- **Enforcement:**
+  - Pre-commit validator and canonical fossil manager check file count and size/line limits
+  - Commits exceeding these limits are blocked with clear error messages
+
+### Canonical Fossil File Table (2025, ML-Ready, Canonical-Only)
+
+| #  | File/Folder                                               | Purpose/Type                    | Status/Notes                                                                                 |
+|----|-----------------------------------------------------------|----------------------------------|---------------------------------------------------------------------------------------------|
+| 1  | `fossils/roadmap.yml`                                    | Project roadmap (YAML)           | Canonical, referenced in all planning                                                        |
+| 2  | `fossils/project_status.yml`                             | Project status (YAML)            | Canonical, referenced in status checks                                                       |
+| 3  | `fossils/setup_status.yml`                               | Setup/onboarding status          | Canonical, updated by onboarding scripts                                                     |
+| 4  | `fossils/footprint.json`                                 | File footprint (full)            | **Exceeds limit**: Split/Archive recommended                                                |
+| 5  | `fossils/footprint-results.json`                         | File footprint (results)         | **Exceeds limit**: Split/Archive recommended                                                |
+| 6  | `fossils/analysis-results.json`                          | Analysis summary                 | Canonical, ML-ready                                                                         |
+| 7  | `fossils/llm_insights/llm.analysis.json`                 | LLM insights (JSON)              | Canonical, ML-ready                                                                         |
+| 8  | `fossils/llm_insights/llm.performance.json`              | LLM performance                  | Canonical, ML-ready                                                                         |
+| 9  | `fossils/ml_insights/ml.analysis.json`                   | ML insights (JSON)               | Canonical, ML-ready                                                                         |
+| 10 | `fossils/ml_insights/ml.performance.json`                | ML performance                   | Canonical, ML-ready                                                                         |
+| 11 | `fossils/human_insights/human.actionable_insights.md`    | Human insights                   | Canonical, human-facing                                                                     |
+| 12 | `fossils/performance/performance.json`                   | Performance metrics              | Canonical, ML-ready                                                                         |
+| 13 | `fossils/performance/performance.md`                     | Performance report               | Human-facing, summary                                                                       |
+| 14 | `fossils/monitoring/monitoring.json`                     | Monitoring metrics               | Canonical, ML-ready                                                                         |
+| 15 | `fossils/monitoring/monitoring.md`                       | Monitoring report                | Human-facing, summary                                                                       |
+| 16 | `fossils/tests/integration_tests.yml`                    | Integration test results         | Canonical, ML-ready                                                                         |
+| 17 | `fossils/tests/unit_tests.json`                          | Unit test results                | Canonical, ML-ready                                                                         |
+| 18 | `fossils/tests/performance_tests.md`                     | Test performance report          | Human-facing, summary                                                                       |
+| 19 | `fossils/context/canonical_context.yml`                  | LLM/ML context                   | Canonical, ML-ready, for LLM chat                                                           |
+| 20 | `fossils/context/commit-context.yml`                     | Per-commit context               | Canonical, ML-ready, for traceability                                                       |
+| 21 | `fossils/commit_audits/commit_audits.summary.json`       | Commit audits                    | Canonical, ML-ready                                                                         |
+| 22 | `fossils/traceability/current_traceability.json`         | Traceability                     | Canonical, ML-ready                                                                         |
+| 23 | `fossils/structure_definition.yml`                       | Structure definition             | Canonical, ML-ready                                                                         |
+| 24 | `fossils/FOSSIL_STRUCTURE_TREE_DIAGRAM.md`               | Structure diagram                | Human-facing, summary                                                                       |
+| 25 | `fossils/CURRENT_FOSSIL_STRUCTURE_SOURCE_OF_TRUTH.md`    | Source of truth                  | Canonical, ML-ready                                                                         |
+| 26 | `fossils/readme.md`                                      | Fossil system readme             | Human-facing, summary                                                                       |
+| 27 | `fossils/roadmap/roadmap_insights_report.md`             | Roadmap insights report          | Human-facing, summary                                                                       |
+| 28 | `fossils/roadmap/roadmap_progress.md`                    | Roadmap progress                 | Human-facing, summary                                                                       |
+| 29 | `fossils/roadmap/roadmap.md`                             | Roadmap markdown                 | Human-facing, summary                                                                       |
+| 30 | `fossils/ephemeral/address/llm.draft.patterns.project_concepts.yml` | LLM draft patterns | Ephemeral, ML/LLM context, **review for canonicalization**                                  |
+| 31 | `fossils/commit_audits/batch-execution-*.json`           | Batch commit audits (JSON)       | **Exceeds limit**: Archive or summarize older entries                                       |
+| 32 | `fossils/commit_audits/batch-audit-plan-*.json`          | Batch audit plans (JSON)         | **Exceeds limit**: Archive or summarize older entries                                       |
+| 33 | `fossils/commit_audits/batch-execution-*.yml`            | Batch commit audits (YAML)       | Archive or summarize as needed                                                              |
+| 34 | `fossils/commit_audits/batch-audit-plan-*.yml`           | Batch audit plans (YAML)         | Archive or summarize as needed                                                              |
+| 35 | `fossils/roadmap.llm.insights.json`                      | Roadmap LLM insights             | **Exceeds limit**: Split/Archive recommended                                                |
+| 36 | `fossils/roadmap_insights.json`                          | Roadmap insights (JSON)          | **Exceeds limit**: Split/Archive recommended                                                |
+| 37 | `fossils/roadmap.insights_summary.json`                  | Roadmap insights summary         | **Exceeds limit**: Split/Archive recommended                                                |
+| 38 | `fossils/roadmap.insights.web.json`                      | Roadmap insights (web)           | **Exceeds limit**: Split/Archive recommended                                                |
+| 39 | `fossils/roadmap.insights.api.json`                      | Roadmap insights (API)           | **Exceeds limit**: Split/Archive recommended                                                |
+| 40 | `fossils/structure_definition.yml`                       | Structure definition             | Canonical, ML-ready                                                                         |
+| 41 | `fossils/context/patterns/project_concepts.yml`          | Project concept patterns         | Canonical, ML-ready                                                                         |
+| 42 | `fossils/validation.json`                                | Validation results               | Canonical, ML-ready                                                                         |
+| 43 | `fossils/monitoring/performance_data.json`               | Monitoring performance data      | Canonical, ML-ready                                                                         |
+| 44 | `fossils/monitoring/test_monitoring_data.json`           | Test monitoring data             | Canonical, ML-ready                                                                         |
+| 45 | `fossils/ml.analysis.json`                               | ML analysis                      | Canonical, ML-ready                                                                         |
+| 46 | `fossils/llm.snapshots.json`                             | LLM snapshots                    | Canonical, ML-ready                                                                         |
+| 47 | `fossils/llm-snapshots.json`                             | LLM snapshots (alt)              | Canonical, ML-ready                                                                         |
+| 48 | `fossils/llm_snapshots.json`                             | LLM snapshots (alt)              | Canonical, ML-ready                                                                         |
+| 49 | `fossils/coverage_report.json`                           | Coverage report                  | Canonical, ML-ready                                                                         |
+| 50 | (reserved for new high-value fossil)                     | (TBD)                            | Only add if it meets all criteria above                                                     |
+
+- **Legend:**
+  - **Exceeds limit**: File is over 500 lines/128KB (recommended) or 1000 lines/256KB (hard limit); split, archive, or summarize.
+  - **Ephemeral**: Not canonical; review for promotion or cleanup.
+  - **Canonical**: ML-ready, referenced, and validated.
+  - **Human-facing**: Markdown/MDX, for documentation or audit.
+
+## Ephemeral Pattern Enforcement & Audit Utility
+
+A dedicated audit/refactor utility is provided to enforce the ephemeral pattern for all temp/original/backup files/scripts. This utility detects, renames, and moves files to follow the ephemeral convention, ensuring .gitignore compliance and project cleanliness. Integrate this as a DX transversal utility and run it pre-commit or in CI to maintain canonical standards.
+
+- **Run:** `bun run scripts/audit-ephemeral-pattern.ts`
+- **Purpose:** Enforces ephemeral pattern, prevents bloat and ambiguity.
+- **Integration:** Recommended for all contributors and CI workflows.
+- **See also:** [Ephemeral Context Management Guide](./ephemeral/address/ephemeral_context_management.md)
+
+## 🆕 Canonical Fossil File Limit and Management Policy (2025-07)
+
+### 50-File Limit: Canonical, ML-Ready Fossils Only
+
+- **Maximum of 50 active canonical fossils** in the main fossil structure (see table below).
+- **Each fossil must:**
+  - Be ML-ready, canonical, and follow naming conventions
+  - Serve a unique, high-value purpose (no redundancy)
+  - Be referenced in roadmap, project status, or automation scripts
+  - Have a clear schema and excerpt/metadata for auditability
+  - Not exceed 500 lines or 128KB (recommended); hard limit: 1000 lines/256KB
+- **Policy:**
+  - Only add a new fossil if it replaces/archives an existing one or is required for a new, high-value context
+  - If the limit is reached, archive or consolidate existing fossils before adding new ones
+  - Use the canonical fossil manager for all changes
+- **Enforcement:**
+  - Pre-commit validator and canonical fossil manager check file count and size/line limits
+  - Commits exceeding these limits are blocked with clear error messages
+
+### Canonical Fossil File Table (2025, ML-Ready, Canonical-Only)
+
+| #  | File/Folder                                               | Purpose/Type                    | Status/Notes                                                                                 |
+|----|-----------------------------------------------------------|----------------------------------|---------------------------------------------------------------------------------------------|
+| 1  | `fossils/roadmap.yml`                                    | Project roadmap (YAML)           | Canonical, referenced in all planning                                                        |
+| 2  | `fossils/project_status.yml`                             | Project status (YAML)            | Canonical, referenced in status checks                                                       |
+| 3  | `fossils/setup_status.yml`                               | Setup/onboarding status          | Canonical, updated by onboarding scripts                                                     |
+| 4  | `fossils/footprint.json`                                 | File footprint (full)            | **Exceeds limit**: Split/Archive recommended                                                |
+| 5  | `fossils/footprint-results.json`                         | File footprint (results)         | **Exceeds limit**: Split/Archive recommended                                                |
+| 6  | `fossils/analysis-results.json`                          | Analysis summary                 | Canonical, ML-ready                                                                         |
+| 7  | `fossils/llm_insights/llm.analysis.json`                 | LLM insights (JSON)              | Canonical, ML-ready                                                                         |
+| 8  | `fossils/llm_insights/llm.performance.json`              | LLM performance                  | Canonical, ML-ready                                                                         |
+| 9  | `fossils/ml_insights/ml.analysis.json`                   | ML insights (JSON)               | Canonical, ML-ready                                                                         |
+| 10 | `fossils/ml_insights/ml.performance.json`                | ML performance                   | Canonical, ML-ready                                                                         |
+| 11 | `fossils/human_insights/human.actionable_insights.md`    | Human insights                   | Canonical, human-facing                                                                     |
+| 12 | `fossils/performance/performance.json`                   | Performance metrics              | Canonical, ML-ready                                                                         |
+| 13 | `fossils/performance/performance.md`                     | Performance report               | Human-facing, summary                                                                       |
+| 14 | `fossils/monitoring/monitoring.json`                     | Monitoring metrics               | Canonical, ML-ready                                                                         |
+| 15 | `fossils/monitoring/monitoring.md`                       | Monitoring report                | Human-facing, summary                                                                       |
+| 16 | `fossils/tests/integration_tests.yml`                    | Integration test results         | Canonical, ML-ready                                                                         |
+| 17 | `fossils/tests/unit_tests.json`                          | Unit test results                | Canonical, ML-ready                                                                         |
+| 18 | `fossils/tests/performance_tests.md`                     | Test performance report          | Human-facing, summary                                                                       |
+| 19 | `fossils/context/canonical_context.yml`                  | LLM/ML context                   | Canonical, ML-ready, for LLM chat                                                           |
+| 20 | `fossils/context/commit-context.yml`                     | Per-commit context               | Canonical, ML-ready, for traceability                                                       |
+| 21 | `fossils/commit_audits/commit_audits.summary.json`       | Commit audits                    | Canonical, ML-ready                                                                         |
+| 22 | `fossils/traceability/current_traceability.json`         | Traceability                     | Canonical, ML-ready                                                                         |
+| 23 | `fossils/structure_definition.yml`                       | Structure definition             | Canonical, ML-ready                                                                         |
+| 24 | `fossils/FOSSIL_STRUCTURE_TREE_DIAGRAM.md`               | Structure diagram                | Human-facing, summary                                                                       |
+| 25 | `fossils/CURRENT_FOSSIL_STRUCTURE_SOURCE_OF_TRUTH.md`    | Source of truth                  | Canonical, ML-ready                                                                         |
+| 26 | `fossils/readme.md`                                      | Fossil system readme             | Human-facing, summary                                                                       |
+| 27 | `fossils/roadmap/roadmap_insights_report.md`             | Roadmap insights report          | Human-facing, summary                                                                       |
+| 28 | `fossils/roadmap/roadmap_progress.md`                    | Roadmap progress                 | Human-facing, summary                                                                       |
+| 29 | `fossils/roadmap/roadmap.md`                             | Roadmap markdown                 | Human-facing, summary                                                                       |
+| 30 | `fossils/ephemeral/address/llm.draft.patterns.project_concepts.yml` | LLM draft patterns | Ephemeral, ML/LLM context, **review for canonicalization**                                  |
+| 31 | `fossils/commit_audits/batch-execution-*.json`           | Batch commit audits (JSON)       | **Exceeds limit**: Archive or summarize older entries                                       |
+| 32 | `fossils/commit_audits/batch-audit-plan-*.json`          | Batch audit plans (JSON)         | **Exceeds limit**: Archive or summarize older entries                                       |
+| 33 | `fossils/commit_audits/batch-execution-*.yml`            | Batch commit audits (YAML)       | Archive or summarize as needed                                                              |
+| 34 | `fossils/commit_audits/batch-audit-plan-*.yml`           | Batch audit plans (YAML)         | Archive or summarize as needed                                                              |
+| 35 | `fossils/roadmap.llm.insights.json`                      | Roadmap LLM insights             | **Exceeds limit**: Split/Archive recommended                                                |
+| 36 | `fossils/roadmap_insights.json`                          | Roadmap insights (JSON)          | **Exceeds limit**: Split/Archive recommended                                                |
+| 37 | `fossils/roadmap.insights_summary.json`                  | Roadmap insights summary         | **Exceeds limit**: Split/Archive recommended                                                |
+| 38 | `fossils/roadmap.insights.web.json`                      | Roadmap insights (web)           | **Exceeds limit**: Split/Archive recommended                                                |
+| 39 | `fossils/roadmap.insights.api.json`                      | Roadmap insights (API)           | **Exceeds limit**: Split/Archive recommended                                                |
+| 40 | `fossils/structure_definition.yml`                       | Structure definition             | Canonical, ML-ready                                                                         |
+| 41 | `fossils/context/patterns/project_concepts.yml`          | Project concept patterns         | Canonical, ML-ready                                                                         |
+| 42 | `fossils/validation.json`                                | Validation results               | Canonical, ML-ready                                                                         |
+| 43 | `fossils/monitoring/performance_data.json`               | Monitoring performance data      | Canonical, ML-ready                                                                         |
+| 44 | `fossils/monitoring/test_monitoring_data.json`           | Test monitoring data             | Canonical, ML-ready                                                                         |
+| 45 | `fossils/ml.analysis.json`                               | ML analysis                      | Canonical, ML-ready                                                                         |
+| 46 | `fossils/llm.snapshots.json`                             | LLM snapshots                    | Canonical, ML-ready                                                                         |
+| 47 | `fossils/llm-snapshots.json`                             | LLM snapshots (alt)              | Canonical, ML-ready                                                                         |
+| 48 | `fossils/llm_snapshots.json`                             | LLM snapshots (alt)              | Canonical, ML-ready                                                                         |
+| 49 | `fossils/coverage_report.json`                           | Coverage report                  | Canonical, ML-ready                                                                         |
+| 50 | (reserved for new high-value fossil)                     | (TBD)                            | Only add if it meets all criteria above                                                     |
+
+- **Legend:**
+  - **Exceeds limit**: File is over 500 lines/128KB (recommended) or 1000 lines/256KB (hard limit); split, archive, or summarize.
+  - **Ephemeral**: Not canonical; review for promotion or cleanup.
+  - **Canonical**: ML-ready, referenced, and validated.
+  - **Human-facing**: Markdown/MDX, for documentation or audit.
+
+## Ephemeral Pattern Enforcement & Audit Utility
+
+A dedicated audit/refactor utility is provided to enforce the ephemeral pattern for all temp/original/backup files/scripts. This utility detects, renames, and moves files to follow the ephemeral convention, ensuring .gitignore compliance and project cleanliness. Integrate this as a DX transversal utility and run it pre-commit or in CI to maintain canonical standards.
+
+- **Run:** `bun run scripts/audit-ephemeral-pattern.ts`
+- **Purpose:** Enforces ephemeral pattern, prevents bloat and ambiguity.
+- **Integration:** Recommended for all contributors and CI workflows.
+- **See also:** [Ephemeral Context Management Guide](./ephemeral/address/ephemeral_context_management.md)
+
+## 🆕 Canonical Fossil File Limit and Management Policy (2025-07)
+
+### 50-File Limit: Canonical, ML-Ready Fossils Only
+
+- **Maximum of 50 active canonical fossils** in the main fossil structure (see table below).
+- **Each fossil must:**
+  - Be ML-ready, canonical, and follow naming conventions
+  - Serve a unique, high-value purpose (no redundancy)
+  - Be referenced in roadmap, project status, or automation scripts
+  - Have a clear schema and excerpt/metadata for auditability
+  - Not exceed 500 lines or 128KB (recommended); hard limit: 1000 lines/256KB
+- **Policy:**
+  - Only add a new fossil if it replaces/archives an existing one or is required for a new, high-value context
+  - If the limit is reached, archive or consolidate existing fossils before adding new ones
+  - Use the canonical fossil manager for all changes
+- **Enforcement:**
+  - Pre-commit validator and canonical fossil manager check file count and size/line limits
+  - Commits exceeding these limits are blocked with clear error messages
+
+### Canonical Fossil File Table (2025, ML-Ready, Canonical-Only)
+
+| #  | File/Folder                                               | Purpose/Type                    | Status/Notes                                                                                 |
+|----|-----------------------------------------------------------|----------------------------------|---------------------------------------------------------------------------------------------|
+| 1  | `fossils/roadmap.yml`                                    | Project roadmap (YAML)           | Canonical, referenced in all planning                                                        |
+| 2  | `fossils/project_status.yml`                             | Project status (YAML)            | Canonical, referenced in status checks                                                       |
+| 3  | `fossils/setup_status.yml`                               | Setup/onboarding status          | Canonical, updated by onboarding scripts                                                     |
+| 4  | `fossils/footprint.json`                                 | File footprint (full)            | **Exceeds limit**: Split/Archive recommended                                                |
+| 5  | `fossils/footprint-results.json`                         | File footprint (results)         | **Exceeds limit**: Split/Archive recommended                                                |
+| 6  | `fossils/analysis-results.json`                          | Analysis summary                 | Canonical, ML-ready                                                                         |
+| 7  | `fossils/llm_insights/llm.analysis.json`                 | LLM insights (JSON)              | Canonical, ML-ready                                                                         |
+| 8  | `fossils/llm_insights/llm.performance.json`              | LLM performance                  | Canonical, ML-ready                                                                         |
+| 9  | `fossils/ml_insights/ml.analysis.json`                   | ML insights (JSON)               | Canonical, ML-ready                                                                         |
+| 10 | `fossils/ml_insights/ml.performance.json`                | ML performance                   | Canonical, ML-ready                                                                         |
+| 11 | `fossils/human_insights/human.actionable_insights.md`    | Human insights                   | Canonical, human-facing                                                                     |
+| 12 | `fossils/performance/performance.json`                   | Performance metrics              | Canonical, ML-ready                                                                         |
+| 13 | `fossils/performance/performance.md`                     | Performance report               | Human-facing, summary                                                                       |
+| 14 | `fossils/monitoring/monitoring.json`                     | Monitoring metrics               | Canonical, ML-ready                                                                         |
+| 15 | `fossils/monitoring/monitoring.md`                       | Monitoring report                | Human-facing, summary                                                                       |
+| 16 | `fossils/tests/integration_tests.yml`                    | Integration test results         | Canonical, ML-ready                                                                         |
+| 17 | `fossils/tests/unit_tests.json`                          | Unit test results                | Canonical, ML-ready                                                                         |
+| 18 | `fossils/tests/performance_tests.md`                     | Test performance report          | Human-facing, summary                                                                       |
+| 19 | `fossils/context/canonical_context.yml`                  | LLM/ML context                   | Canonical, ML-ready, for LLM chat                                                           |
+| 20 | `fossils/context/commit-context.yml`                     | Per-commit context               | Canonical, ML-ready, for traceability                                                       |
+| 21 | `fossils/commit_audits/commit_audits.summary.json`       | Commit audits                    | Canonical, ML-ready                                                                         |
+| 22 | `fossils/traceability/current_traceability.json`         | Traceability                     | Canonical, ML-ready                                                                         |
+| 23 | `fossils/structure_definition.yml`                       | Structure definition             | Canonical, ML-ready                                                                         |
+| 24 | `fossils/FOSSIL_STRUCTURE_TREE_DIAGRAM.md`               | Structure diagram                | Human-facing, summary                                                                       |
+| 25 | `fossils/CURRENT_FOSSIL_STRUCTURE_SOURCE_OF_TRUTH.md`    | Source of truth                  | Canonical, ML-ready                                                                         |
+| 26 | `fossils/readme.md`                                      | Fossil system readme             | Human-facing, summary                                                                       |
+| 27 | `fossils/roadmap/roadmap_insights_report.md`             | Roadmap insights report          | Human-facing, summary                                                                       |
+| 28 | `fossils/roadmap/roadmap_progress.md`                    | Roadmap progress                 | Human-facing, summary                                                                       |
+| 29 | `fossils/roadmap/roadmap.md`                             | Roadmap markdown                 | Human-facing, summary                                                                       |
+| 30 | `fossils/ephemeral/address/llm.draft.patterns.project_concepts.yml` | LLM draft patterns | Ephemeral, ML/LLM context, **review for canonicalization**                                  |
+| 31 | `fossils/commit_audits/batch-execution-*.json`           | Batch commit audits (JSON)       | **Exceeds limit**: Archive or summarize older entries                                       |
+| 32 | `fossils/commit_audits/batch-audit-plan-*.json`          | Batch audit plans (JSON)         | **Exceeds limit**: Archive or summarize older entries                                       |
+| 33 | `fossils/commit_audits/batch-execution-*.yml`            | Batch commit audits (YAML)       | Archive or summarize as needed                                                              |
+| 34 | `fossils/commit_audits/batch-audit-plan-*.yml`           | Batch audit plans (YAML)         | Archive or summarize as needed                                                              |
+| 35 | `fossils/roadmap.llm.insights.json`                      | Roadmap LLM insights             | **Exceeds limit**: Split/Archive recommended                                                |
+| 36 | `fossils/roadmap_insights.json`                          | Roadmap insights (JSON)          | **Exceeds limit**: Split/Archive recommended                                                |
+| 37 | `fossils/roadmap.insights_summary.json`                  | Roadmap insights summary         | **Exceeds limit**: Split/Archive recommended                                                |
+| 38 | `fossils/roadmap.insights.web.json`                      | Roadmap insights (web)           | **Exceeds limit**: Split/Archive recommended                                                |
+| 39 | `fossils/roadmap.insights.api.json`                      | Roadmap insights (API)           | **Exceeds limit**: Split/Archive recommended                                                |
+| 40 | `fossils/structure_definition.yml`                       | Structure definition             | Canonical, ML-ready                                                                         |
+| 41 | `fossils/context/patterns/project_concepts.yml`          | Project concept patterns         | Canonical, ML-ready                                                                         |
+| 42 | `fossils/validation.json`                                | Validation results               | Canonical, ML-ready                                                                         |
+| 43 | `fossils/monitoring/performance_data.json`               | Monitoring performance data      | Canonical, ML-ready                                                                         |
+| 44 | `fossils/monitoring/test_monitoring_data.json`           | Test monitoring data             | Canonical, ML-ready                                                                         |
+| 45 | `fossils/ml.analysis.json`                               | ML analysis                      | Canonical, ML-ready                                                                         |
+| 46 | `fossils/llm.snapshots.json`                             | LLM snapshots                    | Canonical, ML-ready                                                                         |
+| 47 | `fossils/llm-snapshots.json`                             | LLM snapshots (alt)              | Canonical, ML-ready                                                                         |
+| 48 | `fossils/llm_snapshots.json`                             | LLM snapshots (alt)              | Canonical, ML-ready                                                                         |
+| 49 | `fossils/coverage_report.json`                           | Coverage report                  | Canonical, ML-ready                                                                         |
+| 50 | (reserved for new high-value fossil)                     | (TBD)                            | Only add if it meets all criteria above                                                     |
+
+- **Legend:**
+  - **Exceeds limit**: File is over 500 lines/128KB (recommended) or 1000 lines/256KB (hard limit); split, archive, or summarize.
+  - **Ephemeral**: Not canonical; review for promotion or cleanup.
+  - **Canonical**: ML-ready, referenced, and validated.
+  - **Human-facing**: Markdown/MDX, for documentation or audit.
+
+## Ephemeral Pattern Enforcement & Audit Utility
+
+A dedicated audit/refactor utility is provided to enforce the ephemeral pattern for all temp/original/backup files/scripts. This utility detects, renames, and moves files to follow the ephemeral convention, ensuring .gitignore compliance and project cleanliness. Integrate this as a DX transversal utility and run it pre-commit or in CI to maintain canonical standards.
+
+- **Run:** `bun run scripts/audit-ephemeral-pattern.ts`
+- **Purpose:** Enforces ephemeral pattern, prevents bloat and ambiguity.
+- **Integration:** Recommended for all contributors and CI workflows.
+- **See also:** [Ephemeral Context Management Guide](./ephemeral/address/ephemeral_context_management.md)
+
+## 🆕 Canonical Fossil File Limit and Management Policy (2025-07)
+
+### 50-File Limit: Canonical, ML-Ready Fossils Only
+
+- **Maximum of 50 active canonical fossils** in the main fossil structure (see table below).
+- **Each fossil must:**
+  - Be ML-ready, canonical, and follow naming conventions
+  - Serve a unique, high-value purpose (no redundancy)
+  - Be referenced in roadmap, project status, or automation scripts
+  - Have a clear schema and excerpt/metadata for auditability
+  - Not exceed 500 lines or 128KB (recommended); hard limit: 1000 lines/256KB
+- **Policy:**
+  - Only add a new fossil if it replaces/archives an existing one or is required for a new, high-value context
+  - If the limit is reached, archive or consolidate existing fossils before adding new ones
+  - Use the canonical fossil manager for all changes
+- **Enforcement:**
+  - Pre-commit validator and canonical fossil manager check file count and size/line limits
+  - Commits exceeding these limits are blocked with clear error messages
+
+### Canonical Fossil File Table (2025, ML-Ready, Canonical-Only)
+
+| #  | File/Folder                                               | Purpose/Type                    | Status/Notes                                                                                 |
+|----|-----------------------------------------------------------|----------------------------------|---------------------------------------------------------------------------------------------|
+| 1  | `fossils/roadmap.yml`                                    | Project roadmap (YAML)           | Canonical, referenced in all planning                                                        |
+| 2  | `fossils/project_status.yml`                             | Project status (YAML)            | Canonical, referenced in status checks                                                       |
+| 3  | `fossils/setup_status.yml`                               | Setup/onboarding status          | Canonical, updated by onboarding scripts                                                     |
+| 4  | `fossils/footprint.json`                                 | File footprint (full)            | **Exceeds limit**: Split/Archive recommended                                                |
+| 5  | `fossils/footprint-results.json`                         | File footprint (results)         | **Exceeds limit**: Split/Archive recommended                                                |
+| 6  | `fossils/analysis-results.json`                          | Analysis summary                 | Canonical, ML-ready                                                                         |
+| 7  | `fossils/llm_insights/llm.analysis.json`                 | LLM insights (JSON)              | Canonical, ML-ready                                                                         |
+| 8  | `fossils/llm_insights/llm.performance.json`              | LLM performance                  | Canonical, ML-ready                                                                         |
+| 9  | `fossils/ml_insights/ml.analysis.json`                   | ML insights (JSON)               | Canonical, ML-ready                                                                         |
+| 10 | `fossils/ml_insights/ml.performance.json`                | ML performance                   | Canonical, ML-ready                                                                         |
+| 11 | `fossils/human_insights/human.actionable_insights.md`    | Human insights                   | Canonical, human-facing                                                                     |
+| 12 | `fossils/performance/performance.json`                   | Performance metrics              | Canonical, ML-ready                                                                         |
+| 13 | `fossils/performance/performance.md`                     | Performance report               | Human-facing, summary                                                                       |
+| 14 | `fossils/monitoring/monitoring.json`                     | Monitoring metrics               | Canonical, ML-ready                                                                         |
+| 15 | `fossils/monitoring/monitoring.md`                       | Monitoring report                | Human-facing, summary                                                                       |
+| 16 | `fossils/tests/integration_tests.yml`                    | Integration test results         | Canonical, ML-ready                                                                         |
+| 17 | `fossils/tests/unit_tests.json`                          | Unit test results                | Canonical, ML-ready                                                                         |
+| 18 | `fossils/tests/performance_tests.md`                     | Test performance report          | Human-facing, summary                                                                       |
+| 19 | `fossils/context/canonical_context.yml`                  | LLM/ML context                   | Canonical, ML-ready, for LLM chat                                                           |
+| 20 | `fossils/context/commit-context.yml`                     | Per-commit context               | Canonical, ML-ready, for traceability                                                       |
+| 21 | `fossils/commit_audits/commit_audits.summary.json`       | Commit audits                    | Canonical, ML-ready                                                                         |
+| 22 | `fossils/traceability/current_traceability.json`         | Traceability                     | Canonical, ML-ready                                                                         |
+| 23 | `fossils/structure_definition.yml`                       | Structure definition             | Canonical, ML-ready                                                                         |
+| 24 | `fossils/FOSSIL_STRUCTURE_TREE_DIAGRAM.md`               | Structure diagram                | Human-facing, summary                                                                       |
+| 25 | `fossils/CURRENT_FOSSIL_STRUCTURE_SOURCE_OF_TRUTH.md`    | Source of truth                  | Canonical, ML-ready                                                                         |
+| 26 | `fossils/readme.md`                                      | Fossil system readme             | Human-facing, summary                                                                       |
+| 27 | `fossils/roadmap/roadmap_insights_report.md`             | Roadmap insights report          | Human-facing, summary                                                                       |
+| 28 | `fossils/roadmap/roadmap_progress.md`                    | Roadmap progress                 | Human-facing, summary                                                                       |
+| 29 | `fossils/roadmap/roadmap.md`                             | Roadmap markdown                 | Human-facing, summary                                                                       |
+| 30 | `fossils/ephemeral/address/llm.draft.patterns.project_concepts.yml` | LLM draft patterns | Ephemeral, ML/LLM context, **review for canonicalization**                                  |
+| 31 | `fossils/commit_audits/batch-execution-*.json`           | Batch commit audits (JSON)       | **Exceeds limit**: Archive or summarize older entries                                       |
+| 32 | `fossils/commit_audits/batch-audit-plan-*.json`          | Batch audit plans (JSON)         | **Exceeds limit**: Archive or summarize older entries                                       |
+| 33 | `fossils/commit_audits/batch-execution-*.yml`            | Batch commit audits (YAML)       | Archive or summarize as needed                                                              |
+| 34 | `fossils/commit_audits/batch-audit-plan-*.yml`           | Batch audit plans (YAML)         | Archive or summarize as needed                                                              |
+| 35 | `fossils/roadmap.llm.insights.json`                      | Roadmap LLM insights             | **Exceeds limit**: Split/Archive recommended                                                |
+| 36 | `fossils/roadmap_insights.json`                          | Roadmap insights (JSON)          | **Exceeds limit**: Split/Archive recommended                                                |
+| 37 | `fossils/roadmap.insights_summary.json`                  | Roadmap insights summary         | **Exceeds limit**: Split/Archive recommended                                                |
+| 38 | `fossils/roadmap.insights.web.json`                      | Roadmap insights (web)           | **Exceeds limit**: Split/Archive recommended                                                |
+| 39 | `fossils/roadmap.insights.api.json`                      | Roadmap insights (API)           | **Exceeds limit**: Split/Archive recommended                                                |
+| 40 | `fossils/structure_definition.yml`                       | Structure definition             | Canonical, ML-ready                                                                         |
+| 41 | `fossils/context/patterns/project_concepts.yml`          | Project concept patterns         | Canonical, ML-ready                                                                         |
+| 42 | `fossils/validation.json`                                | Validation results               | Canonical, ML-ready                                                                         |
+| 43 | `fossils/monitoring/performance_data.json`               | Monitoring performance data      | Canonical, ML-ready                                                                         |
+| 44 | `fossils/monitoring/test_monitoring_data.json`           | Test monitoring data             | Canonical, ML-ready                                                                         |
+| 45 | `fossils/ml.analysis.json`                               | ML analysis                      | Canonical, ML-ready                                                                         |
+| 46 | `fossils/llm.snapshots.json`                             | LLM snapshots                    | Canonical, ML-ready                                                                         |
+| 47 | `fossils/llm-snapshots.json`                             | LLM snapshots (alt)              | Canonical, ML-ready                                                                         |
+| 48 | `fossils/llm_snapshots.json`                             | LLM snapshots (alt)              | Canonical, ML-ready                                                                         |
+| 49 | `fossils/coverage_report.json`                           | Coverage report                  | Canonical, ML-ready                                                                         |
+| 50 | (reserved for new high-value fossil)                     | (TBD)                            | Only add if it meets all criteria above                                                     |
+
+- **Legend:**
+  - **Exceeds limit**: File is over 500 lines/128KB (recommended) or 1000 lines/256KB (hard limit); split, archive, or summarize.
+  - **Ephemeral**: Not canonical; review for promotion or cleanup.
+  - **Canonical**: ML-ready, referenced, and validated.
+  - **Human-facing**: Markdown/MDX, for documentation or audit.
+
+## Ephemeral Pattern Enforcement & Audit Utility
+
+A dedicated audit/refactor utility is provided to enforce the ephemeral pattern for all temp/original/backup files/scripts. This utility detects, renames, and moves files to follow the ephemeral convention, ensuring .gitignore compliance and project cleanliness. Integrate this as a DX transversal utility and run it pre-commit or in CI to maintain canonical standards.
+
+- **Run:** `bun run scripts/audit-ephemeral-pattern.ts`
+- **Purpose:** Enforces ephemeral pattern, prevents bloat and ambiguity.
+- **Integration:** Recommended for all contributors and CI workflows.
+- **See also:** [Ephemeral Context Management Guide](./ephemeral/address/ephemeral_context_management.md)
+
+## 🆕 Canonical Fossil File Limit and Management Policy (2025-07)
+
+### 50-File Limit: Canonical, ML-Ready Fossils Only
+
+- **Maximum of 50 active canonical fossils** in the main fossil structure (see table below).
+- **Each fossil must:**
+  - Be ML-ready, canonical, and follow naming conventions
+  - Serve a unique, high-value purpose (no redundancy)
+  - Be referenced in roadmap, project status, or automation scripts
+  - Have a clear schema and excerpt/metadata for auditability
+  - Not exceed 500 lines or 128KB (recommended); hard limit: 1000 lines/256KB
+- **Policy:**
+  - Only add a new fossil if it replaces/archives an existing one or is required for a new, high-value context
+  - If the limit is reached, archive or consolidate existing fossils before adding new ones
+  - Use the canonical fossil manager for all changes
+- **Enforcement:**
+  - Pre-commit validator and canonical fossil manager check file count and size/line limits
+  - Commits exceeding these limits are blocked with clear error messages
+
+### Canonical Fossil File Table (2025, ML-Ready, Canonical-Only)
+
+| #  | File/Folder                                               | Purpose/Type                    | Status/Notes                                                                                 |
+|----|-----------------------------------------------------------|----------------------------------|---------------------------------------------------------------------------------------------|
+| 1  | `fossils/roadmap.yml`                                    | Project roadmap (YAML)           | Canonical, referenced in all planning                                                        |
+| 2  | `fossils/project_status.yml`                             | Project status (YAML)            | Canonical, referenced in status checks                                                       |
+| 3  | `fossils/setup_status.yml`                               | Setup/onboarding status          | Canonical, updated by onboarding scripts                                                     |
+| 4  | `fossils/footprint.json`                                 | File footprint (full)            | **Exceeds limit**: Split/Archive recommended                                                |
+| 5  | `fossils/footprint-results.json`                         | File footprint (results)         | **Exceeds limit**: Split/Archive recommended                                                |
+| 6  | `fossils/analysis-results.json`                          | Analysis summary                 | Canonical, ML-ready                                                                         |
+| 7  | `fossils/llm_insights/llm.analysis.json`                 | LLM insights (JSON)              | Canonical, ML-ready                                                                         |
+| 8  | `fossils/llm_insights/llm.performance.json`              | LLM performance                  | Canonical, ML-ready                                                                         |
+| 9  | `fossils/ml_insights/ml.analysis.json`                   | ML insights (JSON)               | Canonical, ML-ready                                                                         |
+| 10 | `fossils/ml_insights/ml.performance.json`                | ML performance                   | Canonical, ML-ready                                                                         |
+| 11 | `fossils/human_insights/human.actionable_insights.md`    | Human insights                   | Canonical, human-facing                                                                     |
+| 12 | `fossils/performance/performance.json`                   | Performance metrics              | Canonical, ML-ready                                                                         |
+| 13 | `fossils/performance/performance.md`                     | Performance report               | Human-facing, summary                                                                       |
+| 14 | `fossils/monitoring/monitoring.json`                     | Monitoring metrics               | Canonical, ML-ready                                                                         |
+| 15 | `fossils/monitoring/monitoring.md`                       | Monitoring report                | Human-facing, summary                                                                       |
+| 16 | `fossils/tests/integration_tests.yml`                    | Integration test results         | Canonical, ML-ready                                                                         |
+| 17 | `fossils/tests/unit_tests.json`                          | Unit test results                | Canonical, ML-ready                                                                         |
+| 18 | `fossils/tests/performance_tests.md`                     | Test performance report          | Human-facing, summary                                                                       |
+| 19 | `fossils/context/canonical_context.yml`                  | LLM/ML context                   | Canonical, ML-ready, for LLM chat                                                           |
+| 20 | `fossils/context/commit-context.yml`                     | Per-commit context               | Canonical, ML-ready, for traceability                                                       |
+| 21 | `fossils/commit_audits/commit_audits.summary.json`       | Commit audits                    | Canonical, ML-ready                                                                         |
+| 22 | `fossils/traceability/current_traceability.json`         | Traceability                     | Canonical, ML-ready                                                                         |
+| 23 | `fossils/structure_definition.yml`                       | Structure definition             | Canonical, ML-ready                                                                         |
+| 24 | `fossils/FOSSIL_STRUCTURE_TREE_DIAGRAM.md`               | Structure diagram                | Human-facing, summary                                                                       |
+| 25 | `fossils/CURRENT_FOSSIL_STRUCTURE_SOURCE_OF_TRUTH.md`    | Source of truth                  | Canonical, ML-ready                                                                         |
+| 26 | `fossils/readme.md`                                      | Fossil system readme             | Human-facing, summary                                                                       |
+| 27 | `fossils/roadmap/roadmap_insights_report.md`             | Roadmap insights report          | Human-facing, summary                                                                       |
+| 28 | `fossils/roadmap/roadmap_progress.md`                    | Roadmap progress                 | Human-facing, summary                                                                       |
+| 29 | `fossils/roadmap/roadmap.md`                             | Roadmap markdown                 | Human-facing, summary                                                                       |
+| 30 | `fossils/ephemeral/address/llm.draft.patterns.project_concepts.yml` | LLM draft patterns | Ephemeral, ML/LLM context, **review for canonicalization**                                  |
+| 31 | `fossils/commit_audits/batch-execution-*.json`           | Batch commit audits (JSON)       | **Exceeds limit**: Archive or summarize older entries                                       |
+| 32 | `fossils/commit_audits/batch-audit-plan-*.json`          | Batch audit plans (JSON)         | **Exceeds limit**: Archive or summarize older entries                                       |
+| 33 | `fossils/commit_audits/batch-execution-*.yml`            | Batch commit audits (YAML)       | Archive or summarize as needed                                                              |
+| 34 | `fossils/commit_audits/batch-audit-plan-*.yml`           | Batch audit plans (YAML)         | Archive or summarize as needed                                                              |
+| 35 | `fossils/roadmap.llm.insights.json`                      | Roadmap LLM insights             | **Exceeds limit**: Split/Archive recommended                                                |
+| 36 | `fossils/roadmap_insights.json`                          | Roadmap insights (JSON)          | **Exceeds limit**: Split/Archive recommended                                                |
+| 37 | `fossils/roadmap.insights_summary.json`                  | Roadmap insights summary         | **Exceeds limit**: Split/Archive recommended                                                |
+| 38 | `fossils/roadmap.insights.web.json`                      | Roadmap insights (web)           | **Exceeds limit**: Split/Archive recommended                                                |
+| 39 | `fossils/roadmap.insights.api.json`                      | Roadmap insights (API)           | **Exceeds limit**: Split/Archive recommended                                                |
+| 40 | `fossils/structure_definition.yml`                       | Structure definition             | Canonical, ML-ready                                                                         |
+| 41 | `fossils/context/patterns/project_concepts.yml`          | Project concept patterns         | Canonical, ML-ready                                                                         |
+| 42 | `fossils/validation.json`                                | Validation results               | Canonical, ML-ready                                                                         |
+| 43 | `fossils/monitoring/performance_data.json`               | Monitoring performance data      | Canonical, ML-ready                                                                         |
+| 44 | `fossils/monitoring/test_monitoring_data.json`           | Test monitoring data             | Canonical, ML-ready                                                                         |
+| 45 | `fossils/ml.analysis.json`                               | ML analysis                      | Canonical, ML-ready                                                                         |
+| 46 | `fossils/llm.snapshots.json`                             | LLM snapshots                    | Canonical, ML-ready                                                                         |
+| 47 | `fossils/llm-snapshots.json`                             | LLM snapshots (alt)              | Canonical, ML-ready                                                                         |
+| 48 | `fossils/llm_snapshots.json`                             | LLM snapshots (alt)              | Canonical, ML-ready                                                                         |
+| 49 | `fossils/coverage_report.json`                           | Coverage report                  | Canonical, ML-ready                                                                         |
+| 50 | (reserved for new high-value fossil)                     | (TBD)                            | Only add if it meets all criteria above                                                     |
+
+- **Legend:**
+  - **Exceeds limit**: File is over 500 lines/128KB (recommended) or 1000 lines/256KB (hard limit); split, archive, or summarize.
+  - **Ephemeral**: Not canonical; review for promotion or cleanup.
+  - **Canonical**: ML-ready, referenced, and validated.
+  - **Human-facing**: Markdown/MDX, for documentation or audit.
+
+## Ephemeral Pattern Enforcement & Audit Utility
+
+A dedicated audit/refactor utility is provided to enforce the ephemeral pattern for all temp/original/backup files/scripts. This utility detects, renames, and moves files to follow the ephemeral convention, ensuring .gitignore compliance and project cleanliness. Integrate this as a DX transversal utility and run it pre-commit or in CI to maintain canonical standards.
+
+- **Run:** `bun run scripts/audit-ephemeral-pattern.ts`
+- **Purpose:** Enforces ephemeral pattern, prevents bloat and ambiguity.
+- **Integration:** Recommended for all contributors and CI workflows.
+- **See also:** [Ephemeral Context Management Guide](./ephemeral/address/ephemeral_context_management.md)
+
+## 🆕 Canonical Fossil File Limit and Management Policy (2025-07)
+
+### 50-File Limit: Canonical, ML-Ready Fossils Only
+
+- **Maximum of 50 active canonical fossils** in the main fossil structure (see table below).
+- **Each fossil must:**
+  - Be ML-ready, canonical, and follow naming conventions
+  - Serve a unique, high-value purpose (no redundancy)
+  - Be referenced in roadmap, project status, or automation scripts
+  - Have a clear schema and excerpt/metadata for auditability
+  - Not exceed 500 lines or 128KB (recommended); hard limit: 1000 lines/256KB
+- **Policy:**
+  - Only add a new fossil if it replaces/archives an existing one or is required for a new, high-value context
+  - If the limit is reached, archive or consolidate existing fossils before adding new ones
+  - Use the canonical fossil manager for all changes
+- **Enforcement:**
+  - Pre-commit validator and canonical fossil manager check file count and size/line limits
+  - Commits exceeding these limits are blocked with clear error messages
+
+### Canonical Fossil File Table (2025, ML-Ready, Canonical-Only)
+
+| #  | File/Folder                                               | Purpose/Type                    | Status/Notes                                                                                 |
+|----|-----------------------------------------------------------|----------------------------------|---------------------------------------------------------------------------------------------|
+| 1  | `fossils/roadmap.yml`                                    | Project roadmap (YAML)           | Canonical, referenced in all planning                                                        |
+| 2  | `fossils/project_status.yml`                             | Project status (YAML)            | Canonical, referenced in status checks                                                       |
+| 3  | `fossils/setup_status.yml`                               | Setup/onboarding status          | Canonical, updated by onboarding scripts                                                     |
+| 4  | `fossils/footprint.json`                                 | File footprint (full)            | **Exceeds limit**: Split/Archive recommended                                                |
+| 5  | `fossils/footprint-results.json`                         | File footprint (results)         | **Exceeds limit**: Split/Archive recommended                                                |
+| 6  | `fossils/analysis-results.json`                          | Analysis summary                 | Canonical, ML-ready                                                                         |
+| 7  | `fossils/llm_insights/llm.analysis.json`                 | LLM insights (JSON)              | Canonical, ML-ready                                                                         |
+| 8  | `fossils/llm_insights/llm.performance.json`              | LLM performance                  | Canonical, ML-ready                                                                         |
+| 9  | `fossils/ml_insights/ml.analysis.json`                   | ML insights (JSON)               | Canonical, ML-ready                                                                         |
+| 10 | `fossils/ml_insights/ml.performance.json`                | ML performance                   | Canonical, ML-ready                                                                         |
+| 11 | `fossils/human_insights/human.actionable_insights.md`    | Human insights                   | Canonical, human-facing                                                                     |
+| 12 | `fossils/performance/performance.json`                   | Performance metrics              | Canonical, ML-ready                                                                         |
+| 13 | `fossils/performance/performance.md`                     | Performance report               | Human-facing, summary                                                                       |
+| 14 | `fossils/monitoring/monitoring.json`                     | Monitoring metrics               | Canonical, ML-ready                                                                         |
+| 15 | `fossils/monitoring/monitoring.md`                       | Monitoring report                | Human-facing, summary                                                                       |
+| 16 | `fossils/tests/integration_tests.yml`                    | Integration test results         | Canonical, ML-ready                                                                         |
+| 17 | `fossils/tests/unit_tests.json`                          | Unit test results                | Canonical, ML-ready                                                                         |
+| 18 | `fossils/tests/performance_tests.md`                     | Test performance report          | Human-facing, summary                                                                       |
+| 19 | `fossils/context/canonical_context.yml`                  | LLM/ML context                   | Canonical, ML-ready, for LLM chat                                                           |
+| 20 | `fossils/context/commit-context.yml`                     | Per-commit context               | Canonical, ML-ready, for traceability                                                       |
+| 21 | `fossils/commit_audits/commit_audits.summary.json`       | Commit audits                    | Canonical, ML-ready                                                                         |
+| 22 | `fossils/traceability/current_traceability.json`         | Traceability                     | Canonical, ML-ready                                                                         |
+| 23 | `fossils/structure_definition.yml`                       | Structure definition             | Canonical, ML-ready                                                                         |
+| 24 | `fossils/FOSSIL_STRUCTURE_TREE_DIAGRAM.md`               | Structure diagram                | Human-facing, summary                                                                       |
+| 25 | `fossils/CURRENT_FOSSIL_STRUCTURE_SOURCE_OF_TRUTH.md`    | Source of truth                  | Canonical, ML-ready                                                                         |
+| 26 | `fossils/readme.md`                                      | Fossil system readme             | Human-facing, summary                                                                       |
+| 27 | `fossils/roadmap/roadmap_insights_report.md`             | Roadmap insights report          | Human-facing, summary                                                                       |
+| 28 | `fossils/roadmap/roadmap_progress.md`                    | Roadmap progress                 | Human-facing, summary                                                                       |
+| 29 | `fossils/roadmap/roadmap.md`                             | Roadmap markdown                 | Human-facing, summary                                                                       |
+| 30 | `fossils/ephemeral/address/llm.draft.patterns.project_concepts.yml` | LLM draft patterns | Ephemeral, ML/LLM context, **review for canonicalization**                                  |
+| 31 | `fossils/commit_audits/batch-execution-*.json`           | Batch commit audits (JSON)       | **Exceeds limit**: Archive or summarize older entries                                       |
+| 32 | `fossils/commit_audits/batch-audit-plan-*.json`          | Batch audit plans (JSON)         | **Exceeds limit**: Archive or summarize older entries                                       |
+| 33 | `fossils/commit_audits/batch-execution-*.yml`            | Batch commit audits (YAML)       | Archive or summarize as needed                                                              |
+| 34 | `fossils/commit_audits/batch-audit-plan-*.yml`           | Batch audit plans (YAML)         | Archive or summarize as needed                                                              |
+| 35 | `fossils/roadmap.llm.insights.json`                      | Roadmap LLM insights             | **Exceeds limit**: Split/Archive recommended                                                |
+| 36 | `fossils/roadmap_insights.json`                          | Roadmap insights (JSON)          | **Exceeds limit**: Split/Archive recommended                                                |
+| 37 | `fossils/roadmap.insights_summary.json`                  | Roadmap insights summary         | **Exceeds limit**: Split/Archive recommended                                                |
+| 38 | `fossils/roadmap.insights.web.json`                      | Roadmap insights (web)           | **Exceeds limit**: Split/Archive recommended                                                |
+| 39 | `fossils/roadmap.insights.api.json`                      | Roadmap insights (API)           | **Exceeds limit**: Split/Archive recommended                                                |
+| 40 | `fossils/structure_definition.yml`                       | Structure definition             | Canonical, ML-ready                                                                         |
+| 41 | `fossils/context/patterns/project_concepts.yml`          | Project concept patterns         | Canonical, ML-ready                                                                         |
+| 42 | `fossils/validation.json`                                | Validation results               | Canonical, ML-ready                                                                         |
+| 43 | `fossils/monitoring/performance_data.json`               | Monitoring performance data      | Canonical, ML-ready                                                                         |
+| 44 | `fossils/monitoring/test_monitoring_data.json`           | Test monitoring data             | Canonical, ML-ready                                                                         |
+| 45 | `fossils/ml.analysis.json`                               | ML analysis                      | Canonical, ML-ready                                                                         |
+| 46 | `fossils/llm.snapshots.json`                             | LLM snapshots                    | Canonical, ML-ready                                                                         |
+| 47 | `fossils/llm-snapshots.json`                             | LLM snapshots (alt)              | Canonical, ML-ready                                                                         |
+| 48 | `fossils/llm_snapshots.json`                             | LLM snapshots (alt)              | Canonical, ML-ready                                                                         |
+| 49 | `fossils/coverage_report.json`                           | Coverage report                  | Canonical, ML-ready                                                                         |
+| 50 | (reserved for new high-value fossil)                     | (TBD)                            | Only add if it meets all criteria above                                                     |
+
+- **Legend:**
+  - **Exceeds limit**: File is over 500 lines/128KB (recommended) or 1000 lines/256KB (hard limit); split, archive, or summarize.
+  - **Ephemeral**: Not canonical; review for promotion or cleanup.
+  - **Canonical**: ML-ready, referenced, and validated.
+  - **Human-facing**: Markdown/MDX, for documentation or audit.
+
+## Ephemeral Pattern Enforcement & Audit Utility
+
+A dedicated audit/refactor utility is provided to enforce the ephemeral pattern for all temp/original/backup files/scripts. This utility detects, renames, and moves files to follow the ephemeral convention, ensuring .gitignore compliance and project cleanliness. Integrate this as a DX transversal utility and run it pre-commit or in CI to maintain canonical standards.
+
+- **Run:** `bun run scripts/audit-ephemeral-pattern.ts`
+- **Purpose:** Enforces ephemeral pattern, prevents bloat and ambiguity.
+- **Integration:** Recommended for all contributors and CI workflows.
+- **See also:** [Ephemeral Context Management Guide](./ephemeral/address/ephemeral_context_management.md)
+
+## 🆕 Canonical Fossil File Limit and Management Policy (2025-07)
+
+### 50-File Limit: Canonical, ML-Ready Fossils Only
+
+- **Maximum of 50 active canonical fossils** in the main fossil structure (see table below).
+- **Each fossil must:**
+  - Be ML-ready, canonical, and follow naming conventions
+  - Serve a unique, high-value purpose (no redundancy)
+  - Be referenced in roadmap, project status, or automation scripts
+  - Have a clear schema and excerpt/metadata for auditability
+  - Not exceed 500 lines or 128KB (recommended); hard limit: 1000 lines/256KB
+- **Policy:**
+  - Only add a new fossil if it replaces/archives an existing one or is required for a new, high-value context
+  - If the limit is reached, archive or consolidate existing fossils before adding new ones
+  - Use the canonical fossil manager for all changes
+- **Enforcement:**
+  - Pre-commit validator and canonical fossil manager check file count and size/line limits
+  - Commits exceeding these limits are blocked with clear error messages
+
+### Canonical Fossil File Table (2025, ML-Ready, Canonical-Only)
+
+| #  | File/Folder                                               | Purpose/Type                    | Status/Notes                                                                                 |
+|----|-----------------------------------------------------------|----------------------------------|---------------------------------------------------------------------------------------------|
+| 1  | `fossils/roadmap.yml`                                    | Project roadmap (YAML)           | Canonical, referenced in all planning                                                        |
+| 2  | `fossils/project_status.yml`                             | Project status (YAML)            | Canonical, referenced in status checks                                                       |
+| 3  | `fossils/setup_status.yml`                               | Setup/onboarding status          | Canonical, updated by onboarding scripts                                                     |
+| 4  | `fossils/footprint.json`                                 | File footprint (full)            | **Exceeds limit**: Split/Archive recommended                                                |
+| 5  | `fossils/footprint-results.json`                         | File footprint (results)         | **Exceeds limit**: Split/Archive recommended                                                |
+| 6  | `fossils/analysis-results.json`                          | Analysis summary                 | Canonical, ML-ready                                                                         |
+| 7  | `fossils/llm_insights/llm.analysis.json`                 | LLM insights (JSON)              | Canonical, ML-ready                                                                         |
+| 8  | `fossils/llm_insights/llm.performance.json`              | LLM performance                  | Canonical, ML-ready                                                                         |
+| 9  | `fossils/ml_insights/ml.analysis.json`                   | ML insights (JSON)               | Canonical, ML-ready                                                                         |
+| 10 | `fossils/ml_insights/ml.performance.json`                | ML performance                   | Canonical, ML-ready                                                                         |
+| 11 | `fossils/human_insights/human.actionable_insights.md`    | Human insights                   | Canonical, human-facing                                                                     |
+| 12 | `fossils/performance/performance.json`                   | Performance metrics              | Canonical, ML-ready                                                                         |
+| 13 | `fossils/performance/performance.md`                     | Performance report               | Human-facing, summary                                                                       |
+| 14 | `fossils/monitoring/monitoring.json`                     | Monitoring metrics               | Canonical, ML-ready                                                                         |
+| 15 | `fossils/monitoring/monitoring.md`                       | Monitoring report                | Human-facing, summary                                                                       |
+| 16 | `fossils/tests/integration_tests.yml`                    | Integration test results         | Canonical, ML-ready                                                                         |
+| 17 | `fossils/tests/unit_tests.json`                          | Unit test results                | Canonical, ML-ready                                                                         |
+| 18 | `fossils/tests/performance_tests.md`                     | Test performance report          | Human-facing, summary                                                                       |
+| 19 | `fossils/context/canonical_context.yml`                  | LLM/ML context                   | Canonical, ML-ready, for LLM chat                                                           |
+| 20 | `fossils/context/commit-context.yml`                     | Per-commit context               | Canonical, ML-ready, for traceability                                                       |
+| 21 | `fossils/commit_audits/commit_audits.summary.json`       | Commit audits                    | Canonical, ML-ready                                                                         |
+| 22 | `fossils/traceability/current_traceability.json`         | Traceability                     | Canonical, ML-ready                                                                         |
+| 23 | `fossils/structure_definition.yml`                       | Structure definition             | Canonical, ML-ready                                                                         |
+| 24 | `fossils/FOSSIL_STRUCTURE_TREE_DIAGRAM.md`               | Structure diagram                | Human-facing, summary                                                                       |
+| 25 | `fossils/CURRENT_FOSSIL_STRUCTURE_SOURCE_OF_TRUTH.md`    | Source of truth                  | Canonical, ML-ready                                                                         |
+| 26 | `fossils/readme.md`                                      | Fossil system readme             | Human-facing, summary                                                                       |
+| 27 | `fossils/roadmap/roadmap_insights_report.md`             | Roadmap insights report          | Human-facing, summary                                                                       |
+| 28 | `fossils/roadmap/roadmap_progress.md`                    | Roadmap progress                 | Human-facing, summary                                                                       |
+| 29 | `fossils/roadmap/roadmap.md`                             | Roadmap markdown                 | Human-facing, summary                                                                       |
+| 30 | `fossils/ephemeral/address/llm.draft.patterns.project_concepts.yml` | LLM draft patterns | Ephemeral, ML/LLM context, **review for canonicalization**                                  |
+| 31 | `fossils/commit_audits/batch-execution-*.json`           | Batch commit audits (JSON)       | **Exceeds limit**: Archive or summarize older entries                                       |
+| 32 | `fossils/commit_audits/batch-audit-plan-*.json`          | Batch audit plans (JSON)         | **Exceeds limit**: Archive or summarize older entries                                       |
+| 33 | `fossils/commit_audits/batch-execution-*.yml`            | Batch commit audits (YAML)       | Archive or summarize as needed                                                              |
+| 34 | `fossils/commit_audits/batch-audit-plan-*.yml`           | Batch audit plans (YAML)         | Archive or summarize as needed                                                              |
+| 35 | `fossils/roadmap.llm.insights.json`                      | Roadmap LLM insights             | **Exceeds limit**: Split/Archive recommended                                                |
+| 36 | `fossils/roadmap_insights.json`                          | Roadmap insights (JSON)          | **Exceeds limit**: Split/Archive recommended                                                |
+| 37 | `fossils/roadmap.insights_summary.json`                  | Roadmap insights summary         | **Exceeds limit**: Split/Archive recommended                                                |
+| 38 | `fossils/roadmap.insights.web.json`                      | Roadmap insights (web)           | **Exceeds limit**: Split/Archive recommended                                                |
+| 39 | `fossils/roadmap.insights.api.json`                      | Roadmap insights (API)           | **Exceeds limit**: Split/Archive recommended                                                |
+| 40 | `fossils/structure_definition.yml`                       | Structure definition             | Canonical, ML-ready                                                                         |
+| 41 | `fossils/context/patterns/project_concepts.yml`          | Project concept patterns         | Canonical, ML-ready                                                                         |
+| 42 | `fossils/validation.json`                                | Validation results               | Canonical, ML-ready                                                                         |
+| 43 | `fossils/monitoring/performance_data.json`               | Monitoring performance data      | Canonical, ML-ready                                                                         |
+| 44 | `fossils/monitoring/test_monitoring_data.json`           | Test monitoring data             | Canonical, ML-ready                                                                         |
+| 45 | `fossils/ml.analysis.json`                               | ML analysis                      | Canonical, ML-ready                                                                         |
+| 46 | `fossils/llm.snapshots.json`                             | LLM snapshots                    | Canonical, ML-ready                                                                         |
+| 47 | `fossils/llm-snapshots.json`                             | LLM snapshots (alt)              | Canonical, ML-ready                                                                         |
+| 48 | `fossils/llm_snapshots.json`                             | LLM snapshots (alt)              | Canonical, ML-ready                                                                         |
+| 49 | `fossils/coverage_report.json`                           | Coverage report                  | Canonical, ML-ready                                                                         |
+| 50 | (reserved for new high-value fossil)                     | (TBD)                            | Only add if it meets all criteria above                                                     |
+
+- **Legend:**
+  - **Exceeds limit**: File is over 500 lines/128KB (recommended) or 1000 lines/256KB (hard limit); split, archive, or summarize.
+  - **Ephemeral**: Not canonical; review for promotion or cleanup.
+  - **Canonical**: ML-ready, referenced, and validated.
+  - **Human-facing**: Markdown/MDX, for documentation or audit.
+
+## Ephemeral Pattern Enforcement & Audit Utility
+
+A dedicated audit/refactor utility is provided to enforce the ephemeral pattern for all temp/original/backup files/scripts. This utility detects, renames, and moves files to follow the ephemeral convention, ensuring .gitignore compliance and project cleanliness. Integrate this as a DX transversal utility and run it pre-commit or in CI to maintain canonical standards.
+
+- **Run:** `bun run scripts/audit-ephemeral-pattern.ts`
+- **Purpose:** Enforces ephemeral pattern, prevents bloat and ambiguity.
+- **Integration:** Recommended for all contributors and CI workflows.
+- **See also:** [Ephemeral Context Management Guide](./ephemeral/address/ephemeral_context_management.md)
+
+## 🆕 Canonical Fossil File Limit and Management Policy (2025-07)
+
+### 50-File Limit: Canonical, ML-Ready Fossils Only
+
+- **Maximum of 50 active canonical fossils** in the main fossil structure (see table below).
+- **Each fossil must:**
+  - Be ML-ready, canonical, and follow naming conventions
+  - Serve a unique, high-value purpose (no redundancy)
+  - Be referenced in roadmap, project status, or automation scripts
+  - Have a clear schema and excerpt/metadata for auditability
+  - Not exceed 500 lines or 128KB (recommended); hard limit: 1000 lines/256KB
+- **Policy:**
+  - Only add a new fossil if it replaces/archives an existing one or is required for a new, high-value context
+  - If the limit is reached, archive or consolidate existing fossils before adding new ones
+  - Use the canonical fossil manager for all changes
+- **Enforcement:**
+  - Pre-commit validator and canonical fossil manager check file count and size/line limits
+  - Commits exceeding these limits are blocked with clear error messages
+
+### Canonical Fossil File Table (2025, ML-Ready, Canonical-Only)
+
+| #  | File/Folder                                               | Purpose/Type                    | Status/Notes                                                                                 |
+|----|-----------------------------------------------------------|----------------------------------|---------------------------------------------------------------------------------------------|
+| 1  | `fossils/roadmap.yml`                                    | Project roadmap (YAML)           | Canonical, referenced in all planning                                                        |
+| 2  | `fossils/project_status.yml`                             | Project status (YAML)            | Canonical, referenced in status checks                                                       |
+| 3  | `fossils/setup_status.yml`                               | Setup/onboarding status          | Canonical, updated by onboarding scripts                                                     |
+| 4  | `fossils/footprint.json`                                 | File footprint (full)            | **Exceeds limit**: Split/Archive recommended                                                |
+| 5  | `fossils/footprint-results.json`                         | File footprint (results)         | **Exceeds limit**: Split/Archive recommended                                                |
+| 6  | `fossils/analysis-results.json`                          | Analysis summary                 | Canonical, ML-ready                                                                         |
+| 7  | `fossils/llm_insights/llm.analysis.json`                 | LLM insights (JSON)              | Canonical, ML-ready                                                                         |
+| 8  | `fossils/llm_insights/llm.performance.json`              | LLM performance                  | Canonical, ML-ready                                                                         |
+| 9  | `fossils/ml_insights/ml.analysis.json`                   | ML insights (JSON)               | Canonical, ML-ready                                                                         |
+| 10 | `fossils/ml_insights/ml.performance.json`                | ML performance                   | Canonical, ML-ready                                                                         |
+| 11 | `fossils/human_insights/human.actionable_insights.md`    | Human insights                   | Canonical, human-facing                                                                     |
+| 12 | `fossils/performance/performance.json`                   | Performance metrics              | Canonical, ML-ready                                                                         |
+| 13 | `fossils/performance/performance.md`                     | Performance report               | Human-facing, summary                                                                       |
+| 14 | `fossils/monitoring/monitoring.json`                     | Monitoring metrics               | Canonical, ML-ready                                                                         |
+| 15 | `fossils/monitoring/monitoring.md`                       | Monitoring report                | Human-facing, summary                                                                       |
+| 16 | `fossils/tests/integration_tests.yml`                    | Integration test results         | Canonical, ML-ready                                                                         |
+| 17 | `fossils/tests/unit_tests.json`                          | Unit test results                | Canonical, ML-ready                                                                         |
+| 18 | `fossils/tests/performance_tests.md`                     | Test performance report          | Human-facing, summary                                                                       |
+| 19 | `fossils/context/canonical_context.yml`                  | LLM/ML context                   | Canonical, ML-ready, for LLM chat                                                           |
+| 20 | `fossils/context/commit-context.yml`                     | Per-commit context               | Canonical, ML-ready, for traceability                                                       |
+| 21 | `fossils/commit_audits/commit_audits.summary.json`       | Commit audits                    | Canonical, ML-ready                                                                         |
+| 22 | `fossils/traceability/current_traceability.json`         | Traceability                     | Canonical, ML-ready                                                                         |
+| 23 | `fossils/structure_definition.yml`                       | Structure definition             | Canonical, ML-ready                                                                         |
+| 24 | `fossils/FOSSIL_STRUCTURE_TREE_DIAGRAM.md`               | Structure diagram                | Human-facing, summary                                                                       |
+| 25 | `fossils/CURRENT_FOSSIL_STRUCTURE_SOURCE_OF_TRUTH.md`    | Source of truth                  | Canonical, ML-ready                                                                         |
+| 26 | `fossils/readme.md`                                      | Fossil system readme             | Human-facing, summary                                                                       |
+| 27 | `fossils/roadmap/roadmap_insights_report.md`             | Roadmap insights report          | Human-facing, summary                                                                       |
+| 28 | `fossils/roadmap/roadmap_progress.md`                    | Roadmap progress                 | Human-facing, summary                                                                       |
+| 29 | `fossils/roadmap/roadmap.md`                             | Roadmap markdown                 | Human-facing, summary                                                                       |
+| 30 | `fossils/ephemeral/address/llm.draft.patterns.project_concepts.yml` | LLM draft patterns | Ephemeral, ML/LLM context, **review for canonicalization**                                  |
+| 31 | `fossils/commit_audits/batch-execution-*.json`           | Batch commit audits (JSON)       | **Exceeds limit**: Archive or summarize older entries                                       |
+| 32 | `fossils/commit_audits/batch-audit-plan-*.json`          | Batch audit plans (JSON)         | **Exceeds limit**: Archive or summarize older entries                                       |
+| 33 | `fossils/commit_audits/batch-execution-*.yml`            | Batch commit audits (YAML)       | Archive or summarize as needed                                                              |
+| 34 | `fossils/commit_audits/batch-audit-plan-*.yml`           | Batch audit plans (YAML)         | Archive or summarize as needed                                                              |
+| 35 | `fossils/roadmap.llm.insights.json`                      | Roadmap LLM insights             | **Exceeds limit**: Split/Archive recommended                                                |
+| 36 | `fossils/roadmap_insights.json`                          | Roadmap insights (JSON)          | **Exceeds limit**: Split/Archive recommended                                                |
+| 37 | `fossils/roadmap.insights_summary.json`                  | Roadmap insights summary         | **Exceeds limit**: Split/Archive recommended                                                |
+| 38 | `fossils/roadmap.insights.web.json`                      | Roadmap insights (web)           | **Exceeds limit**: Split/Archive recommended                                                |
+| 39 | `fossils/roadmap.insights.api.json`                      | Roadmap insights (API)           | **Exceeds limit**: Split/Archive recommended                                                |
+| 40 | `fossils/structure_definition.yml`                       | Structure definition             | Canonical, ML-ready                                                                         |
+| 41 | `fossils/context/patterns/project_concepts.yml`          | Project concept patterns         | Canonical, ML-ready                                                                         |
+| 42 | `fossils/validation.json`                                | Validation results               | Canonical, ML-ready                                                                         |
+| 43 | `fossils/monitoring/performance_data.json`               | Monitoring performance data      | Canonical, ML-ready                                                                         |
+| 44 | `fossils/monitoring/test_monitoring_data.json`           | Test monitoring data             | Canonical, ML-ready                                                                         |
+| 45 | `fossils/ml.analysis.json`                               | ML analysis                      | Canonical, ML-ready                                                                         |
+| 46 | `fossils/llm.snapshots.json`                             | LLM snapshots                    | Canonical, ML-ready                                                                         |
+| 47 | `fossils/llm-snapshots.json`                             | LLM snapshots (alt)              | Canonical, ML-ready                                                                         |
+| 48 | `fossils/llm_snapshots.json`                             | LLM snapshots (alt)              | Canonical, ML-ready                                                                         |
+| 49 | `fossils/coverage_report.json`                           | Coverage report                  | Canonical, ML-ready                                                                         |
+| 50 | (reserved for new high-value fossil)                     | (TBD)                            | Only add if it meets all criteria above                                                     |
+
+- **Legend:**
+  - **Exceeds limit**: File is over 500 lines/128KB (recommended) or 1000 lines/256KB (hard limit); split, archive, or summarize.
+  - **Ephemeral**: Not canonical; review for promotion or cleanup.
+  - **Canonical**: ML-ready, referenced, and validated.
+  - **Human-facing**: Markdown/MDX, for documentation or audit.
+
+## Ephemeral Pattern Enforcement & Audit Utility
+
+A dedicated audit/refactor utility is provided to enforce the ephemeral pattern for all temp/original/backup files/scripts. This utility detects, renames, and moves files to follow the ephemeral convention, ensuring .gitignore compliance and project cleanliness. Integrate this as a DX transversal utility and run it pre-commit or in CI to maintain canonical standards.
+
+- **Run:** `bun run scripts/audit-ephemeral-pattern.ts`
+- **Purpose:** Enforces ephemeral pattern, prevents bloat and ambiguity.
+- **Integration:** Recommended for all contributors and CI workflows.
+- **See also:** [Ephemeral Context Management Guide](./ephemeral/address/ephemeral_context_management.md)
+
+## 🆕 Canonical Fossil File Limit and Management Policy (2025-07)
+
+### 50-File Limit: Canonical, ML-Ready Fossils Only
+
+- **Maximum of 50 active canonical fossils** in the main fossil structure (see table below).
+- **Each fossil must:**
+  - Be ML-ready, canonical, and follow naming conventions
+  - Serve a unique, high-value purpose (no redundancy)
+  - Be referenced in roadmap, project status, or automation scripts
+  - Have a clear schema and excerpt/metadata for auditability
+  - Not exceed 500 lines or 128KB (recommended); hard limit: 1000 lines/256KB
+- **Policy:**
+  - Only add a new fossil if it replaces/archives an existing one or is required for a new, high-value context
+  - If the limit is reached, archive or consolidate existing fossils before adding new ones
+  - Use the canonical fossil manager for all changes
+- **Enforcement:**
+  - Pre-commit validator and canonical fossil manager check file count and size/line limits
+  - Commits exceeding these limits are blocked with clear error messages
+
+### Canonical Fossil File Table (2025, ML-Ready, Canonical-Only)
+
+| #  | File/Folder                                               | Purpose/Type                    | Status/Notes                                                                                 |
+|----|-----------------------------------------------------------|----------------------------------|---------------------------------------------------------------------------------------------|
+| 1  | `fossils/roadmap.yml`                                    | Project roadmap (YAML)           | Canonical, referenced in all planning                                                        |
+| 2  | `fossils/project_status.yml`                             | Project status (YAML)            | Canonical, referenced in status checks                                                       |
+| 3  | `fossils/setup_status.yml`                               | Setup/onboarding status          | Canonical, updated by onboarding scripts                                                     |
+| 4  | `fossils/footprint.json`                                 | File footprint (full)            | **Exceeds limit**: Split/Archive recommended                                                |
+| 5  | `fossils/footprint-results.json`                         | File footprint (results)         | **Exceeds limit**: Split/Archive recommended                                                |
+| 6  | `fossils/analysis-results.json`                          | Analysis summary                 | Canonical, ML-ready                                                                         |
+| 7  | `fossils/llm_insights/llm.analysis.json`                 | LLM insights (JSON)              | Canonical, ML-ready                                                                         |
+| 8  | `fossils/llm_insights/llm.performance.json`              | LLM performance                  | Canonical, ML-ready                                                                         |
+| 9  | `fossils/ml_insights/ml.analysis.json`                   | ML insights (JSON)               | Canonical, ML-ready                                                                         |
+| 10 | `fossils/ml_insights/ml.performance.json`                | ML performance                   | Canonical, ML-ready                                                                         |
+| 11 | `fossils/human_insights/human.actionable_insights.md`    | Human insights                   | Canonical, human-facing                                                                     |
+| 12 | `fossils/performance/performance.json`                   | Performance metrics              | Canonical, ML-ready                                                                         |
+| 13 | `fossils/performance/performance.md`                     | Performance report               | Human-facing, summary                                                                       |
+| 14 | `fossils/monitoring/monitoring.json`                     | Monitoring metrics               | Canonical, ML-ready                                                                         |
+| 15 | `fossils/monitoring/monitoring.md`                       | Monitoring report                | Human-facing, summary                                                                       |
+| 16 | `fossils/tests/integration_tests.yml`                    | Integration test results         | Canonical, ML-ready                                                                         |
+| 17 | `fossils/tests/unit_tests.json`                          | Unit test results                | Canonical, ML-ready                                                                         |
+| 18 | `fossils/tests/performance_tests.md`                     | Test performance report          | Human-facing, summary                                                                       |
+| 19 | `fossils/context/canonical_context.yml`                  | LLM/ML context                   | Canonical, ML-ready, for LLM chat                                                           |
+| 20 | `fossils/context/commit-context.yml`                     | Per-commit context               | Canonical, ML-ready, for traceability                                                       |
+| 21 | `fossils/commit_audits/commit_audits.summary.json`       | Commit audits                    | Canonical, ML-ready                                                                         |
+| 22 | `fossils/traceability/current_traceability.json`         | Traceability                     | Canonical, ML-ready                                                                         |
+| 23 | `fossils/structure_definition.yml`                       | Structure definition             | Canonical, ML-ready                                                                         |
+| 24 | `fossils/FOSSIL_STRUCTURE_TREE_DIAGRAM.md`               | Structure diagram                | Human-facing, summary                                                                       |
+| 25 | `fossils/CURRENT_FOSSIL_STRUCTURE_SOURCE_OF_TRUTH.md`    | Source of truth                  | Canonical, ML-ready                                                                         |
+| 26 | `fossils/readme.md`                                      | Fossil system readme             | Human-facing, summary                                                                       |
+| 27 | `fossils/roadmap/roadmap_insights_report.md`             | Roadmap insights report          | Human-facing, summary                                                                       |
+| 28 | `fossils/roadmap/roadmap_progress.md`                    | Roadmap progress                 | Human-facing, summary                                                                       |
+| 29 | `fossils/roadmap/road
