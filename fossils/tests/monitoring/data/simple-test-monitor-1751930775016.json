@@ -1,0 +1,35 @@
+{
+  "id": "simple-test-monitor-1751930775016",
+  "type": "simple-test-monitor",
+  "timestamp": "2025-07-07T23:26:15.016Z",
+  "source": "simple-test-monitor",
+  "createdBy": "simple-test-monitor",
+  "createdAt": "2025-07-07T23:26:15.016Z",
+  "data": {
+    "summary": {
+      "totalTests": 1,
+      "passedTests": 1,
+      "failedTests": 0,
+      "skippedTests": 0,
+      "totalDuration": 0,
+      "averageDuration": 200,
+      "timestamp": "2025-07-07T23:26:15.016Z"
+    },
+    "results": [
+      {
+        "testName": "database-connection",
+        "duration": 200,
+        "status": "pass",
+        "timestamp": "2025-07-07T23:26:15.016Z",
+        "metadata": {
+          "type": "database",
+          "connection": "postgres"
+        }
+      }
+    ]
+  },
+  "metadata": {
+    "monitorType": "simple",
+    "version": "1.0.0"
+  }
+}

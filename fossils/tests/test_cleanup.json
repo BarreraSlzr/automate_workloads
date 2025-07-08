@@ -1,0 +1,263 @@
+{
+  "id": "test-fossil-cleanup-1751930050559",
+  "type": "test-fossil-cleanup",
+  "timestamp": "2025-07-07T23:14:10.559Z",
+  "source": "test-fossil-cleanup",
+  "createdBy": "cleanup-script",
+  "createdAt": "2025-07-07T23:14:10.559Z",
+  "data": {
+    "summary": {
+      "totalFiles": 33,
+      "movedFiles": 2,
+      "deletedFiles": 0,
+      "keptFiles": 31,
+      "totalSizeSaved": 0,
+      "directoriesCleaned": 0,
+      "timestamp": "2025-07-07T23:14:10.559Z"
+    },
+    "entries": [
+      {
+        "originalPath": "fossils/tests/analysis/analysis-anomalous.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2109,
+        "timestamp": "2025-07-07T23:14:10.556Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-critical.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2115,
+        "timestamp": "2025-07-07T23:14:10.556Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-2025-01-01T00-00-00-000Z.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2109,
+        "timestamp": "2025-07-07T23:14:10.556Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-normal-2.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2109,
+        "timestamp": "2025-07-07T23:14:10.556Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-optimization-0.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2110,
+        "timestamp": "2025-07-07T23:14:10.556Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-optimization.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2110,
+        "timestamp": "2025-07-07T23:14:10.556Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-malformed.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 12,
+        "timestamp": "2025-07-07T23:14:10.557Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-optimization-1.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2110,
+        "timestamp": "2025-07-07T23:14:10.557Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-critical-report.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2115,
+        "timestamp": "2025-07-07T23:14:10.557Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-prediction-test-2.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2109,
+        "timestamp": "2025-07-07T23:14:10.557Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-1.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2105,
+        "timestamp": "2025-07-07T23:14:10.557Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-trend-1.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2109,
+        "timestamp": "2025-07-07T23:14:10.557Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/actionable-insights.md",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 868,
+        "timestamp": "2025-07-07T23:14:10.557Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-trend-test-1.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2109,
+        "timestamp": "2025-07-07T23:14:10.557Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-trend-test-0.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2110,
+        "timestamp": "2025-07-07T23:14:10.557Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-trend-0.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2109,
+        "timestamp": "2025-07-07T23:14:10.557Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/latest_analysis.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 4548,
+        "timestamp": "2025-07-07T23:14:10.557Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-failure-0.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2111,
+        "timestamp": "2025-07-07T23:14:10.557Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-failure-1.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2111,
+        "timestamp": "2025-07-07T23:14:10.557Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-trend-2.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2109,
+        "timestamp": "2025-07-07T23:14:10.557Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-trend-test-2.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2109,
+        "timestamp": "2025-07-07T23:14:10.557Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-2.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2105,
+        "timestamp": "2025-07-07T23:14:10.557Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-schema-test.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2109,
+        "timestamp": "2025-07-07T23:14:10.557Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-opportunity-report.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2113,
+        "timestamp": "2025-07-07T23:14:10.557Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-report.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2109,
+        "timestamp": "2025-07-07T23:14:10.557Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-prediction-test-1.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2109,
+        "timestamp": "2025-07-07T23:14:10.557Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-pattern-report-0.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2109,
+        "timestamp": "2025-07-07T23:14:10.557Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-normal-0.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2109,
+        "timestamp": "2025-07-07T23:14:10.557Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-normal-1.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2109,
+        "timestamp": "2025-07-07T23:14:10.557Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-pattern-report-1.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2109,
+        "timestamp": "2025-07-07T23:14:10.557Z"
+      },
+      {
+        "originalPath": "fossils/tests/analysis/analysis-prediction-test-0.json",
+        "action": "kept",
+        "reason": "recent or large file",
+        "size": 2109,
+        "timestamp": "2025-07-07T23:14:10.557Z"
+      },
+      {
+        "originalPath": "fossils/tests/monitoring/data",
+        "newPath": "fossils/tests/monitoring/other/data",
+        "action": "moved",
+        "reason": "reorganized into structured format",
+        "size": 224,
+        "timestamp": "2025-07-07T23:14:10.558Z"
+      },
+      {
+        "originalPath": "fossils/tests/integration-analysis/analysis-2025-01-01T00-00-00-000Z.json",
+        "newPath": "fossils/tests/integration/analysis-2025-01-01T00-00-00-000Z.json",
+        "action": "moved",
+        "reason": "moved to integration structure",
+        "size": 1043,
+        "timestamp": "2025-07-07T23:14:10.558Z"
+      }
+    ]
+  },
+  "metadata": {
+    "dryRun": false,
+    "config": {
+      "dryRun": false,
+      "verbose": true,
+      "maxAge": 7,
+      "minSize": 100
+    }
+  }
+}

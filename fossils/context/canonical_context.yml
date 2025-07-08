@@ -1,0 +1,304 @@
+# Canonical Fossil File Audit (auto-generated)
+#
+# This section lists all canonical fossil files, their line counts, sizes, and compliance with project limits.
+# - exceeds_recommended: >500 lines or >128KB
+# - exceeds_hard_limit: >1000 lines or >256KB (must be split or archived)
+#
+# Update this file before each commit to ensure compliance.
+
+fossil_audit:
+  - path: fossils/footprint.json
+    lines: 14478
+    size_kb: 444
+    exceeds_recommended: true
+    exceeds_hard_limit: true
+  - path: fossils/footprint-results.json
+    lines: 9295
+    size_kb: 276
+    exceeds_recommended: true
+    exceeds_hard_limit: true
+  - path: fossils/roadmap.llm.insights.json
+    lines: 6969
+    size_kb: 280
+    exceeds_recommended: true
+    exceeds_hard_limit: true
+  - path: fossils/roadmap_insights.json
+    lines: 6681
+    size_kb: 372
+    exceeds_recommended: true
+    exceeds_hard_limit: true
+  - path: fossils/roadmap.insights_summary.json
+    lines: 6334
+    size_kb: 248
+    exceeds_recommended: true
+    exceeds_hard_limit: true
+  - path: fossils/roadmap.insights.web.json
+    lines: 6327
+    size_kb: 248
+    exceeds_recommended: true
+    exceeds_hard_limit: true
+  - path: fossils/roadmap/roadmap_insights_report.md
+    lines: 3476
+    size_kb: 184
+    exceeds_recommended: true
+    exceeds_hard_limit: true
+  - path: fossils/roadmap.insights.api.json
+    lines: 3450
+    size_kb: 148
+    exceeds_recommended: true
+    exceeds_hard_limit: true
+  - path: fossils/project_status.yml
+    lines: 3333
+    size_kb: 132
+    exceeds_recommended: true
+    exceeds_hard_limit: true
+  - path: fossils/commit_audits/batch-execution-2025-07-07T00-20-33-196Z.json
+    lines: 3287
+    size_kb: 136
+    exceeds_recommended: true
+    exceeds_hard_limit: true
+  - path: fossils/evolving-footprint.yml
+    lines: 2122
+    size_kb: 68
+    exceeds_recommended: true
+    exceeds_hard_limit: true
+  - path: fossils/commit_audits/batch-audit-plan-2025-07-07T00-18-31-348Z.json
+    lines: 1258
+    size_kb: 48
+    exceeds_recommended: true
+    exceeds_hard_limit: true
+  - path: fossils/roadmap/roadmap_progress.md
+    lines: 751
+    size_kb: 68
+    exceeds_recommended: true
+    exceeds_hard_limit: false
+  - path: fossils/ephemeral/address/llm.draft.patterns.project_concepts.yml
+    lines: 738
+    size_kb: 40
+    exceeds_recommended: true
+    exceeds_hard_limit: false
+  - path: fossils/structure_definition.yml
+    lines: 395
+    size_kb: 20
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/commit_audits/batch-execution-2025-07-07T00-20-33-196Z.yml
+    lines: 278
+    size_kb: 12
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/roadmap.curated.json
+    lines: 263
+    size_kb: 12
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/FOSSIL_STRUCTURE_TREE_DIAGRAM.md
+    lines: 246
+    size_kb: 16
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/context/patterns/project_concepts.yml
+    lines: 223
+    size_kb: 12
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/CURRENT_FOSSIL_STRUCTURE_SOURCE_OF_TRUTH.md
+    lines: 208
+    size_kb: 16
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/readme.md
+    lines: 196
+    size_kb: 8
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/roadmap.yml
+    lines: 184
+    size_kb: 12
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/roadmap/roadmap.md
+    lines: 141
+    size_kb: 8
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/commit_audits/batch-audit-plan-2025-07-07T00-18-31-348Z.yml
+    lines: 139
+    size_kb: 8
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/llm.snapshots.json
+    lines: 130
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/llm-snapshots.json
+    lines: 130
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/llm_snapshots.json
+    lines: 130
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/traceability/current_traceability.json
+    lines: 83
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/setup_status.yml
+    lines: 68
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/tests.integration_analysis.json
+    lines: 65
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/validation.json
+    lines: 45
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/monitoring/performance_data.json
+    lines: 45
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/coverage_report.json
+    lines: 40
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/monitoring/test_monitoring_data.json
+    lines: 39
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/context/llm.chat.json
+    lines: 37
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/context/canonical_context.yml
+    lines: 29
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/analysis-results.json
+    lines: 29
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/ml.analysis.json
+    lines: 28
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/context/enriched_extensions.implementation.json
+    lines: 28
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/canonical_context.yml
+    lines: 24
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/git_diff.results.json
+    lines: 20
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/context/canonical-context.yml
+    lines: 20
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/migration_report.json
+    lines: 18
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/commit_audits.summary.json
+    lines: 15
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/roadmap.md
+    lines: 11
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/commit_audits/batch-summary-2025-07-07T00-00-00-000Z.json
+    lines: 9
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/footprint/footprint.json
+    lines: 6
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/footprint/footprint-results.json
+    lines: 6
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/performance/performance_log.json
+    lines: 0
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/performance/performance_data.json
+    lines: 0
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/performance/metrics.json
+    lines: 0
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/performance/logs.json
+    lines: 0
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+  - path: fossils/monitoring/metrics.json
+    lines: 0
+    size_kb: 4
+    exceeds_recommended: false
+    exceeds_hard_limit: false
+
+timestamp: "2025-07-06T10:30:46.122Z"
+commit_hash: "01c7cc418d14317e701c059f3c1f3e81b797d95d"
+branch: "master"
+author: "Emmanuel Barrera Salazar (BarreraSlzr)"
+canonical_fossils:
+  validation:
+    last_updated: "2025-07-06T09:07:44.437Z"
+    status: "pass"
+    transversal_value: 65
+    summary:
+      total_steps: 5
+      passed_steps: 5
+      failed_steps: 0
+      overall_status: "pass"
+  analysis:
+    last_updated: "2025-07-06T10:30:21.658Z"
+    status: "info"
+    transversal_value: 75
+    summary:
+      total_insights: 1
+      critical_insights: 0
+      high_insights: 0
+      medium_insights: 1
+      low_insights: 0
+      overall_status: "info"
+summary:
+  total_canonical_files: 2
+  last_updated: "2025-07-06T10:30:46.122Z"
+  transversal_value: 140

@@ -1,0 +1,24 @@
+{
+  "id": "simple-test-monitor-1751930775015",
+  "type": "simple-test-monitor",
+  "timestamp": "2025-07-07T23:26:15.015Z",
+  "source": "simple-test-monitor",
+  "createdBy": "simple-test-monitor",
+  "createdAt": "2025-07-07T23:26:15.015Z",
+  "data": {
+    "summary": {
+      "totalTests": 0,
+      "passedTests": 0,
+      "failedTests": 0,
+      "skippedTests": 0,
+      "totalDuration": 0,
+      "averageDuration": 0,
+      "timestamp": "2025-07-07T23:26:15.015Z"
+    },
+    "results": []
+  },
+  "metadata": {
+    "monitorType": "simple",
+    "version": "1.0.0"
+  }
+}

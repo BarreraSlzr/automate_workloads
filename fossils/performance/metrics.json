@@ -1,0 +1,1 @@
+{"script":"test-script-1","timestamp":"2025-07-07T23:26:21.289Z","execution_time":2.5,"user_time":1.5,"sys_time":0.5,"cpu_percent":25,"max_memory_mb":50,"avg_memory_mb":45,"output_size_bytes":1024,"error_size_bytes":0,"exit_code":0,"success":true}

@@ -1,0 +1,279 @@
+# Enhanced Commit Message System - Batch Execution Results
+# Generated: 2025-07-07T00:20:33.195Z
+# Execution ID: batch-execution-1751847632602
+
+metadata:
+  execution_id: "batch-execution-1751847632602"
+  created_at: "2025-07-07T00:20:33.195Z"
+  author: "enhanced-commit-executor"
+  audit_plan_id: "batch-audit-1751847510896"
+  target_commits: 50
+  execution_mode: "dry-run"
+
+execution:
+  total_batches: 10
+  completed_batches: 10
+  successful_fixes: 50
+  failed_fixes: 0
+  skipped_fixes: 0
+  total_time: 586
+  average_time_per_batch: 58.6
+
+sync_status:
+  local_commits: 124
+  remote_commits: 95
+  out_of_sync: 29
+  sync_required: true
+  last_sync: "2025-07-03 23:39:51 -0600"
+
+results:
+  - commit_hash: "01c7cc418d14317e701c059f3c1f3e81b797d95d"
+    status: "success"
+    llm_insights_reference: "insight-fix-general-1751847632609"
+    roadmap_impact: "low"
+    automation_scope: ["bug_fixes", "api"]
+  - commit_hash: "b248af60cb9eee8e1008321e05c796e19787cbf1"
+    status: "success"
+    llm_insights_reference: "insight-chore-general-1751847632715"
+    roadmap_impact: "low"
+    automation_scope: ["maintenance"]
+  - commit_hash: "dad0f906b304741154220b6e0239ad904c4d1a85"
+    status: "success"
+    llm_insights_reference: "insight-feat-general-1751847632717"
+    roadmap_impact: "medium"
+    automation_scope: ["feature_development"]
+  - commit_hash: "0a9b122b3161e0a9921d0fc18e30cdfbeeeda86f"
+    status: "success"
+    llm_insights_reference: "insight-test-general-1751847632717"
+    roadmap_impact: "low"
+    automation_scope: ["testing", "fossilization"]
+  - commit_hash: "e6d19aa3f41a5ae63245aec1318ef03509748921"
+    status: "success"
+    llm_insights_reference: "insight-feat-general-1751847632717"
+    roadmap_impact: "medium"
+    automation_scope: ["feature_development"]
+  - commit_hash: "9485ddfbc8bc37708e2a5c17d745c426b7b9472a"
+    status: "success"
+    llm_insights_reference: "insight-docs-general-1751847632718"
+    roadmap_impact: "low"
+    automation_scope: ["documentation"]
+  - commit_hash: "341834ea64a59d3a8d515de194d9f8cd0bc33618"
+    status: "success"
+    llm_insights_reference: "insight-fix-general-1751847632719"
+    roadmap_impact: "low"
+    automation_scope: ["bug_fixes"]
+  - commit_hash: "3de4a04cd75fb38a9b1614c45c90fabc65c4807d"
+    status: "success"
+    llm_insights_reference: "insight-test-general-1751847632726"
+    roadmap_impact: "low"
+    automation_scope: ["testing", "validation"]
+  - commit_hash: "ba43c21e56e6c3f70e4ffbd97757c8f1c0a270d2"
+    status: "success"
+    llm_insights_reference: "insight-chore-analysis-1751847632727"
+    roadmap_impact: "low"
+    automation_scope: ["maintenance"]
+  - commit_hash: "c8223b01e819b4c027138747f7697765db4ccd0c"
+    status: "success"
+    llm_insights_reference: "insight-feat-fossils-1751847632729"
+    roadmap_impact: "high"
+    automation_scope: ["feature_development", "fossilization", "llm_insights"]
+  - commit_hash: "12148ffb77322607ab285c1e7fa54c37d9724949"
+    status: "success"
+    llm_insights_reference: "insight-docs-guides-1751847632730"
+    roadmap_impact: "low"
+    automation_scope: ["documentation"]
+  - commit_hash: "83c0408b00cf02e2678fbb2c7f6a5f0f4fa6a6dc"
+    status: "success"
+    llm_insights_reference: "insight-docs-migration-1751847632730"
+    roadmap_impact: "low"
+    automation_scope: ["documentation", "llm_insights"]
+  - commit_hash: "667f5076c157c4911ffb1886896fbe26c060d169"
+    status: "success"
+    llm_insights_reference: "insight-refactor-scripts-1751847632732"
+    roadmap_impact: "high"
+    automation_scope: ["llm_insights"]
+  - commit_hash: "56b94993f075ea3bab6f352484990ad64cd85f88"
+    status: "success"
+    llm_insights_reference: "insight-feat-utils-1751847632732"
+    roadmap_impact: "medium"
+    automation_scope: ["feature_development", "llm_insights"]
+  - commit_hash: "493e2ec298a8484d9305fd3a0ebb1e821450f8dd"
+    status: "success"
+    llm_insights_reference: "insight-feat-scripts-1751847632732"
+    roadmap_impact: "medium"
+    automation_scope: ["feature_development"]
+  - commit_hash: "1c197c263bd1450769e3714c4af789e9cf1d4194"
+    status: "success"
+    llm_insights_reference: "insight-refactor-roadmap-1751847632735"
+    roadmap_impact: "medium"
+    automation_scope: ["llm_insights"]
+  - commit_hash: "62e2dfc85e72f65c97edc1c3e0c9ca06ef38b9b9"
+    status: "success"
+    llm_insights_reference: "insight-docs-examples-1751847632742"
+    roadmap_impact: "low"
+    automation_scope: ["documentation", "fossilization", "llm_insights"]
+  - commit_hash: "684b488ce2a32fc0e514f823a07ecaf534ca5d87"
+    status: "success"
+    llm_insights_reference: "insight-feat-fossil-1751847632744"
+    roadmap_impact: "medium"
+    automation_scope: ["feature_development", "fossilization"]
+  - commit_hash: "b1db2f8a21c0bb1e7b168b7a469346d6a974e0c1"
+    status: "success"
+    llm_insights_reference: "insight-feat-validation-1751847632744"
+    roadmap_impact: "medium"
+    automation_scope: ["feature_development", "validation"]
+  - commit_hash: "4a9ce81cec217c304e6ade29b65f90b9c10d639c"
+    status: "success"
+    llm_insights_reference: "insight-feat-general-1751847632745"
+    roadmap_impact: "medium"
+    automation_scope: ["feature_development", "llm_insights"]
+  - commit_hash: "5925ac8806102c103eca62ff1f5e212cb4f53557"
+    status: "success"
+    llm_insights_reference: "insight-feat-roadmap-1751847632751"
+    roadmap_impact: "medium"
+    automation_scope: ["feature_development", "llm_insights"]
+  - commit_hash: "d466fc577b1d7c76f0046d6f0ce1f416b1144fae"
+    status: "success"
+    llm_insights_reference: "insight-feat-publish-roadmap-insights-1751847632752"
+    roadmap_impact: "medium"
+    automation_scope: ["feature_development", "llm_insights"]
+  - commit_hash: "ad08ddf03b6de85e0a72dc7e6d4e0c35bc1715ba"
+    status: "success"
+    llm_insights_reference: "insight-feat-llm-insights-1751847632752"
+    roadmap_impact: "medium"
+    automation_scope: ["feature_development", "llm_insights"]
+  - commit_hash: "36328a1bf6c67d00a95cc3b6fb181fa7baa07aba"
+    status: "success"
+    llm_insights_reference: "insight-feat-publication-1751847632757"
+    roadmap_impact: "medium"
+    automation_scope: ["feature_development"]
+  - commit_hash: "036d6672df6ea6dc3c09ca6f3f84758b9d3ba422"
+    status: "success"
+    llm_insights_reference: "insight-chore-samples-1751847632759"
+    roadmap_impact: "low"
+    automation_scope: ["maintenance"]
+  - commit_hash: "306045423ebb5a982c6a4b196b659699ebb828c7"
+    status: "success"
+    llm_insights_reference: "insight-feat-timestamp-filter-1751847632764"
+    roadmap_impact: "medium"
+    automation_scope: ["feature_development"]
+  - commit_hash: "a2adcb1164b0152bb9020117f5b5d347510c9ef2"
+    status: "success"
+    llm_insights_reference: "insight-test-general-1751847632764"
+    roadmap_impact: "low"
+    automation_scope: ["testing", "fossilization"]
+  - commit_hash: "26eee8da320eb85aec6257dd21e35ab5bd1242ea"
+    status: "success"
+    llm_insights_reference: "insight-chore-fossil-1751847632765"
+    roadmap_impact: "low"
+    automation_scope: ["maintenance", "fossilization"]
+  - commit_hash: "e5916ac9e90a86e95a77e9b7dc1b8d7d9f15ae21"
+    status: "success"
+    llm_insights_reference: "insight-docs-general-1751847632766"
+    roadmap_impact: "low"
+    automation_scope: ["documentation", "fossilization", "llm_insights"]
+  - commit_hash: "8641a59097db5c69b197034bf68692e04109747e"
+    status: "success"
+    llm_insights_reference: "insight-chore-fossil-1751847632767"
+    roadmap_impact: "high"
+    automation_scope: ["maintenance", "fossilization"]
+  - commit_hash: "e7e703a6f585958c5047d07f4cab5b6c8bedcc00"
+    status: "success"
+    llm_insights_reference: "insight-test-general-1751847632775"
+    roadmap_impact: "low"
+    automation_scope: ["testing", "fossilization"]
+  - commit_hash: "dbe1154954127e089307065c7c8bac466732e30f"
+    status: "success"
+    llm_insights_reference: "insight-chore-general-1751847632779"
+    roadmap_impact: "low"
+    automation_scope: ["maintenance"]
+  - commit_hash: "8115a48a783edc75671f37433ca4f280d93dd14d"
+    status: "success"
+    llm_insights_reference: "insight-refactor-general-1751847632784"
+    roadmap_impact: "medium"
+    automation_scope: ["general"]
+  - commit_hash: "c3a67f652bd65eeef1eea7114710e61781228abe"
+    status: "success"
+    llm_insights_reference: "insight-test-general-1751847632785"
+    roadmap_impact: "low"
+    automation_scope: ["testing", "fossilization"]
+  - commit_hash: "089b05a2e09fce80f2c343374eef20d99ace8a96"
+    status: "success"
+    llm_insights_reference: "insight-feat-fossils-1751847632785"
+    roadmap_impact: "medium"
+    automation_scope: ["feature_development", "fossilization"]
+  - commit_hash: "f0fb1c6755d7fe2ba02ba217215e83830a6cd567"
+    status: "success"
+    llm_insights_reference: "insight-feat-examples-1751847632792"
+    roadmap_impact: "medium"
+    automation_scope: ["feature_development", "fossilization"]
+  - commit_hash: "5b689b8250bd40f444bbc4dc926d7100a3b2517b"
+    status: "success"
+    llm_insights_reference: "insight-feat-cli-1751847632793"
+    roadmap_impact: "medium"
+    automation_scope: ["feature_development", "cli", "fossilization"]
+  - commit_hash: "c805a18699308a5267f40f744c24bac4a9e3db56"
+    status: "success"
+    llm_insights_reference: "insight-feat-core-1751847632793"
+    roadmap_impact: "medium"
+    automation_scope: ["feature_development", "validation"]
+  - commit_hash: "0dfa4f392cc6d627a185a75db8dd5bd2cd9cec5a"
+    status: "success"
+    llm_insights_reference: "insight-feat-docs-1751847632794"
+    roadmap_impact: "medium"
+    automation_scope: ["feature_development"]
+  - commit_hash: "7d12a8a0151463d40804670a1cc6a1229dda7f8c"
+    status: "success"
+    llm_insights_reference: "insight-chore-fossilize-1751847632810"
+    roadmap_impact: "low"
+    automation_scope: ["maintenance", "fossilization"]
+  - commit_hash: "3f3b3c1805b7e027a799c727cb73751d38c1a224"
+    status: "success"
+    llm_insights_reference: "insight-chore-fossils-1751847632810"
+    roadmap_impact: "low"
+    automation_scope: ["maintenance", "fossilization"]
+  - commit_hash: "18b623428c399bc1560187e10b900d10291cf74e"
+    status: "success"
+    llm_insights_reference: "insight-docs-general-1751847632810"
+    roadmap_impact: "low"
+    automation_scope: ["documentation", "fossilization"]
+  - commit_hash: "3ca7d9d502b6fc0bb3398a51975f100919c68957"
+    status: "success"
+    llm_insights_reference: "insight-chore-fossil-management-1751847632811"
+    roadmap_impact: "low"
+    automation_scope: ["maintenance", "fossilization"]
+  - commit_hash: "f4f7c96af489684d0038d5f5c9534119923726aa"
+    status: "success"
+    llm_insights_reference: "insight-feat-setup-1751847632811"
+    roadmap_impact: "medium"
+    automation_scope: ["feature_development"]
+  - commit_hash: "4b887bca68ed3e9d9fc5bf5a71911e53318d603b"
+    status: "success"
+    llm_insights_reference: "insight-feat-roadmap-1751847632812"
+    roadmap_impact: "medium"
+    automation_scope: ["feature_development"]
+  - commit_hash: "01acf60ed14b3498c8128e1ed6aef3d1f7ba91b4"
+    status: "success"
+    llm_insights_reference: "insight-feat-local-llm-1751847632813"
+    roadmap_impact: "medium"
+    automation_scope: ["feature_development", "fossilization", "llm_insights"]
+  - commit_hash: "fbc2a443e25e6e20ea6bdca5d078f9a2fa1d2be9"
+    status: "success"
+    llm_insights_reference: "insight-test-semantic-tagger-1751847632821"
+    roadmap_impact: "low"
+    automation_scope: ["testing"]
+  - commit_hash: "3fdbcc094977d0729f1bb9d87ac07a6f70e82b8b"
+    status: "success"
+    llm_insights_reference: "insight-chore-roadmap-1751847632822"
+    roadmap_impact: "low"
+    automation_scope: ["maintenance"]
+  - commit_hash: "7b67ccf09d27ebf5445d1232f0aba9c1d2f16df9"
+    status: "success"
+    llm_insights_reference: "insight-feat-llm-1751847632826"
+    roadmap_impact: "medium"
+    automation_scope: ["feature_development", "llm_insights"]
+  - commit_hash: "463bd3c0e54f28f0658d870ae070c125e7ace046"
+    status: "success"
+    llm_insights_reference: "insight-feat-general-1751847632828"
+    roadmap_impact: "medium"
+    automation_scope: ["feature_development", "fossilization", "llm_insights"]

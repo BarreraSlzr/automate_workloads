@@ -1,0 +1,140 @@
+# Enhanced Commit Message System - Batch Audit Plan
+# Generated: 2025-07-07T00:18:31.346Z
+# Plan ID: batch-audit-1751847510896
+
+metadata:
+  plan_id: "batch-audit-1751847510896"
+  created_at: "2025-07-07T00:18:31.346Z"
+  author: "enhanced-commit-auditor"
+  target_commits: 50
+  audit_scope: "recent"
+  enhanced_system_compliance: true
+
+analysis:
+  total_commits: 50
+  enhanced_compliant: 0
+  non_compliant: 50
+  average_score: 51
+  compliance_rate: 0
+  sync_status:
+    local_commits: 124
+    remote_commits: 95
+    out_of_sync: 29
+    last_sync: "2025-07-03 23:39:51 -0600"
+
+recommendations:
+  - priority: "high"
+    action: "Add LLM insights references to non-compliant commits"
+    impact: "Enable enhanced commit message system compliance"
+    effort: "medium"
+  - priority: "high"
+    action: "Fix low-scoring commit messages"
+    impact: "Improve commit quality and traceability"
+    effort: "medium"
+  - priority: "medium"
+    action: "Add scopes to commits without them"
+    impact: "Better categorization and filtering"
+    effort: "low"
+  - priority: "medium"
+    action: "Add issue references to commits"
+    impact: "Better traceability to issues"
+    effort: "low"
+  - priority: "low"
+    action: "Set up pre-commit hooks for enhanced validation"
+    impact: "Prevent future non-compliant commits"
+    effort: "medium"
+
+batch_plan:
+  total_batches: 10
+  estimated_total_time: 100
+  batches:
+    - batch_number: 1
+      priority: "high"
+      estimated_time: 10
+      commits:
+        - "01c7cc418d14317e701c059f3c1f3e81b797d95d"
+        - "b248af60cb9eee8e1008321e05c796e19787cbf1"
+        - "dad0f906b304741154220b6e0239ad904c4d1a85"
+        - "0a9b122b3161e0a9921d0fc18e30cdfbeeeda86f"
+        - "e6d19aa3f41a5ae63245aec1318ef03509748921"
+    - batch_number: 2
+      priority: "high"
+      estimated_time: 10
+      commits:
+        - "9485ddfbc8bc37708e2a5c17d745c426b7b9472a"
+        - "341834ea64a59d3a8d515de194d9f8cd0bc33618"
+        - "3de4a04cd75fb38a9b1614c45c90fabc65c4807d"
+        - "ba43c21e56e6c3f70e4ffbd97757c8f1c0a270d2"
+        - "c8223b01e819b4c027138747f7697765db4ccd0c"
+    - batch_number: 3
+      priority: "high"
+      estimated_time: 10
+      commits:
+        - "12148ffb77322607ab285c1e7fa54c37d9724949"
+        - "83c0408b00cf02e2678fbb2c7f6a5f0f4fa6a6dc"
+        - "667f5076c157c4911ffb1886896fbe26c060d169"
+        - "56b94993f075ea3bab6f352484990ad64cd85f88"
+        - "493e2ec298a8484d9305fd3a0ebb1e821450f8dd"
+    - batch_number: 4
+      priority: "high"
+      estimated_time: 10
+      commits:
+        - "1c197c263bd1450769e3714c4af789e9cf1d4194"
+        - "62e2dfc85e72f65c97edc1c3e0c9ca06ef38b9b9"
+        - "684b488ce2a32fc0e514f823a07ecaf534ca5d87"
+        - "b1db2f8a21c0bb1e7b168b7a469346d6a974e0c1"
+        - "4a9ce81cec217c304e6ade29b65f90b9c10d639c"
+    - batch_number: 5
+      priority: "high"
+      estimated_time: 10
+      commits:
+        - "5925ac8806102c103eca62ff1f5e212cb4f53557"
+        - "d466fc577b1d7c76f0046d6f0ce1f416b1144fae"
+        - "ad08ddf03b6de85e0a72dc7e6d4e0c35bc1715ba"
+        - "36328a1bf6c67d00a95cc3b6fb181fa7baa07aba"
+        - "036d6672df6ea6dc3c09ca6f3f84758b9d3ba422"
+    - batch_number: 6
+      priority: "high"
+      estimated_time: 10
+      commits:
+        - "306045423ebb5a982c6a4b196b659699ebb828c7"
+        - "a2adcb1164b0152bb9020117f5b5d347510c9ef2"
+        - "26eee8da320eb85aec6257dd21e35ab5bd1242ea"
+        - "e5916ac9e90a86e95a77e9b7dc1b8d7d9f15ae21"
+        - "8641a59097db5c69b197034bf68692e04109747e"
+    - batch_number: 7
+      priority: "high"
+      estimated_time: 10
+      commits:
+        - "e7e703a6f585958c5047d07f4cab5b6c8bedcc00"
+        - "dbe1154954127e089307065c7c8bac466732e30f"
+        - "8115a48a783edc75671f37433ca4f280d93dd14d"
+        - "c3a67f652bd65eeef1eea7114710e61781228abe"
+        - "089b05a2e09fce80f2c343374eef20d99ace8a96"
+    - batch_number: 8
+      priority: "high"
+      estimated_time: 10
+      commits:
+        - "f0fb1c6755d7fe2ba02ba217215e83830a6cd567"
+        - "5b689b8250bd40f444bbc4dc926d7100a3b2517b"
+        - "c805a18699308a5267f40f744c24bac4a9e3db56"
+        - "0dfa4f392cc6d627a185a75db8dd5bd2cd9cec5a"
+        - "7d12a8a0151463d40804670a1cc6a1229dda7f8c"
+    - batch_number: 9
+      priority: "high"
+      estimated_time: 10
+      commits:
+        - "3f3b3c1805b7e027a799c727cb73751d38c1a224"
+        - "18b623428c399bc1560187e10b900d10291cf74e"
+        - "3ca7d9d502b6fc0bb3398a51975f100919c68957"
+        - "f4f7c96af489684d0038d5f5c9534119923726aa"
+        - "4b887bca68ed3e9d9fc5bf5a71911e53318d603b"
+    - batch_number: 10
+      priority: "high"
+      estimated_time: 10
+      commits:
+        - "01acf60ed14b3498c8128e1ed6aef3d1f7ba91b4"
+        - "fbc2a443e25e6e20ea6bdca5d078f9a2fa1d2be9"
+        - "3fdbcc094977d0729f1bb9d87ac07a6f70e82b8b"
+        - "7b67ccf09d27ebf5445d1232f0aba9c1d2f16df9"
+        - "463bd3c0e54f28f0658d870ae070c125e7ace046"

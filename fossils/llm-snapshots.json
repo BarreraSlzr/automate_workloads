@@ -1,0 +1,131 @@
+{
+  "type": "llm-snapshot",
+  "data": {
+    "id": "decompose-1751930779319-3hxxy0azg",
+    "timestamp": "2025-07-07T23:26:19.319Z",
+    "testName": "test-mode-test",
+    "method": "decomposeGoal",
+    "input": {
+      "goal": "Test goal",
+      "issueMode": false
+    },
+    "expectedOutput": {
+      "hasTasks": true,
+      "taskCount": 3,
+      "hasTimeline": true,
+      "hasRisks": true,
+      "contentLength": 500,
+      "priorityDistribution": {
+        "high": 1,
+        "critical": 1,
+        "medium": 1
+      }
+    },
+    "actualOutput": {
+      "tasks": [
+        {
+          "id": "task-1",
+          "title": "Research and Analysis",
+          "description": "Conduct thorough research on the goal requirements",
+          "acceptanceCriteria": [
+            "Research completed and documented",
+            "Requirements clearly defined",
+            "Stakeholder input gathered"
+          ],
+          "dependencies": [],
+          "estimatedEffort": "2-3 days",
+          "priority": "high"
+        },
+        {
+          "id": "task-2",
+          "title": "Design and Planning",
+          "description": "Create detailed design and implementation plan",
+          "acceptanceCriteria": [
+            "Technical design completed",
+            "Implementation plan created",
+            "Resource requirements identified"
+          ],
+          "dependencies": [
+            "task-1"
+          ],
+          "estimatedEffort": "1-2 days",
+          "priority": "high"
+        },
+        {
+          "id": "task-3",
+          "title": "Implementation",
+          "description": "Execute the implementation plan",
+          "acceptanceCriteria": [
+            "Code implemented according to design",
+            "Tests written and passing",
+            "Documentation updated"
+          ],
+          "dependencies": [
+            "task-2"
+          ],
+          "estimatedEffort": "3-5 days",
+          "priority": "critical"
+        }
+      ],
+      "timeline": {
+        "startDate": "2025-07-07T23:26:19.319Z",
+        "endDate": "2025-07-17T23:26:19.319Z",
+        "milestones": [
+          {
+            "date": "2025-07-10T23:26:19.319Z",
+            "description": "Research and Design Complete",
+            "tasks": [
+              "task-1",
+              "task-2"
+            ]
+          },
+          {
+            "date": "2025-07-15T23:26:19.319Z",
+            "description": "Implementation Complete",
+            "tasks": [
+              "task-3"
+            ]
+          }
+        ]
+      },
+      "risks": [
+        {
+          "description": "Scope creep during implementation",
+          "probability": "medium",
+          "impact": "high",
+          "mitigation": "Regular stakeholder check-ins and scope reviews"
+        },
+        {
+          "description": "Technical challenges with integration",
+          "probability": "high",
+          "impact": "medium",
+          "mitigation": "Proof of concept and early testing"
+        }
+      ]
+    },
+    "validation": {
+      "passed": true,
+      "score": 1,
+      "issues": [],
+      "recommendations": []
+    },
+    "metadata": {
+      "model": "fake-model",
+      "purpose": "goal-decomposition",
+      "context": "goal-decomposition",
+      "valueScore": 0.8,
+      "duration": 0
+    }
+  },
+  "commit_hash": "69a3fe1a058ba98c29cf0a6b796bf258b6b92b2a",
+  "branch": "master",
+  "author": "Emmanuel Barrera Salazar (BarreraSlzr)",
+  "email": "barreraslzr@gmail.com",
+  "timestamp": "2025-07-07T23:26:19.340Z",
+  "metadata": {
+    "fossilized": true,
+    "canonical": true,
+    "version": "1.0.0",
+    "transversalValue": 0
+  }
+}

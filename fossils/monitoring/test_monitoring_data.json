@@ -1,0 +1,40 @@
+{
+  "metadata": {
+    "timestamp": "2025-07-07T01:06:20.000Z",
+    "version": "1.0.0",
+    "source": "ml-ready-snapshot",
+    "context": "test-monitoring-analysis",
+    "validation": "ml-ready"
+  },
+  "test_results": [
+    {
+      "test_name": "llm-chat-context.test.ts",
+      "status": "passed",
+      "duration_ms": 975.81,
+      "error_type": null,
+      "error_message": null,
+      "ml_ready_context": "context-generation-validation"
+    }
+  ],
+  "performance_data": {
+    "total_execution_time_ms": 63160,
+    "average_test_time_ms": 126.07,
+    "slowest_test_ms": 975.81,
+    "fastest_test_ms": 0.02
+  },
+  "error_analysis": {
+    "missing_files_count": 0,
+    "timeout_count": 0,
+    "validation_errors": 0,
+    "type_errors": 0,
+    "most_common_error": null
+  },
+  "ml_ready_features": {
+    "structured_data": true,
+    "normalized_metrics": true,
+    "temporal_context": true,
+    "validation_metadata": true,
+    "local_llm_compatible": true,
+    "easy_consumption": true
+  }
+} 

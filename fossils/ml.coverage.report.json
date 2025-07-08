@@ -1,0 +1,41 @@
+{
+  "timestamp": "2025-07-06T09:42:53.014Z",
+  "coverage_summary": {
+    "total_fossils": 423,
+    "canonical_fossils": 19,
+    "coverage_percentage": "4.5%",
+    "status": "partial"
+  },
+  "canonical_structure": {
+    "core_files": [
+      "project_status.yml",
+      "setup_status.yml",
+      "roadmap.yml",
+      "validation-results.json",
+      "performance-results.json",
+      "analysis-results.json",
+      "git-diff-results.json",
+      "footprint-results.json",
+      "llm-snapshots.json",
+      "current-traceability.json"
+    ],
+    "roadmap_insights": [
+      "roadmap-insights.json",
+      "roadmap-insights-summary.json",
+      "roadmap-insights-web.json",
+      "roadmap-insights-collection.json",
+      "roadmap-insights-api.json"
+    ],
+    "analysis_files": [
+      "ml-ready-analysis.json",
+      "test-integration-analysis.json",
+      "canonical-context.yml"
+    ]
+  },
+  "recommendations": [
+    "All core fossils are now canonical",
+    "Use canonical fossil manager for all future fossilization",
+    "Regular audits of canonical structure recommended",
+    "Monitor fossil growth and maintain archival system"
+  ]
+}

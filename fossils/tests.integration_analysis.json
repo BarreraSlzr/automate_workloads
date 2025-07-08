@@ -1,0 +1,66 @@
+{
+  "timestamp": "2025-07-06T09:37:43.126Z",
+  "overallHealth": {
+    "overallScore": 70,
+    "testReliability": 75,
+    "performanceStability": 65,
+    "memoryEfficiency": 80,
+    "errorRate": 25,
+    "hangingTestRate": 20,
+    "averageTestDuration": 3000,
+    "totalIssues": 6,
+    "criticalIssues": 2
+  },
+  "tasks": [
+    {
+      "taskId": "integration-task-1",
+      "name": "Integration Tests",
+      "status": "warning",
+      "lastRun": "2025-07-06T09:37:43.126Z",
+      "successRate": 0.8,
+      "averageDuration": 4000,
+      "issues": [],
+      "recommendations": [
+        "Optimize performance"
+      ]
+    }
+  ],
+  "issues": [
+    {
+      "type": "hanging_test",
+      "severity": "critical",
+      "title": "Critical Hanging Integration Test",
+      "description": "Integration test is hanging frequently",
+      "location": "tests/integration/hanging.test.ts",
+      "duration": 20000,
+      "frequency": 2,
+      "impact": "Blocks CI/CD pipeline",
+      "recommendations": [
+        "Add timeouts",
+        "Check async handling"
+      ],
+      "metadata": {
+        "testType": "integration",
+        "suite": "main"
+      }
+    }
+  ],
+  "trends": {
+    "testDuration": "degrading",
+    "errorRate": "stable",
+    "hangingTests": "degrading"
+  },
+  "recommendations": [
+    "Fix hanging integration tests immediately",
+    "Optimize test performance",
+    "Monitor memory usage"
+  ],
+  "metadata": {
+    "fossilized": true,
+    "canonical": true,
+    "version": "1.0.0",
+    "migrated_from": "fossils/test-integration-analysis/analysis-2025-01-01T00-00-00-000Z.json",
+    "migration_timestamp": "2025-07-06T09:40:34.233Z",
+    "transversalValue": 0.5
+  }
+}

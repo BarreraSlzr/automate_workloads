@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "timestamp": "2025-07-07T01:06:20.000Z",
+    "version": "1.0.0",
+    "source": "ml-ready-snapshot",
+    "context": "performance-monitoring",
+    "validation": "ml-ready"
+  },
+  "system_metrics": {
+    "memory_usage": {
+      "total_mb": 16384,
+      "used_mb": 245.6,
+      "available_mb": 16138.4,
+      "usage_percent": 1.5
+    },
+    "cpu_usage": {
+      "total_percent": 12.3,
+      "user_percent": 8.7,
+      "system_percent": 3.6,
+      "idle_percent": 87.7
+    },
+    "disk_usage": {
+      "total_mb": 512000,
+      "used_mb": 15.2,
+      "available_mb": 511984.8,
+      "usage_percent": 0.003
+    }
+  },
+  "test_performance": {
+    "total_tests": 501,
+    "execution_time_seconds": 63.16,
+    "tests_per_second": 7.93,
+    "average_test_time_ms": 126.07,
+    "slowest_test_ms": 87027391.67,
+    "fastest_test_ms": 0.02
+  },
+  "ml_ready_features": {
+    "structured_data": true,
+    "normalized_metrics": true,
+    "temporal_context": true,
+    "validation_metadata": true,
+    "local_llm_compatible": true,
+    "easy_consumption": true,
+    "hardware_optimized": true
+  }
+} 

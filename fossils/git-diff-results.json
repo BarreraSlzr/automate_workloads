@@ -1,0 +1,331 @@
+{
+  "type": "git-diff-analysis",
+  "data": {
+    "commitHash": "33ddd1c",
+    "timestamp": "2025-07-07T23:25:47.794Z",
+    "filesChanged": [
+      {
+        "path": "scripts/precommit-validate-simple.ts",
+        "status": "added",
+        "additions": 64,
+        "deletions": 0,
+        "fossilReferences": []
+      },
+      {
+        "path": "scripts/unified-pre-commit-validator.ts",
+        "status": "added",
+        "additions": 381,
+        "deletions": 0,
+        "fossilReferences": []
+      }
+    ],
+    "fossilInsights": [
+      {
+        "fossilPath": "fossils/commit_audits/commit-audit-33ddd1c8-1751930713268.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T21-40-17-750Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T23-06-12-339Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T22-29-50-497Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T23-17-30-107Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T23-19-12-847Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T23-09-09-713Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T20-24-42-154Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T22-02-56-150Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T21-18-21-406Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T22-36-00-866Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T23-23-52-114Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T23-07-02-834Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T23-24-50-303Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T23-13-04-233Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T22-26-57-371Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T22-38-56-539Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T22-26-01-610Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T22-31-11-860Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T22-19-56-397Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T22-28-29-102Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T23-14-23-495Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T22-50-30-936Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T21-36-54-173Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T21-05-35-156Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T20-28-27-709Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T22-39-54-988Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T23-11-18-206Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T22-41-46-697Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T21-32-56-459Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T23-22-26-976Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T20-43-19-892Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T20-51-21-253Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T22-48-37-937Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T22-35-04-188Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T23-20-47-030Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T21-27-17-548Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T22-37-36-630Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/archive/2025/07/footprint-results-2025-07-07T22-47-11-616Z.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/footprint-results.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/git-diff-results.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      },
+      {
+        "fossilPath": "fossils/ml.footprint.results.json",
+        "referenceType": "indirect",
+        "impact": "medium",
+        "context": "References 2 changed files",
+        "transversalValue": 0.5
+      }
+    ],
+    "transversalPatterns": []
+  },
+  "commit_hash": "33ddd1c8ed382df47feb00581c6d7bee6607a291",
+  "branch": "master",
+  "author": "Emmanuel Barrera Salazar (BarreraSlzr)",
+  "email": "barreraslzr@gmail.com",
+  "timestamp": "2025-07-07T23:25:47.831Z",
+  "metadata": {
+    "fossilized": true,
+    "canonical": true,
+    "version": "1.0.0",
+    "transversalValue": 0
+  }
+}

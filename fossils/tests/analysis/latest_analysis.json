@@ -1,0 +1,70 @@
+{
+  "id": "fossil_8d6f5ef9165c_1751930786033",
+  "type": "result",
+  "title": "Test Analysis Results",
+  "content": "{\n  \"timestamp\": \"2025-07-07T23:26:26.033Z\",\n  \"overallHealth\": {\n    \"overallScore\": 95,\n    \"testReliability\": 100,\n    \"performanceStability\": 100,\n    \"memoryEfficiency\": 85,\n    \"errorRate\": 1,\n    \"hangingTestRate\": 0,\n    \"averageTestDuration\": 1500,\n    \"totalIssues\": 1,\n    \"criticalIssues\": 0\n  },\n  \"tasks\": [\n    {\n      \"taskId\": \"task-test-execution\",\n      \"name\": \"test-execution\",\n      \"status\": \"healthy\",\n      \"lastRun\": \"2025-07-07T23:26:26.033Z\",\n      \"successRate\": 1,\n      \"averageDuration\": 2835.6073456027266,\n      \"issues\": [],\n      \"recommendations\": []\n    },\n    {\n      \"taskId\": \"task-performance-monitoring\",\n      \"name\": \"performance-monitoring\",\n      \"status\": \"healthy\",\n      \"lastRun\": \"2025-07-07T23:26:26.033Z\",\n      \"successRate\": 1,\n      \"averageDuration\": 2611.898056012054,\n      \"issues\": [],\n      \"recommendations\": []\n    },\n    {\n      \"taskId\": \"task-memory-analysis\",\n      \"name\": \"memory-analysis\",\n      \"status\": \"healthy\",\n      \"lastRun\": \"2025-07-07T23:26:26.033Z\",\n      \"successRate\": 1,\n      \"averageDuration\": 1301.8660687873326,\n      \"issues\": [],\n      \"recommendations\": []\n    }\n  ],\n  \"issues\": [\n    {\n      \"type\": \"error_pattern\",\n      \"severity\": \"high\",\n      \"title\": \"Script Failed: test-script-2\",\n      \"description\": \"Script test-script-2 failed with exit code 1\",\n      \"location\": \"test-script-2\",\n      \"duration\": 35,\n      \"frequency\": 1,\n      \"impact\": \"Script execution failure may indicate bugs or configuration issues\",\n      \"recommendations\": [\n        \"Check script logs for error details\",\n        \"Verify dependencies and configuration\",\n        \"Add better error handling\",\n        \"Test script in isolation\",\n        \"Review recent changes to the script\"\n      ],\n      \"metadata\": {\n        \"script\": \"test-script-2\",\n        \"exitCode\": 1,\n        \"executionTime\": 35,\n        \"timestamp\": \"2025-07-07T23:26:20.689Z\",\n        \"real_time\": 35,\n        \"user_time\": 20,\n        \"sys_time\": 5,\n        \"output_size_bytes\": 2048,\n        \"error_size_bytes\": 512,\n        \"cpu_percent\": 80\n      }\n    }\n  ],\n  \"trends\": {\n    \"testDuration\": \"stable\",\n    \"errorRate\": \"improving\",\n    \"hangingTests\": \"stable\"\n  },\n  \"recommendations\": [],\n  \"processedAt\": \"2025-07-07T23:26:26.033Z\",\n  \"summary\": {\n    \"healthScore\": 95,\n    \"totalIssues\": 1,\n    \"criticalIssues\": 0,\n    \"taskCount\": 3,\n    \"recommendationCount\": 0\n  }\n}",
+  "tags": [
+    "test",
+    "analysis",
+    "monitoring"
+  ],
+  "metadata": {
+    "processedAt": "2025-07-07T23:26:26.033Z",
+    "originalTimestamp": "2025-07-07T23:26:26.033Z",
+    "healthScore": 95,
+    "totalIssues": 1,
+    "criticalIssues": 0,
+    "testReliability": 100,
+    "performanceStability": 100,
+    "memoryEfficiency": 85,
+    "errorRate": 1,
+    "hangingTestRate": 0,
+    "averageTestDuration": 1500,
+    "taskCount": 3,
+    "recommendationCount": 0,
+    "trends": {
+      "testDuration": "stable",
+      "errorRate": "improving",
+      "hangingTests": "stable"
+    },
+    "recommendations": [],
+    "tasks": [
+      {
+        "taskId": "task-test-execution",
+        "name": "test-execution",
+        "status": "healthy",
+        "lastRun": "2025-07-07T23:26:26.033Z",
+        "successRate": 1,
+        "averageDuration": 2835.6073456027266,
+        "issues": [],
+        "recommendations": []
+      },
+      {
+        "taskId": "task-performance-monitoring",
+        "name": "performance-monitoring",
+        "status": "healthy",
+        "lastRun": "2025-07-07T23:26:26.033Z",
+        "successRate": 1,
+        "averageDuration": 2611.898056012054,
+        "issues": [],
+        "recommendations": []
+      },
+      {
+        "taskId": "task-memory-analysis",
+        "name": "memory-analysis",
+        "status": "healthy",
+        "lastRun": "2025-07-07T23:26:26.033Z",
+        "successRate": 1,
+        "averageDuration": 1301.8660687873326,
+        "issues": [],
+        "recommendations": []
+      }
+    ],
+    "contentHash": "8d6f5ef9165c"
+  },
+  "source": "automated",
+  "version": 1,
+  "children": [],
+  "createdAt": "2025-07-07T23:26:26.033Z",
+  "updatedAt": "2025-07-07T23:26:26.033Z"
+}

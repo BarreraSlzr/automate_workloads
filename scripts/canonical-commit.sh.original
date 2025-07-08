@@ -1,0 +1,93 @@
+#!/bin/bash
+# Canonical, ML-ready, safe orchestration wrapper for batch commit/fossil operations.
+# See docs/CANONICAL_FOSSIL_MANAGEMENT_GUIDE.md and docs/PERFORMANCE_MONITORING_GUIDE.md
+
+set -euo pipefail
+
+# Check for timeout (from coreutils)
+if ! command -v timeout &> /dev/null; then
+  echo "[ERROR] 'timeout' not found. Please install coreutils: brew install coreutils" >&2
+  exit 1
+fi
+# Check for gtime (GNU time)
+if ! command -v gtime &> /dev/null; then
+  echo "[ERROR] 'gtime' not found. Please install gnu-time: brew install gnu-time" >&2
+  exit 1
+fi
+
+# Log file count and disk usage before execution
+echo "[INFO] Fossil file count before:"
+find fossils/ | wc -l
+
+echo "[INFO] Fossil disk usage before:"
+du -sh fossils/
+
+# Run the main commit logic with timeout and gtime for resource monitoring
+# Use full paths if not in PATH
+TIMEOUT_BIN=$(command -v timeout)
+GTIME_BIN=$(command -v gtime)
+
+$TIMEOUT_BIN 10m $GTIME_BIN -v bash scripts/canonical-commit.sh.original
+
+# Run project validation and cleanup
+bun run validate:unified
+bun run src/cli/canonical-fossil-manager.ts generate-yaml
+
+# Log file count and disk usage after execution
+echo "[INFO] Fossil file count after:"
+find fossils/ | wc -l
+
+echo "[INFO] Fossil disk usage after:"
+du -sh fossils/
+
+echo "[INFO] Canonical commit complete and validated."
+
+# Canonical Commit Script for Enhanced Commit Message System
+# Usage: ./scripts/canonical-commit.sh
+
+# 1. Run all validation and audit scripts
+echo "[1/7] Running validation and audit scripts..."
+bun run precommit:unified
+bun run validate:types-schemas
+bun run detect:hanging-tests
+bun run audit:test-performance
+
+echo "[2/7] Staging all changes..."
+git add .
+
+# 3. Prompt for commit metadata
+read -p "Enter commit type (e.g., feat, fix, chore): " COMMIT_TYPE
+read -p "Enter commit scope (e.g., cli, validation): " COMMIT_SCOPE
+read -p "Enter concise commit description: " COMMIT_DESC
+
+TEMPLATE_FILE="commit-template.json"
+
+# 4. Generate commit message template
+echo "[3/7] Generating commit message template..."
+bun run scripts/commit-message-template.ts --create \
+  --type "$COMMIT_TYPE" \
+  --scope "$COMMIT_SCOPE" \
+  --description "$COMMIT_DESC" \
+  --auto-analyze \
+  --output "$TEMPLATE_FILE"
+
+# 5. Validate the commit message template
+echo "[4/7] Validating commit message template..."
+if ! bun run scripts/commit-message-template.ts --validate "$TEMPLATE_FILE"; then
+  echo "[ERROR] Commit message template validation failed. Please edit $TEMPLATE_FILE and re-run this script."
+  exit 1
+fi
+
+# 6. Generate the canonical commit message
+COMMIT_MSG=$(bun run scripts/commit-message-template.ts --from-json "$TEMPLATE_FILE")
+
+echo "[5/7] Canonical commit message generated:"
+echo "$COMMIT_MSG"
+
+# 7. Perform the commit
+echo "[6/7] Committing with canonical message..."
+git commit -m "$COMMIT_MSG"
+
+# 8. Success message
+echo "[7/7] Commit complete and fully validated!"
+echo "You are now fully aligned with the enhanced commit message system." 

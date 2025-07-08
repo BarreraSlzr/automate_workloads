@@ -1,0 +1,24 @@
+{
+  "source": "validation",
+  "created_by": "process",
+  "status": "completed",
+  "tag_summary": "unified_results",
+  "topic": "validation_unified",
+  "subtopic": "unified_results",
+  "timestamp": "2025-07-07T04:16:46.622Z",
+  "content": "🚀 Starting Unified Pre-Commit Validation...\n📅 Timestamp: 2025-07-06T14:06:34.106Z\n🔗 Commit: 01c7cc4\n🌿 Branch: master\n\n🔍 [CORE] TypeScript Type Checking...\n✅ TypeScript Type Checking passed\n🔍 [CORE] Type and Schema Cohesion...\n✅ Type and Schema Cohesion passed\n🔍 [CORE] Linting and Code Style...\n✅ Linting and Code Style passed\n🔍 [CORE] Basic Tests...\n\n📊 Validation Summary:\n==================================================\n\nCORE Validations:\n  ✅ TypeScript Type Checking (2490ms)\n  ✅ Type and Schema Cohesion (67ms)\n  ✅ Linting and Code Style (10ms)\n  ❌ Basic Tests (39940ms)\n\n📈 Overall: 3/4 steps passed (75.0%)\n⚠️  Some validations failed\n🔄 Updating fossils/project_status.yml...\n💾 Project status written to fossils/project_status.yml\n🚀 LLM Call [call-1751810836771-xdvkk7chl]: developer-insights (developer-analysis)\n   📝 Model: gpt-4, Value Score: 0.8\n☁️ Using cloud LLM for complex task\n\n🤖 LLM Developer Insights:\n LLM service unavailable.\n",
+  "metadata": {
+    "validation_type": "unified",
+    "pass_rate": 0,
+    "total_checks": 0,
+    "failed_checks": 0,
+    "execution_time": 0,
+    "traceability": {
+      "related_fossils": [],
+      "related_documentation": []
+    },
+    "original_file": "validate-unified-output.txt",
+    "replacement_reason": "Structured unified validation with traceability",
+    "implementation_date": "2025-07-07T04:16:46.622Z"
+  }
+}

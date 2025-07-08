@@ -1,0 +1,2122 @@
+current:
+  timestamp: 2025-07-07T05:23:50.969Z
+  commit: b248af60cb9eee8e1008321e05c796e19787cbf1
+  branch: master
+  message: "chore: add configuration files and LLM snapshots"
+  author: Emmanuel Barrera Salazar (BarreraSlzr)
+  files:
+    staged:
+      - path: .github/FUNDING.yml
+        status: A
+        size: 551
+        lines: 11
+        lastModified: 2025-07-06T15:21:00.156Z
+        extension: yml
+      - path: .github/workflows/monitor-and-track.yml
+        status: A
+        size: 6556
+        lines: 178
+        lastModified: 2025-07-06T15:21:00.162Z
+        extension: yml
+      - path: .github/workflows/test-and-coverage.yml
+        status: A
+        size: 5897
+        lines: 161
+        lastModified: 2025-07-06T15:21:00.161Z
+        extension: yml
+      - path: .gitignore
+        status: A
+        size: 1991
+        lines: 160
+        lastModified: 2025-07-07T01:27:22.646Z
+        extension: gitignore
+      - path: .husky/pre-commit
+        status: A
+        size: 4451
+        lines: 101
+        lastModified: 2025-07-06T15:20:59.424Z
+        extension: husky/pre-commit
+      - path: .llm-usage-log.json
+        status: A
+      - path: BATCH_PLAN_EXECUTION_STATUS.md
+        status: A
+        size: 4414
+        lines: 121
+        lastModified: 2025-07-07T00:43:00.899Z
+        extension: md
+      - path: BATCH_PLAN_EXECUTION_SUMMARY.md
+        status: A
+        size: 9315
+        lines: 265
+        lastModified: 2025-07-07T00:22:42.659Z
+        extension: md
+      - path: CANONICAL_FOSSIL_GAP_CLOSURE_SUMMARY.md
+        status: A
+        size: 6899
+        lines: 161
+        lastModified: 2025-07-06T15:20:59.977Z
+        extension: md
+      - path: CANONICAL_FOSSIL_MANAGEMENT_SUMMARY.md
+        status: A
+        size: 11244
+        lines: 288
+        lastModified: 2025-07-06T15:20:59.426Z
+        extension: md
+      - path: COMMIT_MESSAGE_BATCH_PLAN_SUMMARY.md
+        status: A
+        size: 10604
+        lines: 316
+        lastModified: 2025-07-07T00:21:42.917Z
+        extension: md
+      - path: CORE_DATA_STRUCTURES_IMPLEMENTATION_SUMMARY.md
+        status: A
+        size: 15197
+        lines: 536
+        lastModified: 2025-07-06T15:20:59.988Z
+        extension: md
+      - path: FOSSIL_AUDIT_IMPLEMENTATION_SUMMARY.md
+        status: A
+        size: 6879
+        lines: 179
+        lastModified: 2025-07-06T15:20:59.987Z
+        extension: md
+      - path: FOSSIL_BLOAT_REDUCTION_SUMMARY.md
+        status: A
+        size: 6626
+        lines: 165
+        lastModified: 2025-07-06T15:21:00.173Z
+        extension: md
+      - path: FOSSIL_BLOAT_SOLUTION_IMPLEMENTATION.md
+        status: A
+        size: 6451
+        lines: 194
+        lastModified: 2025-07-06T15:20:59.416Z
+        extension: md
+      - path: FOSSIL_CLEANUP_AND_CURRENT_STATE_SUMMARY.md
+        status: A
+        size: 5867
+        lines: 144
+        lastModified: 2025-07-06T15:20:59.441Z
+        extension: md
+      - path: FOSSIL_CREATION_ANALYSIS.md
+        status: A
+        size: 11508
+        lines: 296
+        lastModified: 2025-07-06T15:20:59.986Z
+        extension: md
+      - path: FOSSIL_GROWTH_MANAGEMENT_CONSOLIDATION_SUMMARY.md
+        status: A
+        size: 9278
+        lines: 287
+        lastModified: 2025-07-06T15:20:59.981Z
+        extension: md
+      - path: FOSSIL_MIGRATION_PROGRESS.md
+        status: A
+        size: 8065
+        lines: 182
+        lastModified: 2025-07-06T15:20:59.979Z
+        extension: md
+      - path: GIT_TIMELINE_AND_ENHANCED_COMMIT_INTEGRATION_ANALYSIS.md
+        status: A
+        size: 11378
+        lines: 364
+        lastModified: 2025-07-07T01:38:40.087Z
+        extension: md
+      - path: GIT_TIMELINE_IMPROVEMENT_PLAN.md
+        status: A
+        size: 9180
+        lines: 271
+        lastModified: 2025-07-07T01:27:04.415Z
+        extension: md
+      - path: LICENSE
+        status: A
+        size: 2772
+        lines: 65
+        lastModified: 2025-07-06T15:20:59.438Z
+      - path: MARKET_READY_TRANSFORMATION_SUMMARY.md
+        status: A
+        size: 7457
+        lines: 235
+        lastModified: 2025-07-06T15:21:00.155Z
+        extension: md
+      - path: ML_READY_APPROACH_SUCCESS_SUMMARY.md
+        status: A
+        size: 3283
+        lines: 77
+        lastModified: 2025-07-07T01:08:07.782Z
+        extension: md
+      - path: PRE_COMMIT_ANALYSIS_REPORT.md
+        status: A
+        size: 5690
+        lines: 181
+        lastModified: 2025-07-06T15:20:59.427Z
+        extension: md
+      - path: PRE_COMMIT_VALIDATION_SUMMARY.md
+        status: A
+        size: 5215
+        lines: 181
+        lastModified: 2025-07-06T15:21:00.166Z
+        extension: md
+      - path: README.md
+        status: A
+        size: 17509
+        lines: 503
+        lastModified: 2025-07-06T15:20:59.983Z
+        extension: md
+      - path: TEST_VALIDATION_SUMMARY.md
+        status: A
+        size: 5728
+        lines: 165
+        lastModified: 2025-07-06T15:20:59.425Z
+        extension: md
+      - path: TIMESTAMPED_FOSSIL_MANAGEMENT_STRATEGY.md
+        status: A
+        size: 7088
+        lines: 215
+        lastModified: 2025-07-07T01:25:15.921Z
+        extension: md
+      - path: TIMESTAMPED_FOSSIL_MANAGEMENT_SUCCESS_SUMMARY.md
+        status: A
+        size: 6316
+        lines: 171
+        lastModified: 2025-07-07T01:32:50.461Z
+        extension: md
+      - path: TRANSVERSAL_REFACTOR_PLAN.md
+        status: A
+        size: 6921
+        lines: 226
+        lastModified: 2025-07-07T00:32:37.811Z
+        extension: md
+      - path: TRANSVERSAL_REFACTOR_SUCCESS_SUMMARY.md
+        status: A
+        size: 4653
+        lines: 127
+        lastModified: 2025-07-07T00:37:30.752Z
+        extension: md
+      - path: TYPESCRIPT_ERRORS_FIXED_SUMMARY.md
+        status: A
+        size: 4913
+        lines: 146
+        lastModified: 2025-07-06T15:21:02.765Z
+        extension: md
+      - path: UNIFIED_CANONICAL_FOSSIL_STRUCTURE_IMPLEMENTATION.md
+        status: A
+        size: 5952
+        lines: 160
+        lastModified: 2025-07-06T15:20:59.442Z
+        extension: md
+      - path: UNIFIED_FOSSIL_MANAGEMENT_APPROACH.md
+        status: A
+        size: 9222
+        lines: 221
+        lastModified: 2025-07-06T15:20:59.427Z
+        extension: md
+      - path: VALIDATION_AND_SCOPE_CREEP_SUMMARY.md
+        status: A
+        size: 7651
+        lines: 262
+        lastModified: 2025-07-06T15:20:59.440Z
+        extension: md
+      - path: actionable-insights-report.md
+        status: A
+        size: 1010
+        lines: 33
+        lastModified: 2025-07-07T02:48:06.101Z
+        extension: md
+      - path: bun.lock
+        status: A
+        size: 40187
+        lines: 371
+        lastModified: 2025-07-06T15:20:59.862Z
+        extension: lock
+      - path: diff-analysis.json
+        status: A
+      - path: docs/ADVANCED_FOSSIL_QUERY_PATTERNS_GUIDE.md
+        status: A
+        size: 15456
+        lines: 545
+        lastModified: 2025-07-06T15:20:59.917Z
+        extension: md
+      - path: docs/API_REFERENCE.md
+        status: A
+        size: 46416
+        lines: 1715
+        lastModified: 2025-07-06T15:20:59.885Z
+        extension: md
+      - path: docs/AUTOMATED_MONITORING_ANALYSIS_GUIDE.md
+        status: A
+        size: 10446
+        lines: 333
+        lastModified: 2025-07-06T15:20:59.876Z
+        extension: md
+      - path: docs/CANONICAL_FOSSIL_MANAGEMENT_GUIDE.md
+        status: A
+        size: 20380
+        lines: 549
+        lastModified: 2025-07-07T04:42:14.402Z
+        extension: md
+      - path: docs/CANONICAL_FOSSIL_WORKFLOW_DIAGRAM.md
+        status: A
+        size: 7035
+        lines: 247
+        lastModified: 2025-07-06T15:20:59.906Z
+        extension: md
+      - path: docs/CLI_COMMAND_INSIGHTS.md
+        status: A
+        size: 18353
+        lines: 533
+        lastModified: 2025-07-06T15:20:59.904Z
+        extension: md
+      - path: docs/COHESION_ANALYSIS.md
+        status: A
+      - path: docs/COHESION_ANALYSIS_AND_IMPROVEMENT_GUIDE.md
+        status: A
+        size: 13771
+        lines: 424
+        lastModified: 2025-07-06T15:20:59.974Z
+        extension: md
+      - path: docs/COMPLETE_AUTOMATION_ECOSYSTEM.md
+        status: A
+        size: 29075
+        lines: 772
+        lastModified: 2025-07-06T15:20:59.897Z
+        extension: md
+      - path: docs/CORE_DATA_STRUCTURES_AND_OUTPUTS.md
+        status: A
+        size: 15072
+        lines: 612
+        lastModified: 2025-07-06T15:20:59.863Z
+        extension: md
+      - path: docs/DOCUMENTATION_CONSOLIDATION_SUMMARY.md
+        status: A
+        size: 8559
+        lines: 202
+        lastModified: 2025-07-06T15:20:59.900Z
+        extension: md
+      - path: docs/DOMAIN_SETUP.md
+        status: A
+        size: 4711
+        lines: 168
+        lastModified: 2025-07-06T15:20:59.966Z
+        extension: md
+      - path: docs/ERROR_SNAPSHOT_LOG_PATTERNS.md
+        status: A
+        size: 12892
+        lines: 433
+        lastModified: 2025-07-06T15:20:59.874Z
+        extension: md
+      - path: docs/EVENT_LOOP_MONITORING_GUIDE.md
+        status: A
+        size: 16183
+        lines: 666
+        lastModified: 2025-07-06T15:20:59.902Z
+        extension: md
+      - path: docs/FOSSIL_MANAGEMENT_IMPLEMENTATION_SUMMARY.md
+        status: A
+      - path: docs/GITHUB_OBJECT_SUPPORT_IMPLEMENTATION_PLAN.md
+        status: A
+        size: 19868
+        lines: 745
+        lastModified: 2025-07-06T15:20:59.938Z
+        extension: md
+      - path: docs/HANGING_TEST_RESOLUTION_SUMMARY.md
+        status: A
+        size: 7186
+        lines: 270
+        lastModified: 2025-07-06T15:20:59.913Z
+        extension: md
+      - path: docs/IMPLEMENTATION_PATTERNS_GUIDE.md
+        status: A
+        size: 13523
+        lines: 500
+        lastModified: 2025-07-06T15:20:59.948Z
+        extension: md
+      - path: docs/IMPLEMENTATION_PATTERNS_SUMMARY.md
+        status: A
+        size: 6588
+        lines: 234
+        lastModified: 2025-07-06T15:20:59.972Z
+        extension: md
+      - path: docs/LICENSING_STRATEGY.md
+        status: A
+        size: 8427
+        lines: 242
+        lastModified: 2025-07-06T15:20:59.913Z
+        extension: md
+      - path: docs/LLM_FOSSIL_COMPLIANCE_SLA_VALIDATION.md
+        status: A
+        size: 15458
+        lines: 519
+        lastModified: 2025-07-06T15:20:59.940Z
+        extension: md
+      - path: docs/MARKET_READY_IMPLEMENTATION_PLAN.md
+        status: A
+        size: 10192
+        lines: 328
+        lastModified: 2025-07-06T15:20:59.933Z
+        extension: md
+      - path: docs/MEMORY_MONITORING_GUIDE.md
+        status: A
+        size: 7657
+        lines: 337
+        lastModified: 2025-07-06T15:20:59.907Z
+        extension: md
+      - path: docs/ML_READY_VALIDATOR_HUSKY_INTEGRATION.md
+        status: A
+        size: 7489
+        lines: 228
+        lastModified: 2025-07-06T15:20:59.873Z
+        extension: md
+      - path: docs/PRE_COMMIT_VALIDATION_ENHANCED.md
+        status: A
+        size: 8243
+        lines: 334
+        lastModified: 2025-07-06T15:20:59.910Z
+        extension: md
+      - path: docs/SCOPE_CREEP_ANALYSIS.md
+        status: A
+        size: 7428
+        lines: 206
+        lastModified: 2025-07-06T15:20:59.936Z
+        extension: md
+      - path: docs/SIMPLIFIED_VALIDATION_APPROACH.md
+        status: A
+        size: 11154
+        lines: 440
+        lastModified: 2025-07-06T15:20:59.871Z
+        extension: md
+      - path: docs/SPONSOR_BENEFITS.md
+        status: A
+        size: 7495
+        lines: 203
+        lastModified: 2025-07-06T15:20:59.949Z
+        extension: md
+      - path: docs/TESTING_LEARNINGS.md
+        status: A
+        size: 12316
+        lines: 402
+        lastModified: 2025-07-06T15:20:59.947Z
+        extension: md
+      - path: docs/TEST_PERFORMANCE_AUDIT_GUIDE.md
+        status: A
+        size: 6196
+        lines: 255
+        lastModified: 2025-07-06T15:20:59.901Z
+        extension: md
+      - path: docs/UNIFIED_APPROACH_SUMMARY.md
+        status: A
+        size: 7858
+        lines: 224
+        lastModified: 2025-07-06T15:20:59.893Z
+        extension: md
+      - path: docs/VISUAL_DOCUMENTATION_STANDARDS.md
+        status: A
+        size: 16730
+        lines: 721
+        lastModified: 2025-07-06T15:20:59.959Z
+        extension: md
+      - path: docs/VSCODE_EXTENSION_QUICKSTART.md
+        status: A
+        size: 14760
+        lines: 553
+        lastModified: 2025-07-06T15:20:59.872Z
+        extension: md
+      - path: docs/demo-core-data-structures.md
+        status: A
+        size: 8604
+        lines: 340
+        lastModified: 2025-07-06T15:20:59.886Z
+        extension: md
+      - path: docs/ephemeral/address/ephemeral_context_management.json
+        status: A
+        size: 3137
+        lines: 63
+        lastModified: 2025-07-06T16:46:43.345Z
+        extension: json
+      - path: docs/ephemeral/address/ephemeral_context_management.md
+        status: A
+        size: 3651
+        lines: 95
+        lastModified: 2025-07-06T16:47:30.626Z
+        extension: md
+      - path: docs/ephemeral/address/ephemeral_context_management.ts
+        status: A
+        size: 4133
+        lines: 101
+        lastModified: 2025-07-06T16:47:08.070Z
+        extension: ts
+      - path: docs/ephemeral/address/ephemeral_context_management.yml
+        status: A
+        size: 3264
+        lines: 72
+        lastModified: 2025-07-06T16:46:23.524Z
+        extension: yml
+      - path: examples/curate-fossil-demo.ts
+        status: A
+        size: 1362
+        lines: 48
+        lastModified: 2025-07-06T15:20:59.999Z
+        extension: ts
+      - path: examples/event-loop-monitoring-demo.ts
+        status: A
+        size: 9504
+        lines: 334
+        lastModified: 2025-07-06T15:21:00.004Z
+        extension: ts
+      - path: examples/implementation-patterns-demo.ts
+        status: A
+        size: 10460
+        lines: 367
+        lastModified: 2025-07-06T15:21:00.012Z
+        extension: ts
+      - path: examples/memory-monitoring-demo.ts
+        status: A
+        size: 4206
+        lines: 136
+        lastModified: 2025-07-06T15:21:00.011Z
+        extension: ts
+      - path: examples/transversal-fossil-github-sync.ts
+        status: A
+        size: 2649
+        lines: 79
+        lastModified: 2025-07-06T15:21:00.014Z
+        extension: ts
+      - path: final-cleanup-report.json
+        status: A
+      - path: fossils/CURRENT_FOSSIL_STRUCTURE_SOURCE_OF_TRUTH.md
+        status: A
+        size: 12674
+        lines: 209
+        lastModified: 2025-07-06T15:20:59.535Z
+        extension: md
+      - path: fossils/FOSSIL_STRUCTURE_TREE_DIAGRAM.md
+        status: A
+        size: 12515
+        lines: 247
+        lastModified: 2025-07-06T15:20:59.668Z
+        extension: md
+      - path: fossils/README.md
+        status: A
+        size: 6648
+        lines: 197
+        lastModified: 2025-07-06T15:20:59.735Z
+        extension: md
+      - path: fossils/analysis-results.json
+        status: A
+        size: 1748
+        lines: 30
+        lastModified: 2025-07-07T02:48:05.993Z
+        extension: json
+      - path: fossils/audit/llm-snapshot-audit-2025-07-05T07-48-37-635Z.json
+        status: A
+      - path: fossils/audit/llm-snapshot-audit-2025-07-05T07-49-57-777Z.md
+        status: A
+      - path: fossils/backups/roadmap_with_llm_insights_2025-07-04T18-35-18-06-00.yml
+        status: A
+      - path: fossils/canonical_context.yml
+        status: A
+        size: 670
+        lines: 25
+        lastModified: 2025-07-06T15:20:59.764Z
+        extension: yml
+      - path: fossils/chat_context.json
+        status: A
+        size: 23934
+        lines: 451
+        lastModified: 2025-07-07T02:48:17.001Z
+        extension: json
+      - path: fossils/commit_audits.summary.json
+        status: A
+        size: 401
+        lines: 16
+        lastModified: 2025-07-06T15:20:59.688Z
+        extension: json
+      - path: fossils/commit_audits/batch-audit-plan-2025-07-07T00-18-31-348Z.json
+        status: A
+        size: 45739
+        lines: 1259
+        lastModified: 2025-07-07T00:18:31.385Z
+        extension: json
+      - path: fossils/commit_audits/batch-audit-plan-2025-07-07T00-18-31-348Z.yml
+        status: A
+        size: 4903
+        lines: 140
+        lastModified: 2025-07-07T00:18:31.388Z
+        extension: yml
+      - path: fossils/commit_audits/batch-execution-2025-07-07T00-20-33-196Z.json
+        status: A
+        size: 135652
+        lines: 3288
+        lastModified: 2025-07-07T00:20:33.197Z
+        extension: json
+      - path: fossils/commit_audits/batch-execution-2025-07-07T00-20-33-196Z.yml
+        status: A
+        size: 12110
+        lines: 279
+        lastModified: 2025-07-07T00:20:33.199Z
+        extension: yml
+      - path: fossils/commit_audits/batch-summary-2025-07-07T00-00-00-000Z.json
+        status: A
+        size: 261
+        lines: 10
+        lastModified: 2025-07-07T03:30:06.766Z
+        extension: json
+      - path: fossils/commit_audits/commit-audit-341834ea-1751707475836.json
+        status: A
+      - path: fossils/context/canonical-context.yml
+        status: A
+        size: 547
+        lines: 21
+        lastModified: 2025-07-07T02:48:14.325Z
+        extension: yml
+      - path: fossils/context/canonical_context.yml
+        status: A
+        size: 759
+        lines: 30
+        lastModified: 2025-07-06T15:20:59.536Z
+        extension: yml
+      - path: fossils/context/enriched_extensions.implementation.json
+        status: A
+        size: 1097
+        lines: 29
+        lastModified: 2025-07-07T04:16:46.635Z
+        extension: json
+      - path: fossils/context/llm.chat.json
+        status: A
+        size: 834
+        lines: 38
+        lastModified: 2025-07-06T15:46:15.014Z
+        extension: json
+      - path: fossils/context/patterns/project_concepts.yml
+        status: A
+        size: 8385
+        lines: 212
+        lastModified: 2025-07-07T04:31:11.801Z
+        extension: yml
+      - path: fossils/coverage_report.json
+        status: A
+        size: 1140
+        lines: 41
+        lastModified: 2025-07-06T15:20:59.806Z
+        extension: json
+      - path: fossils/curated_roadmap_canonical.json
+        status: A
+      - path: fossils/curated_roadmap_demo.json
+        status: A
+      - path: fossils/curated_roadmap_manual.json
+        status: A
+        size: 10038
+        lines: 221
+        lastModified: 2025-07-06T15:20:59.763Z
+        extension: json
+      - path: fossils/evolving-footprint.yml
+        status: A
+      - path: fossils/footprint-results.json
+        status: A
+        size: 362121
+        lines: 11848
+        lastModified: 2025-07-07T02:48:14.190Z
+        extension: json
+      - path: fossils/footprint.json
+        status: A
+        size: 454042
+        lines: 14479
+        lastModified: 2025-07-06T15:20:59.787Z
+        extension: json
+      - path: fossils/footprint/footprint-results.json
+        status: A
+        size: 86
+        lines: 7
+        lastModified: 2025-07-07T03:29:53.059Z
+        extension: json
+      - path: fossils/footprint/footprint.json
+        status: A
+        size: 86
+        lines: 7
+        lastModified: 2025-07-07T03:29:57.109Z
+        extension: json
+      - path: fossils/git_diff.results.json
+        status: A
+        size: 538
+        lines: 21
+        lastModified: 2025-07-06T15:20:59.534Z
+        extension: json
+      - path: fossils/llm-snapshots.json
+        status: A
+        size: 3611
+        lines: 131
+        lastModified: 2025-07-07T02:47:32.279Z
+        extension: json
+      - path: fossils/llm.snapshots.json
+        status: A
+        size: 3611
+        lines: 131
+        lastModified: 2025-07-06T15:20:59.533Z
+        extension: json
+      - path: fossils/llm_snapshots.json
+        status: A
+        size: 3611
+        lines: 131
+        lastModified: 2025-07-06T15:20:59.765Z
+        extension: json
+      - path: fossils/migration_report.json
+        status: A
+        size: 534
+        lines: 19
+        lastModified: 2025-07-06T15:20:59.689Z
+        extension: json
+      - path: fossils/ml.analysis.json
+        status: A
+        size: 733
+        lines: 29
+        lastModified: 2025-07-06T15:20:59.666Z
+        extension: json
+      - path: fossils/monitoring/metrics.json
+        status: A
+        size: 1931
+        lines: 1
+        lastModified: 2025-07-07T02:47:37.979Z
+        extension: json
+      - path: fossils/monitoring/performance_data.json
+        status: A
+        size: 1104
+        lines: 46
+        lastModified: 2025-07-07T01:07:45.323Z
+        extension: json
+      - path: fossils/monitoring/test_monitoring_data.json
+        status: A
+        size: 992
+        lines: 40
+        lastModified: 2025-07-07T02:08:07.537Z
+        extension: json
+      - path: fossils/performance/logs.json
+        status: A
+        size: 649
+        lines: 1
+        lastModified: 2025-07-07T02:47:37.979Z
+        extension: json
+      - path: fossils/performance/metrics.json
+        status: A
+        size: 247
+        lines: 1
+        lastModified: 2025-07-07T02:47:37.979Z
+        extension: json
+      - path: fossils/performance/performance_data.json
+        status: A
+        size: 248
+        lines: 1
+        lastModified: 2025-07-06T15:20:59.803Z
+        extension: json
+      - path: fossils/performance/performance_log.json
+        status: A
+        size: 649
+        lines: 1
+        lastModified: 2025-07-07T02:47:37.979Z
+        extension: json
+      - path: fossils/project_status.yml
+        status: A
+        size: 132803
+        lines: 3343
+        lastModified: 2025-07-07T02:48:40.756Z
+        extension: yml
+      - path: fossils/roadmap.curated.json
+        status: A
+        size: 10031
+        lines: 221
+        lastModified: 2025-07-07T02:47:05.612Z
+        extension: json
+      - path: fossils/roadmap.insights.api.json
+        status: A
+        size: 150258
+        lines: 3451
+        lastModified: 2025-07-06T15:20:59.635Z
+        extension: json
+      - path: fossils/roadmap.insights.web.json
+        status: A
+        size: 250405
+        lines: 6328
+        lastModified: 2025-07-06T15:20:59.749Z
+        extension: json
+      - path: fossils/roadmap.insights_summary.json
+        status: A
+        size: 252168
+        lines: 6335
+        lastModified: 2025-07-06T15:20:59.762Z
+        extension: json
+      - path: fossils/roadmap.llm.insights.json
+        status: A
+        size: 283957
+        lines: 6970
+        lastModified: 2025-07-06T15:20:59.802Z
+        extension: json
+      - path: fossils/roadmap.md
+        status: A
+        size: 6911
+        lines: 147
+        lastModified: 2025-07-07T03:49:27.045Z
+        extension: md
+      - path: fossils/roadmap.yml
+        status: A
+        size: 8595
+        lines: 159
+        lastModified: 2025-07-07T03:09:58.885Z
+        extension: yml
+      - path: fossils/roadmap/roadmap.md
+        status: A
+        size: 7269
+        lines: 142
+        lastModified: 2025-07-06T15:20:59.657Z
+        extension: md
+      - path: fossils/roadmap/roadmap.yml.backup
+        status: A
+        size: 159451
+        lines: 3290
+        lastModified: 2025-07-06T15:20:59.665Z
+        extension: backup
+      - path: fossils/roadmap/roadmap_insights.rss
+        status: A
+        size: 1783
+        lines: 31
+        lastModified: 2025-07-06T15:20:59.656Z
+        extension: rss
+      - path: fossils/roadmap/roadmap_insights_report.md
+        status: A
+        size: 185521
+        lines: 3477
+        lastModified: 2025-07-06T15:20:59.651Z
+        extension: md
+      - path: fossils/roadmap/roadmap_progress.md
+        status: A
+        size: 67018
+        lines: 752
+        lastModified: 2025-07-06T15:20:59.656Z
+        extension: md
+      - path: fossils/roadmap_insights.json
+        status: A
+        size: 380118
+        lines: 6682
+        lastModified: 2025-07-06T15:20:59.733Z
+        extension: json
+      - path: fossils/roadmap_insights/FRESH_INSIGHTS_GENERATION_SUMMARY.md
+        status: A
+      - path: fossils/roadmap_insights_validation.json
+        status: A
+      - path: fossils/roadmap_progress_report.md
+        status: A
+      - path: fossils/setup_status.yml
+        status: A
+        size: 2047
+        lines: 69
+        lastModified: 2025-07-07T02:48:22.835Z
+        extension: yml
+      - path: fossils/structure_definition.yml
+        status: A
+        size: 16584
+        lines: 396
+        lastModified: 2025-07-06T15:20:59.667Z
+        extension: yml
+      - path: fossils/tests.integration_analysis.json
+        status: A
+        size: 1674
+        lines: 66
+        lastModified: 2025-07-06T15:20:59.805Z
+        extension: json
+      - path: fossils/tests/validation/test-output-2025-07-07T00-00-00.txt
+        status: A
+        size: 118
+        lines: 5
+        lastModified: 2025-07-07T03:29:43.808Z
+        extension: txt
+      - path: fossils/tests/validation/test.pre_commit.validation.fail.json
+        status: A
+        size: 109
+        lines: 6
+        lastModified: 2025-07-07T03:29:40.127Z
+        extension: json
+      - path: fossils/traceability/current_traceability.json
+        status: A
+        size: 3404
+        lines: 84
+        lastModified: 2025-07-06T15:20:59.734Z
+        extension: json
+      - path: fossils/validation.json
+        status: A
+        size: 946
+        lines: 46
+        lastModified: 2025-07-06T15:20:59.766Z
+        extension: json
+      - path: issue-tracking-report.md
+        status: A
+        size: 555
+        lines: 25
+        lastModified: 2025-07-07T02:48:05.592Z
+        extension: md
+      - path: llm-plan-shell-test.json
+        status: A
+      - path: llm-snapshot-1751705076490.yml
+        status: A
+      - path: llm-snapshot-1751724278771.yml
+        status: A
+      - path: llm-snapshot-1751724278772.yml
+        status: A
+      - path: llm-snapshot-1751724278776.yml
+        status: A
+      - path: llm-snapshot-1751724278777.yml
+        status: A
+      - path: llm-snapshot-1751724278779.yml
+        status: A
+      - path: llm-snapshot-1751724278780.yml
+        status: A
+      - path: llm-snapshot-1751724278781.yml
+        status: A
+      - path: llm-snapshot-1751724278782.yml
+        status: A
+      - path: llm-snapshot-1751724278783.yml
+        status: A
+      - path: llm-snapshot-1751724278784.yml
+        status: A
+      - path: llm-snapshot-1751724278785.yml
+        status: A
+      - path: llm-snapshot-1751724278786.yml
+        status: A
+      - path: llm-snapshot-1751724278787.yml
+        status: A
+      - path: llm-snapshot-1751724278790.yml
+        status: A
+      - path: llm-snapshot-1751724278808.yml
+        status: A
+      - path: llm-snapshot-1751724278810.yml
+        status: A
+      - path: llm-snapshot-1751724278811.yml
+        status: A
+      - path: llm-snapshot-1751724278812.yml
+        status: A
+      - path: llm-snapshot-1751724278813.yml
+        status: A
+      - path: llm-snapshot-1751724278814.yml
+        status: A
+      - path: llm-snapshot-1751724278815.yml
+        status: A
+      - path: llm-snapshot-1751724278816.yml
+        status: A
+      - path: llm-snapshot-1751724278817.yml
+        status: A
+      - path: llm-snapshot-1751724278823.yml
+        status: A
+      - path: llm-snapshot-1751724278824.yml
+        status: A
+      - path: llm-snapshot-1751724278825.yml
+        status: A
+      - path: llm-snapshot-1751724278826.yml
+        status: A
+      - path: llm-snapshot-1751724279150.yml
+        status: A
+      - path: llm-snapshot-1751724279151.yml
+        status: A
+      - path: llm-snapshot-1751724279155.yml
+        status: A
+      - path: llm-snapshot-1751724279156.yml
+        status: A
+      - path: llm-snapshot-1751724284559.yml
+        status: A
+      - path: llm-snapshot-1751724284560.yml
+        status: A
+      - path: llm-snapshot-1751724284561.yml
+        status: A
+      - path: llm-snapshot-1751724284563.yml
+        status: A
+      - path: llm-snapshot-1751724284564.yml
+        status: A
+      - path: llm-snapshot-1751724284565.yml
+        status: A
+      - path: llm-snapshot-1751724284566.yml
+        status: A
+      - path: llm-snapshot-1751724284567.yml
+        status: A
+      - path: llm-snapshot-1751724284568.yml
+        status: A
+      - path: llm-snapshot-1751724284569.yml
+        status: A
+      - path: llm-snapshot-1751724284570.yml
+        status: A
+      - path: llm-snapshot-1751724284571.yml
+        status: A
+      - path: llm-snapshot-1751724284572.yml
+        status: A
+      - path: llm-snapshot-1751724284573.yml
+        status: A
+      - path: llm-snapshot-1751724284574.yml
+        status: A
+      - path: package.json
+        status: A
+        size: 16743
+        lines: 267
+        lastModified: 2025-07-06T15:36:46.433Z
+        extension: json
+      - path: plan-gather-context-integration.json
+        status: A
+      - path: prioritized-llm-plan-shell-test.json
+        status: A
+      - path: project-status-report.md
+        status: A
+        size: 832
+        lines: 40
+        lastModified: 2025-07-06T15:20:59.439Z
+        extension: md
+      - path: project_status-report.md
+        status: A
+        size: 832
+        lines: 40
+        lastModified: 2025-07-07T02:48:05.838Z
+        extension: md
+      - path: scripts/analyze-fossil-creation.ts
+        status: A
+        size: 11516
+        lines: 366
+        lastModified: 2025-07-06T15:21:00.107Z
+        extension: ts
+      - path: scripts/audit-commit-messages-batch-plan.ts
+        status: A
+        size: 21664
+        lines: 672
+        lastModified: 2025-07-07T00:34:46.634Z
+        extension: ts
+      - path: scripts/audit-test-performance.ts
+        status: A
+        size: 13829
+        lines: 475
+        lastModified: 2025-07-06T15:21:00.056Z
+        extension: ts
+      - path: scripts/automated-monitoring-analysis-refactored.ts
+        status: A
+        size: 18148
+        lines: 533
+        lastModified: 2025-07-06T15:21:00.153Z
+        extension: ts
+      - path: scripts/automated-monitoring-analysis.ts
+        status: A
+        size: 30633
+        lines: 889
+        lastModified: 2025-07-06T15:28:18.241Z
+        extension: ts
+      - path: scripts/automated-monitoring-orchestrator.ts
+        status: A
+        size: 22462
+        lines: 650
+        lastModified: 2025-07-06T15:21:00.042Z
+        extension: ts
+      - path: scripts/automation/timeout-wrapper.sh
+        status: A
+        size: 5450
+        lines: 212
+        lastModified: 2025-07-06T15:21:00.129Z
+        extension: sh
+      - path: scripts/canonical-fossil-cleanup.ts
+        status: A
+        size: 8478
+        lines: 262
+        lastModified: 2025-07-06T15:21:00.072Z
+        extension: ts
+      - path: scripts/canonical-fossil-migration.ts
+        status: A
+        size: 11438
+        lines: 365
+        lastModified: 2025-07-06T15:21:00.102Z
+        extension: ts
+      - path: scripts/clean-roadmap-llm-insights.ts
+        status: A
+        size: 3691
+        lines: 123
+        lastModified: 2025-07-06T15:21:00.122Z
+        extension: ts
+      - path: scripts/cleanup-insights-analyzer.ts
+        status: A
+        size: 9264
+        lines: 271
+        lastModified: 2025-07-06T15:21:00.065Z
+        extension: ts
+      - path: scripts/cleanup-misplaced-outputs.ts
+        status: A
+        size: 8273
+        lines: 266
+        lastModified: 2025-07-06T15:21:00.141Z
+        extension: ts
+      - path: scripts/cleanup-test-fossils.ts
+        status: A
+        size: 12442
+        lines: 438
+        lastModified: 2025-07-06T15:21:00.083Z
+        extension: ts
+      - path: scripts/cohesion-improvement.ts
+        status: A
+        size: 9740
+        lines: 299
+        lastModified: 2025-07-06T15:21:00.140Z
+        extension: ts
+      - path: scripts/commit-enhanced-system.ts
+        status: A
+        size: 4363
+        lines: 133
+        lastModified: 2025-07-07T00:21:59.481Z
+        extension: ts
+      - path: scripts/consolidate-small-utilities.ts
+        status: A
+        size: 6406
+        lines: 203
+        lastModified: 2025-07-06T15:21:00.080Z
+        extension: ts
+      - path: scripts/convert-fossils-to-snake-case.ts
+        status: A
+        size: 9112
+        lines: 240
+        lastModified: 2025-07-06T15:21:00.104Z
+        extension: ts
+      - path: scripts/demo-core-data-structures.ts
+        status: A
+        size: 11441
+        lines: 422
+        lastModified: 2025-07-06T15:21:00.087Z
+        extension: ts
+      - path: scripts/detect-hanging-tests.ts
+        status: A
+        size: 6922
+        lines: 251
+        lastModified: 2025-07-06T15:21:00.154Z
+        extension: ts
+      - path: scripts/enhanced-pre-commit-validator.ts
+        status: A
+        size: 33015
+        lines: 1005
+        lastModified: 2025-07-06T15:21:00.077Z
+        extension: ts
+      - path: scripts/execute-commit-message-batch-plan.ts
+        status: A
+        size: 22742
+        lines: 681
+        lastModified: 2025-07-07T00:35:32.167Z
+        extension: ts
+      - path: scripts/fossil-audit.ts
+        status: A
+        size: 22213
+        lines: 727
+        lastModified: 2025-07-06T15:21:00.138Z
+        extension: ts
+      - path: scripts/generate-file-footprint.ts
+        status: A
+        size: 14906
+        lines: 508
+        lastModified: 2025-07-06T15:21:00.148Z
+        extension: ts
+      - path: scripts/generate-fresh-llm-insights-simple.ts
+        status: A
+        size: 10914
+        lines: 331
+        lastModified: 2025-07-06T15:21:00.057Z
+        extension: ts
+      - path: scripts/generate-fresh-llm-insights.ts
+        status: A
+        size: 10856
+        lines: 325
+        lastModified: 2025-07-06T15:21:00.111Z
+        extension: ts
+      - path: scripts/implement-enriched-extensions.ts
+        status: A
+        size: 5600
+        lines: 188
+        lastModified: 2025-07-07T04:16:43.722Z
+        extension: ts
+      - path: scripts/learning-analysis-engine.ts
+        status: A
+        size: 24052
+        lines: 726
+        lastModified: 2025-07-06T15:21:00.050Z
+        extension: ts
+      - path: scripts/llm-audit.ts
+        status: A
+        size: 11517
+        lines: 350
+        lastModified: 2025-07-06T15:21:00.078Z
+        extension: ts
+      - path: scripts/ml-ready-fossil-consolidator.ts
+        status: A
+        size: 13819
+        lines: 441
+        lastModified: 2025-07-06T15:21:00.105Z
+        extension: ts
+      - path: scripts/ml-ready-pre-commit-validator.ts
+        status: A
+        size: 23164
+        lines: 713
+        lastModified: 2025-07-07T04:43:00.996Z
+        extension: ts
+      - path: scripts/monitoring/bun-test-safe.sh
+        status: A
+        size: 5703
+        lines: 212
+        lastModified: 2025-07-06T15:21:00.145Z
+        extension: sh
+      - path: scripts/monitoring/memory-monitor.sh
+        status: A
+        size: 11128
+        lines: 422
+        lastModified: 2025-07-06T15:21:00.144Z
+        extension: sh
+      - path: scripts/monitoring/monitor-progress.sh
+        status: A
+        size: 4327
+        lines: 171
+        lastModified: 2025-07-06T15:21:00.143Z
+        extension: sh
+      - path: scripts/monitoring/notify.sh
+        status: A
+        size: 562
+        lines: 25
+        lastModified: 2025-07-06T15:21:00.146Z
+        extension: sh
+      - path: scripts/performance-monitor.sh
+        status: A
+        size: 12544
+        lines: 378
+        lastModified: 2025-07-06T15:21:00.121Z
+        extension: sh
+      - path: scripts/precommit-unified.ts
+        status: A
+        size: 1630
+        lines: 51
+        lastModified: 2025-07-06T15:21:00.142Z
+        extension: ts
+      - path: scripts/precommit-validate-simple.ts
+        status: A
+        size: 1725
+        lines: 64
+        lastModified: 2025-07-06T15:21:00.141Z
+        extension: ts
+      - path: scripts/precommit-validate.ts
+        status: A
+        size: 1683
+        lines: 64
+        lastModified: 2025-07-06T15:21:00.114Z
+        extension: ts
+      - path: scripts/publish-roadmap-insights.ts
+        status: A
+        size: 8914
+        lines: 233
+        lastModified: 2025-07-06T15:21:00.113Z
+        extension: ts
+      - path: scripts/quick-validate-llm.ts
+        status: A
+      - path: scripts/setup.sh
+        status: A
+        size: 14260
+        lines: 378
+        lastModified: 2025-07-06T15:21:00.044Z
+        extension: sh
+      - path: scripts/simplified-ml-process-integration.ts
+        status: A
+        size: 7175
+        lines: 231
+        lastModified: 2025-07-07T04:17:55.410Z
+        extension: ts
+      - path: scripts/targeted-cleanup.ts
+        status: A
+        size: 10237
+        lines: 311
+        lastModified: 2025-07-06T15:21:00.052Z
+        extension: ts
+      - path: scripts/test-precommit-fallback.ts
+        status: A
+        size: 1033
+        lines: 36
+        lastModified: 2025-07-06T15:21:00.079Z
+        extension: ts
+      - path: scripts/test-with-monitoring.sh
+        status: A
+        size: 13414
+        lines: 407
+        lastModified: 2025-07-06T15:21:00.135Z
+        extension: sh
+      - path: scripts/unified-fossil-consolidator.ts
+        status: A
+        size: 15053
+        lines: 474
+        lastModified: 2025-07-06T15:21:00.082Z
+        extension: ts
+      - path: scripts/unified-pre-commit-validator.ts
+        status: A
+        size: 12481
+        lines: 381
+        lastModified: 2025-07-06T15:21:00.155Z
+        extension: ts
+      - path: scripts/update-project-status.ts
+        status: A
+        size: 22013
+        lines: 690
+        lastModified: 2025-07-06T15:21:00.109Z
+        extension: ts
+      - path: scripts/validate-footprint.ts
+        status: A
+        size: 15912
+        lines: 584
+        lastModified: 2025-07-06T15:21:00.089Z
+        extension: ts
+      - path: scripts/validate-fresh-insights.ts
+        status: A
+      - path: scripts/validate-llm-snapshotting.ts
+        status: A
+      - path: scripts/validate-snapshot-schemas.ts
+        status: A
+      - path: scripts/validate-types-schemas-simple.ts
+        status: A
+      - path: src/cli/canonical-fossil-manager.ts
+        status: A
+        size: 23806
+        lines: 745
+        lastModified: 2025-07-06T15:21:02.878Z
+        extension: ts
+      - path: src/cli/context-fossil.ts
+        status: A
+        size: 51096
+        lines: 1518
+        lastModified: 2025-07-06T15:21:02.866Z
+        extension: ts
+      - path: src/cli/curate-fossil.ts
+        status: A
+        size: 815
+        lines: 29
+        lastModified: 2025-07-06T15:21:02.853Z
+        extension: ts
+      - path: src/cli/error-snapshot-log.ts
+        status: A
+        size: 22058
+        lines: 748
+        lastModified: 2025-07-06T15:21:02.900Z
+        extension: ts
+      - path: src/cli/event-loop-monitor.ts
+        status: A
+        size: 11317
+        lines: 370
+        lastModified: 2025-07-06T15:21:02.898Z
+        extension: ts
+      - path: src/cli/fossil-audit.ts
+        status: A
+        size: 8347
+        lines: 244
+        lastModified: 2025-07-06T15:21:02.890Z
+        extension: ts
+      - path: src/cli/fossil-summary.ts
+        status: A
+        size: 4907
+        lines: 135
+        lastModified: 2025-07-06T15:21:02.858Z
+        extension: ts
+      - path: src/cli/fossilize-performance.ts
+        status: A
+        size: 3998
+        lines: 103
+        lastModified: 2025-07-06T15:21:02.891Z
+        extension: ts
+      - path: src/cli/fossilize-validation.ts
+        status: A
+        size: 2880
+        lines: 99
+        lastModified: 2025-07-06T15:21:02.854Z
+        extension: ts
+      - path: src/cli/gather-context.ts
+        status: A
+        size: 11355
+        lines: 408
+        lastModified: 2025-07-06T15:38:29.331Z
+        extension: ts
+      - path: src/cli/git-diff-fossil-analyzer.ts
+        status: A
+        size: 25898
+        lines: 780
+        lastModified: 2025-07-06T15:21:02.882Z
+        extension: ts
+      - path: src/cli/llm-chat-context.ts
+        status: A
+        size: 1751
+        lines: 55
+        lastModified: 2025-07-06T15:51:11.808Z
+        extension: ts
+      - path: src/cli/llm-plan.ts
+        status: A
+        size: 27658
+        lines: 834
+        lastModified: 2025-07-06T15:21:02.869Z
+        extension: ts
+      - path: src/cli/memory-monitor.ts
+        status: A
+        size: 13515
+        lines: 469
+        lastModified: 2025-07-06T15:21:02.849Z
+        extension: ts
+      - path: src/cli/repo-orchestrator.ts
+        status: A
+        size: 53989
+        lines: 1528
+        lastModified: 2025-07-06T15:21:02.896Z
+        extension: ts
+      - path: src/services/llm.ts
+        status: A
+        size: 34759
+        lines: 1031
+        lastModified: 2025-07-06T15:21:02.910Z
+        extension: ts
+      - path: src/types/cli.ts
+        status: A
+        size: 11325
+        lines: 305
+        lastModified: 2025-07-06T23:45:19.134Z
+        extension: ts
+      - path: src/types/error-snapshot-log.ts
+        status: A
+        size: 13484
+        lines: 430
+        lastModified: 2025-07-06T15:21:02.791Z
+        extension: ts
+      - path: src/types/event-loop-monitoring.ts
+        status: A
+        size: 2432
+        lines: 68
+        lastModified: 2025-07-06T15:21:02.789Z
+        extension: ts
+      - path: src/types/fossil-audit.ts
+        status: A
+        size: 2848
+        lines: 85
+        lastModified: 2025-07-06T15:21:02.789Z
+        extension: ts
+      - path: src/types/index.ts
+        status: A
+        size: 6682
+        lines: 310
+        lastModified: 2025-07-06T15:21:02.788Z
+        extension: ts
+      - path: src/types/memory-monitoring.ts
+        status: A
+        size: 9166
+        lines: 330
+        lastModified: 2025-07-06T15:21:02.770Z
+        extension: ts
+      - path: src/types/performance.ts
+        status: A
+        size: 4790
+        lines: 153
+        lastModified: 2025-07-06T15:21:02.771Z
+        extension: ts
+      - path: src/types/roadmapInsights.ts
+        status: A
+        size: 4730
+        lines: 192
+        lastModified: 2025-07-06T15:21:02.769Z
+        extension: ts
+      - path: src/types/schemas.ts
+        status: A
+        size: 80568
+        lines: 2334
+        lastModified: 2025-07-06T23:45:11.235Z
+        extension: ts
+      - path: src/utils/canonical-test-fossil-manager.ts
+        status: A
+        size: 12718
+        lines: 387
+        lastModified: 2025-07-06T15:28:32.224Z
+        extension: ts
+      - path: src/utils/cli.ts
+        status: A
+        size: 12375
+        lines: 442
+        lastModified: 2025-07-06T15:21:02.821Z
+        extension: ts
+      - path: src/utils/consolidated-utilities.ts
+        status: A
+        size: 954
+        lines: 32
+        lastModified: 2025-07-06T15:21:02.837Z
+        extension: ts
+      - path: src/utils/curateFossil.ts
+        status: A
+        size: 1712
+        lines: 40
+        lastModified: 2025-07-06T15:21:02.842Z
+        extension: ts
+      - path: src/utils/errorSnapshotLogUtils.ts
+        status: A
+        size: 20657
+        lines: 669
+        lastModified: 2025-07-06T15:21:02.809Z
+        extension: ts
+      - path: src/utils/eventLoopMonitor.ts
+        status: A
+        size: 17672
+        lines: 593
+        lastModified: 2025-07-06T15:21:02.794Z
+        extension: ts
+      - path: src/utils/fossilize.ts
+        status: A
+        size: 3939
+        lines: 127
+        lastModified: 2025-07-06T15:21:02.827Z
+        extension: ts
+      - path: src/utils/llmFossilManager.ts
+        status: A
+        size: 19428
+        lines: 599
+        lastModified: 2025-07-06T15:21:02.801Z
+        extension: ts
+      - path: src/utils/memoryMonitor.ts
+        status: A
+        size: 11750
+        lines: 414
+        lastModified: 2025-07-06T15:21:02.796Z
+        extension: ts
+      - path: src/utils/memoryMonitorUtils.ts
+        status: A
+        size: 13471
+        lines: 487
+        lastModified: 2025-07-06T15:21:02.813Z
+        extension: ts
+      - path: src/utils/roadmapInsightsAccessor.ts
+        status: A
+        size: 8117
+        lines: 243
+        lastModified: 2025-07-06T15:21:02.798Z
+        extension: ts
+      - path: src/utils/roadmapInsightsExtractor.ts
+        status: A
+        size: 12097
+        lines: 340
+        lastModified: 2025-07-06T15:21:02.804Z
+        extension: ts
+      - path: src/utils/simpleTestMonitor.ts
+        status: A
+        size: 7571
+        lines: 297
+        lastModified: 2025-07-06T15:21:02.799Z
+        extension: ts
+      - path: src/utils/testMonitor.ts
+        status: A
+        size: 17830
+        lines: 583
+        lastModified: 2025-07-06T15:28:41.747Z
+        extension: ts
+      - path: src/utils/timeout-time-integration.ts
+        status: A
+        size: 8502
+        lines: 334
+        lastModified: 2025-07-06T15:21:02.795Z
+        extension: ts
+      - path: src/utils/timeout.ts
+        status: A
+        size: 14372
+        lines: 551
+        lastModified: 2025-07-06T15:21:02.828Z
+        extension: ts
+      - path: technical-debt-report.md
+        status: A
+        size: 568
+        lines: 27
+        lastModified: 2025-07-07T02:48:05.369Z
+        extension: md
+      - path: temp-checklist-demo.md.backup
+        status: A
+      - path: test-fossilize-pattern.ts
+        status: A
+        size: 1209
+        lines: 38
+        lastModified: 2025-07-06T15:21:02.918Z
+        extension: ts
+      - path: test-simple.ts
+        status: A
+        size: 1019
+        lines: 31
+        lastModified: 2025-07-06T15:20:59.983Z
+        extension: ts
+      - path: test-template.json
+        status: A
+      - path: test.output.validation.json
+        status: A
+        size: 97680
+        lines: 20
+        lastModified: 2025-07-07T04:16:46.610Z
+        extension: json
+      - path: tests/e2e/examples.e2e.test.ts
+        status: A
+        size: 1244
+        lines: 34
+        lastModified: 2025-07-06T15:20:59.858Z
+        extension: ts
+      - path: tests/e2e/fossilization-workflow.e2e.test.ts
+        status: A
+        size: 5314
+        lines: 120
+        lastModified: 2025-07-06T15:20:59.859Z
+        extension: ts
+      - path: tests/e2e/scripts.e2e.test.ts
+        status: A
+        size: 2902
+        lines: 72
+        lastModified: 2025-07-06T15:20:59.858Z
+        extension: ts
+      - path: tests/e2e/utils.ts
+        status: A
+        size: 1748
+        lines: 62
+        lastModified: 2025-07-06T15:20:59.858Z
+        extension: ts
+      - path: tests/integration-base-tester.ts
+        status: A
+        size: 1281
+        lines: 51
+        lastModified: 2025-07-06T15:20:59.856Z
+        extension: ts
+      - path: tests/integration/automated-monitoring-analysis.integration.test.ts
+        status: A
+        size: 14681
+        lines: 521
+        lastModified: 2025-07-06T15:20:59.854Z
+        extension: ts
+      - path: tests/integration/github-issues.integration.test.ts
+        status: A
+        size: 429
+        lines: 9
+        lastModified: 2025-07-06T15:20:59.852Z
+        extension: ts
+      - path: tests/integration/monitor-progress.integration.test.ts
+        status: A
+        size: 916
+        lines: 28
+        lastModified: 2025-07-06T15:20:59.855Z
+        extension: ts
+      - path: tests/integration/repo-orchestrator-fossilization.integration.test.ts
+        status: A
+        size: 5010
+        lines: 129
+        lastModified: 2025-07-06T15:20:59.856Z
+        extension: ts
+      - path: tests/integration/transversal-fossil-github-sync.integration.test.ts
+        status: A
+        size: 2046
+        lines: 51
+        lastModified: 2025-07-06T15:20:59.853Z
+        extension: ts
+      - path: tests/test-mocks.ts
+        status: A
+        size: 1039
+        lines: 31
+        lastModified: 2025-07-06T15:20:59.851Z
+        extension: ts
+      - path: tests/unit/cli/llm-plan.test.ts
+        status: A
+        size: 3842
+        lines: 91
+        lastModified: 2025-07-06T15:20:59.828Z
+        extension: ts
+      - path: tests/unit/scripts/automated-monitoring-analysis.test.ts
+        status: A
+        size: 15736
+        lines: 481
+        lastModified: 2025-07-07T02:15:36.969Z
+        extension: ts
+      - path: tests/unit/scripts/automated-monitoring-orchestrator.test.ts
+        status: A
+        size: 16193
+        lines: 482
+        lastModified: 2025-07-06T15:20:59.836Z
+        extension: ts
+      - path: tests/unit/scripts/automation/batch-commit-orchestrator.test.ts
+        status: A
+        size: 313
+        lines: 8
+        lastModified: 2025-07-06T15:20:59.842Z
+        extension: ts
+      - path: tests/unit/scripts/automation/timeout-wrapper.test.ts
+        status: A
+        size: 283
+        lines: 8
+        lastModified: 2025-07-06T15:20:59.845Z
+        extension: ts
+      - path: tests/unit/scripts/blog-workflow.test.ts
+        status: A
+        size: 263
+        lines: 8
+        lastModified: 2025-07-06T15:20:59.839Z
+        extension: ts
+      - path: tests/unit/scripts/commit-with-footprint.test.ts
+        status: A
+        size: 287
+        lines: 8
+        lastModified: 2025-07-06T15:20:59.839Z
+        extension: ts
+      - path: tests/unit/scripts/learning-analysis-engine.test.ts
+        status: A
+        size: 21715
+        lines: 586
+        lastModified: 2025-07-06T15:20:59.833Z
+        extension: ts
+      - path: tests/unit/scripts/manage-blog-branches.test.ts
+        status: A
+        size: 284
+        lines: 8
+        lastModified: 2025-07-06T15:20:59.839Z
+        extension: ts
+      - path: tests/unit/scripts/monitoring/bun-test-safe.test.ts
+        status: A
+        size: 277
+        lines: 8
+        lastModified: 2025-07-06T15:20:59.846Z
+        extension: ts
+      - path: tests/unit/scripts/monitoring/memory-monitor.test.ts
+        status: A
+        size: 280
+        lines: 8
+        lastModified: 2025-07-06T15:20:59.848Z
+        extension: ts
+      - path: tests/unit/scripts/monitoring/monitor-progress.test.ts
+        status: A
+        size: 286
+        lines: 8
+        lastModified: 2025-07-06T15:20:59.847Z
+        extension: ts
+      - path: tests/unit/scripts/monitoring/notify.test.ts
+        status: A
+        size: 256
+        lines: 8
+        lastModified: 2025-07-06T15:20:59.846Z
+        extension: ts
+      - path: tests/unit/scripts/setup.test.ts
+        status: A
+        size: 1559
+        lines: 45
+        lastModified: 2025-07-06T15:20:59.849Z
+        extension: ts
+      - path: tests/unit/scripts/test-with-monitoring.test.ts
+        status: A
+        size: 284
+        lines: 8
+        lastModified: 2025-07-06T15:20:59.829Z
+        extension: ts
+      - path: tests/unit/services/llm.test.ts
+        status: A
+        size: 15945
+        lines: 462
+        lastModified: 2025-07-06T15:20:59.850Z
+        extension: ts
+      - path: tests/unit/utils/checklistUpdater.test.ts
+        status: A
+        size: 9599
+        lines: 332
+        lastModified: 2025-07-06T15:20:59.826Z
+        extension: ts
+      - path: tests/unit/utils/errorSnapshotLogUtils.test.ts
+        status: A
+        size: 31284
+        lines: 923
+        lastModified: 2025-07-06T15:20:59.824Z
+        extension: ts
+      - path: tests/unit/utils/simpleTestMonitor.test.ts
+        status: A
+        size: 8925
+        lines: 325
+        lastModified: 2025-07-06T15:20:59.825Z
+        extension: ts
+      - path: tests/unit/utils/testMonitor-simplified.test.ts
+        status: A
+        size: 8237
+        lines: 275
+        lastModified: 2025-07-06T15:20:59.819Z
+        extension: ts
+      - path: tests/unit/utils/timeout-time-integration.test.ts
+        status: A
+        size: 6258
+        lines: 187
+        lastModified: 2025-07-06T15:20:59.821Z
+        extension: ts
+      - path: tests/unit/utils/timeout.test.ts
+        status: A
+        size: 3650
+        lines: 131
+        lastModified: 2025-07-06T15:20:59.821Z
+        extension: ts
+      - path: type-schema-validation-report.md
+        status: A
+        size: 670
+        lines: 30
+        lastModified: 2025-07-07T00:35:37.513Z
+        extension: md
+      - path: validation.output.results.json
+        status: A
+        size: 1606
+        lines: 20
+        lastModified: 2025-07-07T04:16:46.618Z
+        extension: json
+      - path: validation.unified.results.json
+        status: A
+        size: 1710
+        lines: 24
+        lastModified: 2025-07-07T04:16:46.623Z
+        extension: json
+    unstaged: []
+    untracked:
+      - path: scripts/canonical-commit.sh
+        status: ??
+        size: 1679
+        lines: 52
+        lastModified: 2025-07-07T05:23:14.012Z
+        extension: sh
+  stats:
+    totalFiles: 341
+    stagedCount: 340
+    unstagedCount: 0
+    untrackedCount: 1
+    totalLinesAdded: 86432
+    totalLinesDeleted: 18102
+  gitStatus: |-
+    A  .github/FUNDING.yml
+    M  .github/workflows/monitor-and-track.yml
+    M  .github/workflows/test-and-coverage.yml
+    M  .gitignore
+    M  .husky/pre-commit
+    D  .llm-usage-log.json
+    A  BATCH_PLAN_EXECUTION_STATUS.md
+    A  BATCH_PLAN_EXECUTION_SUMMARY.md
+    A  CANONICAL_FOSSIL_GAP_CLOSURE_SUMMARY.md
+    A  CANONICAL_FOSSIL_MANAGEMENT_SUMMARY.md
+    A  COMMIT_MESSAGE_BATCH_PLAN_SUMMARY.md
+    A  CORE_DATA_STRUCTURES_IMPLEMENTATION_SUMMARY.md
+    A  FOSSIL_AUDIT_IMPLEMENTATION_SUMMARY.md
+    A  FOSSIL_BLOAT_REDUCTION_SUMMARY.md
+    A  FOSSIL_BLOAT_SOLUTION_IMPLEMENTATION.md
+    A  FOSSIL_CLEANUP_AND_CURRENT_STATE_SUMMARY.md
+    A  FOSSIL_CREATION_ANALYSIS.md
+    A  FOSSIL_GROWTH_MANAGEMENT_CONSOLIDATION_SUMMARY.md
+    A  FOSSIL_MIGRATION_PROGRESS.md
+    A  GIT_TIMELINE_AND_ENHANCED_COMMIT_INTEGRATION_ANALYSIS.md
+    A  GIT_TIMELINE_IMPROVEMENT_PLAN.md
+    A  LICENSE
+    A  MARKET_READY_TRANSFORMATION_SUMMARY.md
+    A  ML_READY_APPROACH_SUCCESS_SUMMARY.md
+    A  PRE_COMMIT_ANALYSIS_REPORT.md
+    A  PRE_COMMIT_VALIDATION_SUMMARY.md
+    M  README.md
+    A  TEST_VALIDATION_SUMMARY.md
+    A  TIMESTAMPED_FOSSIL_MANAGEMENT_STRATEGY.md
+    A  TIMESTAMPED_FOSSIL_MANAGEMENT_SUCCESS_SUMMARY.md
+    A  TRANSVERSAL_REFACTOR_PLAN.md
+    A  TRANSVERSAL_REFACTOR_SUCCESS_SUMMARY.md
+    A  TYPESCRIPT_ERRORS_FIXED_SUMMARY.md
+    A  UNIFIED_CANONICAL_FOSSIL_STRUCTURE_IMPLEMENTATION.md
+    A  UNIFIED_FOSSIL_MANAGEMENT_APPROACH.md
+    A  VALIDATION_AND_SCOPE_CREEP_SUMMARY.md
+    A  actionable-insights-report.md
+    M  bun.lock
+    D  diff-analysis.json
+    M  docs/ADVANCED_FOSSIL_QUERY_PATTERNS_GUIDE.md
+    M  docs/API_REFERENCE.md
+    A  docs/AUTOMATED_MONITORING_ANALYSIS_GUIDE.md
+    A  docs/CANONICAL_FOSSIL_MANAGEMENT_GUIDE.md
+    A  docs/CANONICAL_FOSSIL_WORKFLOW_DIAGRAM.md
+    M  docs/CLI_COMMAND_INSIGHTS.md
+    D  docs/COHESION_ANALYSIS.md
+    A  docs/COHESION_ANALYSIS_AND_IMPROVEMENT_GUIDE.md
+    M  docs/COMPLETE_AUTOMATION_ECOSYSTEM.md
+    A  docs/CORE_DATA_STRUCTURES_AND_OUTPUTS.md
+    A  docs/DOCUMENTATION_CONSOLIDATION_SUMMARY.md
+    A  docs/DOMAIN_SETUP.md
+    A  docs/ERROR_SNAPSHOT_LOG_PATTERNS.md
+    A  docs/EVENT_LOOP_MONITORING_GUIDE.md
+    D  docs/FOSSIL_MANAGEMENT_IMPLEMENTATION_SUMMARY.md
+    A  docs/GITHUB_OBJECT_SUPPORT_IMPLEMENTATION_PLAN.md
+    A  docs/HANGING_TEST_RESOLUTION_SUMMARY.md
+    A  docs/IMPLEMENTATION_PATTERNS_GUIDE.md
+    A  docs/IMPLEMENTATION_PATTERNS_SUMMARY.md
+    A  docs/LICENSING_STRATEGY.md
+    A  docs/LLM_FOSSIL_COMPLIANCE_SLA_VALIDATION.md
+    A  docs/MARKET_READY_IMPLEMENTATION_PLAN.md
+    A  docs/MEMORY_MONITORING_GUIDE.md
+    A  docs/ML_READY_VALIDATOR_HUSKY_INTEGRATION.md
+    A  docs/PRE_COMMIT_VALIDATION_ENHANCED.md
+    A  docs/SCOPE_CREEP_ANALYSIS.md
+    A  docs/SIMPLIFIED_VALIDATION_APPROACH.md
+    A  docs/SPONSOR_BENEFITS.md
+    M  docs/TESTING_LEARNINGS.md
+    A  docs/TEST_PERFORMANCE_AUDIT_GUIDE.md
+    A  docs/UNIFIED_APPROACH_SUMMARY.md
+    M  docs/VISUAL_DOCUMENTATION_STANDARDS.md
+    A  docs/VSCODE_EXTENSION_QUICKSTART.md
+    A  docs/demo-core-data-structures.md
+    A  docs/ephemeral/address/ephemeral_context_management.json
+    A  docs/ephemeral/address/ephemeral_context_management.md
+    A  docs/ephemeral/address/ephemeral_context_management.ts
+    A  docs/ephemeral/address/ephemeral_context_management.yml
+    M  examples/curate-fossil-demo.ts
+    A  examples/event-loop-monitoring-demo.ts
+    A  examples/implementation-patterns-demo.ts
+    A  examples/memory-monitoring-demo.ts
+    M  examples/transversal-fossil-github-sync.ts
+    D  final-cleanup-report.json
+    A  fossils/CURRENT_FOSSIL_STRUCTURE_SOURCE_OF_TRUTH.md
+    A  fossils/FOSSIL_STRUCTURE_TREE_DIAGRAM.md
+    M  fossils/README.md
+    A  fossils/analysis-results.json
+    D  fossils/audit/llm-snapshot-audit-2025-07-05T07-48-37-635Z.json
+    D  fossils/audit/llm-snapshot-audit-2025-07-05T07-49-57-777Z.md
+    D  fossils/backups/roadmap_with_llm_insights_2025-07-04T18-35-18-06-00.yml
+    A  fossils/canonical_context.yml
+    M  fossils/chat_context.json
+    A  fossils/commit_audits.summary.json
+    A  fossils/commit_audits/batch-audit-plan-2025-07-07T00-18-31-348Z.json
+    A  fossils/commit_audits/batch-audit-plan-2025-07-07T00-18-31-348Z.yml
+    A  fossils/commit_audits/batch-execution-2025-07-07T00-20-33-196Z.json
+    A  fossils/commit_audits/batch-execution-2025-07-07T00-20-33-196Z.yml
+    A  fossils/commit_audits/batch-summary-2025-07-07T00-00-00-000Z.json
+    D  fossils/commit_audits/commit-audit-341834ea-1751707475836.json
+    A  fossils/context/canonical-context.yml
+    A  fossils/context/canonical_context.yml
+    A  fossils/context/enriched_extensions.implementation.json
+    A  fossils/context/llm.chat.json
+    A  fossils/context/patterns/project_concepts.yml
+    A  fossils/coverage_report.json
+    D  fossils/curated_roadmap_canonical.json
+    D  fossils/curated_roadmap_demo.json
+    A  fossils/curated_roadmap_manual.json
+    D  fossils/evolving-footprint.yml
+    A  fossils/footprint-results.json
+    A  fossils/footprint.json
+    A  fossils/footprint/footprint-results.json
+    A  fossils/footprint/footprint.json
+    A  fossils/git_diff.results.json
+    A  fossils/llm-snapshots.json
+    A  fossils/llm.snapshots.json
+    A  fossils/llm_snapshots.json
+    A  fossils/migration_report.json
+    A  fossils/ml.analysis.json
+    A  fossils/monitoring/metrics.json
+    A  fossils/monitoring/performance_data.json
+    A  fossils/monitoring/test_monitoring_data.json
+    A  fossils/performance/logs.json
+    A  fossils/performance/metrics.json
+    M  fossils/performance/performance_data.json
+    M  fossils/performance/performance_log.json
+    M  fossils/project_status.yml
+    A  fossils/roadmap.curated.json
+    A  fossils/roadmap.insights.api.json
+    R  fossils/roadmap_insights_web.json -> fossils/roadmap.insights.web.json
+    R  fossils/roadmap_insights/roadmap_insights_summary.json -> fossils/roadmap.insights_summary.json
+    R  fossils/roadmap_insights_collection.json -> fossils/roadmap.llm.insights.json
+    M  fossils/roadmap.md
+    M  fossils/roadmap.yml
+    A  fossils/roadmap/roadmap.md
+    R  fossils/roadmap.yml.backup -> fossils/roadmap/roadmap.yml.backup
+    A  fossils/roadmap/roadmap_insights.rss
+    R  fossils/roadmap_insights/roadmap_insights_report.md -> fossils/roadmap/roadmap_insights_report.md
+    A  fossils/roadmap/roadmap_progress.md
+    R  fossils/roadmap_insights/roadmap_insights.json -> fossils/roadmap_insights.json
+    D  fossils/roadmap_insights/FRESH_INSIGHTS_GENERATION_SUMMARY.md
+    D  fossils/roadmap_insights_validation.json
+    D  fossils/roadmap_progress_report.md
+    M  fossils/setup_status.yml
+    A  fossils/structure_definition.yml
+    A  fossils/tests.integration_analysis.json
+    A  fossils/tests/validation/test-output-2025-07-07T00-00-00.txt
+    A  fossils/tests/validation/test.pre_commit.validation.fail.json
+    A  fossils/traceability/current_traceability.json
+    A  fossils/validation.json
+    A  issue-tracking-report.md
+    D  llm-plan-shell-test.json
+    D  llm-snapshot-1751705076490.yml
+    D  llm-snapshot-1751724278771.yml
+    D  llm-snapshot-1751724278772.yml
+    D  llm-snapshot-1751724278776.yml
+    D  llm-snapshot-1751724278777.yml
+    D  llm-snapshot-1751724278779.yml
+    D  llm-snapshot-1751724278780.yml
+    D  llm-snapshot-1751724278781.yml
+    D  llm-snapshot-1751724278782.yml
+    D  llm-snapshot-1751724278783.yml
+    D  llm-snapshot-1751724278784.yml
+    D  llm-snapshot-1751724278785.yml
+    D  llm-snapshot-1751724278786.yml
+    D  llm-snapshot-1751724278787.yml
+    D  llm-snapshot-1751724278790.yml
+    D  llm-snapshot-1751724278808.yml
+    D  llm-snapshot-1751724278810.yml
+    D  llm-snapshot-1751724278811.yml
+    D  llm-snapshot-1751724278812.yml
+    D  llm-snapshot-1751724278813.yml
+    D  llm-snapshot-1751724278814.yml
+    D  llm-snapshot-1751724278815.yml
+    D  llm-snapshot-1751724278816.yml
+    D  llm-snapshot-1751724278817.yml
+    D  llm-snapshot-1751724278823.yml
+    D  llm-snapshot-1751724278824.yml
+    D  llm-snapshot-1751724278825.yml
+    D  llm-snapshot-1751724278826.yml
+    D  llm-snapshot-1751724279150.yml
+    D  llm-snapshot-1751724279151.yml
+    D  llm-snapshot-1751724279155.yml
+    D  llm-snapshot-1751724279156.yml
+    D  llm-snapshot-1751724284559.yml
+    D  llm-snapshot-1751724284560.yml
+    D  llm-snapshot-1751724284561.yml
+    D  llm-snapshot-1751724284563.yml
+    D  llm-snapshot-1751724284564.yml
+    D  llm-snapshot-1751724284565.yml
+    D  llm-snapshot-1751724284566.yml
+    D  llm-snapshot-1751724284567.yml
+    D  llm-snapshot-1751724284568.yml
+    D  llm-snapshot-1751724284569.yml
+    D  llm-snapshot-1751724284570.yml
+    D  llm-snapshot-1751724284571.yml
+    D  llm-snapshot-1751724284572.yml
+    D  llm-snapshot-1751724284573.yml
+    D  llm-snapshot-1751724284574.yml
+    M  package.json
+    D  plan-gather-context-integration.json
+    D  prioritized-llm-plan-shell-test.json
+    A  project-status-report.md
+    A  project_status-report.md
+    A  scripts/analyze-fossil-creation.ts
+    A  scripts/audit-commit-messages-batch-plan.ts
+    A  scripts/audit-test-performance.ts
+    A  scripts/automated-monitoring-analysis-refactored.ts
+    A  scripts/automated-monitoring-analysis.ts
+    A  scripts/automated-monitoring-orchestrator.ts
+    A  scripts/automation/timeout-wrapper.sh
+    A  scripts/canonical-fossil-cleanup.ts
+    A  scripts/canonical-fossil-migration.ts
+    M  scripts/clean-roadmap-llm-insights.ts
+    A  scripts/cleanup-insights-analyzer.ts
+    A  scripts/cleanup-misplaced-outputs.ts
+    M  scripts/cleanup-test-fossils.ts
+    A  scripts/cohesion-improvement.ts
+    A  scripts/commit-enhanced-system.ts
+    A  scripts/consolidate-small-utilities.ts
+    A  scripts/convert-fossils-to-snake-case.ts
+    A  scripts/demo-core-data-structures.ts
+    A  scripts/detect-hanging-tests.ts
+    M  scripts/enhanced-pre-commit-validator.ts
+    A  scripts/execute-commit-message-batch-plan.ts
+    A  scripts/fossil-audit.ts
+    M  scripts/generate-file-footprint.ts
+    M  scripts/generate-fresh-llm-insights-simple.ts
+    M  scripts/generate-fresh-llm-insights.ts
+    A  scripts/implement-enriched-extensions.ts
+    A  scripts/learning-analysis-engine.ts
+    A  scripts/llm-audit.ts
+    A  scripts/ml-ready-fossil-consolidator.ts
+    A  scripts/ml-ready-pre-commit-validator.ts
+    A  scripts/monitoring/bun-test-safe.sh
+    A  scripts/monitoring/memory-monitor.sh
+    A  scripts/monitoring/monitor-progress.sh
+    A  scripts/monitoring/notify.sh
+    M  scripts/performance-monitor.sh
+    M  scripts/precommit-unified.ts
+    A  scripts/precommit-validate-simple.ts
+    M  scripts/precommit-validate.ts
+    M  scripts/publish-roadmap-insights.ts
+    D  scripts/quick-validate-llm.ts
+    M  scripts/setup.sh
+    A  scripts/simplified-ml-process-integration.ts
+    A  scripts/targeted-cleanup.ts
+    A  scripts/test-precommit-fallback.ts
+    A  scripts/test-with-monitoring.sh
+    A  scripts/unified-fossil-consolidator.ts
+    A  scripts/unified-pre-commit-validator.ts
+    M  scripts/update-project-status.ts
+    M  scripts/validate-footprint.ts
+    D  scripts/validate-fresh-insights.ts
+    D  scripts/validate-llm-snapshotting.ts
+    D  scripts/validate-snapshot-schemas.ts
+    D  scripts/validate-types-schemas-simple.ts
+    A  src/cli/canonical-fossil-manager.ts
+    M  src/cli/context-fossil.ts
+    M  src/cli/curate-fossil.ts
+    A  src/cli/error-snapshot-log.ts
+    A  src/cli/event-loop-monitor.ts
+    A  src/cli/fossil-audit.ts
+    M  src/cli/fossil-summary.ts
+    M  src/cli/fossilize-performance.ts
+    M  src/cli/fossilize-validation.ts
+    M  src/cli/gather-context.ts
+    A  src/cli/git-diff-fossil-analyzer.ts
+    A  src/cli/llm-chat-context.ts
+    M  src/cli/llm-plan.ts
+    A  src/cli/memory-monitor.ts
+    M  src/cli/repo-orchestrator.ts
+    M  src/services/llm.ts
+    M  src/types/cli.ts
+    A  src/types/error-snapshot-log.ts
+    A  src/types/event-loop-monitoring.ts
+    A  src/types/fossil-audit.ts
+    M  src/types/index.ts
+    A  src/types/memory-monitoring.ts
+    M  src/types/performance.ts
+    M  src/types/roadmapInsights.ts
+    M  src/types/schemas.ts
+    A  src/utils/canonical-test-fossil-manager.ts
+    M  src/utils/cli.ts
+    A  src/utils/consolidated-utilities.ts
+    M  src/utils/curateFossil.ts
+    A  src/utils/errorSnapshotLogUtils.ts
+    A  src/utils/eventLoopMonitor.ts
+    M  src/utils/fossilize.ts
+    M  src/utils/llmFossilManager.ts
+    A  src/utils/memoryMonitor.ts
+    A  src/utils/memoryMonitorUtils.ts
+    M  src/utils/roadmapInsightsAccessor.ts
+    M  src/utils/roadmapInsightsExtractor.ts
+    A  src/utils/simpleTestMonitor.ts
+    A  src/utils/testMonitor.ts
+    A  src/utils/timeout-time-integration.ts
+    A  src/utils/timeout.ts
+    A  technical-debt-report.md
+    D  temp-checklist-demo.md.backup
+    A  test-fossilize-pattern.ts
+    A  test-simple.ts
+    D  test-template.json
+    A  test.output.validation.json
+    M  tests/e2e/examples.e2e.test.ts
+    M  tests/e2e/fossilization-workflow.e2e.test.ts
+    M  tests/e2e/scripts.e2e.test.ts
+    M  tests/e2e/utils.ts
+    M  tests/integration-base-tester.ts
+    A  tests/integration/automated-monitoring-analysis.integration.test.ts
+    M  tests/integration/github-issues.integration.test.ts
+    M  tests/integration/monitor-progress.integration.test.ts
+    M  tests/integration/repo-orchestrator-fossilization.integration.test.ts
+    M  tests/integration/transversal-fossil-github-sync.integration.test.ts
+    M  tests/test-mocks.ts
+    M  tests/unit/cli/llm-plan.test.ts
+    A  tests/unit/scripts/automated-monitoring-analysis.test.ts
+    A  tests/unit/scripts/automated-monitoring-orchestrator.test.ts
+    A  tests/unit/scripts/automation/batch-commit-orchestrator.test.ts
+    A  tests/unit/scripts/automation/timeout-wrapper.test.ts
+    A  tests/unit/scripts/blog-workflow.test.ts
+    A  tests/unit/scripts/commit-with-footprint.test.ts
+    A  tests/unit/scripts/learning-analysis-engine.test.ts
+    A  tests/unit/scripts/manage-blog-branches.test.ts
+    A  tests/unit/scripts/monitoring/bun-test-safe.test.ts
+    A  tests/unit/scripts/monitoring/memory-monitor.test.ts
+    A  tests/unit/scripts/monitoring/monitor-progress.test.ts
+    A  tests/unit/scripts/monitoring/notify.test.ts
+    M  tests/unit/scripts/setup.test.ts
+    A  tests/unit/scripts/test-with-monitoring.test.ts
+    M  tests/unit/services/llm.test.ts
+    M  tests/unit/utils/checklistUpdater.test.ts
+    A  tests/unit/utils/errorSnapshotLogUtils.test.ts
+    A  tests/unit/utils/simpleTestMonitor.test.ts
+    A  tests/unit/utils/testMonitor-simplified.test.ts
+    A  tests/unit/utils/timeout-time-integration.test.ts
+    A  tests/unit/utils/timeout.test.ts
+    M  type-schema-validation-report.md
+    A  validation.output.results.json
+    A  validation.unified.results.json
+    ?? scripts/canonical-commit.sh
+history: []
+metadata:
+  created: 2025-07-07T05:23:50.969Z
+  lastUpdated: 2025-07-07T05:23:50.969Z
+  totalCommits: 1
+  totalFilesTracked: 341
