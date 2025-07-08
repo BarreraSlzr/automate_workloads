@@ -1,0 +1,108 @@
+canonical_source_management:
+  timestamp: "2025-07-07T23:50:00Z"
+  version: "1.0.0"
+  fossilized: true
+  canonical: true
+  
+  # ANTI-PATTERNS TO AVOID
+  anti_patterns:
+    _backup_manual:
+      description: "Creating manual backup directories"
+      why_avoid:
+        - "Creates file bloat"
+        - "Duplicates data"
+        - "Goes against fossil principles"
+        - "Hard to maintain"
+      example: "mkdir _backup_manual && cp files/* _backup_manual/"
+      
+    file_copying:
+      description: "Copying files to preserve state"
+      why_avoid:
+        - "Creates redundant files"
+        - "Loses git history"
+        - "Hard to track changes"
+        - "Violates DRY principle"
+      example: "cp fossils/project_status.yml fossils/project_status.backup.yml"
+  
+  # CANONICAL PATTERNS TO USE
+  canonical_patterns:
+    git_references:
+      description: "Use git as the source of truth"
+      approach: "Reference files by commit hash"
+      benefits:
+        - "No file duplication"
+        - "Maintains git history"
+        - "Easy to restore"
+        - "Canonical source"
+      commands:
+        - "git show commit:file > file"
+        - "git tag validated-state commit"
+        - "git log --oneline -5"
+        
+    fossil_manifest:
+      description: "Create manifest files that reference validated state"
+      approach: "YAML/JSON files that list validated sources"
+      benefits:
+        - "Self-documenting"
+        - "Easy to restore"
+        - "No file bloat"
+        - "Canonical structure"
+      example: "fossils/validated_source_manifest.yml"
+      
+    canonical_scripts:
+      description: "Use project's canonical scripts"
+      approach: "Leverage existing validation and management scripts"
+      benefits:
+        - "Consistent with project patterns"
+        - "Tested and validated"
+        - "Follows established workflows"
+        - "Maintains cohesion"
+      scripts:
+        - "scripts/canonical-commit.sh"
+        - "scripts/canonical-fossil-cleanup.ts"
+        - "scripts/restore-validated-sources.sh"
+  
+  # IMPLEMENTATION GUIDE
+  implementation:
+    step_1_identify:
+      - "Identify validated source files"
+      - "Note their commit hash"
+      - "Document their purpose"
+      
+    step_2_manifest:
+      - "Create fossil manifest (validated_source_manifest.yml)"
+      - "List all validated files with commit references"
+      - "Include restoration commands"
+      
+    step_3_script:
+      - "Create restoration script (restore-validated-sources.sh)"
+      - "Use git show commands"
+      - "Include validation steps"
+      
+    step_4_validate:
+      - "Test restoration process"
+      - "Run project validations"
+      - "Verify clean state"
+  
+  # SAFETY MEASURES
+  safety_measures:
+    - "Always check git status before restoration"
+    - "Use git show instead of file copying"
+    - "Validate after restoration"
+    - "Create fossil manifests for traceability"
+    - "Use canonical project scripts"
+    - "Avoid creating new backup directories"
+  
+  # EXAMPLES
+  examples:
+    restore_project_status:
+      command: "git show dad0f90:fossils/project_status.yml > fossils/project_status.yml"
+      description: "Restore validated project status without creating backup"
+      
+    create_manifest:
+      file: "fossils/validated_source_manifest.yml"
+      description: "Reference file that documents validated sources"
+      
+    run_restoration:
+      command: "./scripts/restore-validated-sources.sh"
+      description: "Canonical restoration script that follows project patterns" 
