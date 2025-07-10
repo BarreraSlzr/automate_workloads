@@ -14,10 +14,11 @@ import {
   updateMultipleChecklistFiles,
   parseChecklistUpdates,
   generateUpdateReport,
-  ChecklistItemUpdate 
 } from '../utils/checklistUpdater';
+import type { ChecklistItemUpdate } from '../types/checklist-updater';
 import { ZodError, UpdateChecklistFileCLIArgsSchema, UpdateChecklistBatchCLIArgsSchema, UpdateChecklistRoadmapCLIArgsSchema } from '@/types/schemas';
 import * as fs from 'fs';
+import { parseJsonSafe } from '@/utils/json';
 
 const program = new Command();
 
@@ -137,9 +138,9 @@ program
           console.error(`❌ Config file not found: ${validatedArgs.config}`);
           process.exit(1);
         }
-        batchConfig = JSON.parse(fs.readFileSync(validatedArgs.config, 'utf8'));
+        batchConfig = parseJsonSafe(fs.readFileSync(validatedArgs.config, 'utf8'), 'cli:update-checklist:config');
       } else if (validatedArgs.updates) {
-        batchConfig = JSON.parse(validatedArgs.updates);
+        batchConfig = parseJsonSafe(validatedArgs.updates, 'cli:update-checklist:updates');
       } else {
         console.error('❌ Must provide either --config or --updates');
         process.exit(1);
@@ -163,16 +164,25 @@ program
 
       if (validatedArgs.dryRun) {
         console.log('🔍 Dry run - showing what would be updated:');
-        files.forEach(({ path, updates }) => {
+        files.forEach(({ path, updates }, fileIdx) => {
           console.log(`\n📄 ${path}:`);
-          updates.forEach(update => {
-            console.log(`  - ${update.id}: ${update.status}${update.comment ? ` (${update.comment})` : ''}`);
+          updates.forEach((update, updateIdx) => {
+            console.log(`  - [${updateIdx + 1}/${updates.length}] ${update.id}: ${update.status}${update.comment ? ` (${update.comment})` : ''}`);
           });
         });
         return;
       }
 
-      // Perform batch update
+      // Perform batch update with progress logging
+      files.forEach(({ path, updates }, fileIdx, arr) => {
+        if (fileIdx % 10 === 0 || fileIdx === arr.length - 1) {
+          console.log(`🔄 Processing checklist file ${fileIdx + 1} of ${arr.length}`);
+        }
+        console.log(`\n🔄 Updating file ${fileIdx + 1} of ${files.length}: ${path}`);
+        updates.forEach((update, updateIdx) => {
+          console.log(`   • Applying update ${updateIdx + 1} of ${updates.length} to ${update.id}`);
+        });
+      });
       const results = updateMultipleChecklistFiles(files);
       
       // Generate and display report

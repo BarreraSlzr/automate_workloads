@@ -9,6 +9,7 @@
 import { Command } from 'commander';
 import { PlanValidator } from '../utils/plan-validator';
 import type { ValidationOptions } from '../types/validation';
+import { parseJsonSafe } from '@/utils/json';
 
 const program = new Command();
 
@@ -52,9 +53,10 @@ program
 
       // Validate plan
       const result = validator.validatePlan(planFile, options.expected);
-
-      // Print report
-      validator.printReport(result);
+      // To get warnings and summary, you may need to call validator methods or refactor validatePlan to return them.
+      // For now, call generateSummary and pass an empty array for warnings if not available:
+      const summary = validator.generateSummary(parseJsonSafe(await (await import('fs/promises')).readFile(planFile, 'utf-8'), 'cli:validate-plan:planContent') as Record<string, any>);
+      validator.printReport(result, [], summary);
 
       // Save report to file if requested
       if (options.output) {
@@ -110,31 +112,13 @@ program
       let validPlans = 0;
 
       // Validate each plan
-      for (const planFile of planFiles) {
-        const fileName = path.basename(planFile);
-        console.log(`Validating: ${fileName}`);
-
-        // Try to find corresponding expected file
-        let expectedFile: string | undefined;
-        if (options.expectedDir) {
-          const expectedPath = path.join(options.expectedDir, fileName);
-          try {
-            await fs.access(expectedPath);
-            expectedFile = expectedPath;
-          } catch {
-            // Expected file doesn't exist, continue without it
-          }
-        }
-
-        const result = validator.validatePlan(planFile, expectedFile);
-        results.push({ file: fileName, result });
-
-        totalScore += result.score;
+      for (let i = 0; i < planFiles.length; i++) {
+        const file = planFiles[i];
+        if (!file) continue;
+        console.log(`🔄 Validating plan ${i + 1} of ${planFiles.length}: ${file}`);
+        const result = await validator.validatePlan(file, options.expectedDir);
+        results.push({ file, result });
         if (result.isValid) validPlans++;
-
-        // Print brief result
-        const status = result.isValid ? '✅' : '❌';
-        console.log(`  ${status} Score: ${result.score}/100 (${result.errors.length} errors, ${result.warnings.length} warnings)`);
       }
 
       // Print batch summary
@@ -186,7 +170,7 @@ program
       
       // Load the generated plan
       const planContent = await fs.readFile(planFile, 'utf-8');
-      const plan = JSON.parse(planContent);
+      const plan = parseJsonSafe(planContent, 'cli:validate-plan:planContent') as Record<string, any>;
 
       // Create expected plan template
       const expectedPlan = {

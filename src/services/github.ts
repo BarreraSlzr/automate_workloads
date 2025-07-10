@@ -4,41 +4,14 @@
  */
 
 import { executeCommand, executeCommandJSON, isCommandAvailable } from "../utils/cli";
-import type { GitHubIssue, ServiceResponse, CLIOptions } from "../types";
+import type { GitHubIssue } from "@/types/github";
+import type { ServiceResponse, CLIOptions } from "../types";
 import * as fs from 'fs';
 import * as path from 'path';
-
-/**
- * Options for GitHub operations
- */
-export interface GitHubOptions extends CLIOptions {
-  /** Repository owner */
-  owner: string;
-  /** Repository name */
-  repo: string;
-  /** Issue state filter */
-  state?: 'open' | 'closed' | 'all';
-  /** Issue labels filter */
-  labels?: string[];
-  /** Issue assignee filter */
-  assignee?: string;
-  /** Issue milestone */
-  milestone?: string;
-  /** Issue section */
-  section?: string;
-  /** Issue checklist */
-  checklist?: string;
-  /** Issue metadata */
-  metadata?: Record<string, unknown>;
-}
+import type { AutomationTemplateFields } from '../types/github';
+import type { GitHubOptions } from '@/types/cli';
 
 // Utility to load and fill the automation issue template
-export type AutomationTemplateFields = {
-  purpose: string;
-  checklist?: string;
-  metadata?: string;
-};
-
 export function loadAndFillAutomationTemplate(fields: AutomationTemplateFields): string {
   const templatePath = path.resolve('.github/ISSUE_TEMPLATE/automation_task.yml');
   const content = fs.readFileSync(templatePath, 'utf8');
@@ -337,8 +310,8 @@ export class GitHubService {
           issue.number.toString(),
           issue.title,
           issue.state,
-          issue.labels.join(', '),
-          new Date(issue.created_at).toLocaleDateString(),
+          (issue.labels ?? []).join(', '),
+          new Date(issue.created_at ?? Date.now()).toLocaleDateString(),
         ]);
         
         const table = [

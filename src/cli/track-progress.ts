@@ -9,7 +9,7 @@
 
 import { Command } from 'commander';
 import { getEnv } from '../core/config';
-import { execSync } from 'child_process';
+import { executeCommand } from '@/utils/cli';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { GitHubCLICommands } from '../utils/githubCliCommands';
@@ -21,6 +21,7 @@ import {
   TrackProgressCLIArgsSchema,
   TrackProgressStatusCLIArgsSchema
 } from '@/types/schemas';
+import { parseJsonSafe } from '@/utils/json';
 
 type TrackingConfig = z.infer<typeof TrackingConfigSchema>;
 type ProgressMetrics = z.infer<typeof ProgressMetricsSchema>;
@@ -83,21 +84,47 @@ class ProgressTrackingService {
       console.log('📈 Step 2: Tracking progress...');
       const progressData = await this.trackActionPlanProgress(owner, repo);
       Object.assign(results.metrics, progressData);
+      const progressItems = (progressData && Array.isArray((progressData as any).items)) ? (progressData as any).items : [];
+      progressItems.forEach((item: any, idx: number) => {
+        if (idx % 10 === 0 || idx === progressItems.length - 1) {
+          console.log(`   • Processed ${idx + 1} of ${progressItems.length} action plan items`);
+        }
+      });
 
       // Step 3: Trend analysis
       if (trackingConfig.includeTrends) {
         console.log('📊 Step 3: Analyzing trends...');
         const trendData = await this.analyzeTrends(owner, repo, trackingConfig.outputDir);
         results.trends = trendData;
+        const trendArr = (trendData && Array.isArray((trendData as any).trends)) ? (trendData as any).trends : [];
+        trendArr.forEach((trend: any, idx: number) => {
+          if (idx % 5 === 0 || idx === trendArr.length - 1) {
+            console.log(`   • Analyzed ${idx + 1} of ${trendArr.length} trends`);
+          }
+        });
       }
 
       // Step 4: Generate recommendations
       console.log('🎯 Step 4: Generating recommendations...');
       results.recommendations = this.generateRecommendations(results.metrics, results.trends);
+      if (Array.isArray(results.recommendations)) {
+        results.recommendations.forEach((rec: any, idx: number) => {
+          if (idx % 3 === 0 || idx === results.recommendations.length - 1) {
+            console.log(`   • Generated ${idx + 1} of ${results.recommendations.length} recommendations`);
+          }
+        });
+      }
 
       // Step 5: Determine next steps
       console.log('🔄 Step 5: Determining next steps...');
       results.nextSteps = this.determineNextSteps(results.metrics, results.trends);
+      if (Array.isArray(results.nextSteps)) {
+        results.nextSteps.forEach((step: any, idx: number) => {
+          if (idx % 3 === 0 || idx === results.nextSteps.length - 1) {
+            console.log(`   • Determined ${idx + 1} of ${results.nextSteps.length} next steps`);
+          }
+        });
+      }
 
       // Step 6: Generate report
       console.log('📋 Step 6: Generating report...');
@@ -130,16 +157,17 @@ class ProgressTrackingService {
 
     try {
       // Run repository analysis
-      const analysisOutput = execSync(
-        `bun run repo:analyze ${owner} ${repo} --output current-analysis.json`,
-        { encoding: 'utf8' }
+      const analysisOutput = executeCommand(
+        `bun run repo:analyze ${owner} ${repo} --output current-analysis.json`
       );
 
       // Read analysis results
-      const analysisData = JSON.parse(await fs.readFile('current-analysis.json', 'utf8'));
+      const analysisData = parseJsonSafe(await fs.readFile('current-analysis.json', 'utf8'), 'cli:track-progress:current-analysis.json') as any[];
       
       return {
-        healthScore: analysisData.health.score,
+        healthScore: (analysisData && typeof analysisData === 'object' && !Array.isArray(analysisData) && 'health' in analysisData && (analysisData as any).health && 'score' in (analysisData as any).health)
+          ? (analysisData as any).health.score
+          : undefined,
         timestamp: new Date().toISOString(),
       };
 
@@ -181,8 +209,8 @@ class ProgressTrackingService {
       }
 
       // Parse and analyze
-      const actionPlans = JSON.parse(actionPlanResult.stdout);
-      const automationIssuesData = JSON.parse(automationResult.stdout);
+      const actionPlans = parseJsonSafe(actionPlanResult.stdout, 'cli:track-progress:actionPlanResult.stdout') as any[];
+      const automationIssuesData = parseJsonSafe(automationResult.stdout, 'cli:track-progress:automationResult.stdout') as any[];
 
       const totalActionPlans = actionPlans.length;
       const completedActionPlans = actionPlans.filter((issue: any) => issue.state === 'CLOSED').length;
@@ -256,12 +284,12 @@ class ProgressTrackingService {
       const healthScores: number[] = [];
       for (const file of stateFiles.sort()) {
         try {
-          const data = JSON.parse(await fs.readFile(path.join(trendsDir, file), 'utf8'));
-          if (data.health && typeof data.health.score === 'number') {
-            healthScores.push(data.health.score);
+          const data = parseJsonSafe(await fs.readFile(path.join(trendsDir, file), 'utf8'), 'cli:track-progress:trendsDir');
+          if (data && typeof data === 'object' && 'health' in data && typeof (data as any).health.score === 'number') {
+            healthScores.push((data as any).health.score);
           }
         } catch (error) {
-          // Skip invalid files
+          // Ignore parse errors
         }
       }
 
@@ -482,18 +510,16 @@ class ProgressTrackingService {
       // Trigger action plan generation if needed
       if (metrics.healthScore < 75 || metrics.actionPlanCompletion < 40) {
         console.log('📋 Triggering action plan generation...');
-        execSync(
-          `gh workflow run action-plan-generator.yml --repo ${owner}/${repo} --field plan_type=comprehensive --field priority=high`,
-          { stdio: 'inherit' }
+        executeCommand(
+          `gh workflow run action-plan-generator.yml --repo ${owner}/${repo} --field plan_type=comprehensive --field priority=high`
         );
       }
 
       // Trigger full orchestration if needed
       if (metrics.healthScore < 70) {
         console.log('🎯 Triggering full repository orchestration...');
-        execSync(
-          `gh workflow run repository-orchestrator.yml --repo ${owner}/${repo}`,
-          { stdio: 'inherit' }
+        executeCommand(
+          `gh workflow run repository-orchestrator.yml --repo ${owner}/${repo}`
         );
       }
 
