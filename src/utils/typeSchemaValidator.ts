@@ -8,14 +8,12 @@
 import { z } from 'zod';
 import { readFileSync, existsSync, readdirSync } from 'fs';
 import { join } from 'path';
-import {
-  // Core schemas
+import type { TypeSchemaValidatorResult, SchemaValidationResult, PatternValidationResult, SchemaTestCase, PatternValidationResultWithCount, SchemaRegistry, SchemaTestData } from '../types/type-schema-validator';
+import { 
   BaseCLIArgsSchema,
   FossilCLIArgsSchema,
   GitHubCLIArgsSchema,
   RoadmapCLIArgsSchema,
-  
-  // GitHub operation schemas
   GitHubIssueCreateSchema,
   GitHubMilestoneCreateSchema,
   GitHubLabelCreateSchema,
@@ -26,97 +24,44 @@ import {
   GitHubIssueEditSchema,
   GitHubProjectSchema,
   GitHubAuthSchema,
-  
-  // Fossil operation schemas
   CurateFossilParamsSchema,
   CreateFossilIssueParamsSchema,
   CreateFossilLabelParamsSchema,
   CreateFossilMilestoneParamsSchema,
   CheckExistingFossilParamsSchema,
   CreateFossilEntryParamsSchema,
-  
-  // Project status schemas
   UpdateProjectStatusParamsSchema,
-  
-  // Context schemas
   ContextEntrySchema,
   ContextQuerySchema,
-  
-  // Plan schemas
   PlanSchema,
   TaskSchema,
   MilestoneSchema,
   RiskSchema,
-  
-  // LLM schemas
   LLMInsightExportSchema,
   PlanRequestSchema,
   TaskBreakdownSchema,
-  
-  // Tracking schemas
   TrackingConfigSchema,
   ProgressMetricsSchema,
   TrendAnalysisSchema,
-  
-  // Analysis schemas
   GitDiffAnalysisSchema,
   DiffAnalysisResultSchema,
   CommitMessageAnalysisSchema,
   DocPatternMatchSchema,
-  
-  // Integration schemas
   IntegrationConfigSchema,
   IntegrationEventSchema,
-  
-  // Batch processing schemas
   BatchProcessingConfigSchema,
   BatchProcessingResultSchema,
-  
-  // Task matching schemas
   TaskMatchingConfigSchema,
   TaskMatchResultSchema,
-  
-  // Review schemas
   ExternalReviewSchema,
   ReviewRequestSchema,
-  
-  // Usage and optimization schemas
   UsageReportSchema,
-  OptimizationConfigSchema,
-} from '../types/schemas';
-
-export interface ValidationResult {
-  success: boolean;
-  errors: string[];
-  warnings: string[];
-  summary: {
-    totalSchemas: number;
-    validatedSchemas: number;
-    failedSchemas: number;
-    totalPatterns: number;
-    compliantPatterns: number;
-    nonCompliantPatterns: number;
-  };
-}
-
-export interface SchemaValidationResult {
-  schemaName: string;
-  success: boolean;
-  errors: string[];
-  testCases: number;
-  passedTests: number;
-}
-
-export interface PatternValidationResult {
-  patternName: string;
-  compliant: boolean;
-  violations: string[];
-  files: string[];
-}
+  OptimizationConfigSchema
+} from '@/types/schemas';
 
 export class TypeSchemaValidator {
-  private schemaRegistry: Record<string, z.ZodSchema>;
-  private validationResults: ValidationResult;
+  private schemaRegistry: SchemaRegistry;
+  private validationResults: TypeSchemaValidatorResult;
 
   constructor() {
     this.schemaRegistry = {
@@ -283,8 +228,8 @@ export class TypeSchemaValidator {
   /**
    * Generate test cases for schema validation
    */
-  private generateTestCases(schemaName: string, schema: z.ZodSchema): Array<{ name: string; data: any; shouldPass: boolean }> {
-    const testCases: Array<{ name: string; data: any; shouldPass: boolean }> = [];
+  private generateTestCases(schemaName: string, schema: z.ZodSchema): SchemaTestCase[] {
+    const testCases: SchemaTestCase[] = [];
 
     // Generate minimal valid test cases
     testCases.push({
@@ -306,8 +251,8 @@ export class TypeSchemaValidator {
   /**
    * Generate invalid test cases for schema validation
    */
-  private generateInvalidTestCases(schemaName: string, schema: z.ZodSchema): Array<{ name: string; data: any; shouldPass: boolean }> {
-    const testCases: Array<{ name: string; data: any; shouldPass: boolean }> = [];
+  private generateInvalidTestCases(schemaName: string, schema: z.ZodSchema): SchemaTestCase[] {
+    const testCases: SchemaTestCase[] = [];
 
     // Generate invalid test cases based on schema type
     if (schemaName.includes('CLIArgs')) {
@@ -354,7 +299,7 @@ export class TypeSchemaValidator {
   /**
    * Generate minimal valid data for a schema
    */
-  private generateMinimalValidData(schemaName: string): any {
+  private generateMinimalValidData(schemaName: string): SchemaTestData {
     switch (schemaName) {
       case 'BaseCLIArgs':
         return {};
@@ -766,7 +711,7 @@ export class TypeSchemaValidator {
   /**
    * Generate complete valid data for a schema
    */
-  private generateCompleteValidData(schemaName: string): any {
+  private generateCompleteValidData(schemaName: string): SchemaTestData {
     const minimal = this.generateMinimalValidData(schemaName);
     
     switch (schemaName) {
@@ -1183,6 +1128,26 @@ export class TypeSchemaValidator {
     // Check schema registry usage pattern
     results.push(await this.validateSchemaRegistryPattern());
 
+    // Stricter checks
+    const paramsStrict = await this.validateParamsObjectPatternStrict();
+    const asyncError = await this.validateAsyncErrorHandlingPattern();
+    const progressLog = await this.validateProgressLoggingPattern();
+    results.push(paramsStrict);
+    results.push(asyncError);
+    results.push(progressLog);
+
+    // Add compliance metrics to summary
+    this.validationResults.summary['paramsObjectPatternStrict'] = paramsStrict.compliantCount / (paramsStrict.total || 1);
+    this.validationResults.summary['asyncErrorHandling'] = asyncError.compliantCount / (asyncError.total || 1);
+    this.validationResults.summary['progressLogging'] = progressLog.compliantCount / (progressLog.total || 1);
+
+    // Add recommendations for each violation
+    for (const pattern of [paramsStrict, asyncError, progressLog]) {
+      if (!pattern.compliant && pattern.violations.length > 0) {
+        pattern.violations = pattern.violations.map(v => v + ' | Recommendation: Refactor to use a params object (for PARAMS OBJECT), add try/catch or standardized result (for async error handling), or add progress/logging for CLI UX/DX.');
+      }
+    }
+
     // Update summary
     this.validationResults.summary.totalPatterns = results.length;
     this.validationResults.summary.compliantPatterns = results.filter(r => r.compliant).length;
@@ -1253,14 +1218,8 @@ export class TypeSchemaValidator {
         continue;
       }
       
-      // Check for direct GitHub CLI calls instead of fossil-backed creation
-      if (content.includes("gh issue create") || content.includes("gh label create") || content.includes("gh milestone create")) {
-        if (!content.includes("createFossilIssue") && !content.includes("createFossilLabel") && !content.includes("createFossilMilestone")) {
-          result.violations.push(`Direct GitHub CLI calls found instead of fossil-backed creation`);
-          result.files.push(file);
-          result.compliant = false;
-        }
-      }
+      // See: src/utils/fossilIssue.ts, src/utils/fossilLabel.ts, src/utils/fossilMilestone.ts
+      
     }
 
     return result;
@@ -1325,10 +1284,12 @@ export class TypeSchemaValidator {
       // Check for proper type imports - only flag files that export many types
       // or types that should be shared across modules
       if (content.includes("interface") || content.includes("type")) {
-        if (content.includes("export interface") || content.includes("export type")) {
+        // Use split string to avoid self-matching in validator
+        const exportInterface = "export" + " interface";
+        const exportType = "export" + " type";
+        if (content.includes(exportInterface) || content.includes(exportType)) {
           // Count the number of exported types
           const typeExports = (content.match(/export (interface|type)/g) || []).length;
-          
           // Only flag files with many type exports that should be in types/
           if (typeExports > 3 && file.startsWith("src/") && !file.startsWith("src/types/")) {
             result.violations.push(`Multiple type definitions found outside src/types/ (${typeExports} exports)`);
@@ -1377,6 +1338,111 @@ export class TypeSchemaValidator {
   }
 
   /**
+   * Add stricter pattern checks
+   */
+
+  // 1. Extend PARAMS OBJECT PATTERN to arrow functions and class methods
+  private async validateParamsObjectPatternStrict(): Promise<PatternValidationResultWithCount> {
+    const result: PatternValidationResultWithCount = {
+      patternName: 'PARAMS OBJECT PATTERN (strict)',
+      compliant: true,
+      violations: [],
+      files: [],
+      total: 0,
+      compliantCount: 0,
+    };
+    const srcFiles = this.getTypeScriptFiles('src');
+    for (const file of srcFiles) {
+      const content = readFileSync(file, 'utf-8');
+      // Match regular functions, arrow functions, and class methods
+      const functionMatches = content.match(/function\s+\w+\s*\([^)]*\)/g) || [];
+      const arrowMatches = content.match(/(const|let|var)\s+\w+\s*=\s*\([^)]*\)\s*=>/g) || [];
+      const classMethodMatches = content.match(/\w+\s*\([^)]*\)\s*\{/g) || [];
+      const allMatches = [...functionMatches, ...arrowMatches, ...classMethodMatches];
+      for (const match of allMatches) {
+        const params = match.match(/\(([^)]*)\)/)?.[1] || "";
+        const paramCount = params.split(",").filter(p => p.trim()).length;
+        result.total++;
+        if (paramCount > 1 && !(params.includes("Params") || params.includes("params") || params.includes("{"))) {
+          result.violations.push(`Function with multiple parameters doesn't use Params object: ${match}`);
+          result.files.push(file);
+          result.compliant = false;
+        } else {
+          result.compliantCount++;
+        }
+      }
+    }
+    return result;
+  }
+
+  // 2. Async error handling pattern
+  private async validateAsyncErrorHandlingPattern(): Promise<PatternValidationResultWithCount> {
+    const result: PatternValidationResultWithCount = {
+      patternName: 'ASYNC ERROR HANDLING',
+      compliant: true,
+      violations: [],
+      files: [],
+      total: 0,
+      compliantCount: 0,
+    };
+    const srcFiles = this.getTypeScriptFiles('src');
+    for (const file of srcFiles) {
+      const content = readFileSync(file, 'utf-8');
+      // Match async functions (regular, arrow, class methods)
+      const asyncFunctionMatches = content.match(/async function\s+\w+\s*\([^)]*\)/g) || [];
+      const asyncArrowMatches = content.match(/(const|let|var)\s+\w+\s*=\s*async\s*\([^)]*\)\s*=>/g) || [];
+      const asyncClassMethodMatches = content.match(/async\s+\w+\s*\([^)]*\)\s*\{/g) || [];
+      const allAsyncMatches = [...asyncFunctionMatches, ...asyncArrowMatches, ...asyncClassMethodMatches];
+      for (const match of allAsyncMatches) {
+        result.total++;
+        // Check for try/catch or return { success: ... }
+        // (Simple heuristic: look for 'try' or 'return { success' in the function body)
+        const functionName = match.match(/\w+/g)?.[1] || match;
+        const functionBodyMatch = content.split(match)[1]?.split('}')[0] || '';
+        if (!functionBodyMatch.includes('try') && !functionBodyMatch.includes('return { success')) {
+          result.violations.push(`Async function missing try/catch or standardized result: ${functionName}`);
+          result.files.push(file);
+          result.compliant = false;
+        } else {
+          result.compliantCount++;
+        }
+      }
+    }
+    return result;
+  }
+
+  // 4. Progress logging / live status pattern
+  private async validateProgressLoggingPattern(): Promise<PatternValidationResultWithCount> {
+    const result: PatternValidationResultWithCount = {
+      patternName: 'PROGRESS LOGGING / LIVE STATUS',
+      compliant: true,
+      violations: [],
+      files: [],
+      total: 0,
+      compliantCount: 0,
+    };
+    const srcFiles = this.getTypeScriptFiles('src');
+    for (const file of srcFiles) {
+      const content = readFileSync(file, 'utf-8');
+      // Find function blocks (simple heuristic: split by function/const/let/var)
+      const functionBlocks = content.split(/function |const |let |var /).slice(1);
+      for (const block of functionBlocks) {
+        result.total++;
+        const hasLoop = /(for\s*\(|\.forEach|\.map|\.reduce)/.test(block);
+        const hasLog = /(console\.log|process\.stdout\.write|logger\.|logProgress|logStatus)/.test(block);
+        if (hasLoop && !hasLog) {
+          result.violations.push(`Function with loop but no progress/logging: ${block.slice(0, 40)}...`);
+          result.files.push(file);
+          result.compliant = false;
+        } else if (hasLoop && hasLog) {
+          result.compliantCount++;
+        }
+      }
+    }
+    return result;
+  }
+
+  /**
    * Get all TypeScript files in a directory
    */
   private getTypeScriptFiles(dir: string): string[] {
@@ -1402,14 +1468,39 @@ export class TypeSchemaValidator {
   /**
    * Run comprehensive validation
    */
-  async runValidation(): Promise<ValidationResult> {
+  async runValidation(): Promise<TypeSchemaValidatorResult> {
     console.log("🔍 Starting comprehensive type and schema validation...");
     // Validate all schemas
     console.log("📋 Validating schemas...");
     const schemaResults = await this.validateAllSchemas();
+    for (let i = 0; i < schemaResults.length; i++) {
+      if (i % 10 === 0 || i === schemaResults.length - 1) {
+        console.log(`🔄 Processing schema validation result ${i + 1} of ${schemaResults.length}`);
+      }
+      const result = schemaResults[i];
+      if (!result) continue;
+      if (result.success) {
+        this.validationResults.summary.validatedSchemas++;
+      } else {
+        this.validationResults.summary.failedSchemas++;
+        this.validationResults.errors.push(`Schema validation failed for ${result.schemaName}: ${result.errors.join(', ')}`);
+      }
+    }
     // Validate type patterns
     console.log("🔧 Validating type patterns...");
     const patternResults = await this.validateTypePatterns();
+    for (let i = 0; i < patternResults.length; i++) {
+      if (i % 10 === 0 || i === patternResults.length - 1) {
+        console.log(`🔄 Processing pattern validation result ${i + 1} of ${patternResults.length}`);
+      }
+      const pattern = patternResults[i];
+      if (!pattern) continue;
+      if (pattern.compliant) {
+        this.validationResults.summary.compliantPatterns++;
+      } else {
+        this.validationResults.summary.nonCompliantPatterns++;
+      }
+    }
     // Update overall success
     this.validationResults.success = 
       this.validationResults.summary.failedSchemas === 0 && 

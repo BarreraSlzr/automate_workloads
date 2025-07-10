@@ -23,13 +23,19 @@ import type { WorkflowStep, Component, Risk, Dependency } from '../types/schemas
 export function generateWorkflowDiagram(steps: WorkflowStep[]): string {
   if (steps.length === 0) return '';
 
-  const nodes = steps.map((step, i) => {
+  const nodes = steps.map((step, i, arr) => {
+    if (i % 10 === 0 || i === arr.length - 1) {
+      console.log(`🔄 Processing step ${i + 1} of ${arr.length}`);
+    }
     const nodeId = String.fromCharCode(65 + i);
     const style = step.style ? `\n    style ${nodeId} fill:${step.style}` : '';
     return `    ${nodeId}[${step.step}]${style}`;
   });
 
-  const edges = steps.map((_, i) => {
+  const edges = steps.map((_, i, arr) => {
+    if (i % 10 === 0 || i === arr.length - 1) {
+      console.log(`🔄 Processing step edge ${i + 1} of ${arr.length}`);
+    }
     if (i < steps.length - 1) {
       const from = String.fromCharCode(65 + i);
       const to = String.fromCharCode(66 + i);
@@ -52,7 +58,15 @@ export function generateArchitectureDiagram(components: Component[]): string {
   if (components.length === 0) return '';
 
   const subgraphs = components.map(comp => {
-    const items = comp.items.map(item => `        ${item}`).join('\n');
+    if (components.indexOf(comp) % 10 === 0 || components.indexOf(comp) === components.length - 1) {
+      console.log(`🔄 Processing component ${components.indexOf(comp) + 1} of ${components.length}`);
+    }
+    const items = comp.items.map((item, i, arr) => {
+      if (i % 10 === 0 || i === arr.length - 1) {
+        console.log(`🔄 Processing component item ${i + 1} of ${arr.length}`);
+      }
+      return `        ${item}`;
+    }).join('\n');
     const style = comp.style ? `\n    style ${comp.name} fill:${comp.style}` : '';
     return `    subgraph "${comp.name}"\n${items}\n    end${style}`;
   });
@@ -69,14 +83,20 @@ export function generateArchitectureDiagram(components: Component[]): string {
 export function generateDependencyDiagram(dependencies: Dependency[]): string {
   if (dependencies.length === 0) return '';
 
-  const nodes = dependencies.map((dep, i) => {
+  const nodes = dependencies.map((dep, i, arr) => {
+    if (i % 10 === 0 || i === arr.length - 1) {
+      console.log(`🔄 Processing dependency ${i + 1} of ${arr.length}`);
+    }
     const nodeId = String.fromCharCode(65 + i);
     const style = dep.type === 'blocking' ? '#ffebee' : 
                   dep.type === 'dependent' ? '#e3f2fd' : '#fff3e0';
     return `    ${nodeId}[${dep.name}]\n    style ${nodeId} fill:${style}`;
   });
 
-  const edges = dependencies.map((dep, i) => {
+  const edges = dependencies.map((dep, i, arr) => {
+    if (i % 10 === 0 || i === arr.length - 1) {
+      console.log(`🔄 Processing dependency edge ${i + 1} of ${arr.length}`);
+    }
     if (i < dependencies.length - 1) {
       const from = String.fromCharCode(65 + i);
       const to = String.fromCharCode(66 + i);
@@ -99,7 +119,10 @@ export function generateDependencyDiagram(dependencies: Dependency[]): string {
 export function generateRiskDiagram(risks: Risk[]): string {
   if (risks.length === 0) return '';
 
-  const nodes = risks.map((risk, i) => {
+  const nodes = risks.map((risk, i, arr) => {
+    if (i % 10 === 0 || i === arr.length - 1) {
+      console.log(`🔄 Processing risk ${i + 1} of ${arr.length}`);
+    }
     const baseId = String.fromCharCode(65 + i);
     const impactId = `${baseId}_impact`;
     const probId = `${baseId}_prob`;
@@ -137,13 +160,19 @@ export function generateSequenceDiagram(
 ): string {
   if (participants.length === 0 || interactions.length === 0) return '';
 
-  const participantDefs = participants.map(p => 
-    `    participant ${p.name} as ${p.label}`
-  );
+  const participantDefs = participants.map((p, i, arr) => {
+    if (i % 10 === 0 || i === arr.length - 1) {
+      console.log(`🔄 Processing participant ${i + 1} of ${arr.length}`);
+    }
+    return `    participant ${p.name} as ${p.label}`;
+  });
 
-  const interactionDefs = interactions.map(i => 
-    `    ${i.from}->>${i.to}: ${i.message}`
-  );
+  const interactionDefs = interactions.map((interaction, i, arr) => {
+    if (i % 10 === 0 || i === arr.length - 1) {
+      console.log(`🔄 Processing interaction ${i + 1} of ${arr.length}`);
+    }
+    return `    ${interaction.from}->>${interaction.to}: ${interaction.message}`;
+  });
 
   return [
     'sequenceDiagram',
@@ -160,14 +189,20 @@ export function generateProgressDiagram(
 ): string {
   if (stages.length === 0) return '';
 
-  const nodes = stages.map((stage, i) => {
+  const nodes = stages.map((stage, i, arr) => {
+    if (i % 10 === 0 || i === arr.length - 1) {
+      console.log(`🔄 Processing stage ${i + 1} of ${arr.length}`);
+    }
     const nodeId = String.fromCharCode(65 + i);
     const color = stage.status === 'completed' ? '#e8f5e8' :
                   stage.status === 'in-progress' ? '#fff3e0' : '#ffebee';
     return `    ${nodeId}[${stage.name}]\n    style ${nodeId} fill:${color}`;
   });
 
-  const edges = stages.map((_, i) => {
+  const edges = stages.map((_, i, arr) => {
+    if (i % 10 === 0 || i === arr.length - 1) {
+      console.log(`🔄 Processing stage edge ${i + 1} of ${arr.length}`);
+    }
     if (i < stages.length - 1) {
       const from = String.fromCharCode(65 + i);
       const to = String.fromCharCode(66 + i);
@@ -191,14 +226,25 @@ export function generateSystemOverviewDiagram(
 ): string {
   if (systems.length === 0) return '';
 
-  const subgraphs = systems.map(sys => {
-    const items = sys.components.map(comp => `        ${comp}`).join('\n');
+  const subgraphs = systems.map((sys, i, arr) => {
+    if (i % 10 === 0 || i === arr.length - 1) {
+      console.log(`🔄 Processing system ${i + 1} of ${arr.length}`);
+    }
+    const items = sys.components.map((comp, i, arr) => {
+      if (i % 10 === 0 || i === arr.length - 1) {
+        console.log(`🔄 Processing system component ${i + 1} of ${arr.length}`);
+      }
+      return `        ${comp}`;
+    }).join('\n');
     return `    subgraph "${sys.name}"\n${items}\n    end`;
   });
 
-  const connections = systems.flatMap(sys => 
-    sys.connections.map(conn => `    ${conn.from} --> ${conn.to}`)
-  );
+  const connections = systems.flatMap((sys, i, arr) => {
+    if (i % 10 === 0 || i === arr.length - 1) {
+      console.log(`🔄 Processing system ${i + 1} of ${arr.length}`);
+    }
+    return sys.connections.map(conn => `    ${conn.from} --> ${conn.to}`);
+  });
 
   return [
     'graph TB',
@@ -219,11 +265,14 @@ export function generateDecisionTreeDiagram(
   const edges: string[] = [];
   let nodeCounter = 0;
 
-  decisions.forEach((decision, decisionIndex) => {
+  decisions.forEach((decision, decisionIndex, arr) => {
+    if (decisionIndex % 10 === 0 || decisionIndex === arr.length - 1) {
+      console.log(`🔄 Processing decision ${decisionIndex + 1} of ${arr.length}`);
+    }
     const questionId = String.fromCharCode(65 + decisionIndex);
     nodes.push(`    ${questionId}{${decision.question}}`);
 
-    decision.options.forEach((option, optionIndex) => {
+    decision.options.forEach((option, optionIndex, arr) => {
       const outcomeId = String.fromCharCode(65 + decisionIndex) + String.fromCharCode(65 + optionIndex);
       nodes.push(`    ${outcomeId}[${option.outcome}]`);
       edges.push(`    ${questionId} -->|${option.answer}| ${outcomeId}`);
@@ -437,7 +486,10 @@ export function extractVisualContext(content: string): {
   // Simple keyword-based extraction (can be enhanced with LLM)
   const lines = content.split('\n');
   
-  lines.forEach(line => {
+  lines.forEach((line, i, arr) => {
+    if (i % 10 === 0 || i === arr.length - 1) {
+      console.log(`🔄 Processing content line ${i + 1} of ${arr.length}`);
+    }
     const lowerLine = line.toLowerCase();
     
     if (lowerLine.includes('step') || lowerLine.includes('process') || lowerLine.includes('workflow')) {

@@ -130,7 +130,12 @@ export class SimpleTestMonitor {
     const failedTests = this.results.filter(r => r.status === 'fail').length;
     const skippedTests = this.results.filter(r => r.status === 'skip').length;
     const totalTests = this.results.length;
-    const averageDuration = totalTests > 0 ? this.results.reduce((sum, r) => sum + r.duration, 0) / totalTests : 0;
+    const averageDuration = totalTests > 0 ? this.results.reduce((sum, result, i, arr) => {
+      if (i % 10 === 0 || i === arr.length - 1) {
+        console.log(`🔄 Processing test result ${i + 1} of ${arr.length}`);
+      }
+      return sum + (result.duration || 0);
+    }, 0) / totalTests : 0;
 
     const summary: SimpleTestSummary = {
       totalTests,

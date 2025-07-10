@@ -10,89 +10,12 @@ import {
   getCallStackSummary,
   generateMonitoringReport,
   exportMonitoringData,
-  HangingDetectionConfig,
-  EventLoopSnapshot
 } from './eventLoopMonitor';
+
 import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 
-// ============================================================================
-// TYPES AND INTERFACES
-// ============================================================================
-
-export interface TestMonitorConfig {
-  /** Enable test monitoring */
-  enabled: boolean;
-  /** Output directory for monitoring data */
-  outputDir: string;
-  /** Test timeout in milliseconds */
-  testTimeout: number;
-  /** Snapshot interval in milliseconds */
-  snapshotInterval: number;
-  /** Hanging detection threshold in milliseconds */
-  hangingThreshold: number;
-  /** Memory threshold in bytes */
-  memoryThreshold: number;
-  /** CPU threshold percentage */
-  cpuThreshold: number;
-  /** Maximum active calls */
-  maxActiveCalls: number;
-  /** Enable stack trace capture */
-  enableStackTrace: boolean;
-  /** Enable memory tracking */
-  enableMemoryTracking: boolean;
-  /** Enable CPU tracking */
-  enableCpuTracking: boolean;
-  /** Log hanging calls */
-  logHangingCalls: boolean;
-  /** Show alerts for hanging calls */
-  alertOnHanging: boolean;
-  /** Verbose output */
-  verbose: boolean;
-}
-
-export interface TestMonitoringResult {
-  /** Whether tests completed successfully */
-  success: boolean;
-  /** Test execution duration in milliseconds */
-  duration: number;
-  /** Exit code */
-  exitCode: number;
-  /** Number of snapshots taken */
-  snapshots: number;
-  /** Number of hanging calls detected */
-  hangingCalls: number;
-  /** Number of completed calls */
-  completedCalls: number;
-  /** Average call duration */
-  averageDuration: number;
-  /** Maximum call duration */
-  maxDuration: number;
-  /** Hanging call details */
-  hangingCallDetails: Array<{
-    functionName: string;
-    duration: number;
-    fileName: string;
-    lineNumber: number;
-    metadata?: Record<string, any>;
-  }>;
-  /** Output files */
-  outputFiles: {
-    dataFile: string;
-    reportFile: string;
-  };
-  /** Additional summary/metadata fields */
-  summary: {
-    totalSnapshots: number;
-    totalHangingCalls: number;
-    totalCompletedCalls: number;
-    averageDuration: number;
-    maxDuration: number;
-    startTime: number;
-    endTime: number;
-    config: TestMonitorConfig;
-  };
-}
+import type { TestMonitorConfig, TestMonitoringResult } from '../types/test-monitoring';
 
 // ============================================================================
 // DEFAULT CONFIGURATION
@@ -123,7 +46,7 @@ export class TestMonitor {
   private config: TestMonitorConfig;
   private startTime: number = 0;
   private isMonitoring: boolean = false;
-  private snapshots: EventLoopSnapshot[] = [];
+  private snapshots: any[] = []; // EventLoopSnapshot[] is removed
 
   constructor(config: Partial<TestMonitorConfig> = {}) {
     this.config = { ...DEFAULT_TEST_MONITOR_CONFIG, ...config };
@@ -151,7 +74,7 @@ export class TestMonitor {
     }
 
     // Configure event loop monitoring
-    const eventLoopConfig: Partial<HangingDetectionConfig> = {
+    const eventLoopConfig: any = { // HangingDetectionConfig is removed
       timeoutThreshold: this.config.hangingThreshold,
       memoryThreshold: this.config.memoryThreshold,
       cpuThreshold: this.config.cpuThreshold,
@@ -487,10 +410,7 @@ export class TestMonitor {
       averageDuration: 0,
       maxDuration: 0,
       hangingCallDetails: [],
-      outputFiles: {
-        dataFile: join('fossils/monitoring/metrics.json'),
-        reportFile: join(this.config.outputDir, 'monitoring.report.md'),
-      },
+      outputFiles: { dataFile: '', reportFile: '' },
       summary: {
         totalSnapshots: 0,
         totalHangingCalls: 0,
@@ -499,8 +419,12 @@ export class TestMonitor {
         maxDuration: 0,
         startTime: 0,
         endTime: 0,
-        config: this.config
-      }
+        config: {} as TestMonitorConfig
+      },
+      memoryUsage: 0,
+      cpuUsage: 0,
+      outputPath: '',
+      error: 'Test monitoring failed'
     };
   }
 }

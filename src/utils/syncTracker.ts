@@ -4,6 +4,8 @@ import { issueExists } from './cli';
 import { createFossilIssue } from './fossilIssue';
 import { isTestMode } from '../cli/repo-orchestrator';
 import { GitHubCLICommands } from './githubCliCommands';
+import { parseJsonSafe } from '@/utils/json';
+import { getCurrentRepoOwner, getCurrentRepoName } from '@/utils/cli';
 
 async function runGh(params: { cmd: string; owner: string; repo: string }) {
   const { cmd, owner, repo } = params;
@@ -57,7 +59,7 @@ async function getIssueByTitle(params: { owner: string; repo: string; title: str
   const result = await commands.listIssues({ state: 'all' });
   if (!result.success) return null;
   try {
-    const arr = JSON.parse(result.stdout);
+    const arr = parseJsonSafe(result.stdout, 'syncTracker:result.stdout') as any[];
     for (const issue of arr) {
       if (issue.title.trim() === title.trim()) {
         return { number: String(issue.number), state: issue.state };
@@ -195,16 +197,27 @@ export async function syncTrackerWithGitHub(options: {
   // --- 2. Parse fossils/project_status.yml ---
   const projectStatus = yaml.load(fs.readFileSync(options.projectStatusYmlPath, "utf8")) as any;
   // --- 3. Ensure milestones exist ---
-  const uniqueSections = Array.from(new Set(tasks.map(t => t.section)));
+  const uniqueSections = Array.from(new Set(tasks.map((task) => task.section))).map((section, i, arr) => {
+    if (i % 10 === 0 || i === arr.length - 1) {
+      console.log(`🔄 Processing section ${i + 1} of ${arr.length}`);
+    }
+    return section;
+  });
   const milestoneIds: Record<string, string> = {};
   for (const section of uniqueSections) {
     if (section) {
+      if (uniqueSections.indexOf(section) % 10 === 0 || uniqueSections.indexOf(section) === uniqueSections.length - 1) {
+        console.log(`🔄 Processing milestone section ${uniqueSections.indexOf(section) + 1} of ${uniqueSections.length}`);
+      }
       const msId = await ensureMilestone({ owner: options.owner, repo: options.repo, name: section });
       if (typeof msId === "string" && msId.length > 0) milestoneIds[section] = msId;
     }
   }
   // --- 4. Ensure issues exist, assign milestone/labels, add to project board ---
   for (const task of tasks) {
+    if (tasks.indexOf(task) % 10 === 0 || tasks.indexOf(task) === tasks.length - 1) {
+      console.log(`🔄 Processing tracker task ${tasks.indexOf(task) + 1} of ${tasks.length}`);
+    }
     const msId = String(milestoneIds[task.section] || "");
     if (!task.checked && task.section && msId.length > 0) {
       await ensureIssue({ task, milestoneId: msId, owner: options.owner, repo: options.repo, projectNumber: options.projectNumber });
@@ -214,18 +227,33 @@ export async function syncTrackerWithGitHub(options: {
     }
   }
   // --- 5. Sync missing tests/fossils from fossils/project_status.yml ---
-  if (options.syncTests && projectStatus && projectStatus.modules) {
+  const modulesObj = (projectStatus && typeof projectStatus.modules === 'object') ? projectStatus.modules : {};
+  const entries = Object.entries(modulesObj);
+  if (options.syncTests && entries.length > 0) {
     const testMilestone = String(milestoneIds["Testing & Automation"] || "");
-    for (const moduleKey of Object.keys(projectStatus.modules)) {
-      const module = projectStatus.modules[moduleKey];
-      if (module && Array.isArray(module.files)) {
-        for (const fileObj of module.files) {
+    for (let i = 0; i < entries.length; i++) {
+      const entry = entries[i];
+      if (!entry) continue;
+      if (i % 10 === 0 || i === entries.length - 1) {
+        console.log(`🔄 Processing module entry ${i + 1} of ${entries.length}`);
+      }
+      const [moduleKey, module] = entry;
+      if (module && Array.isArray((module as any).files)) {
+        for (let j = 0; j < (module as any).files.length; j++) {
+          const fileObj = (module as any).files[j];
+          if (j % 10 === 0 || j === (module as any).files.length - 1) {
+            console.log(`🔄 Processing file object ${j + 1} of ${(module as any).files.length}`);
+          }
           const fileName = Object.keys(fileObj)[0] || "";
           const fileData = fileObj[fileName];
           if (!fileData) continue;
           // Missing tests
           if (Array.isArray(fileData.functions) && typeof fileData.tests === "undefined" && testMilestone.length > 0) {
-            for (const func of fileData.functions) {
+            for (let k = 0; k < fileData.functions.length; k++) {
+              if (k % 10 === 0 || k === fileData.functions.length - 1) {
+                console.log(`🔄 Processing function ${k + 1} of ${fileData.functions.length}`);
+              }
+              const func = fileData.functions[k];
               await ensureTestOrFossilIssue({ item: { type: "test", name: func, file: fileName }, milestoneId: testMilestone, owner: options.owner, repo: options.repo, projectNumber: options.projectNumber });
             }
           }
