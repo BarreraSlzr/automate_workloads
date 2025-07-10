@@ -589,7 +589,11 @@ bun run src/cli/llm-usage.ts --local-backend llama.cpp --prefer-local
 In code:
 ```typescript
 import { LLMService } from '../src/services/llm';
-const llmService = new LLMService();
+const llmService = new LLMService({
+  // Required owner/repo parameters (prevents circular dependency)
+  owner: 'BarreraSlzr',
+  repo: 'automate_workloads'
+});
 llmService.setRoutingPreference('auto'); // or 'local', 'cloud'
 const result = await llmService.callLLM({
   model: 'gpt-4',

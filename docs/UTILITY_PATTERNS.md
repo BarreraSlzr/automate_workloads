@@ -1,3 +1,9 @@
+# 2025-07 Refactor
+
+- All utility patterns are now strictly canonical (no direct execSync, JSON.parse, or deprecated patterns)
+- The validator enforces canonical usage project-wide, with a single exception for parseJsonSafe
+- See [Canonical Fossil Management Guide](./CANONICAL_FOSSIL_MANAGEMENT_GUIDE.md) for details
+
 # 🔧 Utility Patterns & Reuse Guidelines
 
 ## 📋 Overview

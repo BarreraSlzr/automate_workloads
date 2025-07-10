@@ -196,6 +196,10 @@ const vscodeAI = new VSCodeAIService({
 
 // Create LLM service
 const llmService = new LLMService({
+  // Required owner/repo parameters (prevents circular dependency)
+  owner: 'BarreraSlzr',
+  repo: 'automate_workloads',
+  
   enableLocalLLM: true,
   enableFossilization: true
 });
@@ -304,6 +308,10 @@ try {
   
   // Fallback to regular LLM service
   const llmService = new LLMService({
+    // Required owner/repo parameters (prevents circular dependency)
+    owner: 'BarreraSlzr',
+    repo: 'automate_workloads',
+    
     enableLocalLLM: false,
     enableFossilization: true
   });

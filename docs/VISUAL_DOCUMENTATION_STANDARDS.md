@@ -66,6 +66,8 @@ graph LR
     style G fill:#e8f5e8
 ```
 
+> **Note:** All steps use canonical utilities and are enforced by the validator. Deprecated patterns (direct execSync, JSON.parse, ad-hoc scripts) are blocked.
+
 ### 2. System Architecture Diagrams
 
 #### Component Architecture
@@ -99,6 +101,8 @@ graph TB
     style F fill:#fff3e0
 ```
 
+> **Note:** All steps use canonical utilities and are enforced by the validator. Deprecated patterns (direct execSync, JSON.parse, ad-hoc scripts) are blocked.
+
 ### 3. Data Flow Diagrams
 
 #### Fossil Publication Flow
@@ -116,6 +120,8 @@ sequenceDiagram
     Pub->>GitHub: Update issue body
     Pub->>Fossil: Store outputs
 ```
+
+> **Note:** All steps use canonical utilities and are enforced by the validator. Deprecated patterns (direct execSync, JSON.parse, ad-hoc scripts) are blocked.
 
 ### 4. Decision Trees
 
@@ -138,6 +144,8 @@ graph TD
     style G fill:#e8f5e8
     style H fill:#fff3e0
 ```
+
+> **Note:** All steps use canonical utilities and are enforced by the validator. Deprecated patterns (direct execSync, JSON.parse, ad-hoc scripts) are blocked.
 
 ## 📝 Issue Body Visual Standards
 
@@ -173,6 +181,8 @@ sequenceDiagram
     CI->>Dev: Report results
 ```
 
+> **Note:** All steps use canonical utilities and are enforced by the validator. Deprecated patterns (direct execSync, JSON.parse, ad-hoc scripts) are blocked.
+
 ### Checklist
 - [ ] [ ] Task 1
 - [ ] [ ] Task 2
@@ -188,6 +198,8 @@ graph LR
     style A fill:#e3f2fd
     style D fill:#ffebee
 ```
+
+> **Note:** All steps use canonical utilities and are enforced by the validator. Deprecated patterns (direct execSync, JSON.parse, ad-hoc scripts) are blocked.
 
 ### Success Metrics
 - [ ] Metric 1: [target value]
@@ -213,6 +225,8 @@ graph LR
     style D fill:#e8f5e8
 ```
 
+> **Note:** All steps use canonical utilities and are enforced by the validator. Deprecated patterns (direct execSync, JSON.parse, ad-hoc scripts) are blocked.
+
 ### Proposed Automation
 ```mermaid
 graph LR
@@ -224,6 +238,8 @@ graph LR
     style A fill:#e3f2fd
     style E fill:#e8f5e8
 ```
+
+> **Note:** All steps use canonical utilities and are enforced by the validator. Deprecated patterns (direct execSync, JSON.parse, ad-hoc scripts) are blocked.
 
 ### Implementation Steps
 1. **Analysis Phase**
@@ -242,6 +258,8 @@ graph LR
        C --> D[Verification]
    ```
 
+> **Note:** All steps use canonical utilities and are enforced by the validator. Deprecated patterns (direct execSync, JSON.parse, ad-hoc scripts) are blocked.
+
 ### Risk Assessment
 ```mermaid
 graph TD
@@ -250,6 +268,8 @@ graph TD
     B --> D[Mitigation: Backup]
     C --> D
 ```
+
+> **Note:** All steps use canonical utilities and are enforced by the validator. Deprecated patterns (direct execSync, JSON.parse, ad-hoc scripts) are blocked.
 
 ### Success Criteria
 - [ ] Automation reduces manual effort by [X]%
@@ -284,6 +304,8 @@ graph TD
     style F fill:#e3f2fd
 ```
 
+> **Note:** All steps use canonical utilities and are enforced by the validator. Deprecated patterns (direct execSync, JSON.parse, ad-hoc scripts) are blocked.
+
 ### 2. Fossil Relationship Visualization
 
 ```mermaid
@@ -313,6 +335,8 @@ graph TB
     style A fill:#fff3e0
     style D fill:#e8f5e8
 ```
+
+> **Note:** All steps use canonical utilities and are enforced by the validator. Deprecated patterns (direct execSync, JSON.parse, ad-hoc scripts) are blocked.
 
 ## 🔧 Technical Implementation
 

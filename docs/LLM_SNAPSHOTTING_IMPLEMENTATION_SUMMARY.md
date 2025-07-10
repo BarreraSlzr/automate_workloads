@@ -204,6 +204,10 @@ fossils/llm_insights/                         # Fossil storage directory
 ### 1. Basic LLM Call with Tracing
 ```typescript
 const service = new LLMService({
+  // Required owner/repo parameters (prevents circular dependency)
+  owner: 'BarreraSlzr',
+  repo: 'automate_workloads',
+  
   enableComprehensiveTracing: true,
   enableFossilization: true,
   enableConsoleOutput: true

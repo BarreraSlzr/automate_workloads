@@ -32,6 +32,8 @@ graph TD
     style J fill:#e1f5fe
 ```
 
+> **Note:** All steps use canonical utilities and are enforced by the validator. Deprecated patterns (direct execSync, JSON.parse, ad-hoc scripts) are blocked.
+
 ## 🏗️ Architecture
 
 ### System Components
@@ -77,6 +79,8 @@ graph LR
     style F fill:#fff3e0
     style I fill:#ffebee
 ```
+
+> **Note:** All steps use canonical utilities and are enforced by the validator. Deprecated patterns (direct execSync, JSON.parse, ad-hoc scripts) are blocked.
 
 ### Data Flow
 

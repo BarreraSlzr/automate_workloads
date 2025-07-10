@@ -1,268 +1,185 @@
 # Type and Schema Patterns
 
-This document describes the type and schema patterns used throughout the codebase for promoting reuse, centralization, and type safety.
+This document defines the canonical patterns for type definitions, schema validation, and parameter passing across the codebase.
 
-## 🏗️ Architecture Overview
+## Core Principles
 
-### Core Principles
-- **Centralized Types**: All types are defined in `src/types/` for reuse across the codebase
-- **Base Fossil Pattern**: All fossils extend a common `BaseFossil` interface
-- **Zod Validation**: CLI arguments and external data are validated using Zod schemas
-- **Type Safety**: Full TypeScript support with compile-time checking
+1. **Centralized Type Definitions**: All types are defined in `src/types/` for reuse
+2. **Zod Schema Validation**: All external inputs are validated with Zod schemas
+3. **PARAMS OBJECT PATTERN**: All functions use a single params object, validated by Zod
+4. **Owner/Repo Detection**: Always use centralized utilities, never hardcode values
 
-## 📁 Type Organization
+## PARAMS OBJECT PATTERN
 
-### Base Types (`src/types/base-fossil.ts`)
+All functions must accept a single params object that includes all necessary parameters:
+
 ```typescript
-export interface BaseFossil {
-  type: string;
-  source: string;
-  createdBy: string;
-  createdAt: string;
-  fossilId?: string;
-  fossilHash?: string;
-  metadata?: Record<string, any>;
+// ✅ Correct: Single params object with Zod validation
+interface MyFunctionParams {
+  owner: string;
+  repo: string;
+  data: any;
+  options?: Partial<MyOptions>;
+}
+
+function myFunction(params: MyFunctionParams): Promise<Result> {
+  MyFunctionParamsSchema.parse(params);
+  // ... implementation
+}
+
+// ❌ Incorrect: Multiple parameters or loose strings
+function myFunction(owner: string, repo: string, data: any): Promise<Result> {
+  // ... implementation
 }
 ```
 
-**Usage**: All fossils extend this base interface to ensure consistency.
+## Owner/Repo Handling Patterns
 
-### CLI Argument Schemas (`src/types/cli-args.ts`)
+### ✅ Canonical Pattern (CLI Entrypoints)
+
+**CLI entrypoints and orchestrators** should detect owner/repo at the top level and pass them down:
+
 ```typescript
-export const BaseCLIArgsSchema = z.object({
-  dryRun: z.boolean().default(false),
-  test: z.boolean().default(false),
-  verbose: z.boolean().default(false),
-  help: z.boolean().default(false),
-});
-```
-
-**Usage**: Provides type-safe CLI argument parsing with validation.
-
-### GitHub CLI Schemas (`src/types/github-cli-schemas.ts`)
-```typescript
-export const GitHubIssueCreateSchema = z.object({
-  owner: z.string(),
-  repo: z.string(),
-  title: z.string(),
-  body: z.string().optional(),
-  // ... other fields
-});
-```
-
-**Usage**: Validates GitHub CLI command parameters and provides type safety.
-
-## 🔄 Pattern Extensions
-
-### 1. Creating New Fossil Types
-
-**Step 1**: Define the fossil interface extending `BaseFossil`
-```typescript
-// src/types/my-fossil.ts
-import { BaseFossil } from './base-fossil';
-
-export interface MyFossil extends BaseFossil {
-  type: 'my_fossil';
-  title: string;
-  content: string;
-  category: 'example' | 'test';
-}
-```
-
-**Step 2**: Add to the main types index
-```typescript
-// src/types/index.ts
-export * from './my-fossil';
-```
-
-**Step 3**: Create YAML/JSON storage
-```yaml
-# src/types/my-fossil.yaml
-type: my_fossil
-source: llm-human-collab
-createdBy: llm+human
-createdAt: 2024-07-01T12:00:00Z
-title: "My Fossil Title"
-content: "Fossil content here"
-category: example
-```
-
-### 2. Creating New CLI Argument Schemas
-
-**Step 1**: Define the schema
-```typescript
-// src/types/cli-args.ts
-export const MyCLIArgsSchema = BaseCLIArgsSchema.extend({
-  inputPath: z.string(),
-  outputPath: z.string().optional(),
-  format: z.enum(['yaml', 'json', 'markdown']).default('yaml'),
-});
-```
-
-**Step 2**: Export the type
-```typescript
-export type MyCLIArgs = z.infer<typeof MyCLIArgsSchema>;
-```
-
-**Step 3**: Use in scripts
-```typescript
-import { parseCLIArgs, MyCLIArgsSchema } from '../src/types/cli-args';
-
-const args = parseCLIArgs(MyCLIArgsSchema, process.argv.slice(2));
-```
-
-### 3. Creating New GitHub CLI Schemas
-
-**Step 1**: Define the schema
-```typescript
-// src/types/github-cli-schemas.ts
-export const GitHubMyOperationSchema = z.object({
-  owner: z.string(),
-  repo: z.string(),
-  // ... operation-specific fields
-});
-```
-
-**Step 2**: Add to GitHubCLICommands utility
-```typescript
-// src/utils/githubCliCommands.ts
-static buildMyOperationCommand(params: GitHubMyOperation): string[] {
-  const validated = GitHubMyOperationSchema.parse(params);
-  const args = ['my-operation', '--repo', `${validated.owner}/${validated.repo}`];
-  // ... build command args
-  return args;
-}
-```
-
-## 🛠️ Utility Functions
-
-### CLI Argument Parsing
-```typescript
-import { parseCLIArgs } from '../src/types/cli-args';
-
-// Parse and validate CLI arguments
-const args = parseCLIArgs(MyCLIArgsSchema, process.argv.slice(2));
-```
-
-### GitHub CLI Commands
-```typescript
-import { GitHubCLICommands } from '../src/utils/githubCliCommands';
-
-// Build and execute GitHub CLI commands
-const args = GitHubCLICommands.buildIssueCreateCommand({
-  owner: 'barreraslzr',
-  repo: 'automate_workloads',
-  title: 'My Issue',
-  body: 'Issue body'
-});
-
-const result = GitHubCLICommands.executeCommand(args);
-```
-
-### Fossil Management
-```typescript
-import { yamlToJson } from '../src/utils/yamlToJson';
-import { roadmapToMarkdown } from '../src/utils/roadmapToMarkdown';
-
-// Load fossil from YAML
-const fossil = yamlToJson<MyFossil>('src/types/my-fossil.yaml');
-
-// Convert to Markdown
-const markdown = roadmapToMarkdown(fossil);
-```
-
-## 📋 Best Practices
-
-### 1. Type Safety
-- Always use TypeScript interfaces for fossils
-- Validate external data with Zod schemas
-- Use type inference from schemas
-
-### 2. Reusability
-- Extend base types instead of duplicating
-- Create generic utilities for common operations
-- Centralize shared types in `src/types/`
-
-### 3. Validation
-- Use Zod for runtime validation
-- Provide meaningful error messages
-- Handle validation failures gracefully
-
-### 4. Documentation
-- Document all new types and schemas
-- Include usage examples
-- Update this document when adding new patterns
-
-## 🔧 Migration Guide
-
-### From Manual CLI Parsing
-**Before**:
-```typescript
-const args = process.argv.slice(2);
-const dryRun = args.includes('--dry-run');
-const test = args.includes('--test');
-```
-
-**After**:
-```typescript
-import { parseCLIArgs, BaseCLIArgsSchema } from '../src/types/cli-args';
-
-const args = parseCLIArgs(BaseCLIArgsSchema, process.argv.slice(2));
-// args.dryRun, args.test are now type-safe
-```
-
-### From Direct GitHub CLI Calls
-**Before**:
-```typescript
-execSync(`gh issue create --repo ${owner}/${repo} --title "${title}" --body "${body}"`);
-```
-
-**After**:
-```typescript
-import { GitHubCLICommands } from '../src/utils/githubCliCommands';
-
-const args = GitHubCLICommands.buildIssueCreateCommand({
-  owner, repo, title, body
-});
-const result = GitHubCLICommands.executeCommand(args);
-```
-
-## 🚀 Future Extensions
-
-### Planned Patterns
-- **Database Schemas**: Zod schemas for database operations
-- **API Schemas**: Request/response validation for external APIs
-- **Configuration Schemas**: Environment and config file validation
-- **Test Schemas**: Test data and fixture validation
-
-### Integration Points
-- **CI/CD**: Schema validation in build pipelines
-- **Documentation**: Auto-generated API docs from schemas
-- **Testing**: Type-safe test utilities
-- **Monitoring**: Schema validation in production
-
-## Schema-Driven Deduplication, Fossilization Metrics, and Reporting
-
-- **Deduplication**: Extend types and schemas to include unique identifiers (e.g., issue number, milestone title, label name) for explicit linkage between roadmap tasks and GitHub artifacts.
-- **Fossilization Percentage**: Add utility functions and CLI patterns to calculate the percentage of tasks that are fossilized (i.e., have corresponding GitHub issues/milestones/labels).
-- **Reporting**: Surface fossilization metrics and recommendations in CLI output and reports, using type-safe patterns.
-- **Example Type Extension**:
-  ```typescript
-  export interface RoadmapTask {
-    task: string;
-    status: string;
-    issues?: number[];
-    milestones?: string[];
-    labels?: string[];
-    // ...
+// In CLI entrypoints (src/cli/, scripts/)
+function detectOwnerRepo(options: any = {}): { owner: string; repo: string } {
+  if (options.owner && options.repo) return { owner: options.owner, repo: options.repo };
+  const owner = getCurrentRepoOwner();
+  const repo = getCurrentRepoName();
+  if (owner && repo) return { owner, repo };
+  // Fallback for CI/local development
+  if (process.env.CI) {
+    return { owner: 'BarreraSlzr', repo: 'automate_workloads' };
+  } else {
+    return { owner: 'emmanuelbarrera', repo: 'automate_workloads' };
   }
-  ```
-- **Example CLI Output**:
-  ```
-  Fossilization: 75% (6/8 tasks have issues)
-  Recommendations: Sync missing tasks, create missing labels
-  ```
+}
 
----
+async function main() {
+  const { owner, repo } = detectOwnerRepo(parsedArgs);
+  OwnerRepoSchema.parse({ owner, repo });
+  
+  // Pass owner/repo to all downstream utilities
+  const result = await someUtility({ owner, repo, ...otherParams });
+}
+```
 
-This pattern system provides a foundation for building type-safe, maintainable, and extensible automation tools. Follow these patterns when adding new features to ensure consistency and quality across the codebase. 
+### ✅ Canonical Pattern (Fossil/LLM Utilities)
+
+**Fossil and LLM utilities** must receive owner/repo as params, never detect them internally:
+
+```typescript
+// In fossil/LLM utilities (src/services/, src/utils/)
+export class LLMService {
+  constructor(config: Partial<LLMOptimizationConfig> & { owner: string; repo: string }) {
+    const { owner, repo, ...llmConfig } = config;
+    // ... use owner/repo for fossilization
+  }
+}
+
+export async function fossilizeLLMInsight(params: {
+  owner: string;
+  repo: string;
+  // ... other params
+}): Promise<any> {
+  OwnerRepoSchema.parse(params);
+  // ... implementation
+}
+```
+
+### ❌ Anti-Pattern (Circular Dependency)
+
+**NEVER** call repo detection utilities from within fossil/LLM code:
+
+```typescript
+// ❌ WRONG: This causes infinite recursion and 100% CPU usage
+export class LLMService {
+  private async initializeFossilization(): Promise<void> {
+    // DON'T DO THIS: Calling getCurrentRepoName from within fossilization
+    const repo = getCurrentRepoName(); // This triggers fossilization again!
+    this.fossilManager = await createLLMFossilManager({
+      owner: 'hardcoded',
+      repo, // This causes circular dependency!
+    });
+  }
+}
+
+// ❌ WRONG: Fossil utilities calling repo detection
+export async function fossilizeLLMInsight(params: any): Promise<any> {
+  // DON'T DO THIS: Detecting repo inside fossil utility
+  const owner = getCurrentRepoOwner(); // This can trigger fossilization!
+  const repo = getCurrentRepoName();   // This causes infinite recursion!
+  // ... implementation
+}
+```
+
+## Schema Import Patterns
+
+Always import schemas from the centralized location:
+
+```typescript
+// ✅ Correct: Import from centralized schemas
+import { OwnerRepoSchema, CreateCommandSchema } from '../types/schemas';
+
+// ❌ Incorrect: Define schemas locally or import from wrong location
+const OwnerRepoSchema = z.object({ owner: z.string(), repo: z.string() });
+```
+
+## Error Handling Patterns
+
+All functions must handle errors gracefully and provide meaningful error messages:
+
+```typescript
+// ✅ Correct: Proper error handling with context
+async function myFunction(params: MyParams): Promise<Result> {
+  try {
+    MyParamsSchema.parse(params);
+    // ... implementation
+  } catch (error) {
+    if (error instanceof ZodError) {
+      throw new Error(`Invalid parameters: ${error.message}`);
+    }
+    throw new Error(`Function failed: ${error.message}`);
+  }
+}
+```
+
+## Progress/Logging Patterns
+
+All batch/async operations must include progress/logging:
+
+```typescript
+// ✅ Correct: Progress logging in loops
+for (let i = 0; i < items.length; i++) {
+  if (i % 10 === 0 || i === items.length - 1) {
+    console.log(`🔄 Processing ${i + 1} of ${items.length}`);
+  }
+  // ... process item
+}
+
+// ✅ Correct: Progress logging in map operations
+const results = items.map((item, index) => {
+  if (index % 10 === 0 || index === items.length - 1) {
+    console.log(`🔄 Processing ${index + 1} of ${items.length}`);
+  }
+  return processItem(item);
+});
+```
+
+## Testing Patterns
+
+All new functionality must include tests:
+
+```typescript
+// ✅ Correct: Comprehensive test coverage
+describe('myFunction', () => {
+  it('should validate params correctly', () => {
+    const validParams = { owner: 'test', repo: 'test', data: {} };
+    expect(() => myFunction(validParams)).not.toThrow();
+  });
+
+  it('should reject invalid params', () => {
+    const invalidParams = { owner: '', repo: '', data: null };
+    expect(() => myFunction(invalidParams)).toThrow();
+  });
+});
+``` 
