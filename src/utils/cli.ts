@@ -5,43 +5,12 @@
 
 import { execSync, spawnSync } from "child_process";
 import type { ServiceResponse } from "../types";
+import { parseJsonSafe } from '@/utils/json';
+import type { CLIExecuteOptions, CLIExecuteResult } from '@/types/cli';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
 
-// TEST VIOLATION: This type should be in src/types/ but is here to test validation
-export interface TestViolationType {
-  name: string;
-  value: number;
-  description: string;
-}
-
-/**
- * Options for executing CLI commands
- */
-export interface CLIExecuteOptions {
-  /** Whether to capture stderr in the output */
-  captureStderr?: boolean;
-  /** Whether to throw on non-zero exit code */
-  throwOnError?: boolean;
-  /** Working directory for the command */
-  cwd?: string;
-  /** Environment variables to set */
-  env?: Record<string, string>;
-  /** Timeout in milliseconds */
-  timeout?: number;
-}
-
-/**
- * Result of CLI command execution
- */
-export interface CLIExecuteResult {
-  /** Command output (stdout) */
-  stdout: string;
-  /** Error output (stderr) */
-  stderr: string;
-  /** Exit code */
-  exitCode: number;
-  /** Whether the command succeeded */
-  success: boolean;
-}
+// Types now imported from '@/types/cli'
 
 /**
  * Executes a shell command synchronously with comprehensive error handling
@@ -54,7 +23,7 @@ export interface CLIExecuteResult {
  * ```typescript
  * const result = executeCommand('gh issue list --json number,title');
  * if (result.success) {
- *   const issues = JSON.parse(result.stdout);
+ *   const issues = parseJsonSafe(result.stdout, 'cli:result.stdout');
  * }
  * ```
  */
@@ -129,7 +98,7 @@ export function executeCommandJSON<T>(
   }
 
   try {
-    return JSON.parse(result.stdout) as T;
+    return parseJsonSafe<T>(result.stdout, 'cli:result.stdout');
   } catch (error) {
     throw new Error(`Failed to parse JSON output: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
@@ -150,7 +119,7 @@ export function executeCommandJSON<T>(
  */
 export function safeParseJSON<T>(jsonString: string, context: string = 'JSON'): T {
   try {
-    return JSON.parse(jsonString) as T;
+    return parseJsonSafe<T>(jsonString, 'cli:jsonString');
   } catch (error) {
     throw new Error(`Failed to parse ${context}: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
@@ -228,7 +197,7 @@ export function formatOutput(output: string, format: 'text' | 'json' | 'table' =
   switch (format) {
     case 'json':
       try {
-        const parsed = JSON.parse(output);
+        const parsed = parseJsonSafe(output, 'cli:output');
         return JSON.stringify(parsed, null, 2);
       } catch {
         return output;
@@ -236,7 +205,7 @@ export function formatOutput(output: string, format: 'text' | 'json' | 'table' =
     case 'table':
       // Simple table formatting for JSON arrays
       try {
-        const parsed = JSON.parse(output);
+        const parsed = parseJsonSafe(output, 'cli:output');
         if (Array.isArray(parsed) && parsed.length > 0) {
           const headers = Object.keys(parsed[0]);
           const table = [
@@ -265,7 +234,7 @@ export function formatOutput(output: string, format: 'text' | 'json' | 'table' =
  * @example
  * ```typescript
  * const result = executeCommand('gh issue list --json number,title');
- * const response = createServiceResponse(result, JSON.parse(result.stdout));
+ * const response = createServiceResponse(result, parseJsonSafe(result.stdout, 'cli:result.stdout'));
  * ```
  */
 export function createServiceResponse<T>(
@@ -303,7 +272,7 @@ export function issueExists(params: { owner: string; repo: string; title: string
       { captureStderr: true, throwOnError: false }
     );
     if (!result.success) return false;
-    const issues = JSON.parse(result.stdout);
+    const issues = parseJsonSafe<any>(result.stdout, 'cli:result.stdout');
     return issues.some((issue: any) => issue.title.trim() === title.trim());
   } catch {
     return false;
@@ -388,4 +357,251 @@ export function getCurrentRepoInfo(): { owner: string; repo: string } {
     owner: getCurrentRepoOwner(),
     repo: getCurrentRepoName()
   };
+} 
+
+export function noop() {} 
+
+/**
+ * Analyzes file dependencies for batch planning
+ * 
+ * @param {string[]} files - List of files to analyze
+ * @returns {Map<string, string[]>} Map of file to its dependencies
+ * 
+ * @example
+ * ```typescript
+ * const dependencies = analyzeFileDependencies(['src/utils/cli.ts', 'src/types/cli.ts']);
+ * ```
+ */
+export function analyzeFileDependencies(files: string[]): Map<string, string[]> {
+  const dependencies = new Map<string, string[]>();
+  
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    
+    if (!file) continue;
+    
+    // Progress logging for CLI UX/DX
+    if (i % 10 === 0 || i === files.length - 1) {
+      console.log(`🔍 Analyzing dependencies: ${i + 1}/${files.length} files`);
+    }
+    
+    const fileDeps: string[] = [];
+    
+    try {
+      // Read file content to analyze imports
+      const content = readFileSync(file, 'utf8');
+      
+      // Find import statements
+      const importRegex = /import\s+(?:.*?\s+from\s+)?['"]([^'"]+)['"]/g;
+      let match;
+      
+      while ((match = importRegex.exec(content)) !== null) {
+        const importPath = match[1];
+        
+        if (!importPath) continue;
+        
+        // Resolve relative imports to absolute paths
+        if (importPath.startsWith('.')) {
+          const resolvedPath = resolveImportPath(file, importPath);
+          if (resolvedPath && files.includes(resolvedPath)) {
+            fileDeps.push(resolvedPath);
+          }
+        } else if (importPath.startsWith('@/')) {
+          // Handle path aliases
+          const resolvedPath = resolveAliasPath(importPath);
+          if (resolvedPath && files.includes(resolvedPath)) {
+            fileDeps.push(resolvedPath);
+          }
+        }
+      }
+      
+      dependencies.set(file, fileDeps);
+    } catch (error) {
+      // If file can't be read, assume no dependencies
+      dependencies.set(file, []);
+    }
+  }
+  
+  return dependencies;
+}
+
+/**
+ * Resolves relative import paths to absolute paths
+ */
+function resolveImportPath(sourceFile: string, importPath: string): string | null {
+  try {
+    const { resolve, dirname } = require('path');
+    const sourceDir = dirname(sourceFile);
+    const resolvedPath = resolve(sourceDir, importPath);
+    
+    // Add common extensions if not present
+    const extensions = ['.ts', '.js', '.json'];
+    for (const ext of extensions) {
+      if (resolvedPath.endsWith(ext)) {
+        return resolvedPath;
+      }
+    }
+    
+    // Try with extensions
+    for (const ext of extensions) {
+      try {
+        const fullPath = resolvedPath + ext;
+        require('fs').accessSync(fullPath);
+        return fullPath;
+      } catch {
+        // Continue to next extension
+      }
+    }
+    
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Resolves path aliases (e.g., @/utils) to actual file paths
+ */
+function resolveAliasPath(aliasPath: string): string | null {
+  const aliasMap: Record<string, string> = {
+    '@/': 'src/',
+    '@/utils/': 'src/utils/',
+    '@/types/': 'src/types/',
+    '@/services/': 'src/services/',
+    '@/cli/': 'src/cli/',
+  };
+  
+  for (const [alias, path] of Object.entries(aliasMap)) {
+    if (aliasPath.startsWith(alias)) {
+      return aliasPath.replace(alias, path);
+    }
+  }
+  
+  return null;
+}
+
+/**
+ * Creates dependency-aware batch plans
+ * 
+ * @param {string[]} files - Files to batch
+ * @param {Map<string, string[]>} dependencies - File dependencies
+ * @param {number} maxBatchSize - Maximum files per batch
+ * @returns {string[][]} Array of file batches
+ * 
+ * @example
+ * ```typescript
+ * const dependencies = analyzeFileDependencies(files);
+ * const batches = createDependencyAwareBatches(files, dependencies, 5);
+ * ```
+ */
+export function createDependencyAwareBatches(
+  files: string[],
+  dependencies: Map<string, string[]>,
+  maxBatchSize: number = 5
+): string[][] {
+  const batches: string[][] = [];
+  const processed = new Set<string>();
+  const dependencyGraph = new Map<string, Set<string>>();
+  
+  // Build dependency graph
+  console.log('📊 Building dependency graph...');
+  for (const [file, deps] of dependencies) {
+    dependencyGraph.set(file, new Set(deps));
+  }
+  
+  // Topological sort to find dependency order
+  console.log('🔄 Performing topological sort...');
+  const sortedFiles = topologicalSort(files, dependencyGraph);
+  
+  // Create batches respecting dependencies
+  console.log('📦 Creating dependency-aware batches...');
+  let currentBatch: string[] = [];
+  
+  for (let i = 0; i < sortedFiles.length; i++) {
+    const file = sortedFiles[i];
+    if (!file || processed.has(file)) continue;
+    
+    // Progress logging for CLI UX/DX
+    if (i % 10 === 0 || i === sortedFiles.length - 1) {
+      console.log(`📦 Processing file ${i + 1}/${sortedFiles.length}: ${file}`);
+    }
+    
+    // Check if all dependencies are in previous batches
+    const fileDeps = dependencyGraph.get(file) || new Set();
+    const unprocessedDeps = Array.from(fileDeps).filter(dep => !processed.has(dep));
+    
+    if (unprocessedDeps.length === 0) {
+      // All dependencies processed, can add to current batch
+      if (currentBatch.length >= maxBatchSize) {
+        batches.push([...currentBatch]);
+        currentBatch = [];
+      }
+      currentBatch.push(file);
+      processed.add(file);
+    } else {
+      // Dependencies not processed, start new batch
+      if (currentBatch.length > 0) {
+        batches.push([...currentBatch]);
+        currentBatch = [];
+      }
+      
+      // Add dependencies first
+      for (const dep of unprocessedDeps) {
+        if (!processed.has(dep) && currentBatch.length < maxBatchSize) {
+          currentBatch.push(dep);
+          processed.add(dep);
+        }
+      }
+      
+      // Then add current file
+      if (currentBatch.length < maxBatchSize) {
+        currentBatch.push(file);
+        processed.add(file);
+      }
+    }
+  }
+  
+  // Add remaining files
+  if (currentBatch.length > 0) {
+    batches.push(currentBatch);
+  }
+  
+  console.log(`✅ Created ${batches.length} dependency-aware batches`);
+  return batches;
+}
+
+/**
+ * Performs topological sort on files based on dependencies
+ */
+function topologicalSort(files: string[], dependencyGraph: Map<string, Set<string>>): string[] {
+  const visited = new Set<string>();
+  const temp = new Set<string>();
+  const result: string[] = [];
+  
+  function visit(file: string) {
+    if (temp.has(file)) {
+      throw new Error(`Circular dependency detected: ${file}`);
+    }
+    
+    if (visited.has(file)) return;
+    
+    temp.add(file);
+    
+    const deps = dependencyGraph.get(file) || new Set();
+    for (const dep of deps) {
+      visit(dep);
+    }
+    
+    temp.delete(file);
+    visited.add(file);
+    result.push(file);
+  }
+  
+  for (const file of files) {
+    if (!visited.has(file)) {
+      visit(file);
+    }
+  }
+  
+  return result;
 } 

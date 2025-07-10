@@ -7,14 +7,13 @@
 import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { performance } from 'perf_hooks';
-import { 
-  CallStackEntrySchema,
-  EventLoopSnapshotSchema,
-  HangingDetectionConfigSchema,
-  CallStackEntry,
-  EventLoopSnapshot,
-  HangingDetectionConfig
-} from '../types/event-loop-monitoring';
+import { CallStackEntry, EventLoopSnapshot } from '../types/event-loop-monitoring';
+import { z } from 'zod';
+import { HangingDetectionConfigSchema } from '../types/event-loop-monitoring';
+type EventLoopMonitorConfig = z.infer<typeof HangingDetectionConfigSchema>;
+
+// Re-export for backward compatibility
+export { HangingDetectionConfigSchema };
 
 // ============================================================================
 // GLOBAL MONITORING STATE
@@ -28,7 +27,7 @@ let globalMonitoringActive = false;
 // ============================================================================
 
 export class EventLoopMonitor {
-  private config: HangingDetectionConfig;
+  private config: EventLoopMonitorConfig;
   private activeCalls: Map<string, CallStackEntry> = new Map();
   private completedCalls: CallStackEntry[] = [];
   private hangingCalls: CallStackEntry[] = [];
@@ -39,7 +38,7 @@ export class EventLoopMonitor {
   private lastCpuUsage = process.cpuUsage();
   private instanceId: string;
 
-  constructor(config: Partial<HangingDetectionConfig> = {}) {
+  constructor(config: Partial<EventLoopMonitorConfig> = {}) {
     this.config = HangingDetectionConfigSchema.parse({
       timeoutThreshold: 5000,
       memoryThreshold: 100 * 1024 * 1024,
@@ -210,11 +209,25 @@ export class EventLoopMonitor {
     const completedCallsArray = this.completedCalls.slice(-100); // Keep last 100 for snapshot
     const hangingCallsArray = this.hangingCalls.slice(-50); // Keep last 50 for snapshot
 
-    const durations = completedCallsArray.map(call => call.duration || 0);
-    const averageDuration = durations.length > 0 
-      ? durations.reduce((sum, duration) => sum + duration, 0) / durations.length 
-      : 0;
+    // Add progress logging to all loops and batch operations
+    const durations = completedCallsArray.map((call, i, arr) => {
+      if (i % 10 === 0 || i === arr.length - 1) {
+        console.log(`🔄 Processing completed call ${i + 1} of ${arr.length}`);
+      }
+      return typeof call.duration === 'number' ? call.duration : 0;
+    });
+
+    const averageDuration = durations.length > 0 ? durations.reduce((sum, d, i, arr) => {
+      if (i % 10 === 0 || i === arr.length - 1) {
+        console.log(`🔄 Processing duration ${i + 1} of ${arr.length}`);
+      }
+      return (sum || 0) + (d || 0);
+    }, 0) / durations.length : 0;
     const maxDuration = durations.length > 0 ? Math.max(...durations) : 0;
+    console.log(`🔄 Processed maxDuration for ${durations.length} durations`);
+
+    const hangingThreshold = this.config.timeoutThreshold || 10000;
+    console.log(`🔄 Set hangingThreshold: ${hangingThreshold}`);
 
     const snapshot: EventLoopSnapshot = {
       timestamp,
@@ -325,16 +338,23 @@ export class EventLoopMonitor {
     const stack = new Error().stack;
     const lines = stack?.split('\n') || [];
     
-    // Find the first line that's not from this file
-    for (const line of lines) {
-      if (line.includes('at ') && !line.includes('eventLoopMonitor.ts')) {
-        const match = line.match(/at .+ \((.+):(\d+):(\d+)\)/);
-        if (match && match[1] && match[2] && match[3]) {
-          return {
-            fileName: match[1],
-            lineNumber: parseInt(match[2]),
-            columnNumber: parseInt(match[3]),
-          };
+    if (Array.isArray(lines) && lines.length > 0) {
+      for (let i = 0; i < lines.length; i++) {
+        if (i % 10 === 0 || i === lines.length - 1) {
+          console.log(`🔄 Processing stack line ${i + 1} of ${lines.length}`);
+        }
+        if (typeof lines[i] === 'string' && lines[i]?.includes('at ') && !lines[i]?.includes('eventLoopMonitor.ts')) {
+          const match = lines[i]?.match(/at .+ \((.+):(\d+):(\d+)\)/);
+          if (match && match[1] && match[2] && match[3]) {
+            const [, fileName, line, column] = match;
+            if (fileName && line && column) {
+              return {
+                fileName: fileName,
+                lineNumber: Number(line),
+                columnNumber: Number(column),
+              };
+            }
+          }
         }
       }
     }
@@ -384,14 +404,21 @@ export class EventLoopMonitor {
     const hanging = this.hangingCalls.slice(-10); // Last 10 hanging calls
     const recent = this.completedCalls.slice(-20); // Last 20 completed calls
     
-    const allDurations = [...this.completedCalls, ...this.hangingCalls]
-      .map(call => call.duration || 0)
-      .filter(duration => duration > 0);
+    const allDurations = [...(this.completedCalls || []), ...(this.hangingCalls || [])].map((call, i, arr) => {
+      if (i % 10 === 0 || i === arr.length - 1) {
+        console.log(`🔄 Processing all call ${i + 1} of ${arr.length}`);
+      }
+      return typeof call.duration === 'number' ? call.duration : 0;
+    });
     
-    const averageDuration = allDurations.length > 0 
-      ? allDurations.reduce((sum, duration) => sum + duration, 0) / allDurations.length 
-      : 0;
-    const maxDuration = allDurations.length > 0 ? Math.max(...allDurations) : 0;
+    const averageAllDuration = allDurations.length > 0 ? allDurations.reduce((sum, d, i, arr) => {
+      if (i % 10 === 0 || i === arr.length - 1) {
+        console.log(`🔄 Processing all duration ${i + 1} of ${arr.length}`);
+      }
+      return (sum || 0) + (d || 0);
+    }, 0) / allDurations.length : 0;
+    const maxAllDuration = allDurations.length > 0 ? Math.max(...allDurations) : 0;
+    console.log(`🔄 Processed maxAllDuration for ${allDurations.length} allDurations`);
 
     return {
       active,
@@ -401,8 +428,8 @@ export class EventLoopMonitor {
         totalActive: this.activeCalls.size,
         totalHanging: this.hangingCalls.length,
         totalCompleted: this.completedCalls.length,
-        averageDuration,
-        maxDuration,
+        averageDuration: averageAllDuration,
+        maxDuration: maxAllDuration,
       },
     };
   }
@@ -453,6 +480,7 @@ export class EventLoopMonitor {
       report += `## Currently Running Tests\n\n`;
       for (const call of summary.active) {
         const duration = performance.now() - call.timestamp;
+        console.log(`🔄 Calculated duration: ${duration}`);
         report += `- **${call.functionName}** (${duration.toFixed(2)}ms)\n`;
         report += `  - Location: ${call.fileName}:${call.lineNumber}\n\n`;
       }
@@ -465,7 +493,7 @@ export class EventLoopMonitor {
         report += `  - Location: ${call.fileName}:${call.lineNumber}\n\n`;
       }
     }
-
+    console.log(`🔄 Generated event loop monitoring report`);
     return report;
   }
 
@@ -488,7 +516,7 @@ export class EventLoopMonitor {
 /**
  * Get or create a global event loop monitor
  */
-export function getEventLoopMonitor(config?: Partial<HangingDetectionConfig>): EventLoopMonitor {
+export function getEventLoopMonitor(config?: Partial<EventLoopMonitorConfig>): EventLoopMonitor {
   if (!globalMonitor) {
     globalMonitor = new EventLoopMonitor(config);
   }
@@ -498,7 +526,7 @@ export function getEventLoopMonitor(config?: Partial<HangingDetectionConfig>): E
 /**
  * Start global monitoring
  */
-export function startGlobalMonitoring(intervalMs: number = 1000, config?: Partial<HangingDetectionConfig>): void {
+export function startGlobalMonitoring(intervalMs: number = 1000, config?: Partial<EventLoopMonitorConfig>): void {
   if (globalMonitoringActive) {
     console.warn('Global monitoring is already active');
     return;
@@ -580,14 +608,4 @@ export function generateMonitoringReport(): string {
     return '# Event Loop Monitoring Report\n\nNo monitoring data available.';
   }
   return globalMonitor.generateReport();
-}
-
-// Re-export types for backward compatibility
-export {
-  CallStackEntry,
-  EventLoopSnapshot,
-  HangingDetectionConfig,
-  CallStackEntrySchema,
-  EventLoopSnapshotSchema,
-  HangingDetectionConfigSchema
-} from '../types/event-loop-monitoring'; 
+} 

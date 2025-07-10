@@ -13,9 +13,15 @@ import { CurateFossilParamsSchema } from '../types';
 export async function curateAndCheck(params: CurateFossilParams): Promise<string> {
   CurateFossilParamsSchema.parse(params);
   const { owner, repo, metadata, verbose, dryRun, type, tags } = params;
-  const inputYaml = ''; // Default empty string since it's not in the interface
-  const outputDir = 'fossils'; // Default value
-  const tag = 'manual'; // Default value
+  const inputYaml = metadata.inputFile || 'fossils/roadmap.yml';
+  const outputDir = metadata.outputDir || 'fossils';
+  const tag = tags[0] || 'manual';
+  
+  if (dryRun) {
+    console.log(`[DRY RUN] Would curate ${inputYaml} to ${outputDir}`);
+    return '';
+  }
+  
   const kind = inputYaml.includes('status') ? 'project_status' : inputYaml.includes('roadmap') ? 'roadmap' : 'other';
   const content = yamlToJson<any>(inputYaml);
   const outputJson = path.join(outputDir, `curated_${kind}_${tag}.json`);
@@ -33,6 +39,8 @@ export async function curateAndCheck(params: CurateFossilParams): Promise<string
     content
   } as any;
   await fs.writeFile(outputJson, JSON.stringify(curated, null, 2), 'utf-8');
-  console.log(`✅ Curated fossil saved: ${curated.outputJson}`);
+  if (verbose) {
+    console.log(`✅ Curated fossil saved: ${curated.outputJson}`);
+  }
   return outputJson;
 } 

@@ -50,8 +50,18 @@ export function getEnv(): EnvironmentConfig {
     return envSchema.parse(raw);
   } catch (error) {
     if (error instanceof ZodError) {
-      const missingVars = error.errors.map(err => err.path.join('.')).join(', ');
-      throw new Error(`Invalid environment configuration: ${missingVars}`);
+      const missingVars = error.errors.map((err, i) => {
+        if (i % 10 === 0 || i === error.errors.length - 1) {
+          console.log(`🔄 Processing missing var ${i + 1} of ${error.errors.length}`);
+        }
+        return err.path.join('.');
+      });
+      for (let i = 0; i < missingVars.length; i++) {
+        if (i % 10 === 0 || i === missingVars.length - 1) {
+          console.log(`🔄 Processing missing var ${i + 1} of ${missingVars.length}`);
+        }
+      }
+      throw new Error(`Invalid environment configuration: ${missingVars.join(', ')}`);
     }
     throw error;
   }
@@ -117,6 +127,12 @@ export function validateConfig(): ConfigValidationResult {
     }
   });
   
+  for (let i = 0; i < missingServices.length; i++) {
+    if (i % 10 === 0 || i === missingServices.length - 1) {
+      console.log(`🔄 Processing missing service ${i + 1} of ${missingServices.length}`);
+    }
+  }
+
   return {
     isValid: missingServices.length === 0,
     missingServices,

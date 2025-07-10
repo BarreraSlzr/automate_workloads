@@ -5,45 +5,16 @@
 
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
-import { updateMarkdownChecklist, ChecklistUpdate } from './markdownChecklist';
-import { E2ERoadmapTask, Status } from '../types';
+import { updateMarkdownChecklist } from './markdownChecklist';
+import type { ChecklistItemUpdate } from '../types/checklist-updater';
+import { E2ERoadmapTask } from '../types/workflow';
+import { Status } from '../types/core';
+import type { FileType, UpdateResult } from '../types/checklist-updater';
 
-/**
- * Checklist update operation types
- */
-export type ChecklistItemUpdate = {
-  /** Item identifier (task name, issue number, etc.) */
-  id: string;
-  /** New status/checked state */
-  status: Status | boolean;
-  /** Optional comment or context */
-  comment?: string;
-  /** Optional metadata */
-  metadata?: Record<string, unknown>;
-};
+// Temporary minimal type for ChecklistFile until canonical type is defined
+type ChecklistFile = { tasks?: any[]; checklist?: any[] } | any[];
 
-/**
- * File type detection
- */
-export type FileType = 'markdown' | 'json' | 'yaml' | 'yml';
-
-/**
- * Update result with statistics
- */
-export interface UpdateResult {
-  /** Whether the update was successful */
-  success: boolean;
-  /** Number of items updated */
-  updatedCount: number;
-  /** Number of items not found */
-  notFoundCount: number;
-  /** Error message if any */
-  error?: string;
-  /** Updated content */
-  content?: string;
-  /** Backup file path */
-  backupPath?: string;
-}
+import { parseJsonSafe } from '@/utils/json';
 
 /**
  * Detect file type based on extension and content
@@ -94,14 +65,14 @@ export function updateMarkdownChecklistFile(
     const content = fs.readFileSync(filePath, 'utf8');
     
     // Convert updates to markdown checklist format
-    const checklistUpdates: ChecklistUpdate = {};
+    const checklistUpdates: Record<string, boolean> = {};
     updates.forEach(update => {
       checklistUpdates[update.id] = typeof update.status === 'boolean' 
         ? update.status 
         : update.status === 'done' || update.status === 'ready';
     });
     
-    const updatedContent = updateMarkdownChecklist(content, checklistUpdates);
+    const updatedContent = updateMarkdownChecklist({ body: content, updates: checklistUpdates });
     fs.writeFileSync(filePath, updatedContent);
     
     // Count actual updates by comparing content
@@ -150,23 +121,24 @@ export function updateJsonChecklistFile(
   try {
     const backupPath = createBackup(filePath);
     const content = fs.readFileSync(filePath, 'utf8');
-    const data = JSON.parse(content);
+    // Parse and validate checklist file object
+    const data = parseJsonSafe(content, 'checklistUpdater:content') as ChecklistFile;
     
     let updatedCount = 0;
     let notFoundCount = 0;
     
-    // Handle different JSON structures
-    if (data.tasks && Array.isArray(data.tasks)) {
+    // Handle different JSON structures with type guards
+    if (data && typeof data === 'object' && 'tasks' in data && Array.isArray((data as any).tasks)) {
       // Roadmap format
-      updatedCount = updateRoadmapTasks(data.tasks, updates);
+      updatedCount = updateRoadmapTasks((data as any).tasks, updates);
       notFoundCount = updates.length - updatedCount;
     } else if (Array.isArray(data)) {
       // Simple checklist array
       updatedCount = updateChecklistArray(data, updates);
       notFoundCount = updates.length - updatedCount;
-    } else if (data.checklist && Array.isArray(data.checklist)) {
+    } else if (data && typeof data === 'object' && 'checklist' in data && Array.isArray((data as any).checklist)) {
       // Issue format with checklist
-      updatedCount = updateChecklistArray(data.checklist, updates);
+      updatedCount = updateChecklistArray((data as any).checklist, updates);
       notFoundCount = updates.length - updatedCount;
     } else {
       throw new Error('Unsupported JSON structure');
@@ -254,11 +226,16 @@ export function updateYamlChecklistFile(
 function updateRoadmapTasks(tasks: E2ERoadmapTask[], updates: ChecklistItemUpdate[]): number {
   let updatedCount = 0;
   
-  for (const task of tasks) {
+  for (let i = 0; i < tasks.length; i++) {
+    if (i % 10 === 0 || i === tasks.length - 1) {
+      console.log(`🔄 Processing roadmap task ${i + 1} of ${tasks.length}`);
+    }
+    const task = tasks[i];
+    if (!task) continue;
     // Check if this task matches any update
     const update = updates.find(u => u.id === task.task);
     if (update) {
-      task.status = typeof update.status === 'string' ? update.status : 
+      task.status = typeof update.status === 'string' ? update.status as Status : 
         (update.status ? 'done' : 'pending');
       
       if (update.comment) {
@@ -291,7 +268,12 @@ function updateChecklistArray(
 ): number {
   let updatedCount = 0;
   
-  for (const item of checklist) {
+  for (let i = 0; i < checklist.length; i++) {
+    if (i % 10 === 0 || i === checklist.length - 1) {
+      console.log(`🔄 Processing checklist item ${i + 1} of ${checklist.length}`);
+    }
+    const item = checklist[i];
+    if (!item) continue;
     const update = updates.find(u => u.id === item.task);
     if (update) {
       if (typeof update.status === 'boolean') {
@@ -349,10 +331,15 @@ export function updateChecklistFile(
 export function updateMultipleChecklistFiles(
   files: Array<{ path: string; updates: ChecklistItemUpdate[] }>
 ): Array<{ filePath: string; result: UpdateResult }> {
-  return files.map(({ path, updates }) => ({
-    filePath: path,
-    result: updateChecklistFile(path, updates)
-  }));
+  return files.map(({ path, updates }, idx, arr) => {
+    if (idx % 10 === 0 || idx === arr.length - 1) {
+      console.log(`🔄 Updating checklist file ${idx + 1} of ${arr.length}`);
+    }
+    return {
+      filePath: path,
+      result: updateChecklistFile(path, updates)
+    };
+  });
 }
 
 /**
@@ -360,16 +347,16 @@ export function updateMultipleChecklistFiles(
  */
 export function parseChecklistUpdates(updatesString: string): ChecklistItemUpdate[] {
   try {
-    const parsed = JSON.parse(updatesString);
-    
+    // Parse and validate updates array or object
+    const parsed = parseJsonSafe(updatesString, 'checklistUpdater:updatesString') as any;
     if (Array.isArray(parsed)) {
       return parsed.map(item => ({
-        id: item.id || item.task || item.name,
-        status: item.status || item.checked || false,
-        comment: item.comment || item.context,
-        metadata: item.metadata
+        id: item && (item.id || item.task || item.name),
+        status: item && (item.status || item.checked || false),
+        comment: item && (item.comment || item.context),
+        metadata: item && item.metadata
       }));
-    } else if (typeof parsed === 'object') {
+    } else if (parsed && typeof parsed === 'object') {
       // Convert simple object format
       return Object.entries(parsed).map(([id, value]) => ({
         id,
@@ -378,7 +365,6 @@ export function parseChecklistUpdates(updatesString: string): ChecklistItemUpdat
         metadata: undefined
       }));
     }
-    
     throw new Error('Invalid updates format');
   } catch (error) {
     throw new Error(`Failed to parse updates: ${error instanceof Error ? error.message : String(error)}`);
@@ -391,9 +377,8 @@ export function parseChecklistUpdates(updatesString: string): ChecklistItemUpdat
 export function generateUpdateReport(results: Array<{ filePath: string; result: UpdateResult }>): string {
   const totalFiles = results.length;
   const successfulFiles = results.filter(r => r.result.success).length;
-  const totalUpdated = results.reduce((sum, r) => sum + r.result.updatedCount, 0);
-  const totalNotFound = results.reduce((sum, r) => sum + r.result.notFoundCount, 0);
-  
+  const totalUpdated = results.reduce((sum, r) => sum + (r.result.updatedCount || 0), 0);
+  const totalNotFound = results.reduce((sum, r) => sum + (r.result.notFoundCount || 0), 0);
   const report = [
     `# Checklist Update Report`,
     '',
@@ -406,12 +391,11 @@ export function generateUpdateReport(results: Array<{ filePath: string; result: 
     `## Details`,
     ''
   ];
-  
   results.forEach(({ filePath, result }) => {
     report.push(`### ${filePath}`);
     if (result.success) {
       report.push(`- ✅ Updated ${result.updatedCount} items`);
-      if (result.notFoundCount > 0) {
+      if (result.notFoundCount) {
         report.push(`- ⚠️  ${result.notFoundCount} items not found`);
       }
       if (result.backupPath) {
@@ -422,6 +406,5 @@ export function generateUpdateReport(results: Array<{ filePath: string; result: 
     }
     report.push('');
   });
-  
   return report.join('\n');
-} 
+}

@@ -378,10 +378,4 @@ export class CanonicalTestFossilManager {
       temp: this.tempDir
     };
   }
-}
-
-// ============================================================================
-// EXPORTS
-// ============================================================================
-
-export type { TestAnalysisData, TestMonitoringData, LearningModelData }; 
+} 

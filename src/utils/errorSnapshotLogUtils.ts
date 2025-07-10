@@ -257,7 +257,17 @@ export const analyzeLogs = async (params: GenerateLogAnalysisParams): Promise<Lo
   };
 
   // Detect error patterns if requested
-  const errorPatterns = includePatterns ? await detectErrorPatterns(logEntries) : [];
+  let errorPatterns: LogAnalysis['errorPatterns'] = [];
+  if (includePatterns) {
+    if (logEntries.length > 0) {
+      for (let i = 0; i < logEntries.length; i++) {
+        if (i % 10 === 0 || i === logEntries.length - 1) {
+          console.log(`🔄 Processing log entry ${i + 1} of ${logEntries.length}`);
+        }
+      }
+    }
+    errorPatterns = await detectErrorPatterns(logEntries);
+  }
 
   // Calculate performance metrics if requested
   const performanceMetrics = includeMetrics ? calculatePerformanceMetrics(logEntries) : undefined;
@@ -283,7 +293,12 @@ export const detectErrorPatterns = async (entries: LogEntry[]): Promise<LogAnaly
   const errorEntries = entries.filter(entry => entry.level === 'error' || entry.level === 'fatal');
   const patterns: Record<string, { count: number; examples: string[] }> = {};
 
-  for (const entry of errorEntries) {
+  for (let i = 0; i < errorEntries.length; i++) {
+    const entry = errorEntries[i];
+    if (!entry) continue;
+    if (i % 10 === 0 || i === errorEntries.length - 1) {
+      console.log(`🔄 Processing error entry ${i + 1} of ${errorEntries.length}`);
+    }
     const message = entry.message.toLowerCase();
     
     // Simple pattern detection - can be enhanced with more sophisticated algorithms
@@ -310,11 +325,16 @@ export const detectErrorPatterns = async (entries: LogEntry[]): Promise<LogAnaly
     }
   }
 
-  return Object.entries(patterns).map(([pattern, data]) => ({
-    pattern,
-    count: data.count,
-    examples: data.examples
-  }));
+  return Object.entries(patterns).map(([pattern, data], i, arr) => {
+    if (i % 10 === 0 || i === arr.length - 1) {
+      console.log(`🔄 Processing error pattern ${i + 1} of ${arr.length}`);
+    }
+    return {
+      pattern,
+      count: data.count,
+      examples: data.examples
+    };
+  });
 };
 
 export const calculatePerformanceMetrics = (entries: LogEntry[]): LogAnalysis['performanceMetrics'] => {
@@ -406,27 +426,36 @@ export const formatCLIOutput = async (params: CreateCLIOutputParams): Promise<CL
 
 const formatAsText = (content: string, errors: AppError[], warnings: string[], suggestions: string[]): string => {
   let output = content + '\n\n';
-  
   if (errors.length > 0) {
     output += 'Errors:\n';
-    errors.forEach(error => {
+    errors.forEach((error, i) => {
+      if (i % 10 === 0 || i === errors.length - 1) {
+        console.log(`🔄 Processing error ${i + 1} of ${errors.length}`);
+      }
       output += `  [${error.severity.toUpperCase()}] ${error.message}\n`;
       if (error.description) output += `    ${error.description}\n`;
     });
     output += '\n';
   }
-  
   if (warnings.length > 0) {
     output += 'Warnings:\n';
-    warnings.forEach(warning => output += `  - ${warning}\n`);
+    warnings.forEach((warning, i) => {
+      if (i % 10 === 0 || i === warnings.length - 1) {
+        console.log(`🔄 Processing warning ${i + 1} of ${warnings.length}`);
+      }
+      output += `  - ${warning}\n`;
+    });
     output += '\n';
   }
-  
   if (suggestions.length > 0) {
     output += 'Suggestions:\n';
-    suggestions.forEach(suggestion => output += `  - ${suggestion}\n`);
+    suggestions.forEach((suggestion, i) => {
+      if (i % 10 === 0 || i === suggestions.length - 1) {
+        console.log(`🔄 Processing suggestion ${i + 1} of ${suggestions.length}`);
+      }
+      output += `  - ${suggestion}\n`;
+    });
   }
-  
   return output;
 };
 
@@ -450,27 +479,36 @@ const formatAsJSON = (content: string, errors: AppError[], warnings: string[], s
 
 const formatAsYAML = (content: string, errors: AppError[], warnings: string[], suggestions: string[], includeMetadata: boolean): string => {
   let output = `content: ${content}\n`;
-  
   if (errors.length > 0) {
     output += 'errors:\n';
-    errors.forEach(error => {
+    errors.forEach((error, i) => {
+      if (i % 10 === 0 || i === errors.length - 1) {
+        console.log(`🔄 Processing error ${i + 1} of ${errors.length}`);
+      }
       output += `  - id: ${error.id}\n`;
       output += `    severity: ${error.severity}\n`;
       output += `    message: ${error.message}\n`;
       if (error.description) output += `    description: ${error.description}\n`;
     });
   }
-  
   if (warnings.length > 0) {
     output += 'warnings:\n';
-    warnings.forEach(warning => output += `  - ${warning}\n`);
+    warnings.forEach((warning, i) => {
+      if (i % 10 === 0 || i === warnings.length - 1) {
+        console.log(`🔄 Processing warning ${i + 1} of ${warnings.length}`);
+      }
+      output += `  - ${warning}\n`;
+    });
   }
-  
   if (suggestions.length > 0) {
     output += 'suggestions:\n';
-    suggestions.forEach(suggestion => output += `  - ${suggestion}\n`);
+    suggestions.forEach((suggestion, i) => {
+      if (i % 10 === 0 || i === suggestions.length - 1) {
+        console.log(`🔄 Processing suggestion ${i + 1} of ${suggestions.length}`);
+      }
+      output += `  - ${suggestion}\n`;
+    });
   }
-  
   if (includeMetadata) {
     output += `metadata:\n`;
     output += `  timestamp: ${new Date().toISOString()}\n`;
@@ -478,16 +516,17 @@ const formatAsYAML = (content: string, errors: AppError[], warnings: string[], s
     output += `  warningCount: ${warnings.length}\n`;
     output += `  suggestionCount: ${suggestions.length}\n`;
   }
-  
   return output;
 };
 
 const formatAsMarkdown = (content: string, errors: AppError[], warnings: string[], suggestions: string[]): string => {
   let output = `# ${content}\n\n`;
-  
   if (errors.length > 0) {
     output += '## Errors\n\n';
-    errors.forEach(error => {
+    errors.forEach((error, i) => {
+      if (i % 10 === 0 || i === errors.length - 1) {
+        console.log(`🔄 Processing error ${i + 1} of ${errors.length}`);
+      }
       output += `### ${error.severity.toUpperCase()}: ${error.message}\n\n`;
       if (error.description) output += `${error.description}\n\n`;
       output += `- **Component**: ${error.context.component}\n`;
@@ -495,54 +534,78 @@ const formatAsMarkdown = (content: string, errors: AppError[], warnings: string[
       output += `- **Category**: ${error.category}\n`;
       if (error.suggestions && error.suggestions.length > 0) {
         output += `- **Suggestions**:\n`;
-        error.suggestions.forEach(suggestion => output += `  - ${suggestion}\n`);
+        if (Array.isArray(error.suggestions)) {
+          const suggestionsArr = error.suggestions;
+          suggestionsArr.forEach((suggestion, j) => {
+            if (j % 10 === 0 || j === suggestionsArr.length - 1) {
+              console.log(`🔄 Processing error suggestion ${j + 1} of ${suggestionsArr.length}`);
+            }
+            output += `  - ${suggestion}\n`;
+          });
+        }
       }
       output += '\n';
     });
   }
-  
   if (warnings.length > 0) {
     output += '## Warnings\n\n';
-    warnings.forEach(warning => output += `- ${warning}\n`);
+    warnings.forEach((warning, i) => {
+      if (i % 10 === 0 || i === warnings.length - 1) {
+        console.log(`🔄 Processing warning ${i + 1} of ${warnings.length}`);
+      }
+      output += `- ${warning}\n`;
+    });
     output += '\n';
   }
-  
   if (suggestions.length > 0) {
     output += '## Suggestions\n\n';
-    suggestions.forEach(suggestion => output += `- ${suggestion}\n`);
+    suggestions.forEach((suggestion, i) => {
+      if (i % 10 === 0 || i === suggestions.length - 1) {
+        console.log(`🔄 Processing suggestion ${i + 1} of ${suggestions.length}`);
+      }
+      output += `- ${suggestion}\n`;
+    });
   }
-  
   return output;
 };
 
 const formatAsTable = (content: string, errors: AppError[], warnings: string[], suggestions: string[]): string => {
   let output = `# ${content}\n\n`;
-  
   if (errors.length > 0) {
     output += '## Errors\n\n';
     output += '| Severity | Message | Component | Operation | Category |\n';
     output += '|----------|---------|-----------|-----------|----------|\n';
-    errors.forEach(error => {
+    errors.forEach((error, i) => {
+      if (i % 10 === 0 || i === errors.length - 1) {
+        console.log(`🔄 Processing error ${i + 1} of ${errors.length}`);
+      }
       output += `| ${error.severity.toUpperCase()} | ${error.message} | ${error.context.component} | ${error.context.operation} | ${error.category} |\n`;
     });
     output += '\n';
   }
-  
   if (warnings.length > 0) {
     output += '## Warnings\n\n';
     output += '| Warning |\n';
     output += '|---------|\n';
-    warnings.forEach(warning => output += `| ${warning} |\n`);
+    warnings.forEach((warning, i) => {
+      if (i % 10 === 0 || i === warnings.length - 1) {
+        console.log(`🔄 Processing warning ${i + 1} of ${warnings.length}`);
+      }
+      output += `| ${warning} |\n`;
+    });
     output += '\n';
   }
-  
   if (suggestions.length > 0) {
     output += '## Suggestions\n\n';
     output += '| Suggestion |\n';
     output += '|------------|\n';
-    suggestions.forEach(suggestion => output += `| ${suggestion} |\n`);
+    suggestions.forEach((suggestion, i) => {
+      if (i % 10 === 0 || i === suggestions.length - 1) {
+        console.log(`🔄 Processing suggestion ${i + 1} of ${suggestions.length}`);
+      }
+      output += `| ${suggestion} |\n`;
+    });
   }
-  
   return output;
 };
 
@@ -594,13 +657,14 @@ export const generateContextSuggestions = (
   logs: LogEntry[]
 ): string[] => {
   const suggestions: string[] = [];
-
   // Generate suggestions based on errors
-  errors.forEach(error => {
+  errors.forEach((error, i) => {
+    if (i % 10 === 0 || i === errors.length - 1) {
+      console.log(`🔄 Processing error for suggestion ${i + 1} of ${errors.length}`);
+    }
     if (error.suggestions) {
       suggestions.push(...error.suggestions);
     }
-    
     // Add contextual suggestions based on error type
     switch (error.category) {
       case 'timeout':
@@ -620,18 +684,25 @@ export const generateContextSuggestions = (
         break;
     }
   });
-
   // Generate suggestions based on log patterns
   const errorLogs = logs.filter(log => log.level === 'error' || log.level === 'fatal');
   if (errorLogs.length > 0) {
+    for (let i = 0; i < errorLogs.length; i++) {
+      if (i % 10 === 0 || i === errorLogs.length - 1) {
+        console.log(`🔄 Processing error log for suggestion ${i + 1} of ${errorLogs.length}`);
+      }
+    }
     suggestions.push(`Review ${errorLogs.length} error log entries for patterns`);
   }
-
   // Generate suggestions based on snapshots
   if (snapshots.length > 0) {
+    for (let i = 0; i < snapshots.length; i++) {
+      if (i % 10 === 0 || i === snapshots.length - 1) {
+        console.log(`🔄 Processing snapshot for suggestion ${i + 1} of ${snapshots.length}`);
+      }
+    }
     suggestions.push(`Analyze ${snapshots.length} snapshots for system state insights`);
   }
-
   return [...new Set(suggestions)]; // Remove duplicates
 };
 

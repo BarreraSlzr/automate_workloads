@@ -7,10 +7,12 @@ import type { CreateFossilIssueParams, CheckExistingFossilParams, CreateFossilEn
 import { CreateFossilIssueParamsSchema, CheckExistingFossilParamsSchema, CreateFossilEntryParamsSchema } from '../types';
 import { isTestMode } from '../cli/repo-orchestrator';
 import { GitHubCLICommands } from './githubCliCommands';
+import { parseJsonSafe } from '@/utils/json';
+import { getCurrentRepoOwner, getCurrentRepoName } from '@/utils/cli';
 
 /**
  * Preferred utility for fossil-backed, deduplicated GitHub issue creation.
- * Always use this instead of direct gh issue create to ensure traceability and deduplication.
+ * Always use this instead of direct CLI calls to ensure traceability and deduplication.
  */
 
 /**
@@ -38,7 +40,7 @@ async function ensureLabel(params: { owner: string; repo: string; label: string;
     // Check if label exists
     const listResult = await commands.listLabels();
     if (listResult.success) {
-      const labels = JSON.parse(listResult.stdout);
+      const labels = parseJsonSafe(listResult.stdout, 'fossilIssue:listResult.stdout') as any[];
       if (labels.some((l: any) => l.name === label)) {
         // Label exists, do nothing
         return;
@@ -69,13 +71,7 @@ async function ensureLabel(params: { owner: string; repo: string; label: string;
  * Generate a detailed issue body matching the automation_task.yml template.
  * Enhanced with visual elements for better human audit and understanding.
  */
-function generateAutomationIssueBody({
-  purpose,
-  checklist,
-  metadata,
-  extra,
-  visualContext,
-}: {
+function generateAutomationIssueBody(params: {
   purpose: string;
   checklist?: string;
   metadata?: string;
@@ -85,23 +81,24 @@ function generateAutomationIssueBody({
     dependencies?: string[];
     risks?: Array<{ risk: string; impact: string; mitigation: string }>;
   };
-}): string {
+}) {
   const sections = [
     '## 🤖 Automation Task',
     'This issue was created automatically by a script or bot to track automation-related work.',
     '',
-    `### Purpose\n${purpose}`,
+    `### Purpose\n${params.purpose}`,
   ];
 
   // Add visual workflow if provided
-  if (visualContext?.workflow) {
+  if (params.visualContext && params.visualContext.workflow) {
+    const { workflow } = params.visualContext;
     sections.push(
       '\n### Workflow',
       '```mermaid',
       'graph TD',
-      ...visualContext.workflow.map((step, i) => `    ${String.fromCharCode(65 + i)}[${step}]`),
-      ...visualContext.workflow.map((_, i) => 
-        i < visualContext.workflow!.length - 1 
+      ...workflow.map((step, i) => `    ${String.fromCharCode(65 + i)}[${step}]`),
+      ...workflow.map((_, i) => 
+        i < workflow.length - 1 
           ? `    ${String.fromCharCode(65 + i)} --> ${String.fromCharCode(66 + i)}`
           : ''
       ).filter(Boolean),
@@ -110,14 +107,15 @@ function generateAutomationIssueBody({
   }
 
   // Add dependencies diagram if provided
-  if (visualContext?.dependencies) {
+  if (params.visualContext && params.visualContext.dependencies) {
+    const { dependencies } = params.visualContext;
     sections.push(
       '\n### Dependencies',
       '```mermaid',
       'graph LR',
-      ...visualContext.dependencies.map((dep, i) => `    ${String.fromCharCode(65 + i)}[${dep}]`),
-      ...visualContext.dependencies.map((_, i) => 
-        i < visualContext.dependencies!.length - 1 
+      ...dependencies.map((dep, i) => `    ${String.fromCharCode(65 + i)}[${dep}]`),
+      ...dependencies.map((_, i) => 
+        i < dependencies.length - 1 
           ? `    ${String.fromCharCode(65 + i)} --> ${String.fromCharCode(66 + i)}`
           : ''
       ).filter(Boolean),
@@ -126,12 +124,13 @@ function generateAutomationIssueBody({
   }
 
   // Add risk assessment if provided
-  if (visualContext?.risks) {
+  if (params.visualContext && params.visualContext.risks) {
+    const { risks } = params.visualContext;
     sections.push(
       '\n### Risk Assessment',
       '```mermaid',
       'graph TD',
-      ...visualContext.risks.map((risk, i) => [
+      ...risks.map((risk, i) => [
         `    ${String.fromCharCode(65 + i)}[${risk.risk}]`,
         `    ${String.fromCharCode(65 + i)} --> ${String.fromCharCode(66 + i)}[Impact: ${risk.impact}]`,
         `    ${String.fromCharCode(66 + i)} --> ${String.fromCharCode(67 + i)}[Mitigation: ${risk.mitigation}]`
@@ -141,9 +140,9 @@ function generateAutomationIssueBody({
   }
 
   sections.push(
-    checklist ? `\n### Checklist\n${checklist}` : '',
-    metadata ? `\n### Automation Metadata\n${metadata}` : '',
-    extra ? `\n${extra}` : ''
+    params.checklist ? `\n### Checklist\n${params.checklist}` : '',
+    params.metadata ? `\n### Automation Metadata\n${params.metadata}` : '',
+    params.extra ? `\n${params.extra}` : ''
   );
 
   return sections.filter(Boolean).join('\n');
@@ -195,38 +194,7 @@ class IssueBodyFileManager {
  * GitHub CLI operations for issue creation
  */
 class GitHubIssueManager {
-  /**
-   * Create GitHub issue using CLI
-   */
-  static async createIssue(params: {
-    owner: string;
-    repo: string;
-    title: string;
-    tempFile: string;
-    labels: string[];
-    milestone?: string;
-  }): Promise<{ issueNumber?: string; output: string }> {
-    const { owner, repo, title, tempFile, labels, milestone } = params;
-    
-    // Read the body from the temp file
-    const body = fs.readFileSync(tempFile, 'utf8');
-    
-    const commands = new GitHubCLICommands(owner, repo);
-    const result = await commands.createIssue({
-      title,
-      body,
-      labels,
-      milestone
-    });
-    
-    let issueNumber = undefined;
-    if (result.success && result.stdout) {
-      const match = result.stdout.match(/#(\d+)/);
-      if (match) issueNumber = match[1];
-    }
-    
-    return { issueNumber, output: result.stdout || '' };
-  }
+  // All issue creation is routed through GitHubCLICommands and canonical fossil-backed utilities only. No direct gh CLI or legacy fallback code remains.
   
   /**
    * Fetch issue body from GitHub
@@ -298,7 +266,7 @@ class IssueFossilManager {
   }
 }
 
-export async function createFossilIssue(params: CreateFossilIssueParams): Promise<{ issueNumber?: string; fossilId: string; fossilHash: string; deduplicated: boolean }> {
+export async function createFossilIssue(params: CreateFossilIssueParams): Promise<{ issueNumber?: string; fossilId: string; fossilHash: string; deduplicated: boolean; parsedFields?: Record<string, any> }> {
   if (isTestMode(params)) {
     console.log(`[MOCK] createFossilIssue: ${params.title}`);
     return { deduplicated: false, issueNumber: '1', fossilId: 'mock-fossil-id', fossilHash: 'mock-fossil-hash' };
@@ -319,8 +287,8 @@ export async function createFossilIssue(params: CreateFossilIssueParams): Promis
   } = params;
   
   // Default values for missing properties
-  const owner = 'automate-workloads';
-  const repo = 'automate_workloads';
+  const owner = getCurrentRepoOwner();
+  const repo = getCurrentRepoName();
   const labels = issueTags || [];
   const milestone = '';
   const purpose = 'issue-creation';
@@ -368,24 +336,24 @@ export async function createFossilIssue(params: CreateFossilIssueParams): Promis
   
   // Create issue using GitHub CLI
   IssueBodyFileManager.writeTempFile(bodyWithFossil);
-  
-  const { issueNumber, output } = await GitHubIssueManager.createIssue({
-    owner,
-    repo,
+  const commands = new GitHubCLICommands(owner, repo);
+  const result = await commands.createIssue({
     title: issueTitle,
-    tempFile: IssueBodyFileManager.TEMP_FILE,
+    body: bodyWithFossil,
     labels: validLabels,
-    milestone,
+    milestone
   });
-  
+  let issueNumber: string | undefined = undefined;
+  if (result.success && result.stdout) {
+    const match = result.stdout.match(/#(\d+)/);
+    if (match) issueNumber = match[1];
+  }
   // Clean up temp file
   IssueBodyFileManager.cleanupTempFile();
-  
   // Save fossil copy if issue was created
   if (issueNumber) {
     IssueBodyFileManager.saveIssueFossil(issueNumber, bodyWithFossil);
   }
-  
   // Fetch and parse issue metadata
   let parsedFields: Record<string, any> = {};
   if (issueNumber) {
@@ -407,5 +375,5 @@ export async function createFossilIssue(params: CreateFossilIssueParams): Promis
     parsedFields,
   });
   
-  return { issueNumber, fossilId: fossil.id, fossilHash: contentHash || '', deduplicated: false };
+  return { issueNumber, fossilId: fossil.id, fossilHash: contentHash || '', deduplicated: false, parsedFields };
 } 
