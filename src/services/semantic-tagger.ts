@@ -1,6 +1,18 @@
 import { LLMService } from './llm';
 import type { ContextEntry } from '../types';
-import type { LLMOptimizationConfig } from './llm';
+import type { LLMOptimizationConfig } from '../types/llm';
+import { parseJsonSafe } from '@/utils/json';
+import { getCurrentRepoOwner, getCurrentRepoName } from '@/utils/cli';
+// Canonical type for semantic tag response (inline, since not found in types)
+type SemanticTagResponse = {
+  semanticCategory: string;
+  confidence: number;
+  concepts?: string[];
+  sentiment: 'positive' | 'negative' | 'neutral';
+  priority: 'low' | 'medium' | 'high' | 'critical';
+  impact: 'low' | 'medium' | 'high' | 'critical';
+  stakeholders?: string[];
+};
 
 /**
  * Semantic tagging service for intelligent fossil tagging
@@ -23,8 +35,10 @@ export class SemanticTaggerService {
     this.apiKey = apiKey || process.env.OPENAI_API_KEY || '';
     this.llmOptions = llmOptions;
     this.llmService = new LLMService({
+      owner: getCurrentRepoOwner(),
+      repo: getCurrentRepoName(),
       maxCostPerCall: 0.05, // Lower cost for semantic tagging
-      minValueScore: 0.4, // Moderate value for semantic analysis
+      minValueScore: 0.3, // Lower value threshold for tagging
       enableLocalLLM: llmOptions.enableLocalLLM ?? true,
       ...llmOptions
     });
@@ -151,7 +165,8 @@ Respond only with valid JSON.`;
       // Extract JSON from response (handle markdown code blocks)
       const jsonMatch = content.match(/```json\s*([\s\S]*?)\s*```/) || content.match(/\{[\s\S]*\}/);
       const jsonStr = jsonMatch ? jsonMatch[1] || jsonMatch[0] : content;
-      const parsed = JSON.parse(jsonStr);
+      // Parse and validate semantic tag response
+      const parsed = parseJsonSafe(jsonStr, 'semantic-tagger:jsonStr') as SemanticTagResponse;
 
       return {
         contentHash: entry.metadata?.contentHash as string || '',

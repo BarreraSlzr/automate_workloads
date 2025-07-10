@@ -19,255 +19,19 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { createHash } from 'crypto';
 import { LLMService } from './llm';
-import type { 
-  LLMPredictiveMonitoringConfigSchema,
-  LLMPredictiveMetricsSchema,
-  LLMContextAnalysisSchema,
-  LLMRiskAssessmentSchema,
-  LLMPredictiveAlertSchema
+import { z } from 'zod';
+import { 
+  LLMPredictiveMonitoringConfigSchema, 
+  LLMPredictiveMetricsSchema, 
+  LLMPredictiveAlertSchema 
 } from '../types/schemas';
+import { getCurrentRepoOwner, getCurrentRepoName, executeCommand } from '@/utils/cli';
+import { parseJsonSafe } from '@/utils/json';
 
-export interface LLMPredictiveMonitoringConfig {
-  /** Enable predictive monitoring */
-  enabled: boolean;
-  
-  /** Track metrics before each call */
-  enablePreCallMetrics: boolean;
-  
-  /** Analyze context for risk factors */
-  enableContextAnalysis: boolean;
-  
-  /** Assess risk before making calls */
-  enableRiskAssessment: boolean;
-  
-  /** Generate predictive alerts */
-  enablePredictiveAlerts: boolean;
-  
-  /** Storage path for monitoring data */
-  monitoringDataPath: string;
-  
-  /** Alert thresholds */
-  thresholds: {
-    /** High risk threshold (0-1) */
-    highRisk: number;
-    
-    /** Rate limit probability threshold (0-1) */
-    rateLimitProbability: number;
-    
-    /** Cost threshold for alerts */
-    costThreshold: number;
-    
-    /** Token usage threshold */
-    tokenThreshold: number;
-    
-    /** Consecutive failures threshold */
-    consecutiveFailures: number;
-  };
-  
-  /** Monitoring window (minutes) */
-  monitoringWindow: number;
-  
-  /** Enable real-time alerts */
-  enableRealTimeAlerts: boolean;
-}
-
-export interface LLMPredictiveMetrics {
-  /** Unique identifier for this monitoring session */
-  sessionId: string;
-  
-  /** Timestamp of metrics collection */
-  timestamp: string;
-  
-  /** Pre-call computable metrics */
-  preCallMetrics: {
-    /** Estimated tokens */
-    estimatedTokens: number;
-    
-    /** Estimated cost */
-    estimatedCost: number;
-    
-    /** Message complexity (0-1) */
-    messageComplexity: number;
-    
-    /** Request urgency (0-1) */
-    requestUrgency: number;
-    
-    /** Provider availability */
-    providerAvailable: boolean;
-    
-    /** Recent call frequency (calls per minute) */
-    recentCallFrequency: number;
-    
-    /** Recent error rate (0-1) */
-    recentErrorRate: number;
-    
-    /** Recent rate limit events */
-    recentRateLimitEvents: number;
-    
-    /** Current provider load */
-    providerLoad: number;
-    
-    /** Time since last successful call (ms) */
-    timeSinceLastSuccess: number;
-    
-    /** Current session duration (ms) */
-    sessionDuration: number;
-    
-    /** Memory usage (MB) */
-    memoryUsage: number;
-    
-    /** CPU usage (%) */
-    cpuUsage: number;
-    
-    /** Network latency (ms) */
-    networkLatency: number;
-  };
-  
-  /** Human-readable context */
-  humanReadableContext: {
-    /** What the user is trying to accomplish */
-    userIntent: string;
-    
-    /** Current workflow or process */
-    currentWorkflow: string;
-    
-    /** Recent actions taken */
-    recentActions: string[];
-    
-    /** Current file or context */
-    currentFile?: string;
-    
-    /** Git branch and status */
-    gitContext?: {
-      branch: string;
-      status: string;
-      lastCommit: string;
-      uncommittedChanges: number;
-    };
-    
-    /** System context */
-    systemContext: {
-      timeOfDay: string;
-      dayOfWeek: string;
-      isBusinessHours: boolean;
-      isWeekend: boolean;
-    };
-    
-    /** Error context */
-    errorContext?: {
-      previousErrors: string[];
-      errorPatterns: string[];
-      lastErrorTime?: string;
-    };
-  };
-  
-  /** Risk assessment */
-  riskAssessment: {
-    /** Overall risk score (0-1) */
-    overallRisk: number;
-    
-    /** Rate limit probability (0-1) */
-    rateLimitProbability: number;
-    
-    /** Cost risk (0-1) */
-    costRisk: number;
-    
-    /** Performance risk (0-1) */
-    performanceRisk: number;
-    
-    /** Security risk (0-1) */
-    securityRisk: number;
-    
-    /** Risk factors */
-    riskFactors: string[];
-    
-    /** Risk mitigation recommendations */
-    recommendations: string[];
-  };
-  
-  /** Predictive alerts */
-  alerts: {
-    /** High risk alert */
-    highRisk: boolean;
-    
-    /** Rate limit warning */
-    rateLimitWarning: boolean;
-    
-    /** Cost alert */
-    costAlert: boolean;
-    
-    /** Performance alert */
-    performanceAlert: boolean;
-    
-    /** Alert messages */
-    messages: string[];
-  };
-}
-
-export interface LLMContextAnalysis {
-  /** Context complexity score (0-1) */
-  complexity: number;
-  
-  /** Context relevance score (0-1) */
-  relevance: number;
-  
-  /** Context completeness score (0-1) */
-  completeness: number;
-  
-  /** Context quality score (0-1) */
-  quality: number;
-  
-  /** Context analysis insights */
-  insights: string[];
-  
-  /** Context improvement suggestions */
-  suggestions: string[];
-}
-
-export interface LLMRiskAssessment {
-  /** Risk factors identified */
-  riskFactors: Array<{
-    factor: string;
-    severity: 'low' | 'medium' | 'high' | 'critical';
-    probability: number;
-    impact: number;
-    description: string;
-  }>;
-  
-  /** Mitigation strategies */
-  mitigations: Array<{
-    strategy: string;
-    effectiveness: number;
-    effort: 'low' | 'medium' | 'high';
-    description: string;
-  }>;
-  
-  /** Overall risk level */
-  riskLevel: 'low' | 'medium' | 'high' | 'critical';
-  
-  /** Risk score (0-1) */
-  riskScore: number;
-}
-
-export interface LLMPredictiveAlert {
-  /** Alert type */
-  type: 'risk' | 'rate_limit' | 'cost' | 'performance' | 'security';
-  
-  /** Alert severity */
-  severity: 'info' | 'warning' | 'error' | 'critical';
-  
-  /** Alert message */
-  message: string;
-  
-  /** Alert timestamp */
-  timestamp: string;
-  
-  /** Alert context */
-  context: any;
-  
-  /** Recommended actions */
-  actions: string[];
-}
+// Use schema-inferred types
+type LLMPredictiveMonitoringConfig = z.infer<typeof LLMPredictiveMonitoringConfigSchema>;
+type LLMPredictiveMetrics = z.infer<typeof LLMPredictiveMetricsSchema>;
+type LLMPredictiveAlert = z.infer<typeof LLMPredictiveAlertSchema>;
 
 /**
  * LLM Predictive Monitoring Service
@@ -308,6 +72,8 @@ export class LLMPredictiveMonitoringService {
     };
 
     this.llmService = new LLMService({
+      owner: getCurrentRepoOwner(),
+      repo: getCurrentRepoName(),
       enableFossilization: true,
       enableConsoleOutput: false // Disable to avoid noise
     });
@@ -714,17 +480,16 @@ export class LLMPredictiveMonitoringService {
    */
   private async getGitContext(): Promise<LLMPredictiveMetrics['humanReadableContext']['gitContext']> {
     try {
-      const { execSync } = await import('child_process');
-      
-      const branch = execSync('git branch --show-current', { encoding: 'utf-8' }).trim();
-      const status = execSync('git status --porcelain', { encoding: 'utf-8' }).trim();
-      const lastCommit = execSync('git log -1 --oneline', { encoding: 'utf-8' }).trim();
-      const uncommittedChanges = status ? status.split('\n').filter(line => line.trim()).length : 0;
+      const { stdout } = await executeCommand('git branch --show-current');
+      const branch = stdout.trim();
+      const { stdout: status } = await executeCommand('git status --porcelain');
+      const { stdout: lastCommit } = await executeCommand('git log -1 --oneline');
+      const uncommittedChanges = status.trim().split('\n').filter(line => line.trim()).length;
       
       return {
         branch,
-        status: status ? 'dirty' : 'clean',
-        lastCommit,
+        status: status.trim() ? 'dirty' : 'clean',
+        lastCommit: lastCommit.trim(),
         uncommittedChanges
       };
     } catch {
@@ -827,11 +592,9 @@ export class LLMPredictiveMonitoringService {
         },
         actions: metrics.riskAssessment.recommendations
       };
-      
       this.alerts.push(alert);
       console.log(`🚨 ${alert.message}`);
     }
-    
     if (metrics.alerts.rateLimitWarning) {
       const alert: LLMPredictiveAlert = {
         type: 'rate_limit',
@@ -844,7 +607,6 @@ export class LLMPredictiveMonitoringService {
         },
         actions: ['Implement exponential backoff', 'Consider local LLM', 'Batch requests']
       };
-      
       this.alerts.push(alert);
       console.log(`⚠️ ${alert.message}`);
     }

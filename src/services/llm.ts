@@ -3,78 +3,71 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import { createHash } from 'crypto';
-import type { 
-  OpenAIChatOptions, 
-  LLMProvider, 
-  ChatCompletionRequestMessage,
+import {
   LLMUsageMetrics,
-  LLMOptimizationConfig,
-  LLMCallIntelligence,
-  CallOpenAIChatParams
-} from '../types/llm';
-import { safeParseJSON, executeCommand, executeCommandJSON, getCurrentRepoName } from '../utils/cli';
-
-// Re-export types for external use
-export type {
-  OpenAIChatOptions,
   LLMProvider,
-  ChatCompletionRequestMessage,
-  LLMUsageMetrics,
-  LLMOptimizationConfig,
   LLMCallIntelligence,
-  CallOpenAIChatParams
+  ChatCompletionRequestMessage,
+  OpenAIChatOptions,
+  LLMOptimizationConfig
 } from '../types/llm';
+import { executeCommand, executeCommandJSON} from '../utils/cli';
+import { parseJsonSafe } from '@/utils/json';
+
+// Default configuration
+const defaultConfig: LLMOptimizationConfig = {
+  maxTokensPerCall: 4000,
+  maxCostPerCall: 0.10,
+  minValueScore: 0.3,
+  enableLocalLLM: false,
+  enableCaching: true,
+  cacheExpiryHours: 24,
+  retryAttempts: 3,
+  retryDelayMs: 1000,
+  rateLimitDelayMs: 60000,
+  // New intelligent routing defaults
+  preferLocalLLM: false,
+  testMode: false, // Disable test mode to ensure real LLM calls are fossilized
+  localLLMPriority: 0.0, // Never prefer local by default
+  complexityThreshold: 0.6, // Use cloud for complex tasks
+  costSensitivity: 0.8, // High cost sensitivity
+  memoryOnly: false,
+  // New comprehensive tracing defaults
+  enableComprehensiveTracing: true,
+  enableFossilization: true,
+  enableConsoleOutput: true,
+  enableSnapshotExport: true,
+  fossilStoragePath: 'fossils/llm_insights/',
+};
 
 /**
  * Enhanced LLM service with intelligent routing and optimization
  */
 export class LLMService {
+  private config: LLMOptimizationConfig;
+  private sessionId: string;
+  private fossilManager: any;
   private usageLog: LLMUsageMetrics[] = [];
   private usageLogPath: string;
-  private config: LLMOptimizationConfig;
   private providers: LLMProvider[] = [];
   private localLLMAvailable: boolean = false;
-  private fossilManager: any = null; // Will be set if fossilization is enabled
-  private sessionId: string;
 
-  constructor(config: Partial<LLMOptimizationConfig> = {}) {
-    this.config = {
-      maxTokensPerCall: 4000,
-      maxCostPerCall: 0.10,
-      minValueScore: 0.3,
-      enableLocalLLM: false,
-      enableCaching: true,
-      cacheExpiryHours: 24,
-      retryAttempts: 3,
-      retryDelayMs: 1000,
-      rateLimitDelayMs: 60000,
-      // New intelligent routing defaults
-      preferLocalLLM: false,
-      testMode: false, // Disable test mode to ensure real LLM calls are fossilized
-      localLLMPriority: 0.0, // Never prefer local by default
-      complexityThreshold: 0.6, // Use cloud for complex tasks
-      costSensitivity: 0.8, // High cost sensitivity
-      memoryOnly: false,
-      // New comprehensive tracing defaults
-      enableComprehensiveTracing: true,
-      enableFossilization: true,
-      enableConsoleOutput: true,
-      enableSnapshotExport: true,
-      fossilStoragePath: 'fossils/llm_insights/',
-      ...config
-    };
-    
-    this.usageLogPath = path.join(process.cwd(), '.llm-usage-log.json');
+  constructor(config: any & { owner: string; repo: string }) {
+    const { owner, repo, ...llmConfig } = config;
+    this.config = { ...defaultConfig, ...llmConfig };
     this.sessionId = `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    this.usageLogPath = path.join(process.cwd(), '.llm-usage-log.json');
+    
+    // Initialize services
     this.initializeProviders();
     
     // Only load from disk and check local LLM if not in memory-only mode
     if (!this.config.memoryOnly) {
       this.loadUsageLog();
       this.checkLocalLLM();
-      this.initializeFossilization();
+      this.initializeFossilization(owner, repo);
     }
-
+    
     // Handle graceful shutdown on q^C (SIGINT) and SIGTERM
     this.setupGracefulShutdown();
   }
@@ -82,26 +75,89 @@ export class LLMService {
   /**
    * Initialize fossilization if enabled
    */
-  private async initializeFossilization(): Promise<void> {
-    if (this.config.enableFossilization && this.config.fossilStoragePath) {
-      try {
-        // Dynamically import to avoid circular dependencies
-        const { createLLMFossilManager } = await import('../utils/llmFossilManager');
-        this.fossilManager = await createLLMFossilManager({
-          owner: 'automate-workloads',
-          repo: getCurrentRepoName(),
-          fossilStoragePath: this.config.fossilStoragePath,
-          enableAutoFossilization: true,
-          enableQualityMetrics: true,
-          enableValidationTracking: true
-        });
-        
-        if (this.config.enableConsoleOutput) {
-          console.log('🦴 LLM fossilization initialized for comprehensive tracing');
+  private async initializeFossilization(owner: string, repo: string): Promise<void> {
+    if (!this.config.enableFossilization) {
+      return;
+    }
+
+    // Minimal fossilization without circular dependencies
+    // Creates ML-ready fossils without using the complex LLMFossilManager
+    try {
+      // Create a simple fossil manager that doesn't depend on repo detection
+      this.fossilManager = {
+        fossilizeValidation: async (params: any) => {
+          return await this.createMinimalFossil(params, owner, repo);
         }
-      } catch (error) {
-        console.warn('⚠️ Failed to initialize LLM fossilization:', error);
+      };
+      
+      if (this.config.enableConsoleOutput) {
+        console.log('🦴 Minimal LLM fossilization initialized (ML-ready, no circular dependencies)');
       }
+    } catch (error) {
+      console.warn('⚠️ Failed to initialize minimal LLM fossilization:', error);
+    }
+  }
+
+  /**
+   * Create minimal fossil without circular dependencies
+   */
+  private async createMinimalFossil(params: any, owner: string, repo: string): Promise<any> {
+    try {
+      const { promises: fs } = await import('fs');
+      const { join } = await import('path');
+      
+      // Create minimal fossil structure
+      const fossil = {
+        type: 'llm-validation',
+        timestamp: new Date().toISOString(),
+        commitRef: await this.getCurrentCommitRef(),
+        inputHash: params.inputHash,
+        validation: {
+          isValid: params.validation.isValid,
+          errors: params.validation.errors || [],
+          warnings: params.validation.warnings || [],
+          recommendations: params.validation.recommendations || [],
+          qualityScore: params.validation.qualityScore || 0,
+          securityIssues: params.validation.securityIssues || [],
+          performanceIssues: params.validation.performanceIssues || []
+        },
+        preprocessing: params.preprocessing ? {
+          success: params.preprocessing.success,
+          changes: params.preprocessing.changes || [],
+          improvements: params.preprocessing.improvements || []
+        } : undefined,
+        metadata: {
+          model: params.metadata.model,
+          context: params.metadata.context,
+          purpose: params.metadata.purpose,
+          valueScore: params.metadata.valueScore,
+          validationTime: params.metadata.validationTime,
+          preprocessingTime: params.metadata.preprocessingTime,
+          totalTime: params.metadata.totalTime,
+          owner,
+          repo
+        },
+        fossilId: `llm-validation-${Date.now()}-${params.inputHash}`,
+        status: 'pending',
+        tags: ['llm', 'validation', 'ml-ready']
+      };
+
+      // Ensure fossils directory exists
+      const fossilsDir = join(process.cwd(), 'fossils', 'llm_insights');
+      await fs.mkdir(fossilsDir, { recursive: true });
+
+      // Write fossil to file
+      const fossilPath = join(fossilsDir, `${fossil.fossilId}.json`);
+      await fs.writeFile(fossilPath, JSON.stringify(fossil, null, 2));
+
+      if (this.config.enableConsoleOutput) {
+        console.log(`🦴 Minimal fossil created: ${fossilPath}`);
+      }
+
+      return fossil;
+    } catch (error) {
+      console.warn('⚠️ Failed to create minimal fossil:', error);
+      return null;
     }
   }
 
@@ -180,76 +236,63 @@ export class LLMService {
     qualityAnalysis?: any;
     insights?: any[];
   }): Promise<void> {
-    if (!this.fossilManager || !this.config.enableFossilization) {
+    if (!this.config.enableFossilization) {
       return;
     }
 
     try {
-      const commitRef = await this.getCurrentCommitRef();
-      
-      // Create comprehensive fossil
-      const fossil = {
-        type: 'llm-validation',
-        timestamp: new Date().toISOString(),
-        commitRef,
-        inputHash: params.inputHash,
-        callId: params.callId,
-        sessionId: this.sessionId,
-        validation: {
-          isValid: !params.error,
-          errors: params.error ? [params.error] : [],
-          warnings: [],
-          recommendations: [],
-          qualityScore: params.metrics.valueScore,
-          securityIssues: [],
-          performanceIssues: []
-        },
-        preprocessing: params.preprocessing ? {
-          success: true,
-          changes: params.preprocessing.changes || [],
-          improvements: params.preprocessing.improvements || []
-        } : undefined,
-        metadata: {
-          model: params.metrics.model,
-          context: params.metrics.context,
-          purpose: params.metrics.purpose,
-          valueScore: params.metrics.valueScore,
-          validationTime: 0,
-          preprocessingTime: 0,
-          totalTime: params.metrics.duration,
-          provider: params.metrics.provider,
-          inputTokens: params.metrics.inputTokens,
-          outputTokens: params.metrics.outputTokens,
-          totalTokens: params.metrics.totalTokens,
-          cost: params.metrics.cost
-        },
-        fossilId: `llm-validation-${Date.now()}-${params.callId}`,
-        status: params.error ? 'rejected' : 'approved',
-        tags: ['llm', 'validation', 'traceable']
-      };
+      // Use minimal fossilization if fossil manager is available
+      if (this.fossilManager && this.fossilManager.fossilizeValidation) {
+        const fossil = await this.fossilManager.fossilizeValidation({
+          inputHash: params.inputHash,
+          validation: {
+            isValid: !params.error,
+            errors: params.error ? [params.error] : [],
+            warnings: [],
+            recommendations: [],
+            qualityScore: params.metrics.valueScore,
+            securityIssues: [],
+            performanceIssues: []
+          },
+          preprocessing: params.preprocessing ? {
+            success: true,
+            changes: params.preprocessing.changes || [],
+            improvements: params.preprocessing.improvements || []
+          } : undefined,
+          metadata: {
+            model: params.metrics.model,
+            context: params.metrics.context,
+            purpose: params.metrics.purpose,
+            valueScore: params.metrics.valueScore,
+            validationTime: 0,
+            preprocessingTime: 0,
+            totalTime: params.metrics.duration,
+            provider: params.metrics.provider,
+            inputTokens: params.metrics.inputTokens,
+            outputTokens: params.metrics.outputTokens,
+            totalTokens: params.metrics.totalTokens,
+            cost: params.metrics.cost
+          }
+        });
 
-      // Store fossil
-      await this.fossilManager.fossilizeValidation({
-        inputHash: params.inputHash,
-        validation: fossil.validation,
-        preprocessing: fossil.preprocessing,
-        metadata: fossil.metadata
-      });
-
-      // Update metrics with fossil reference
-      params.metrics.fossilId = fossil.fossilId;
+        // Update metrics with fossil reference
+        if (fossil) {
+          params.metrics.fossilId = fossil.fossilId;
+        }
+      }
 
       // Console output for traceability
       if (this.config.enableConsoleOutput) {
-        console.log(`🦴 Fossilized LLM call: ${fossil.fossilId}`);
-        console.log(`   📊 Model: ${fossil.metadata.model}, Provider: ${fossil.metadata.provider}`);
-        console.log(`   💰 Cost: $${fossil.metadata.cost.toFixed(4)}, Tokens: ${fossil.metadata.totalTokens}`);
-        console.log(`   🎯 Purpose: ${fossil.metadata.purpose}, Context: ${fossil.metadata.context}`);
-        console.log(`   ⏱️ Duration: ${fossil.metadata.totalTime}ms`);
+        const fossilId = params.metrics.fossilId || `llm-call-${Date.now()}-${params.callId}`;
+        console.log(`🦴 LLM call processed: ${fossilId}`);
+        console.log(`   📊 Model: ${params.metrics.model}, Provider: ${params.metrics.provider}`);
+        console.log(`   💰 Cost: $${params.metrics.cost.toFixed(4)}, Tokens: ${params.metrics.totalTokens}`);
+        console.log(`   🎯 Purpose: ${params.metrics.purpose}, Context: ${params.metrics.context}`);
+        console.log(`   ⏱️ Duration: ${params.metrics.duration}ms`);
         if (params.error) {
           console.log(`   ❌ Error: ${params.error}`);
         } else {
-          console.log(`   ✅ Success: ${fossil.validation.isValid ? 'Valid' : 'Invalid'}`);
+          console.log(`   ✅ Success: ${this.fossilManager ? 'Fossilized' : 'Processed'}`);
         }
       }
 
@@ -337,19 +380,18 @@ export class LLMService {
    */
   private async checkLocalLLM(): Promise<void> {
     if (this.config.enableLocalLLM) {
-      // Temporarily disable local LLM check to avoid recursive call issue
-      this.localLLMAvailable = false;
-      // this.localLLMAvailable = await this.checkLocalLLMAvailability('ollama');
-      // if (this.localLLMAvailable) {
-      //   console.log('✅ Local LLM (Ollama) available for cost optimization');
-      // }
+      // Enable local LLM check with minimal fossilization
+      this.localLLMAvailable = await this.checkLocalLLMAvailability('ollama');
+      if (this.localLLMAvailable) {
+        console.log('✅ Local LLM (Ollama) available for cost optimization');
+      }
     }
   }
 
   /**
    * Analyze LLM call intelligence to determine best provider
    */
-  private analyzeCallIntelligence(options: OpenAIChatOptions & { 
+  private analyzeCallIntelligence(options: any & { 
     context?: string; 
     purpose?: string;
     valueScore?: number;
@@ -357,7 +399,7 @@ export class LLMService {
     const { context = 'unknown', purpose = 'general', valueScore = 0.5, messages } = options;
     
     // Analyze message complexity
-    const totalLength = messages.reduce((sum, msg) => sum + msg.content.length, 0);
+    const totalLength = messages.reduce((sum: number, msg: ChatCompletionRequestMessage) => sum + msg.content.length, 0);
     const avgLength = totalLength / messages.length;
     const complexity = Math.min(1.0, avgLength / 1000); // Normalize to 0-1
     
@@ -473,7 +515,7 @@ export class LLMService {
   /**
    * Main LLM call method with optimization and tracking
    */
-  async callLLM(options: OpenAIChatOptions & { 
+  async callLLM(options: any & { 
     context?: string; 
     purpose?: string;
     valueScore?: number;
@@ -656,25 +698,27 @@ export class LLMService {
   }
 
   /**
-   * Call with retry logic
+   * Call with retry logic (with progress logging)
    */
   private async callWithRetry<T>(fn: () => Promise<T>): Promise<T> {
     let lastError: Error;
-    
     for (let attempt = 1; attempt <= this.config.retryAttempts; attempt++) {
+      if (attempt === 1 || attempt === this.config.retryAttempts || attempt % 2 === 0) {
+        console.log(`🔄 [callWithRetry] Attempt ${attempt} of ${this.config.retryAttempts}`);
+      }
       try {
         return await fn();
       } catch (error) {
         lastError = error as Error;
-        
         if (attempt < this.config.retryAttempts) {
           const delay = this.config.retryDelayMs * Math.pow(2, attempt - 1); // Exponential backoff
-          console.log(`🔄 Retry ${attempt}/${this.config.retryAttempts} in ${delay}ms...`);
+          console.log(`🔄 [callWithRetry] Retry ${attempt}/${this.config.retryAttempts} in ${delay}ms...`);
           await this.delay(delay);
+        } else {
+          console.warn(`❌ [callWithRetry] All ${this.config.retryAttempts} attempts failed.`);
         }
       }
     }
-    
     throw lastError!;
   }
 
@@ -782,30 +826,37 @@ export class LLMService {
   }
 
   /**
-   * Track LLM usage for analytics and reporting
+   * Track usage (with progress logging for batch operations)
    */
   private async trackUsage(metrics: LLMUsageMetrics): Promise<void> {
-    this.usageLog.push(metrics);
-    
-    // Only persist to disk if not in memory-only mode
-    if (!this.config.memoryOnly) {
-      try {
+    try {
+      this.usageLog.push(metrics);
+      if (!this.config.memoryOnly) {
         await fs.writeFile(this.usageLogPath, JSON.stringify(this.usageLog, null, 2));
-      } catch (error) {
-        console.warn('Failed to save usage log:', error);
+        if (this.usageLog.length % 10 === 0 || this.usageLog.length === 1) {
+          console.log(`🔄 [trackUsage] Usage log updated (${this.usageLog.length} entries)`);
+        }
       }
+    } catch (error) {
+      console.warn('⚠️ [trackUsage] Failed to update usage log:', error);
     }
   }
 
   /**
-   * Load usage log from file
+   * Load usage log (with progress logging)
    */
   private async loadUsageLog(): Promise<void> {
     try {
-      const data = await fs.readFile(this.usageLogPath, 'utf-8');
-      this.usageLog = safeParseJSON(data, 'usageLog');
-    } catch {
-      this.usageLog = [];
+      if (await fs.stat(this.usageLogPath)) {
+        const data = await fs.readFile(this.usageLogPath, 'utf-8');
+        this.usageLog = parseJsonSafe(data, 'llm:usageLog') as any;
+        console.log(`🔄 [loadUsageLog] Loaded ${this.usageLog.length} usage entries from disk.`);
+      }
+    } catch (error) {
+      // If file doesn't exist, that's fine
+      if ((error as any).code !== 'ENOENT') {
+        console.warn('⚠️ [loadUsageLog] Failed to load usage log:', error);
+      }
     }
   }
 
@@ -1014,15 +1065,13 @@ ${this.generateRecommendations(analytics)}
 }
 
 // Backward compatibility - keep the original function
-export async function callOpenAIChat(params: CallOpenAIChatParams): Promise<any> {
-  const { model, apiKey, messages, ...options } = params;
-  const llmService = new LLMService();
+export async function callOpenAIChat(params: OpenAIChatOptions & { owner: string; repo: string }): Promise<any> {
+  const { model, apiKey, messages, owner, repo, ...options } = params;
+  const llmService = new LLMService({ owner, repo });
   return llmService.callLLM({
     model,
     apiKey,
     messages,
-    ...options,
-    context: 'legacy-call',
-    purpose: 'general'
+    ...options
   });
 } 

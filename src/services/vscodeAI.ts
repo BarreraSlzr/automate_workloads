@@ -19,7 +19,12 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import { createHash } from 'crypto';
-import type { OpenAIChatOptions, LLMProvider } from '../types/llm';
+type VSCodeAIConfig = any;
+type VSCodeAIProvider = any;
+type VSCodeAICallOptions = any;
+type VSCodeAISnapshotOptions = any;
+type VSCodeAIResponse = any;
+type VSCodeAIFossil = any;
 import type { 
   VSCodeAIConfigSchema,
   VSCodeAIProviderSchema,
@@ -28,111 +33,7 @@ import type {
   VSCodeAIResponseSchema,
   VSCodeAIFossilSchema
 } from '../types/schemas';
-
-export interface VSCodeAIConfig {
-  /** VS Code AI provider to use (copilot, claude, etc.) */
-  provider: 'copilot' | 'claude' | 'auto';
-  
-  /** Whether to enable VS Code AI integration */
-  enabled: boolean;
-  
-  /** Path to VS Code executable */
-  vscodePath?: string;
-  
-  /** Workspace folder to use */
-  workspacePath?: string;
-  
-  /** Whether to use VS Code's built-in chat interface */
-  useChatInterface: boolean;
-  
-  /** Whether to use VS Code's command palette for AI calls */
-  useCommandPalette: boolean;
-  
-  /** Timeout for VS Code AI calls (ms) */
-  timeout: number;
-  
-  /** Whether to fossilize VS Code AI interactions */
-  enableFossilization: boolean;
-  
-  /** Fossil storage path for VS Code AI interactions */
-  fossilStoragePath: string;
-  
-  /** Whether to enable snapshot processing through VS Code AI */
-  enableSnapshotProcessing: boolean;
-  
-  /** Whether to enable direct LLM calls through VS Code AI */
-  enableDirectCalls: boolean;
-  
-  /** Custom VS Code commands for AI interaction */
-  customCommands?: {
-    chat?: string;
-    analyze?: string;
-    explain?: string;
-    generate?: string;
-  };
-}
-
-export interface VSCodeAIProvider {
-  name: string;
-  isAvailable: () => Promise<boolean>;
-  call: (options: VSCodeAICallOptions) => Promise<VSCodeAIResponse>;
-  processSnapshot: (options: VSCodeAISnapshotOptions) => Promise<VSCodeAIResponse>;
-  estimateTokens: (messages: any[]) => number;
-  estimateCost: (tokens: number) => number;
-}
-
-export interface VSCodeAICallOptions {
-  messages: any[];
-  model?: string;
-  temperature?: number;
-  maxTokens?: number;
-  context?: string;
-  purpose?: string;
-  valueScore?: number;
-  useChat?: boolean;
-  useCommandPalette?: boolean;
-}
-
-export interface VSCodeAISnapshotOptions {
-  snapshotPath: string;
-  analysisType: 'summary' | 'insights' | 'recommendations' | 'audit';
-  context?: string;
-  purpose?: string;
-  valueScore?: number;
-}
-
-export interface VSCodeAIResponse {
-  content: string;
-  model: string;
-  provider: string;
-  tokens: number;
-  cost: number;
-  duration: number;
-  metadata: {
-    callId: string;
-    inputHash: string;
-    sessionId: string;
-    timestamp: string;
-    success: boolean;
-    error?: string;
-  };
-}
-
-export interface VSCodeAIFossil {
-  id: string;
-  type: 'vscode-ai-call' | 'vscode-ai-snapshot';
-  timestamp: string;
-  provider: string;
-  model: string;
-  input: VSCodeAICallOptions | VSCodeAISnapshotOptions;
-  response: VSCodeAIResponse;
-  metadata: {
-    workspacePath: string;
-    fileContext?: string;
-    gitBranch?: string;
-    gitCommit?: string;
-  };
-}
+import { executeCommand } from '@/utils/cli';
 
 /**
  * VS Code AI Service - Integrates with VS Code's built-in AI capabilities
@@ -172,51 +73,51 @@ export class VSCodeAIService {
     // GitHub Copilot Chat provider
     this.providers.set('copilot', {
       name: 'copilot',
-      isAvailable: () => this.checkCopilotAvailability(),
-      call: (options) => this.callCopilot(options),
-      processSnapshot: (options) => this.processSnapshotWithCopilot(options),
-      estimateTokens: (messages) => this.estimateTokens(messages),
+      isAvailable: (options: any) => this.checkCopilotAvailability(options),
+      call: (options: any) => this.callCopilot(options),
+      processSnapshot: (options: any) => this.processSnapshotWithCopilot(options),
+      estimateTokens: (messages: any) => this.estimateTokens(messages),
       estimateCost: () => 0 // Copilot is included in GitHub subscription
     });
 
     // Claude provider (if Claude extension is installed)
     this.providers.set('claude', {
       name: 'claude',
-      isAvailable: () => this.checkClaudeAvailability(),
-      call: (options) => this.callClaude(options),
-      processSnapshot: (options) => this.processSnapshotWithClaude(options),
-      estimateTokens: (messages) => this.estimateTokens(messages),
+      isAvailable: (options: any) => this.checkClaudeAvailability(options),
+      call: (options: any) => this.callClaude(options),
+      processSnapshot: (options: any) => this.processSnapshotWithClaude(options),
+      estimateTokens: (messages: any) => this.estimateTokens(messages),
       estimateCost: () => 0 // Local Claude extension
     });
 
     // Auto provider (tries available providers in order)
     this.providers.set('auto', {
       name: 'auto',
-      isAvailable: async () => {
+      isAvailable: async (options: any) => {
         for (const [name, provider] of this.providers) {
-          if (name !== 'auto' && await provider.isAvailable()) {
+          if (name !== 'auto' && await provider.isAvailable(options)) {
             return true;
           }
         }
         return false;
       },
-      call: async (options) => {
+      call: async (options: any) => {
         for (const [name, provider] of this.providers) {
-          if (name !== 'auto' && await provider.isAvailable()) {
+          if (name !== 'auto' && await provider.isAvailable(options)) {
             return provider.call(options);
           }
         }
         throw new Error('No VS Code AI providers available');
       },
-      processSnapshot: async (options) => {
+      processSnapshot: async (options: any) => {
         for (const [name, provider] of this.providers) {
-          if (name !== 'auto' && await provider.isAvailable()) {
+          if (name !== 'auto' && await provider.isAvailable(options)) {
             return provider.processSnapshot(options);
           }
         }
         throw new Error('No VS Code AI providers available for snapshot processing');
       },
-      estimateTokens: (messages) => this.estimateTokens(messages),
+      estimateTokens: (messages: any) => this.estimateTokens(messages),
       estimateCost: () => 0
     });
   }
@@ -235,14 +136,14 @@ export class VSCodeAIService {
   /**
    * Check if GitHub Copilot is available
    */
-  private async checkCopilotAvailability(): Promise<boolean> {
+  private async checkCopilotAvailability(options: any): Promise<boolean> {
     try {
       // Check if VS Code is available
-      const { execSync } = await import('child_process');
-      execSync('code --version', { stdio: 'ignore' });
-      
-      // Check if Copilot extension is installed
-      const extensions = execSync('code --list-extensions', { encoding: 'utf-8' });
+      const versionResult = executeCommand('code --version');
+      if (!versionResult.success) return false;
+      const extResult = executeCommand('code --list-extensions');
+      if (!extResult.success) return false;
+      const extensions = extResult.stdout;
       return extensions.includes('GitHub.copilot') || extensions.includes('GitHub.copilot-chat');
     } catch {
       return false;
@@ -252,12 +153,13 @@ export class VSCodeAIService {
   /**
    * Check if Claude extension is available
    */
-  private async checkClaudeAvailability(): Promise<boolean> {
+  private async checkClaudeAvailability(options: any): Promise<boolean> {
     try {
-      const { execSync } = await import('child_process');
-      execSync('code --version', { stdio: 'ignore' });
-      
-      const extensions = execSync('code --list-extensions', { encoding: 'utf-8' });
+      const versionResult = executeCommand('code --version');
+      if (!versionResult.success) return false;
+      const extResult = executeCommand('code --list-extensions');
+      if (!extResult.success) return false;
+      const extensions = extResult.stdout;
       return extensions.includes('anthropic.claude') || extensions.includes('claude');
     } catch {
       return false;
@@ -573,17 +475,10 @@ Format your response in a clear, structured manner.`;
    * Execute VS Code command
    */
   private async executeVSCodeCommand(command: string): Promise<string> {
-    const { execSync } = await import('child_process');
-    
     try {
-      // Execute the command with timeout
-      const result = execSync(command, { 
-        encoding: 'utf-8',
-        timeout: this.config.timeout,
-        stdio: ['pipe', 'pipe', 'pipe']
-      });
-      
-      return result.trim();
+      const result = executeCommand(command);
+      if (!result.success) throw new Error(result.stderr);
+      return result.stdout.trim();
     } catch (error) {
       throw new Error(`VS Code command failed: ${(error as Error).message}`);
     }
@@ -602,7 +497,7 @@ Format your response in a clear, structured manner.`;
       throw new Error(`VS Code AI provider not found: ${this.config.provider}`);
     }
 
-    if (!await provider.isAvailable()) {
+    if (!await provider.isAvailable(options)) {
       throw new Error(`VS Code AI provider not available: ${this.config.provider}`);
     }
 
@@ -633,7 +528,7 @@ Format your response in a clear, structured manner.`;
       throw new Error(`VS Code AI provider not found: ${this.config.provider}`);
     }
 
-    if (!await provider.isAvailable()) {
+    if (!await provider.isAvailable(options)) {
       throw new Error(`VS Code AI provider not available: ${this.config.provider}`);
     }
 
@@ -702,8 +597,8 @@ Format your response in a clear, structured manner.`;
    */
   private getGitBranch(): string | undefined {
     try {
-      const { execSync } = require('child_process');
-      return execSync('git branch --show-current', { encoding: 'utf-8' }).trim();
+      const result = executeCommand('git branch --show-current');
+      return result.success ? result.stdout.trim() : undefined;
     } catch {
       return undefined;
     }
@@ -714,8 +609,8 @@ Format your response in a clear, structured manner.`;
    */
   private getGitCommit(): string | undefined {
     try {
-      const { execSync } = require('child_process');
-      return execSync('git rev-parse HEAD', { encoding: 'utf-8' }).trim();
+      const result = executeCommand('git rev-parse HEAD');
+      return result.success ? result.stdout.trim() : undefined;
     } catch {
       return undefined;
     }
