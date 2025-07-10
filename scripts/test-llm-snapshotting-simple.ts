@@ -2,7 +2,7 @@
 
 import { LLMService } from '../src/services/llm';
 import * as fs from 'fs/promises';
-import * as path from 'path';
+import { parseJsonSafe } from '@/utils/json';
 
 /**
  * Simple test script to verify LLM call snapshotting and tracing
@@ -25,11 +25,13 @@ async function testLLMSnapshottingSimple() {
     console.log('-'.repeat(40));
     
     const service = new LLMService({
+      owner: 'test-owner',
+      repo: 'test-repo',
       enableComprehensiveTracing: true,
       enableFossilization: true,
       enableConsoleOutput: true,
       enableSnapshotExport: true,
-      fossilStoragePath: 'fossils/llm_insights/',
+      fossilStoragePath: 'fossils/test/',
       testMode: false,
       memoryOnly: false
     });
@@ -85,7 +87,7 @@ async function testLLMSnapshottingSimple() {
       results.usageLog.success = true;
       
       const usageLogContent = await fs.readFile(usageLogPath, 'utf8');
-      const usageLog = JSON.parse(usageLogContent);
+      const usageLog = parseJsonSafe(usageLogContent, 'scripts:test-llm-snapshotting-simple:usageLogContent') as any;
       
       console.log(`✅ Usage log exists: ${usageLogPath}`);
       console.log(`📊 Found ${usageLog.length} total LLM calls in log`);

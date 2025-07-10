@@ -29,6 +29,8 @@ import {
   DeveloperSummary,
   ProjectStatus
 } from '../src/types/cli';
+import { FossilManager } from '../src/utils/fossilManager';
+import { TypeSchemaValidator } from '../src/utils/typeSchemaValidator';
 
 // ============================================================================
 // UTILITY FUNCTIONS
@@ -44,6 +46,8 @@ async function generateLLMRecommendationsFromYAML(
 ): Promise<string[]> {
   try {
     const llmService = new LLMService({
+      owner: 'BarreraSlzr',
+      repo: 'automate_workloads',
       maxCostPerCall: 0.10, // Moderate cost for recommendations
       minValueScore: 0.5, // Moderate value for project analysis
     });
@@ -253,10 +257,8 @@ async function mapTestsToFunctions(
 /**
  * Convert scanned structure to project status YAML format
  */
-function toProjectStatusYamlStructure(
-  scanned: Record<string, DirectoryScan>, 
-  testMap: TestMapping
-): Modules {
+function toProjectStatusYamlStructure(params: { scanned: Record<string, DirectoryScan>, testMap: TestMapping }) {
+  const { scanned, testMap } = params;
   const modules: Modules = {};
   
   for (const dir of Object.keys(scanned)) {
@@ -570,7 +572,7 @@ async function updateProjectStatus(params: UpdateProjectStatusParams): Promise<P
   }
   
   // Convert to project status structure
-  const modules = toProjectStatusYamlStructure(scanned, testMap);
+  const modules = toProjectStatusYamlStructure({ scanned, testMap });
   
   // Build developer summary
   const developerSummary = buildDeveloperSummary(modules);
@@ -621,6 +623,8 @@ async function main() {
       const apiKey = process.env.OPENAI_API_KEY;
       if (apiKey) {
         const llmService = new LLMService({
+          owner: 'BarreraSlzr',
+          repo: 'automate_workloads',
           maxCostPerCall: 0.15, // Higher cost for developer insights
           minValueScore: 0.7, // High value for developer analysis
         });

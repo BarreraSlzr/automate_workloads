@@ -1,6 +1,8 @@
 #!/usr/bin/env bun
 
 import { LLMService } from '../src/services/llm';
+import { curateAndCheck } from '../src/utils/curateFossil';
+import { FossilManager } from '../src/utils/fossilManager';
 
 /**
  * Test script to generate a new fossil with sanitization
@@ -12,11 +14,13 @@ async function testNewFossilGeneration() {
   try {
     // Create LLM service with fossilization enabled
     const service = new LLMService({
+      owner: 'test-owner',
+      repo: 'test-repo',
       enableComprehensiveTracing: true,
       enableFossilization: true,
       enableConsoleOutput: true,
       enableSnapshotExport: true,
-      fossilStoragePath: 'fossils/llm_insights/',
+      fossilStoragePath: 'fossils/test/',
       memoryOnly: false
     });
 

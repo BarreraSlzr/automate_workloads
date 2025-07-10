@@ -4,6 +4,7 @@ import { LLMService } from '../src/services/llm';
 import { exportLLMSnapshot } from '../src/utils/llmSnapshotExporter';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { parseJsonSafe } from '@/utils/json';
 
 /**
  * Quick validation script for LLM snapshotting system
@@ -26,11 +27,13 @@ async function validateLLMSnapshotting() {
     console.log('1️⃣ Testing LLM Service...');
     try {
       const service = new LLMService({
+        owner: 'test-owner',
+        repo: 'test-repo',
         enableComprehensiveTracing: true,
         enableFossilization: true,
         enableConsoleOutput: true,
         enableSnapshotExport: true,
-        fossilStoragePath: 'fossils/llm_insights/',
+        fossilStoragePath: 'fossils/test/',
         memoryOnly: false
       });
       
@@ -75,7 +78,7 @@ async function validateLLMSnapshotting() {
       results.usageLog.exists = true;
       
       const content = await fs.readFile(usageLogPath, 'utf8');
-      JSON.parse(content); // Test if valid JSON
+      parseJsonSafe(content); // Test if valid JSON
       results.usageLog.readable = true;
       
       console.log('   ✅ Usage log exists and is readable');

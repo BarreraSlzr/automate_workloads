@@ -1,9 +1,10 @@
 #!/usr/bin/env bun
-import { updateMarkdownChecklist, ChecklistUpdate, extractJsonBlock, checklistToMarkdown, metadataToMarkdown } from "../src/utils/markdownChecklist";
+import { updateMarkdownChecklist, extractJsonBlock, checklistToMarkdown, metadataToMarkdown } from "../src/utils/markdownChecklist";
 import * as fs from "fs";
 import { ContextFossilService } from '../src/cli/context-fossil';
 import type { ContextEntry } from '../src/types';
 import { GitHubCLICommands } from '../src/utils/githubCliCommands';
+import { parseJsonSafe } from '../src/utils/json';
 
 // Usage: bun scripts/update-issue-checklist.ts <issue_number>
 // Pass checklist updates as env var: CHECKLIST_UPDATES='{"Task A":true,"Task B":false}'
@@ -18,13 +19,9 @@ if (import.meta.main) {
     process.exit(1);
   }
 
-  let updates: ChecklistUpdate;
-  try {
-    updates = JSON.parse(updatesEnv);
-  } catch (e) {
-    console.error("Invalid CHECKLIST_UPDATES JSON:", updatesEnv);
-    process.exit(1);
-  }
+  // 1. Parse updates from env or file
+  let updates: Record<string, any> = {};
+  updates = parseJsonSafe(updatesEnv, 'scripts/update-issue-checklist:CHECKLIST_UPDATES') as Record<string, any>;
 
   // Initialize GitHub CLI commands
   const commands = new GitHubCLICommands('barreraslzr', 'automate_workloads');
@@ -38,7 +35,7 @@ if (import.meta.main) {
   const body = bodyResult.stdout;
 
   // 2. Update the checklist
-  const updatedBody = updateMarkdownChecklist(body, updates);
+  const updatedBody = updateMarkdownChecklist({ body, updates });
 
   // 3. Write to a temp file
   const tempFile = `.issue_body_${issueNumber}.md`;
@@ -67,14 +64,15 @@ if (import.meta.main) {
       return;
     }
     
-    const issue = JSON.parse(ghBodyResult.stdout);
+    // Parse and type-assert issue object
+    const issue = parseJsonSafe(ghBodyResult.stdout, 'scripts/update-issue-checklist:ghBodyResult') as Record<string, any>;
     const labels = Array.isArray(issue.labels)
       ? issue.labels.map((l: any) => typeof l === 'string' ? l : (l && typeof l.name === 'string' ? l.name : String(l)))
       : [];
     const jsonBlock = extractJsonBlock(issue.body || '');
-    let purpose = jsonBlock?.purpose;
-    let checklist = jsonBlock?.checklist;
-    let automationMetadata = jsonBlock?.automationMetadata;
+    let purpose = jsonBlock && typeof jsonBlock === 'object' ? jsonBlock.purpose : undefined;
+    let checklist = jsonBlock && typeof jsonBlock === 'object' ? jsonBlock.checklist : undefined;
+    let automationMetadata = jsonBlock && typeof jsonBlock === 'object' ? jsonBlock.automationMetadata : undefined;
     const now = new Date().toISOString();
     const bodyLines = [
       `# [GH] Issue: ${issue.title}`,

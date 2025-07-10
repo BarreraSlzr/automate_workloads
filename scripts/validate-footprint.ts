@@ -4,6 +4,8 @@ import { z } from 'zod';
 import { readFile, stat, writeFile } from 'fs/promises';
 import { join } from 'path';
 import { parseCLIArgs } from '../src/types/cli';
+import { parseJsonSafe } from '../src/utils/json';
+import type { TestResult } from '@/types/validation';
 
 const ValidateFootprintParams = z.object({
   footprint: z.string().optional().default('fossils/file-footprint.yml'),
@@ -24,14 +26,6 @@ interface ValidationResult {
     failed: number;
     critical: number;
   };
-}
-
-interface TestResult {
-  name: string;
-  passed: boolean;
-  critical: boolean;
-  message: string;
-  details?: any;
 }
 
 export async function validateFootprint(params: z.infer<typeof ValidateFootprintParams>): Promise<ValidationResult> {
@@ -64,7 +58,7 @@ export async function validateFootprint(params: z.infer<typeof ValidateFootprint
     
     // Output results
     if (params.output) {
-      await writeValidationResult(result, params.output, params.format);
+      await writeValidationResult({ result, outputPath: params.output, format: params.format });
     }
     
     // Print summary
@@ -86,7 +80,7 @@ function parseFootprint(content: string): any {
   } catch {
     try {
       // Try JSON
-      return JSON.parse(content);
+      return parseJsonSafe(content, 'scripts/validate-footprint:parseFootprint');
     } catch {
       throw new Error('Failed to parse footprint file');
     }
@@ -464,21 +458,18 @@ function printValidationSummary(result: ValidationResult) {
   }
 }
 
-async function writeValidationResult(result: ValidationResult, outputPath: string, format: 'json' | 'yaml') {
+async function writeValidationResult(params: { result: ValidationResult, outputPath: string, format: 'json' | 'yaml' }) {
   const { mkdir } = await import('fs/promises');
   const { dirname } = await import('path');
-  
-  await mkdir(dirname(outputPath), { recursive: true });
-  
-  if (format === 'yaml') {
+  await mkdir(dirname(params.outputPath), { recursive: true });
+  if (params.format === 'yaml') {
     const yaml = await import('yaml');
-    const content = yaml.stringify(result, { indent: 2 });
-    await writeFile(outputPath, content);
+    const content = yaml.stringify(params.result, { indent: 2 });
+    await writeFile(params.outputPath, content);
   } else {
-    await writeFile(outputPath, JSON.stringify(result, null, 2));
+    await writeFile(params.outputPath, JSON.stringify(params.result, null, 2));
   }
-  
-  console.log(`📄 Validation result written to: ${outputPath}`);
+  console.log(`📄 Validation result written to: ${params.outputPath}`);
 }
 
 // CLI entry point

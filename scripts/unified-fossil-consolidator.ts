@@ -14,7 +14,7 @@
 
 import { promises as fs } from 'fs';
 import path from 'path';
-import { execSync } from 'child_process';
+import { executeCommand } from '@/utils/cli';
 import { z } from 'zod';
 import type { BaseFossil } from '../src/types/core';
 import { TimestampFilter } from '../src/utils/timestampFilter';
@@ -237,8 +237,9 @@ class UnifiedFossilConsolidator {
     console.log('🔄 Performing cross-commit analysis...');
     
     try {
-      const recentCommits = execSync('git log --oneline -10', { encoding: 'utf8' });
-      const patterns = this.analyzeCommitPatterns(recentCommits);
+      const result = executeCommand('git log --oneline -10');
+      if (!result.success) throw new Error(result.stderr);
+      const patterns = this.analyzeCommitPatterns(result.stdout);
       
       return { patterns };
     } catch (error) {
@@ -365,7 +366,9 @@ class UnifiedFossilConsolidator {
 
   private async getCurrentCommitHash(): Promise<string> {
     try {
-      return execSync('git rev-parse HEAD', { encoding: 'utf8' }).trim();
+      const result = executeCommand('git rev-parse HEAD');
+      if (!result.success) return 'unknown';
+      return result.stdout.trim();
     } catch {
       return 'unknown';
     }

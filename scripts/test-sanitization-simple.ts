@@ -1,6 +1,8 @@
 #!/usr/bin/env bun
 
 import { LLMService } from '../src/services/llm';
+import { createErrorSnapshot } from '../src/utils/errorSnapshotLogUtils';
+import { TypeSchemaValidator } from '../src/utils/typeSchemaValidator';
 
 /**
  * Simple test to verify API key sanitization
@@ -12,11 +14,13 @@ async function testSanitizationSimple() {
   try {
     // Create LLM service
     const service = new LLMService({
+      owner: 'test-owner',
+      repo: 'test-repo',
       enableComprehensiveTracing: true,
       enableFossilization: true,
-      enableConsoleOutput: false, // Disable console output for this test
+      enableConsoleOutput: false,
       enableSnapshotExport: true,
-      fossilStoragePath: 'fossils/llm_insights/',
+      fossilStoragePath: 'fossils/test/',
       memoryOnly: true // Use memory-only mode to avoid file system issues
     });
 

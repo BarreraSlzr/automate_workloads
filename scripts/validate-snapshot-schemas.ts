@@ -18,12 +18,8 @@ import {
   z
 } from '../src/types/schemas';
 import * as fs from 'fs/promises';
-
-interface ValidationResult {
-  schema: string;
-  valid: boolean;
-  errors: string[];
-}
+import type { ValidationResult, ValidationError } from '@/types/validation';
+import { noop } from '@/utils/cli';
 
 class SnapshotSchemaValidator {
   private results: ValidationResult[] = [];
@@ -55,7 +51,7 @@ class SnapshotSchemaValidator {
 
     const result: ValidationResult = {
       schema: schemaName,
-      valid: true,
+      isValid: true,
       errors: []
     };
 
@@ -74,26 +70,27 @@ class SnapshotSchemaValidator {
       try {
         const invalidParams = this.getInvalidParams(schemaName);
         schema.parse(invalidParams);
-        result.valid = false;
-        result.errors.push('Invalid params should have thrown an error');
+        result.isValid = false;
+        result.errors.push({ message: 'Invalid params should have thrown an error', path: [] });
         console.log(`   ❌ Invalid params should have thrown an error`);
       } catch (error) {
         if (error instanceof z.ZodError) {
           console.log(`   ✅ Invalid params correctly rejected: ${error.errors.length} errors`);
+          result.errors = error.errors.map(e => ({ message: e.message, path: e.path.map(String) }));
         } else {
-          result.valid = false;
-          result.errors.push(`Unexpected error type: ${error}`);
+          result.isValid = false;
+          result.errors.push({ message: `Unexpected error type: ${error}`, path: [] });
           console.log(`   ❌ Unexpected error type: ${error}`);
         }
       }
 
     } catch (error) {
-      result.valid = false;
+      result.isValid = false;
       if (error instanceof z.ZodError) {
-        result.errors = error.errors.map(e => `${e.path.join('.')}: ${e.message}`);
+        result.errors = error.errors.map(e => ({ message: e.message, path: e.path.map(String) }));
         console.log(`   ❌ Validation failed: ${error.errors.length} errors`);
       } else {
-        result.errors.push(`Unexpected error: ${error}`);
+        result.errors.push({ message: `Unexpected error: ${error}`, path: [] });
         console.log(`   ❌ Unexpected error: ${error}`);
       }
     }
@@ -354,8 +351,8 @@ class SnapshotSchemaValidator {
    */
   generateReport(): string {
     const totalSchemas = this.results.length;
-    const validSchemas = this.results.filter(r => r.valid).length;
-    const failedSchemas = this.results.filter(r => !r.valid);
+    const validSchemas = this.results.filter(r => r.isValid).length;
+    const failedSchemas = this.results.filter(r => !r.isValid);
 
     let report = `# Snapshot Schema Validation Report\n\n`;
     report += `Generated: ${new Date().toISOString()}\n\n`;
@@ -370,7 +367,7 @@ class SnapshotSchemaValidator {
       failedSchemas.forEach(schema => {
         report += `### ${schema.schema}\n\n`;
         schema.errors.forEach(error => {
-          report += `- ❌ ${error}\n`;
+          report += `- ❌ ${error.message}\n`;
         });
         report += `\n`;
       });
@@ -378,11 +375,11 @@ class SnapshotSchemaValidator {
 
     report += `## All Results\n\n`;
     this.results.forEach(result => {
-      const status = result.valid ? '✅' : '❌';
-      report += `${status} **${result.schema}**: ${result.valid ? 'Valid' : 'Invalid'}\n`;
+      const status = result.isValid ? '✅' : '❌';
+      report += `${status} **${result.schema}**: ${result.isValid ? 'Valid' : 'Invalid'}\n`;
       if (result.errors.length > 0) {
         result.errors.forEach(error => {
-          report += `  - ${error}\n`;
+          report += `  - ${error.message}\n`;
         });
       }
       report += `\n`;
@@ -406,8 +403,8 @@ async function main() {
 
     // Display summary
     const totalSchemas = results.length;
-    const validSchemas = results.filter(r => r.valid).length;
-    const failedSchemas = results.filter(r => !r.valid);
+    const validSchemas = results.filter(r => r.isValid).length;
+    const failedSchemas = results.filter(r => !r.isValid);
 
     console.log('📋 Validation Summary');
     console.log('='.repeat(50));
@@ -419,7 +416,7 @@ async function main() {
     if (failedSchemas.length > 0) {
       console.log('\n❌ Failed schemas:');
       failedSchemas.forEach(schema => {
-        console.log(`  - ${schema.schema}: ${schema.errors.join(', ')}`);
+        console.log(`  - ${schema.schema}: ${schema.errors.map(e => e.message).join(', ')}`);
       });
     }
 
