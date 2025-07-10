@@ -23,15 +23,15 @@ import {
   CommitTemplateFromJsonParamsSchema,
   CommitTemplateToJsonParamsSchema,
   CommitTemplateValidateParamsSchema,
-  CommitTemplateGenerateParamsSchema,
   CommitTemplateCreateParams,
-  CommitTemplateFromJsonParams,
   CommitTemplateToJsonParams,
   CommitTemplateValidateParams,
   CommitTemplateGenerateParams,
   CommitMessageTemplate,
   CommitMessageTemplateSchema
 } from '../src/types/cli';
+import { parseJsonSafe } from '@/utils/json';
+import { executeCommand } from '@/utils/cli';
 
 class CommitMessageTemplateSystem {
   private templatesDir = 'fossils/commit_templates';
@@ -223,10 +223,10 @@ class CommitMessageTemplateSystem {
     let template: any;
 
     if (filePath.endsWith('.json')) {
-      template = JSON.parse(content);
+      template = parseJsonSafe(content, 'scripts:commit-message-template:content');
     } else if (filePath.endsWith('.yaml') || filePath.endsWith('.yml')) {
       // In production, use proper YAML parser
-      template = JSON.parse(content);
+      template = parseJsonSafe(content, 'scripts:commit-message-template:content');
     } else {
       throw new Error('Unsupported file format. Use .json or .yaml');
     }
@@ -309,8 +309,8 @@ class CommitMessageTemplateSystem {
 
   private getCurrentAuthor(): string {
     try {
-      const { execSync } = require('child_process');
-      return execSync('git config user.name', { encoding: 'utf8' }).trim();
+      const result = executeCommand('git config user.name');
+      return result.success ? result.stdout.trim() : 'unknown';
     } catch (error) {
       return 'unknown';
     }
@@ -449,8 +449,9 @@ class CommitMessageTemplateSystem {
 
   private async getGitDiff(): Promise<any> {
     try {
-      const { execSync } = require('child_process');
-      const output = execSync('git diff --cached --numstat', { encoding: 'utf8' });
+      const result = executeCommand('git diff --cached --numstat');
+      if (!result.success) throw new Error(result.stderr);
+      const output = result.stdout;
       const changes: any[] = [];
       let additions = 0;
       let deletions = 0;
@@ -465,7 +466,6 @@ class CommitMessageTemplateSystem {
           const delNum = parseInt(del ?? '0') || 0;
           additions += addNum;
           deletions += delNum;
-          
           changes.push({
             path: path ?? '',
             status: addNum > 0 && delNum === 0 ? 'added' : 

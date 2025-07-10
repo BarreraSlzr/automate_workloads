@@ -1,10 +1,11 @@
 #!/usr/bin/env bun
 
 import { z } from 'zod';
-import { execSync } from 'child_process';
 import { writeFile, readFile, stat } from 'fs/promises';
 import { join } from 'path';
 import { parseCLIArgs } from '../src/types/cli';
+import type { FileInfo, TestResult, FileFootprint } from '@/types/footprint';
+import { noop, executeCommand } from '../src/utils/cli';
 
 const GenerateFileFootprintParams = z.object({
   output: z.string().optional().default('fossils/file-footprint.yml'),
@@ -17,65 +18,6 @@ const GenerateFileFootprintParams = z.object({
   validate: z.boolean().optional().default(false),
   test: z.boolean().optional().default(false),
 });
-
-interface FileFootprint {
-  timestamp: string;
-  git: {
-    branch: string;
-    commit: string;
-    status: string;
-    lastCommit: {
-      hash: string;
-      message: string;
-      author: string;
-      date: string;
-    };
-  };
-  files: {
-    staged: FileInfo[];
-    unstaged: FileInfo[];
-    untracked: FileInfo[];
-    all: FileInfo[];
-  };
-  stats: {
-    totalFiles: number;
-    stagedCount: number;
-    unstagedCount: number;
-    untrackedCount: number;
-    totalLinesAdded: number;
-    totalLinesDeleted: number;
-    fileTypes: Record<string, number>;
-  };
-  machine: {
-    hostname: string;
-    username: string;
-    workingDirectory: string;
-    timestamp: string;
-  };
-  fossilization: {
-    version: string;
-    checksum: string;
-    validated: boolean;
-    testResults?: TestResult[];
-  };
-}
-
-interface FileInfo {
-  path: string;
-  status: string;
-  size?: number;
-  lines?: number;
-  lastModified?: string;
-  type: 'file' | 'directory';
-  extension?: string;
-}
-
-interface TestResult {
-  test: string;
-  passed: boolean;
-  message: string;
-  details?: any;
-}
 
 export async function generateFileFootprint(params: z.infer<typeof GenerateFileFootprintParams>): Promise<FileFootprint> {
   console.log('🔍 Generating file footprint...');
@@ -115,7 +57,7 @@ export async function generateFileFootprint(params: z.infer<typeof GenerateFileF
   };
   
   // Write footprint to file
-  await writeFootprint(footprint, params.output, params.format);
+  await writeFootprint({ footprint, outputPath: params.output, format: params.format });
   
   // Fossilize if requested
   if (params.fossilize) {
@@ -136,15 +78,15 @@ export async function generateFileFootprint(params: z.infer<typeof GenerateFileF
 
 async function getGitInfo() {
   try {
-    const branch = execSync('git branch --show-current', { encoding: 'utf-8' }).trim();
-    const commit = execSync('git rev-parse HEAD', { encoding: 'utf-8' }).trim();
-    const status = execSync('git status --porcelain', { encoding: 'utf-8' }).trim();
+    const branch = executeCommand('git branch --show-current').stdout.trim();
+    const commit = executeCommand('git rev-parse HEAD').stdout.trim();
+    const status = executeCommand('git status --porcelain').stdout.trim();
     
     // Get last commit information
-    const lastCommitHash = execSync('git rev-parse HEAD', { encoding: 'utf-8' }).trim();
-    const lastCommitMessage = execSync('git log -1 --pretty=format:%s', { encoding: 'utf-8' }).trim();
-    const lastCommitAuthor = execSync('git log -1 --pretty=format:%an', { encoding: 'utf-8' }).trim();
-    const lastCommitDate = execSync('git log -1 --pretty=format:%ai', { encoding: 'utf-8' }).trim();
+    const lastCommitHash = executeCommand('git rev-parse HEAD').stdout.trim();
+    const lastCommitMessage = executeCommand('git log -1 --pretty=format:%s').stdout.trim();
+    const lastCommitAuthor = executeCommand('git log -1 --pretty=format:%an').stdout.trim();
+    const lastCommitDate = executeCommand('git log -1 --pretty=format:%ai').stdout.trim();
     
     return {
       branch,
@@ -181,7 +123,7 @@ async function getFileInfo(params: z.infer<typeof GenerateFileFootprintParams>) 
   
   try {
     // Get git status
-    const statusOutput = execSync('git status --porcelain', { encoding: 'utf-8' }).trim();
+    const statusOutput = executeCommand('git status --porcelain').stdout.trim();
     const statusLines = statusOutput ? statusOutput.split('\n') : [];
     
     for (const line of statusLines) {
@@ -204,7 +146,7 @@ async function getFileInfo(params: z.infer<typeof GenerateFileFootprintParams>) 
     // Get untracked files
     if (params.includeUntracked) {
       try {
-        const untrackedOutput = execSync('git ls-files --others --exclude-standard', { encoding: 'utf-8' }).trim();
+        const untrackedOutput = executeCommand('git ls-files --others --exclude-standard').stdout.trim();
         const untrackedPaths = untrackedOutput ? untrackedOutput.split('\n') : [];
         
         for (const path of untrackedPaths) {
@@ -320,7 +262,7 @@ async function calculateStats(files: FileFootprint['files']) {
   
   // Try to get line change statistics from git
   try {
-    const diffStats = execSync('git diff --stat', { encoding: 'utf-8' }).trim();
+    const diffStats = executeCommand('git diff --stat').stdout.trim();
     const lines = diffStats.split('\n');
     
     for (const line of lines) {
@@ -350,13 +292,13 @@ async function getMachineInfo() {
   let username = 'unknown';
   
   try {
-    hostname = execSync('hostname', { encoding: 'utf-8' }).trim();
+    hostname = executeCommand('hostname').stdout.trim();
   } catch {
     // Use default value
   }
   
   try {
-    username = execSync('whoami', { encoding: 'utf-8' }).trim();
+    username = executeCommand('whoami').stdout.trim();
   } catch {
     // Use default value
   }
@@ -483,23 +425,23 @@ async function fossilizeFootprint(footprint: FileFootprint, outputPath: string) 
   }
 }
 
-async function writeFootprint(footprint: FileFootprint, outputPath: string, format: 'yaml' | 'json') {
+async function writeFootprint(params: { footprint: FileFootprint, outputPath: string, format: 'yaml' | 'json' }) {
   const { mkdir } = await import('fs/promises');
   const { dirname } = await import('path');
   
   // Ensure output directory exists
-  await mkdir(dirname(outputPath), { recursive: true });
+  await mkdir(dirname(params.outputPath), { recursive: true });
   
-  if (format === 'yaml') {
+  if (params.format === 'yaml') {
     const yaml = await import('yaml');
-    const yamlContent = yaml.stringify(footprint, {
+    const yamlContent = yaml.stringify(params.footprint, {
       indent: 2,
       lineWidth: 120,
       minContentWidth: 20,
     });
-    await writeFile(outputPath, yamlContent);
+    await writeFile(params.outputPath, yamlContent);
   } else {
-    await writeFile(outputPath, JSON.stringify(footprint, null, 2));
+    await writeFile(params.outputPath, JSON.stringify(params.footprint, null, 2));
   }
 }
 

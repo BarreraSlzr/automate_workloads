@@ -127,7 +127,11 @@ async function main() {
     };
   }
 
-  const llm = new LLMService({ preferLocalLLM: true });
+  const llm = new LLMService({ 
+    owner: 'BarreraSlzr', 
+    repo: 'automate_workloads',
+    preferLocalLLM: true 
+  });
   let updated = false;
   let processed = 0;
 

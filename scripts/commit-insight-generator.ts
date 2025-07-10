@@ -13,13 +13,12 @@
  * Roadmap reference: Integrate LLM insights for completed tasks
  */
 
-import { execSync } from 'child_process';
 import { readFileSync, writeFileSync, existsSync } from 'fs';
-import { join } from 'path';
 import { formatISO } from 'date-fns';
 import { LLMService } from '../src/services/llm';
 import { fossilizeLLMInsight } from '../src/utils/llmFossilManager';
-import { LLMInsightFossil } from '../src/types/llmFossil';
+import { executeCommand } from '@/utils/cli';
+import { parseJsonSafe } from '@/utils/json';
 
 // Types for commit insight system
 interface CommitAnalysis {
@@ -90,7 +89,7 @@ class CommitInsightGenerator {
   private llmService: LLMService;
 
   constructor() {
-    this.llmService = new LLMService();
+    this.llmService = new LLMService({ owner: 'BarreraSlzr', repo: 'automate_workloads' });
   }
 
   /**
@@ -337,7 +336,7 @@ Provide insights in this JSON format:
       // Try to extract JSON from response
       const jsonMatch = response.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
+        return parseJsonSafe(jsonMatch[0], 'scripts/commit-insight-generator:parseLLMResponse');
       }
       
       // Fallback parsing
@@ -464,27 +463,28 @@ Provide insights in this JSON format:
    * Utility methods for git operations
    */
   private async getStagedChanges(): Promise<FileChange[]> {
-    const output = execSync('git diff --cached --name-status --numstat', { encoding: 'utf8' });
+    const output = (await executeCommand('git diff --cached --name-status --numstat')).stdout;
     return this.parseGitDiff(output);
   }
 
   private async getCommitMessage(): Promise<string> {
-    return execSync('git log -1 --pretty=%B', { encoding: 'utf8' }).trim();
+    const output = (await executeCommand('git log -1 --pretty=%B')).stdout;
+    return output.trim();
   }
 
   private async getCommit(hash: string): Promise<any> {
-    const output = execSync(`git log -1 --pretty=format:"%H|%an|%ad|%s" ${hash}`, { encoding: 'utf8' });
+    const output = (await executeCommand(`git log -1 --pretty=format:"%H|%an|%ad|%s" ${hash}`)).stdout;
     const [commitHash, author, date, message] = output.split('|');
     return { hash: commitHash, author, date, message };
   }
 
   private async getCommitChanges(hash: string): Promise<FileChange[]> {
-    const output = execSync(`git show --name-status --numstat ${hash}`, { encoding: 'utf8' });
+    const output = (await executeCommand(`git show --name-status --numstat ${hash}`)).stdout;
     return this.parseGitDiff(output);
   }
 
   private async getCommitsInRange(range: string): Promise<any[]> {
-    const output = execSync(`git log --pretty=format:"%H|%s" ${range}`, { encoding: 'utf8' });
+    const output = (await executeCommand(`git log --pretty=format:"%H|%s" ${range}`)).stdout;
     return output.trim().split('\n').map(line => {
       const [hash, message] = line.split('|');
       return { hash, message };
@@ -616,6 +616,17 @@ Automation-Scope: ${insights.insights.category}`;
     // Note: In a real implementation, you would update the commit message
     console.log('📝 Enhanced commit message:');
     console.log(enhancedMessage);
+  }
+
+  private async getRepoInfo(): Promise<{ owner: string; repo: string }> {
+    // Use canonical utilities for owner/repo detection
+    const { getCurrentRepoOwner, getCurrentRepoName } = await import('../src/utils/cli');
+    const owner = getCurrentRepoOwner();
+    const repo = getCurrentRepoName();
+    // Optionally validate with Zod schema
+    const { OwnerRepoSchema } = await import('../src/types/schemas');
+    OwnerRepoSchema.parse({ owner, repo });
+    return { owner, repo };
   }
 }
 

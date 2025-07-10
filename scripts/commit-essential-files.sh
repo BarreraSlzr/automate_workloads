@@ -8,6 +8,12 @@ set -e
 
 echo "🔒 Committing essential files to stabilize git state..."
 
+if [ $# -eq 0 ]; then
+  echo "🔒 Committing essential files to stabilize git state..."
+  echo "Usage: $0 <args>"
+  exit 0
+fi
+
 # Create backup branch first
 BACKUP_BRANCH="emergency-backup-$(date +%Y%m%d-%H%M%S)"
 echo "📦 Creating backup branch: $BACKUP_BRANCH"

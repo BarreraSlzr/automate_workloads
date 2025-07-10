@@ -9,7 +9,6 @@
  */
 
 import { promises as fs } from 'fs';
-import path from 'path';
 import yaml from 'js-yaml';
 import { formatISO } from 'date-fns';
 import { createHash } from 'crypto';
@@ -17,6 +16,7 @@ import { LLMService } from '../src/services/llm';
 import { fossilizeLLMInsight } from '../src/utils/fossilize';
 import type { LLMInsightFossil } from '../src/types/llmFossil';
 import type { RoadmapTaskInsight } from '../src/types/roadmapInsights';
+import { parseJsonSafe } from '@/utils/json';
 
 const ROADMAP_YML = 'fossils/roadmap.yml';
 const INSIGHTS_COLLECTION_PATH = 'fossils/roadmap_insights_collection.json';
@@ -51,11 +51,8 @@ function walkTasks(tasks: any[], parentPath: string[] = []): Array<{ task: any; 
 /**
  * Generate LLM insight for a single task
  */
-async function generateLLMInsight(
-  task: any, 
-  taskPath: string[], 
-  llm: LLMService
-): Promise<RoadmapTaskInsight> {
+async function generateLLMInsight(params: { task: any, taskPath: string[], llm: LLMService }) {
+  const { task, taskPath, llm } = params;
   const taskId = generateTaskId(task.task, taskPath);
   
   const prompt = `Analyze this roadmap task and provide structured insights:
@@ -99,7 +96,7 @@ Focus on actionable insights that help with project management and automation.`;
     // Try to parse JSON response
     let insight: any = {};
     try {
-      insight = JSON.parse(content);
+      insight = parseJsonSafe(content);
     } catch {
       // Fallback: extract fields manually
       const get = (label: string) => {
@@ -251,7 +248,11 @@ async function main() {
   }
 
   // Initialize LLM service
-  const llm = new LLMService({ preferLocalLLM: true });
+  const llm = new LLMService({ 
+    owner: 'BarreraSlzr', 
+    repo: 'automate_workloads',
+    preferLocalLLM: true 
+  });
   
   // Walk through all tasks
   const allTasks = walkTasks(roadmap.tasks);
@@ -262,7 +263,7 @@ async function main() {
   
   for (const { task, path } of allTasks) {
     console.log(`🔄 Analyzing task: ${task.task}`);
-    const insight = await generateLLMInsight(task, path, llm);
+    const insight = await generateLLMInsight({ task, taskPath: path, llm });
     insights.push(insight);
     processed++;
     

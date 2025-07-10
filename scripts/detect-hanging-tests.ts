@@ -7,7 +7,7 @@
  * of future blockers through proactive monitoring.
  */
 
-import { execSync } from 'child_process';
+import { executeCommand } from '../src/utils/cli';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -58,23 +58,33 @@ class HangingTestDetector {
   async detectHangingTests(): Promise<HangingTestResult[]> {
     console.log('🔍 Detecting hanging tests...');
     
+    const results: HangingTestResult[] = [];
     for (const testPattern of this.config.testPatterns) {
+      const startTime = Date.now();
       try {
-        const result = await this.testForHanging(testPattern);
-        this.results.push(result);
-        
-        if (result.hangingDetected) {
-          console.log(`🚨 Hanging test detected: ${testPattern}`);
-        } else {
-          console.log(`✅ ${testPattern} - No hanging detected (${result.duration}ms)`);
-        }
-      } catch (error) {
-        console.log(`❌ Error testing ${testPattern}: ${error}`);
+        // Run test with strict timeout
+        const output = (await executeCommand(`bun test ${testPattern} --timeout 5000`)).stdout;
+        const duration = Date.now() - startTime;
+        const hangingDetected = this.analyzeOutputForHanging(output, duration);
+        results.push({
+          testFile: testPattern,
+          hangingDetected,
+          duration,
+          reason: hangingDetected ? this.getHangingReason(output, duration) : undefined,
+          timestamp: new Date().toISOString()
+        });
+      } catch (error: any) {
+        const duration = Date.now() - startTime;
+        results.push({
+          testFile: testPattern,
+          hangingDetected: true,
+          duration,
+          reason: `Timeout after ${duration}ms: ${error.message}`,
+          timestamp: new Date().toISOString()
+        });
       }
     }
-    
-    await this.saveResults();
-    return this.results;
+    return results;
   }
 
   /**
@@ -85,10 +95,7 @@ class HangingTestDetector {
     
     try {
       // Run test with strict timeout
-      const output = execSync(`bun test ${testFile} --timeout 5000`, {
-        encoding: 'utf-8',
-        timeout: this.config.timeoutThreshold
-      });
+      const output = (await executeCommand(`bun test ${testFile} --timeout 5000`)).stdout;
       
       const duration = Date.now() - startTime;
       const hangingDetected = this.analyzeOutputForHanging(output, duration);

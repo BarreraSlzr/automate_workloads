@@ -13,10 +13,26 @@
  * Roadmap reference: Integrate LLM insights for completed tasks
  */
 
-import { execSync } from 'child_process';
+import { executeCommand } from '@/utils/cli';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
+// PARAMS OBJECT PATTERN: All scripts must detect owner/repo at the top level, validate with Zod, and pass as part of a params object to all downstream calls. No loose or positional owner/repo arguments.
+import { getCurrentRepoOwner, getCurrentRepoName } from '../src/utils/cli';
 import { z } from 'zod';
+import { OwnerRepoSchema } from '../src/types/schemas';
+import { parseJsonSafe } from '@/utils/json';
+
+function detectOwnerRepo(options: any = {}): { owner: string; repo: string } {
+  if (options.owner && options.repo) return { owner: options.owner, repo: options.repo };
+  const owner = getCurrentRepoOwner();
+  const repo = getCurrentRepoName();
+  if (owner && repo) return { owner, repo };
+  if (process.env.CI) {
+    return { owner: 'BarreraSlzr', repo: 'automate_workloads' };
+  } else {
+    return { owner: 'emmanuelbarrera', repo: 'automate_workloads' };
+  }
+}
 
 // Commit message validation schema
 const CommitMessageSchema = z.object({
@@ -70,6 +86,8 @@ class CommitMessageValidator {
     file?: string;
     preCommit?: boolean;
     strict?: boolean;
+    owner?: string;
+    repo?: string;
   }): Promise<CommitMessageValidation> {
     let message = '';
 
@@ -78,7 +96,7 @@ class CommitMessageValidator {
     } else if (args.file) {
       message = this.readCommitMessageFile(args.file);
     } else if (args.preCommit) {
-      message = this.getLastCommitMessage();
+      message = await this.getLastCommitMessage();
     } else {
       throw new Error('No message, file, or pre-commit flag provided');
     }
@@ -89,7 +107,7 @@ class CommitMessageValidator {
   /**
    * Validate a commit message
    */
-  validateCommitMessage(message: string, strict: boolean = false): CommitMessageValidation {
+  async validateCommitMessage(message: string, strict: boolean = false): Promise<CommitMessageValidation> {
     const lines = message.trim().split('\n');
     const firstLine = lines[0] || '';
     const body = lines.slice(1).join('\n');
@@ -276,9 +294,10 @@ class CommitMessageValidator {
   /**
    * Get last commit message
    */
-  private getLastCommitMessage(): string {
+  private async getLastCommitMessage(): Promise<string> {
     try {
-      return execSync('git log -1 --pretty=%B', { encoding: 'utf8' });
+      const result = (await executeCommand('git log -1 --pretty=%B')).stdout;
+      return result;
     } catch (error) {
       throw new Error('Failed to get last commit message');
     }
@@ -287,7 +306,7 @@ class CommitMessageValidator {
   /**
    * Display validation results
    */
-  displayResults(validation: CommitMessageValidation): void {
+  async displayResults(validation: CommitMessageValidation): Promise<void> {
     console.log('📝 Commit Message Validation Results');
     console.log('='.repeat(50));
 
@@ -415,16 +434,18 @@ Examples:
 // Main execution
 async function main() {
   const args = parseArgs();
+  // Detect owner/repo from CLI args or environment
+  const { owner, repo } = detectOwnerRepo(args);
+  OwnerRepoSchema.parse({ owner, repo });
   const validator = new CommitMessageValidator();
-
   try {
     if (args.example) {
       console.log(validator.generateExample());
       return;
     }
-
-    const validation = await validator.validateFromArgs(args);
-    validator.displayResults(validation);
+    // Pass owner/repo as part of params object if needed in future downstream calls
+    const validation = await validator.validateFromArgs({ ...args, owner, repo });
+    await validator.displayResults(validation);
   } catch (error) {
     console.error('❌ Error:', error);
     process.exit(1);

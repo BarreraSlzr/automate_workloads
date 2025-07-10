@@ -1,10 +1,10 @@
 #!/usr/bin/env bun
 
 import { z } from 'zod';
-import { execSync } from 'child_process';
 import { writeFile, readFile, exists } from 'fs/promises';
-import { join } from 'path';
 import { parseCLIArgs } from '../src/types/cli';
+import { executeCommand } from '../src/utils/cli';
+import { parseJsonSafe } from '../src/utils/json';
 
 const EvolvingFootprintParams = z.object({
   output: z.string().optional().default('fossils/evolving-footprint.yml'),
@@ -116,7 +116,7 @@ export async function generateEvolvingFootprint(params: z.infer<typeof EvolvingF
   }
   
   // Write footprint to file
-  await writeFootprint(footprint, params.output, params.format);
+  await writeFootprint({ footprint, outputPath: params.output, format: params.format });
   
   console.log(`✅ Evolving footprint updated: ${params.output}`);
   console.log(`📊 Current: ${stats.totalFiles} files, ${footprint.metadata.totalCommits} commits tracked`);
@@ -140,15 +140,15 @@ function createNewFootprint(currentSnapshot: CommitSnapshot, timestamp: string):
 
 async function getGitInfo() {
   try {
-    const branch = execSync('git branch --show-current', { encoding: 'utf-8' }).trim();
-    const commit = execSync('git rev-parse HEAD', { encoding: 'utf-8' }).trim();
-    const status = execSync('git status --porcelain', { encoding: 'utf-8' }).trim();
+    const branch = (await executeCommand('git branch --show-current')).stdout.trim();
+    const commit = (await executeCommand('git rev-parse HEAD')).stdout.trim();
+    const status = (await executeCommand('git status --porcelain')).stdout.trim();
     
     // Get last commit information
-    const lastCommitHash = execSync('git rev-parse HEAD', { encoding: 'utf-8' }).trim();
-    const lastCommitMessage = execSync('git log -1 --pretty=format:%s', { encoding: 'utf-8' }).trim();
-    const lastCommitAuthor = execSync('git log -1 --pretty=format:%an', { encoding: 'utf-8' }).trim();
-    const lastCommitDate = execSync('git log -1 --pretty=format:%ai', { encoding: 'utf-8' }).trim();
+    const lastCommitHash = (await executeCommand('git rev-parse HEAD')).stdout.trim();
+    const lastCommitMessage = (await executeCommand('git log -1 --pretty=format:%s')).stdout.trim();
+    const lastCommitAuthor = (await executeCommand('git log -1 --pretty=format:%an')).stdout.trim();
+    const lastCommitDate = (await executeCommand('git log -1 --pretty=format:%ai')).stdout.trim();
     
     return {
       branch,
@@ -184,7 +184,7 @@ async function getFileInfo() {
   
   try {
     // Get staged files
-    const stagedOutput = execSync('git diff --cached --name-only', { encoding: 'utf-8' }).trim();
+    const stagedOutput = (await executeCommand('git diff --cached --name-only')).stdout.trim();
     if (stagedOutput) {
       for (const path of stagedOutput.split('\n').filter(Boolean)) {
         staged.push(await getFileSnapshot(path, 'A'));
@@ -192,7 +192,7 @@ async function getFileInfo() {
     }
     
     // Get unstaged files
-    const unstagedOutput = execSync('git diff --name-only', { encoding: 'utf-8' }).trim();
+    const unstagedOutput = (await executeCommand('git diff --name-only')).stdout.trim();
     if (unstagedOutput) {
       for (const path of unstagedOutput.split('\n').filter(Boolean)) {
         unstaged.push(await getFileSnapshot(path, 'M'));
@@ -200,14 +200,14 @@ async function getFileInfo() {
     }
     
     // Get untracked files
-    const untrackedOutput = execSync('git ls-files --others --exclude-standard', { encoding: 'utf-8' }).trim();
+    const untrackedOutput = (await executeCommand('git ls-files --others --exclude-standard')).stdout.trim();
     if (untrackedOutput) {
       for (const path of untrackedOutput.split('\n').filter(Boolean)) {
         untracked.push(await getFileSnapshot(path, '??'));
       }
     }
   } catch (error) {
-    console.warn('⚠️  Failed to get file information:', error);
+    throw new Error('Failed to get file status: ' + error);
   }
   
   return {
@@ -262,7 +262,7 @@ async function calculateStats(files: { staged: FileSnapshot[]; unstaged: FileSna
   
   try {
     if (stagedCount > 0) {
-      const diffStats = execSync('git diff --cached --stat', { encoding: 'utf-8' }).trim();
+      const diffStats = (await executeCommand('git diff --cached --stat')).stdout;
       const lastLine = diffStats.split('\n').pop();
       if (lastLine) {
         const addedMatch = lastLine.match(/(\d+) insertions?/);
@@ -273,7 +273,7 @@ async function calculateStats(files: { staged: FileSnapshot[]; unstaged: FileSna
       }
     }
   } catch (error) {
-    console.warn('⚠️  Failed to get line change statistics:', error);
+    throw new Error('Failed to get diff stats: ' + error);
   }
   
   return {
@@ -294,30 +294,30 @@ async function parseFootprint(content: string): Promise<EvolvingFootprint> {
   } catch {
     try {
       // Try JSON
-      return JSON.parse(content);
+      return parseJsonSafe(content, 'scripts/generate-evolving-footprint:parseFootprint');
     } catch (error) {
       throw new Error('Failed to parse footprint file');
     }
   }
 }
 
-async function writeFootprint(footprint: EvolvingFootprint, outputPath: string, format: 'yaml' | 'json') {
+async function writeFootprint(params: { footprint: EvolvingFootprint, outputPath: string, format: 'yaml' | 'json' }) {
   const { mkdir } = await import('fs/promises');
   const { dirname } = await import('path');
   
   // Ensure output directory exists
-  await mkdir(dirname(outputPath), { recursive: true });
+  await mkdir(dirname(params.outputPath), { recursive: true });
   
-  if (format === 'yaml') {
+  if (params.format === 'yaml') {
     const yaml = await import('yaml');
-    const yamlContent = yaml.stringify(footprint, {
+    const yamlContent = yaml.stringify(params.footprint, {
       indent: 2,
       lineWidth: 120,
       minContentWidth: 20,
     });
-    await writeFile(outputPath, yamlContent);
+    await writeFile(params.outputPath, yamlContent);
   } else {
-    await writeFile(outputPath, JSON.stringify(footprint, null, 2));
+    await writeFile(params.outputPath, JSON.stringify(params.footprint, null, 2));
   }
 }
 
