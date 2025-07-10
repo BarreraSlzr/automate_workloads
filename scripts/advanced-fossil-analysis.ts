@@ -13,8 +13,7 @@ import { executeCommand } from '../src/utils/cli';
 import { LLMSnapshotExporter } from '../src/utils/llmSnapshotExporter';
 import { SemanticTaggerService } from '../src/services/semantic-tagger';
 import { LLMService } from '../src/services/llm';
-import * as fs from 'fs/promises';
-import * as path from 'path';
+import { parseJsonSafe } from '@/utils/json';
 
 const program = new Command();
 
@@ -80,7 +79,7 @@ program
       // Step 3: Use LLM for relevance analysis if requested
       if (options.llmAnalysis) {
         console.log('🧠 Analyzing relevance with LLM...');
-        const llmService = new LLMService();
+        const llmService = new LLMService({ owner: 'BarreraSlzr', repo: 'automate_workloads' });
         
         const prompt = `
 Analyze if this fossil is still relevant given recent changes:
@@ -482,7 +481,7 @@ program
 
       // Step 4: Use LLM to generate reasoning
       console.log('🧠 Generating reasoning with LLM...');
-      const llmService = new LLMService();
+      const llmService = new LLMService({ owner: 'BarreraSlzr', repo: 'automate_workloads' });
       
       const fossilSummaries = recommendations.combined.map(f => 
         `${f.title}: ${f.content.substring(0, 100)}...`
@@ -597,7 +596,7 @@ program
       let llmAnalysis: any = null;
       if (options.includeLlm) {
         console.log('🧠 Analyzing content with LLM...');
-        const llmService = new LLMService();
+        const llmService = new LLMService({ owner: 'BarreraSlzr', repo: 'automate_workloads' });
         
         const prompt = `
 Analyze this fossil for quality and completeness:
@@ -623,7 +622,7 @@ Provide analysis in JSON format with:
           });
 
           const content = response.choices[0]?.message?.content || '{}';
-          llmAnalysis = JSON.parse(content);
+          llmAnalysis = parseJsonSafe(content, 'scripts:advanced-fossil-analysis:content');
 
           // Update quality score based on LLM analysis
           if (llmAnalysis.contentQuality) qualityScore += llmAnalysis.contentQuality * 0.4;

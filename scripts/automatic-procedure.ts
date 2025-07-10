@@ -13,9 +13,11 @@
  * 4. Generate comprehensive report
  */
 
-import { execSync } from 'child_process';
+import { executeCommand } from '@/utils/cli';
 import { promises as fs } from 'fs';
 import path from 'path';
+import type { StepResult } from '@/types/automation';
+import { noop } from '@/utils/cli';
 
 interface ProcedureResult {
   timestamp: string;
@@ -28,15 +30,6 @@ interface ProcedureResult {
   summary: string;
   recommendations: string[];
   outputFiles: string[];
-}
-
-interface StepResult {
-  name: string;
-  success: boolean;
-  duration: number;
-  output: string;
-  errors: string[];
-  warnings: string[];
 }
 
 /**
@@ -56,13 +49,9 @@ async function runTypeScriptValidation(): Promise<StepResult> {
   try {
     console.log('🔍 Running TypeScript validation...');
     
-    const output = execSync('bun run tsc --noEmit', { 
-      encoding: 'utf-8',
-      stdio: 'pipe'
-    });
-    
-    result.success = true;
-    result.output = output;
+    const output = executeCommand('bun run tsc --noEmit');
+    result.success = output.success;
+    result.output = output.stdout || output.stderr;
     result.duration = Date.now() - startTime;
     
     console.log('✅ TypeScript validation passed');
@@ -100,13 +89,9 @@ async function runTestSuite(): Promise<StepResult> {
   try {
     console.log('🧪 Running test suite...');
     
-    const output = execSync('bun test', { 
-      encoding: 'utf-8',
-      stdio: 'pipe'
-    });
-    
-    result.success = true;
-    result.output = output;
+    const output = executeCommand('bun test');
+    result.success = output.success;
+    result.output = output.stdout || output.stderr;
     result.duration = Date.now() - startTime;
     
     console.log('✅ Test suite passed');

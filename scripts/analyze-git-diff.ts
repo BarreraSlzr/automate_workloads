@@ -10,9 +10,8 @@
  * - Generate summaries of system evolution
  */
 
-import { execSync } from 'child_process';
+import { executeCommand } from '../src/utils/cli';
 import { promises as fs } from 'fs';
-import path from 'path';
 
 interface DiffAnalysis {
   timestamp: string;
@@ -49,7 +48,7 @@ async function analyzeGitDiff(options: {
   
   try {
     // Get current commit hash
-    const commitHash = execSync('git rev-parse HEAD', { encoding: 'utf-8' }).trim();
+    const commitHash = executeCommand('git rev-parse HEAD').stdout.trim();
     
     // Build git diff command
     let diffCommand = 'git diff --stat --name-status';
@@ -62,7 +61,7 @@ async function analyzeGitDiff(options: {
     }
     
     // Get diff statistics
-    const diffStats = execSync(diffCommand, { encoding: 'utf-8' });
+    const diffStats = executeCommand(diffCommand).stdout;
     
     // Parse file changes
     const fileChanges = parseFileChanges(diffStats);
@@ -88,7 +87,7 @@ async function analyzeGitDiff(options: {
     const logPatterns = await analyzeLogPatterns(fileChanges);
     
     // Generate summary
-    const summary = generateSummary(fileChanges, monitoringFiles, schemaChanges, cliChanges);
+    const summary = generateSummary({ fileChanges, monitoringFiles, schemaChanges, cliChanges });
     
     // Generate recommendations
     const recommendations = generateRecommendations(fileChanges, logPatterns);
@@ -212,22 +211,15 @@ async function analyzeLogPatterns(fileChanges: FileChange[]): Promise<string[]> 
 /**
  * Generate summary of changes
  */
-function generateSummary(
-  fileChanges: FileChange[],
-  monitoringFiles: FileChange[],
-  schemaChanges: FileChange[],
-  cliChanges: FileChange[]
-): string {
-  const totalFiles = fileChanges.length;
-  const totalAdditions = fileChanges.reduce((sum, f) => sum + f.additions, 0);
-  const totalDeletions = fileChanges.reduce((sum, f) => sum + f.deletions, 0);
-  
-  const highImpact = fileChanges.filter(f => f.impact === 'high').length;
-  const newFiles = fileChanges.filter(f => f.type === 'added').length;
-  
+function generateSummary(params: { fileChanges: FileChange[], monitoringFiles: FileChange[], schemaChanges: FileChange[], cliChanges: FileChange[] }) {
+  const totalFiles = params.fileChanges.length;
+  const totalAdditions = params.fileChanges.reduce((sum, f) => sum + f.additions, 0);
+  const totalDeletions = params.fileChanges.reduce((sum, f) => sum + f.deletions, 0);
+  const highImpact = params.fileChanges.filter(f => f.impact === 'high').length;
+  const newFiles = params.fileChanges.filter(f => f.type === 'added').length;
   return `Changed ${totalFiles} files (+${totalAdditions} -${totalDeletions} lines). ` +
          `${newFiles} new files, ${highImpact} high-impact changes. ` +
-         `${monitoringFiles.length} monitoring files, ${schemaChanges.length} schema changes, ${cliChanges.length} CLI changes.`;
+         `${params.monitoringFiles.length} monitoring files, ${params.schemaChanges.length} schema changes, ${params.cliChanges.length} CLI changes.`;
 }
 
 /**
@@ -360,7 +352,7 @@ async function trackMonitoringEvolution(options: {
     const sinceStr = since.toISOString().split('T')[0];
     
     // Get commit history
-    const commits = execSync(`git log --since="${sinceStr}" --oneline`, { encoding: 'utf-8' })
+    const commits = executeCommand(`git log --since="${sinceStr}" --oneline`).stdout
       .split('\n')
       .filter(line => line.trim())
       .map(line => {
@@ -375,13 +367,13 @@ async function trackMonitoringEvolution(options: {
     
     for (const commit of commits) {
       try {
-        const diff = execSync(`git show --stat --name-only ${commit.hash}`, { encoding: 'utf-8' });
+        const diff = executeCommand(`git show --stat --name-only ${commit.hash}`).stdout;
         
         if (diff.includes('monitoring') || diff.includes('predictive') || diff.includes('llm')) {
           evolution.push({
             commit: commit.hash,
             message: commit.message,
-            timestamp: execSync(`git show -s --format=%ci ${commit.hash}`, { encoding: 'utf-8' }).trim(),
+            timestamp: executeCommand(`git show -s --format=%ci ${commit.hash}`).stdout.trim(),
             hasMonitoringChanges: true
           });
         }

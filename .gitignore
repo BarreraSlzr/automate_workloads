@@ -144,3 +144,97 @@ blog-content/
 *.blog.md
 blog-publications/
 blog-backups/
+
+# ============================================================================
+# FOSSIL MANAGEMENT - Prevent Test Artifacts and Temporary Files
+# ============================================================================
+
+# Test artifacts and temporary fossil files
+fossils/tests/
+fossils/tests/**/*
+fossils/test-*/
+fossils/test_*/
+
+# Archive and historical fossils (timestamped files)
+fossils/archive/
+fossils/archive/**/*
+fossils/*/archive/
+
+# LLM insights and temporary LLM files
+fossils/llm_insights/
+fossils/llm_insights/**/*
+fossils/llm-insights/
+fossils/llm-insights/**/*
+
+# Temporary and test-specific fossil files
+fossils/*/temp/
+fossils/*/test/
+fossils/*/demo/
+fossils/*/backup/
+
+# Timestamped fossil files (should be in archive only)
+fossils/*-*.json
+fossils/*-*.yml
+fossils/*-*.md
+fossils/*/*-*.json
+fossils/*/*-*.yml
+fossils/*/*-*.md
+
+# Test-specific fossil patterns
+fossils/*/test-*.json
+fossils/*/test-*.yml
+fossils/*/test-*.md
+fossils/*/demo-*.json
+fossils/*/demo-*.yml
+fossils/*/demo-*.md
+fossils/*/temp-*.json
+fossils/*/temp-*.yml
+fossils/*/temp-*.md
+
+# Temporary fossil content files
+.temp-fossil-content-*.json
+.temp-issue-body-*.md
+fossils/curated_roadmap_demo_*.json
+
+# LLM snapshot files (temporary)
+llm-snapshot-*.yml
+llm-snapshot-*.json
+llm-plan-shell-test.json
+prioritized-llm-plan-shell-test.json
+
+# Test monitoring data (temporary)
+fossils/tests/monitoring/data/
+fossils/tests/monitoring_data.json
+fossils/tests/test_cleanup.json
+
+# Analysis files with timestamps
+fossils/analysis/analysis-*.json
+fossils/analysis/summary-*.md
+fossils/analysis/learning-*.json
+
+# Footprint files with timestamps
+fossils/footprint-fossil-*.json
+fossils/footprint-results.json
+fossils/ml.footprint.results.json
+fossils/evolving-footprint.yml
+
+# Performance and monitoring files with timestamps
+fossils/performance/*-*.json
+fossils/monitoring/*-*.json
+fossils/audit/*-*.json
+
+# Backup and temporary files
+*.backup
+*.backup.*
+fossils/*.backup
+fossils/*.backup.*
+
+# Test output files that should be cleaned up
+fossils/tests/analysis/actionable-insights.md
+fossils/tests/learning_insights.md
+fossils/tests/integration-analysis/
+fossils/tests/learning-analysis/
+
+# ============================================================================
+# END FOSSIL MANAGEMENT
+# ============================================================================

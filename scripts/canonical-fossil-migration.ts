@@ -11,7 +11,7 @@
 
 import { promises as fs } from 'fs';
 import path from 'path';
-import { execSync } from 'child_process';
+import { executeCommand } from '@/utils/cli';
 import { CanonicalFossilManager } from '../src/cli/canonical-fossil-manager';
 
 interface MigrationPlan {
@@ -182,7 +182,7 @@ class CanonicalFossilMigration {
 
       // Parse content based on file type
       if (file.source.endsWith('.json')) {
-        data = JSON.parse(content);
+        data = require('@/utils/json').parseJsonSafe(content);
       } else if (file.source.endsWith('.yml') || file.source.endsWith('.yaml')) {
         // For YAML files, we'll convert to JSON structure
         data = this.yamlToJsonStructure(content);

@@ -6,13 +6,10 @@
  * @module scripts/automated-monitoring-orchestrator
  */
 
-import { readFileSync, existsSync } from 'fs';
-import { join } from 'path';
-import { execSync } from 'child_process';
-import { toFossilEntry, writeFossilToFile } from '../src/utils/fossilize';
+import { executeCommand } from '@/utils/cli';
 
 // Import our analysis components
-import { AutomatedMonitoringAnalysis } from './automated-monitoring-analysis';
+import { RefactoredAutomatedMonitoringAnalysis } from './automated-monitoring-analysis-refactored';
 import { LearningAnalysisEngine } from './learning-analysis-engine';
 
 // ============================================================================
@@ -125,11 +122,7 @@ export class AutomatedMonitoringOrchestrator {
     try {
       // Run the test monitoring script
       const command = `bun run scripts/test-monitoring-wrapper.sh`;
-      const result = execSync(command, { 
-        encoding: 'utf8',
-        timeout: this.config.testTimeout,
-        stdio: 'pipe'
-      });
+      const result = (await executeCommand(command)).stdout;
       
       this.results.testResults = {
         success: true,
@@ -157,7 +150,6 @@ export class AutomatedMonitoringOrchestrator {
     
     try {
       // Use the refactored analysis that uses canonical fossil manager
-      const { RefactoredAutomatedMonitoringAnalysis } = await import('./automated-monitoring-analysis-refactored');
       const analyzer = new RefactoredAutomatedMonitoringAnalysis();
       const analysis = await analyzer.analyzeAllData();
       

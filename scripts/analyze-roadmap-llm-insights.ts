@@ -15,6 +15,7 @@ import { createHash } from 'crypto';
 import { LLMService } from '../src/services/llm';
 import { fossilizeLLMInsight } from '../src/utils/fossilize';
 import type { LLMInsightFossil } from '../src/types/llmFossil';
+import { parseJsonSafe } from '@/utils/json';
 
 const ROADMAP_YML = 'fossils/roadmap.yml';
 const INSIGHTS_DIR = 'fossils/roadmap_insights';
@@ -30,11 +31,8 @@ function generateTaskId(taskName: string, path: string[]): string {
 /**
  * Analyze a single task and generate LLM insights
  */
-async function analyzeTask(
-  task: any, 
-  taskPath: string[], 
-  llm: LLMService
-): Promise<LLMInsightFossil | null> {
+async function analyzeTask(params: { task: any, taskPath: string[], llm: LLMService }) {
+  const { task, taskPath, llm } = params;
   const taskId = generateTaskId(task.task, taskPath);
   
   const prompt = `Analyze this roadmap task and provide structured insights:
@@ -78,7 +76,7 @@ Focus on actionable insights that help with project management and automation.`;
     // Try to parse JSON response
     let insight: any = {};
     try {
-      insight = JSON.parse(content);
+      insight = parseJsonSafe(content);
     } catch {
       // Fallback: extract fields manually
       const get = (label: string) => {
@@ -123,11 +121,8 @@ Focus on actionable insights that help with project management and automation.`;
 /**
  * Analyze milestone progress
  */
-async function analyzeMilestone(
-  milestoneName: string,
-  tasks: any[],
-  llm: LLMService
-): Promise<LLMInsightFossil | null> {
+async function analyzeMilestone(params: { milestoneName: string, tasks: any[], llm: LLMService }) {
+  const { milestoneName, tasks, llm } = params;
   const milestoneTasks = tasks.filter(task => task.milestone === milestoneName);
   const completedTasks = milestoneTasks.filter(task => task.status === 'done');
   const pendingTasks = milestoneTasks.filter(task => task.status === 'pending');
@@ -172,7 +167,7 @@ Please provide insights in the following JSON format:
     
     let insight: any = {};
     try {
-      insight = JSON.parse(content);
+      insight = parseJsonSafe(content);
     } catch {
       const get = (label: string) => {
         const m = content.match(new RegExp(`"${label}":\\s*"([^"]*)"`, 'i'));
@@ -266,7 +261,7 @@ Please provide insights in the following JSON format:
     
     let insight: any = {};
     try {
-      insight = JSON.parse(content);
+      insight = parseJsonSafe(content);
     } catch {
       const get = (label: string) => {
         const m = content.match(new RegExp(`"${label}":\\s*"([^"]*)"`, 'i'));
@@ -351,13 +346,17 @@ async function main() {
     }
     
     const roadmapData = roadmap as any;
-    const llm = new LLMService({ preferLocalLLM: true });
+    const llm = new LLMService({ 
+      owner: 'BarreraSlzr', 
+      repo: 'automate_workloads',
+      preferLocalLLM: true 
+    });
     const fossils: LLMInsightFossil[] = [];
     
     // Analyze individual tasks
     console.log('📋 Analyzing individual tasks...');
     for (const { task, path } of walkTasks(roadmapData.tasks)) {
-      const fossil = await analyzeTask(task, path, llm);
+      const fossil = await analyzeTask({ task, taskPath: path, llm });
       if (fossil) {
         fossils.push(fossil);
         await fossilizeLLMInsight(fossil);
@@ -371,7 +370,7 @@ async function main() {
     const milestones = [...new Set(allTasks.map(task => task.milestone).filter(Boolean))];
     
     for (const milestone of milestones) {
-      const fossil = await analyzeMilestone(milestone, allTasks, llm);
+      const fossil = await analyzeMilestone({ milestoneName: milestone, tasks: allTasks, llm });
       if (fossil) {
         fossils.push(fossil);
         await fossilizeLLMInsight(fossil);

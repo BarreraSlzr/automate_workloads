@@ -10,47 +10,9 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { execSync } from 'child_process';
-
-interface PerformanceBaseline {
-  testName: string;
-  maxDuration: number;
-  timeoutThreshold: number;
-  memoryLimit: number;
-  status: 'stable' | 'degraded' | 'critical';
-}
-
-interface TestPerformanceResult {
-  testName: string;
-  duration: number;
-  memoryUsage?: number;
-  status: 'pass' | 'fail' | 'timeout' | 'hanging';
-  hangingDetected: boolean;
-  timestamp: string;
-}
-
-interface AuditConfig {
-  timeoutMultiplier: number;
-  memoryThreshold: number;
-  cpuThreshold: number;
-  baselinePath: string;
-  outputPath: string;
-  fossilizeResults: boolean;
-}
-
-interface AuditResult {
-  summary: {
-    totalTests: number;
-    passedTests: number;
-    failedTests: number;
-    hangingTests: number;
-    averageDuration: number;
-    overallStatus: 'pass' | 'fail' | 'warning';
-  };
-  hangingTests: TestPerformanceResult[];
-  performanceIssues: TestPerformanceResult[];
-  recommendations: string[];
-  fossils: any[];
-}
+import type { TestPerformanceResult, AuditConfig, AuditResult, PerformanceBaseline } from '@/types/audit';
+import { noop } from '@/utils/cli';
+import { parseJsonSafe } from '@/utils/json';
 
 class TestPerformanceAuditor {
   private config: AuditConfig;
@@ -76,7 +38,7 @@ class TestPerformanceAuditor {
   async loadBaselines(): Promise<void> {
     try {
       const baselineData = await fs.readFile(this.config.baselinePath, 'utf-8');
-      const baselines = JSON.parse(baselineData);
+      const baselines = parseJsonSafe<PerformanceBaseline[]>(baselineData);
       
       for (const baseline of baselines) {
         this.baselines.set(baseline.testName, baseline);

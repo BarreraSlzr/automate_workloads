@@ -11,6 +11,7 @@
 
 import { promises as fs } from 'fs';
 import path from 'path';
+import { executeCommand } from '@/utils/cli';
 
 class CanonicalFossilCleanup {
   private fossilsDir: string;
@@ -215,12 +216,12 @@ class CanonicalFossilCleanup {
   }
 
   private async runFind(dir: string, patterns: string[], excludeDirs: string[] = []): Promise<string> {
-    const { execSync } = require('child_process');
     const excludeArgs = excludeDirs.map(d => `-not -path "*/${d}/*"`).join(' ');
     const patternArgs = patterns.map(p => `-name "${p}"`).join(' -o ');
     const command = `find ${dir} ${excludeArgs} \\( ${patternArgs} \\)`;
-    
-    return execSync(command, { encoding: 'utf8' });
+    const result = executeCommand(command);
+    if (!result.success) throw new Error(result.stderr);
+    return result.stdout;
   }
 
   private async fileExists(filePath: string): Promise<boolean> {

@@ -14,13 +14,18 @@ import { promises as fs } from 'fs';
 import type { CurateFossilParams } from '../src/types';
 
 export async function curateFossilDemo(args: CurateFossilParams = {
-  inputYaml: 'fossils/roadmap.yml',
-  tag: 'demo',
-  outputDir: 'fossils',
+  owner: 'emmanuelbarrera',
+  repo: 'automate_workloads',
+  type: 'roadmap',
+  tags: ['demo'],
+  metadata: {
+    inputFile: 'fossils/roadmap.yml',
+    outputDir: 'fossils'
+  },
   dryRun: false,
-  validate: true
+  verbose: true
 }) {
-  console.log(`Curating ${args.inputYaml} into a JSON fossil...`);
+  console.log(`Curating ${args.metadata.inputFile} into a JSON fossil...`);
   const outputJson = await curateAndCheck(args);
   console.log(`Curated fossil saved at: ${outputJson}`);
   const content = await fs.readFile(outputJson, 'utf-8');
@@ -31,12 +36,17 @@ export async function curateFossilDemo(args: CurateFossilParams = {
 // CLI usage
 if (import.meta.main) {
   // Parse args from process.argv or use defaults
-  const [inputYaml, tag, outputDir] = process.argv.slice(2);
+  const [inputFile, tag] = process.argv.slice(2);
   curateFossilDemo({
-    inputYaml: inputYaml || 'fossils/roadmap.yml',
-    tag: tag || 'demo',
-    outputDir: outputDir || 'fossils',
+    owner: 'emmanuelbarrera',
+    repo: 'automate_workloads',
+    type: 'roadmap',
+    tags: [tag || 'demo'],
+    metadata: {
+      inputFile: inputFile || 'fossils/roadmap.yml',
+      outputDir: 'fossils'
+    },
     dryRun: false,
-    validate: true
+    verbose: true
   }).catch(console.error);
 } 
