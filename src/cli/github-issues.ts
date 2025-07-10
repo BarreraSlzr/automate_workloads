@@ -9,6 +9,21 @@
 import { GitHubService } from "../services/github";
 import { validateConfig } from "../core/config";
 import { parseCLIArgs, GitHubIssuesCLIArgsSchema } from "@/types/cli";
+import { getCurrentRepoOwner, getCurrentRepoName } from '../utils/cli';
+import { z } from 'zod';
+import { OwnerRepoSchema } from '../types/schemas';
+
+function detectOwnerRepo(options: any): { owner: string; repo: string } {
+  if (options.owner && options.repo) return { owner: options.owner, repo: options.repo };
+  const owner = getCurrentRepoOwner();
+  const repo = getCurrentRepoName();
+  if (owner && repo) return { owner, repo };
+  if (process.env.CI) {
+    return { owner: 'BarreraSlzr', repo: 'automate_workloads' };
+  } else {
+    return { owner: 'emmanuelbarrera', repo: 'automate_workloads' };
+  }
+}
 
 /**
  * Displays help information
@@ -47,10 +62,13 @@ async function main(): Promise<void> {
     
     // Parse command line arguments
     const options = parseCLIArgs(GitHubIssuesCLIArgsSchema, process.argv.slice(2));
+    const { owner, repo } = detectOwnerRepo(options);
+    OwnerRepoSchema.parse({ owner, repo });
     
     if (options.verbose) {
       console.log('GitHub Issues CLI - Starting...');
       console.log('Options:', JSON.stringify(options, null, 2));
+      console.log('Owner/Repo:', owner, repo);
     }
 
     // Validate configuration
@@ -60,7 +78,7 @@ async function main(): Promise<void> {
     }
 
     // Create GitHub service instance
-    const github = new GitHubService(options.owner!, options.repo!);
+    const github = new GitHubService(owner, repo);
     
     // Check if GitHub CLI is ready
     const isReady = await github.isReady();

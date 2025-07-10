@@ -24,37 +24,73 @@ import path from 'path';
 import { z } from 'zod';
 import { parseCLIArgs } from '../types/cli';
 import { 
-  GitDiffAnalyzerArgsSchema,
-  GitDiffFossilDataSchema 
+  GitDiffAnalysisSchema,
+  GitDiffDataSchema,
+  OwnerRepoSchema
 } from '../types/schemas';
+import { getCurrentRepoOwner, getCurrentRepoName } from '../utils/cli';
+import { parseJsonSafe } from '@/utils/json';
 
+function detectOwnerRepo(options: any = {}): { owner: string; repo: string } {
+  if (options.owner && options.repo) return { owner: options.owner, repo: options.repo };
+  const owner = getCurrentRepoOwner();
+  const repo = getCurrentRepoName();
+  if (owner && repo) return { owner, repo };
+  if (process.env.CI) {
+    return { owner: 'BarreraSlzr', repo: 'automate_workloads' };
+  } else {
+    return { owner: 'emmanuelbarrera', repo: 'automate_workloads' };
+  }
+}
 
 // ============================================================================
 // ZOD SCHEMAS
 // ============================================================================
 
-// Schemas are imported from ../types/schemas
+// Canonical schemas are imported from ../types/schemas
+
+// Local CLI Args Schema (matches expected CLI flags)
+const GitDiffFossilAnalyzerArgsSchema = z.object({
+  analyze: z.boolean().optional(),
+  retrospective: z.boolean().optional(),
+  insights: z.boolean().optional(),
+  generateYaml: z.boolean().optional(),
+  fossilize: z.boolean().optional(),
+  since: z.string().optional(),
+  commit: z.string().optional(),
+  owner: z.string().min(1),
+  repo: z.string().min(1)
+});
+
+// Local Analysis Object Type
+const GitDiffFossilAnalysisSchema = z.object({
+  commitHash: z.string(),
+  timestamp: z.string(),
+  filesChanged: z.any(),
+  fossilInsights: z.any(),
+  transversalPatterns: z.any(),
+  humanLLMContext: z.any().optional(),
+});
+type GitDiffFossilAnalyzerArgs = z.infer<typeof GitDiffFossilAnalyzerArgsSchema>;
+type GitDiffFossilAnalysis = z.infer<typeof GitDiffFossilAnalysisSchema>;
 
 // ============================================================================
 // TYPES
 // ============================================================================
-
-type GitDiffAnalyzerArgs = z.infer<typeof GitDiffAnalyzerArgsSchema>;
-type GitDiffFossilData = z.infer<typeof GitDiffFossilDataSchema>;
 
 // ============================================================================
 // MAIN CLASS
 // ============================================================================
 
 class GitDiffFossilAnalyzer {
-  private args: GitDiffAnalyzerArgs;
+  private args: GitDiffFossilAnalyzerArgs;
   private fossilPatterns = [
     /fossils\/[^\/]+\.(json|yml|md)$/,
     /fossils\/[^\/]+\/[^\/]+\.(json|yml|md)$/,
     /fossils\/[^\/]+\/[^\/]+\/[^\/]+\.(json|yml|md)$/
   ];
 
-  constructor(args: GitDiffAnalyzerArgs) {
+  constructor(args: GitDiffFossilAnalyzerArgs) {
     this.args = args;
   }
 
@@ -75,21 +111,17 @@ class GitDiffFossilAnalyzer {
 
   private async analyzeCurrentDiff(): Promise<void> {
     console.log('🔍 Analyzing current git diff for fossil references...');
-    
     const diffData = await this.getCurrentDiff();
     const fossilInsights = await this.extractFossilInsights(diffData);
     const transversalPatterns = await this.identifyTransversalPatterns(diffData);
-    
-    const analysis: GitDiffFossilData = {
+    const analysis: GitDiffFossilAnalysis = {
       commitHash: this.getCurrentCommitHash(),
       timestamp: new Date().toISOString(),
       filesChanged: diffData.filesChanged,
       fossilInsights,
       transversalPatterns
     };
-
     this.displayAnalysis(analysis);
-
     if (this.args.fossilize) {
       await this.fossilizeAnalysis(analysis);
     }
@@ -97,24 +129,19 @@ class GitDiffFossilAnalyzer {
 
   private async analyzeRetrospective(): Promise<void> {
     console.log('📚 Analyzing retrospective fossil patterns...');
-    
     const since = this.args.since || '2025-01-01';
     const commits = await this.getCommitsSince(since);
     const patterns = await this.analyzeCommitPatterns(commits);
-    
     console.log(`📊 Found ${patterns.length} transversal patterns across ${commits.length} commits`);
-    
     for (const pattern of patterns.slice(0, 10)) {
-      console.log(`  🔗 ${pattern.pattern} (${pattern.frequency} occurrences, value: ${pattern.value.toFixed(2)})`);
+      console.log(`  �� ${pattern.pattern} (${pattern.frequency} occurrences, value: ${pattern.value.toFixed(2)})`);
     }
   }
 
   private async generateInsights(): Promise<void> {
     console.log('🧠 Generating transversal insights...');
-    
     const commitRange = this.args.commit || 'HEAD~5..HEAD';
     const insights = await this.generateTransversalInsights(commitRange);
-    
     console.log('💡 Transversal Insights:');
     for (const insight of insights) {
       console.log(`  ${insight.type}: ${insight.description}`);
@@ -225,7 +252,7 @@ class GitDiffFossilAnalyzer {
   private async analyzeFossilFile(file: any): Promise<any> {
     try {
       const content = await fs.readFile(file.path, 'utf8');
-      const fossilData = JSON.parse(content);
+      const fossilData = parseJsonSafe<Record<string, any>>(content);
       
       return {
         fossilPath: file.path,
@@ -254,7 +281,7 @@ class GitDiffFossilAnalyzer {
     for (const fossilFile of fossilFiles) {
       try {
         const content = await fs.readFile(fossilFile, 'utf8');
-        const fossilData = JSON.parse(content);
+        const fossilData = parseJsonSafe<Record<string, any>>(content);
         
         const references = this.findFileReferences(fossilData, filesChanged);
         if (references.length > 0) {
@@ -478,7 +505,7 @@ class GitDiffFossilAnalyzer {
     return insights;
   }
 
-  private displayAnalysis(analysis: GitDiffFossilData): void {
+  private displayAnalysis(analysis: GitDiffFossilAnalysis): void {
     console.log('\n📊 Git Diff Fossil Analysis:');
     console.log('='.repeat(50));
     console.log(`🔗 Commit: ${analysis.commitHash}`);
@@ -500,7 +527,7 @@ class GitDiffFossilAnalyzer {
     }
   }
 
-  private async fossilizeAnalysis(analysis: GitDiffFossilData): Promise<void> {
+  private async fossilizeAnalysis(analysis: GitDiffFossilAnalysis): Promise<void> {
     try {
       // Use canonical fossil manager instead of direct file creation
       const { CanonicalFossilManager } = await import('@/cli/canonical-fossil-manager');
@@ -525,7 +552,7 @@ class GitDiffFossilAnalyzer {
           fossilized: true,
           canonical: true, // Make it canonical
           version: '1.0.0',
-          transversalValue: analysis.fossilInsights.reduce((sum, i) => sum + i.transversalValue, 0) / Math.max(analysis.fossilInsights.length, 1)
+          transversalValue: analysis.fossilInsights.reduce((sum: number, i: { transversalValue: number }) => sum + i.transversalValue, 0) / Math.max(analysis.fossilInsights.length, 1)
         }
       };
       
@@ -546,7 +573,7 @@ class GitDiffFossilAnalyzer {
     // Generate human-LLM context
     const humanLLMContext = this.generateHumanLLMContext(diffData, fossilInsights, transversalPatterns);
     
-    const analysis: GitDiffFossilData = {
+    const analysis: GitDiffFossilAnalysis = {
       commitHash: this.getCurrentCommitHash(),
       timestamp: new Date().toISOString(),
       filesChanged: diffData.filesChanged,
@@ -559,7 +586,7 @@ class GitDiffFossilAnalyzer {
     const yamlOutput = this.generateYamlOutput(analysis);
     
     // Use canonical filename instead of timestamped filename
-    const outputPath = this.args.yamlOutput || `fossils/context/canonical-context.yml`;
+    const outputPath = `fossils/context/canonical-context.yml`;
     await fs.mkdir(path.dirname(outputPath), { recursive: true });
     await fs.writeFile(outputPath, yamlOutput, 'utf8');
     
@@ -585,49 +612,44 @@ class GitDiffFossilAnalyzer {
 
   private generateSummary(diffData: any): string {
     const totalFiles = diffData.filesChanged.length;
-    const fossilFiles = diffData.filesChanged.filter((f: any) => this.isFossilFile(f.path)).length;
-    const codeFiles = diffData.filesChanged.filter((f: any) => 
+    const fossilFiles = diffData.filesChanged.filter((f: { path: string }) => this.isFossilFile(f.path)).length;
+    const codeFiles = diffData.filesChanged.filter((f: { path: string }) =>
       f.path.endsWith('.ts') || f.path.endsWith('.js') || f.path.endsWith('.sh')
     ).length;
-
     return `Commit analysis: ${totalFiles} files changed (${fossilFiles} fossils, ${codeFiles} code files)`;
   }
 
   private extractKeyChanges(diffData: any): string[] {
     const changes: string[] = [];
-    
     for (const file of diffData.filesChanged.slice(0, 5)) {
-      const changeType = file.status === 'added' ? 'Added' : 
-                        file.status === 'modified' ? 'Modified' : 
-                        file.status === 'deleted' ? 'Deleted' : 'Renamed';
-      changes.push(`${changeType}: ${file.path} (+${file.additions}/-${file.deletions})`);
+      const f: { status: string; path: string; additions: number; deletions: number } = file;
+      const changeType = f.status === 'added' ? 'Added' :
+        f.status === 'modified' ? 'Modified' :
+        f.status === 'deleted' ? 'Deleted' : 'Renamed';
+      changes.push(`${changeType}: ${f.path} (+${f.additions}/-${f.deletions})`);
     }
-    
     return changes;
   }
 
   private assessFossilImpact(fossilInsights: any[]): string {
     if (fossilInsights.length === 0) return 'No fossil impact detected';
-    
-    const highImpact = fossilInsights.filter(i => i.impact === 'high').length;
-    const mediumImpact = fossilInsights.filter(i => i.impact === 'medium').length;
-    
+    const highImpact = fossilInsights.filter((i: { impact: string }) => i.impact === 'high').length;
+    const mediumImpact = fossilInsights.filter((i: { impact: string }) => i.impact === 'medium').length;
     if (highImpact > 0) return `High fossil impact: ${highImpact} high-impact changes`;
     if (mediumImpact > 0) return `Medium fossil impact: ${mediumImpact} medium-impact changes`;
     return 'Low fossil impact detected';
   }
 
   private generateTransversalInsightsList(transversalPatterns: any[]): string[] {
-    return transversalPatterns.map(pattern => 
-      `${pattern.pattern}: ${pattern.frequency} occurrences (value: ${pattern.value.toFixed(2)})`
+    return transversalPatterns.map((p: { pattern: string; frequency: number; value: number }) =>
+      `${p.pattern}: ${p.frequency} occurrences (value: ${p.value.toFixed(2)})`
     );
   }
 
   private generateMLReadyData(diffData: any, fossilInsights: any[], transversalPatterns: any[]): any {
-    const patterns = transversalPatterns.map(p => p.pattern);
-    const recommendations = transversalPatterns.flatMap(p => p.recommendations);
+    const patterns = transversalPatterns.map((p: { pattern: string }) => p.pattern);
+    const recommendations = transversalPatterns.flatMap((i: { recommendations: string[] }) => i.recommendations);
     const nextActions = this.generateNextActions(diffData, fossilInsights);
-
     return {
       patterns,
       recommendations,
@@ -654,7 +676,7 @@ class GitDiffFossilAnalyzer {
     return actions;
   }
 
-  private generateYamlOutput(analysis: GitDiffFossilData): string {
+  private generateYamlOutput(analysis: GitDiffFossilAnalysis): string {
     const yamlData = {
       commit_analysis: {
         commit_hash: analysis.commitHash,
@@ -665,21 +687,21 @@ class GitDiffFossilAnalyzer {
         transversal_insights: analysis.humanLLMContext?.transversalInsights,
         ml_ready_data: analysis.humanLLMContext?.mlReadyData
       },
-      files_changed: analysis.filesChanged.map(f => ({
+      files_changed: analysis.filesChanged.map((f: any) => ({
         path: f.path,
         status: f.status,
         additions: f.additions,
         deletions: f.deletions,
         fossil_references: f.fossilReferences
       })),
-      fossil_insights: analysis.fossilInsights.map(i => ({
+      fossil_insights: analysis.fossilInsights.map((i: any) => ({
         fossil_path: i.fossilPath,
         reference_type: i.referenceType,
         impact: i.impact,
         context: i.context,
         transversal_value: i.transversalValue
       })),
-      transversal_patterns: analysis.transversalPatterns.map(p => ({
+      transversal_patterns: analysis.transversalPatterns.map((p: any) => ({
         pattern: p.pattern,
         frequency: p.frequency,
         value: p.value,
@@ -699,7 +721,6 @@ class GitDiffFossilAnalyzer {
   private objectToYaml(obj: any, indent: number = 0): string {
     const spaces = '  '.repeat(indent);
     let yaml = '';
-    
     for (const [key, value] of Object.entries(obj)) {
       if (Array.isArray(value)) {
         yaml += `${spaces}${key}:\n`;
@@ -718,11 +739,10 @@ class GitDiffFossilAnalyzer {
         yaml += `${spaces}${key}: ${value}\n`;
       }
     }
-    
     return yaml;
   }
 
-  private displayYamlSummary(analysis: GitDiffFossilData): void {
+  private displayYamlSummary(analysis: GitDiffFossilAnalysis): void {
     console.log('\n📊 YAML Context Summary:');
     console.log('='.repeat(50));
     console.log(`🔗 Commit: ${analysis.commitHash}`);
@@ -746,15 +766,15 @@ class GitDiffFossilAnalyzer {
 // ============================================================================
 
 async function main() {
+  // PARAMS OBJECT PATTERN: always use a single params object, validated by Zod, for all downstream calls.
+  // Detect owner/repo at the top level, pass to all fossil/LLM utilities.
   const args = process.argv.slice(2);
   const parsedArgs: Record<string, any> = {};
-  
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
     if (arg && arg.startsWith('--')) {
       const key = arg.substring(2);
       const value = args[i + 1];
-      
       if (value && !value.startsWith('--')) {
         parsedArgs[key] = value;
         i++;
@@ -763,12 +783,12 @@ async function main() {
       }
     }
   }
-  
+  const { owner, repo } = detectOwnerRepo(parsedArgs);
+  OwnerRepoSchema.parse({ owner, repo });
   try {
-    const validatedArgs = GitDiffAnalyzerArgsSchema.parse(parsedArgs);
+    const validatedArgs = GitDiffFossilAnalyzerArgsSchema.parse({ ...parsedArgs, owner, repo });
     const analyzer = new GitDiffFossilAnalyzer(validatedArgs);
     await analyzer.run();
-    
   } catch (error) {
     console.error('❌ Error:', error);
     process.exit(1);

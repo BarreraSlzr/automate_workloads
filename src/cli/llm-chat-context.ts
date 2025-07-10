@@ -10,6 +10,7 @@ import { Command } from 'commander';
 import { mkdirSync, writeFileSync, readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { generateChatContext } from '../../scripts/llm-chat-context';
+import { parseJsonSafe } from '@/utils/json';
 
 const program = new Command();
 
@@ -30,7 +31,7 @@ export async function main() {
     // Read the generated context
     const legacyPath = 'fossils/chat_context.json';
     const outputPath = options.output;
-    const context = JSON.parse(readFileSync(legacyPath, 'utf-8'));
+    const context = parseJsonSafe(readFileSync(legacyPath, 'utf-8'), 'cli:llm-chat-context:legacyPath') as Record<string, any>;
 
     // Add canonical fossil metadata if not present
     if (!context.metadata) {

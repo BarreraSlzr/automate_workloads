@@ -4,6 +4,7 @@ import { Command } from 'commander';
 import { writeFile, mkdir, readFile } from 'fs/promises';
 import { join } from 'path';
 import { PerformanceResultSchema, PerformanceResult } from '../types/cli';
+import { parseJsonSafe } from '@/utils/json';
 
 const program = new Command();
 
@@ -29,7 +30,7 @@ async function fossilizePerformance(): Promise<void> {
   let performanceData = [];
   try {
     const logContent = await readFile(options.input, 'utf-8');
-    const logs = JSON.parse(logContent);
+    const logs = parseJsonSafe(logContent, 'cli:fossilize-performance:logContent') as any[];
     // Get the most recent entries (last 10)
     performanceData = logs.slice(-10);
   } catch (error) {

@@ -4,6 +4,7 @@ import { Command } from 'commander';
 import { writeFile, mkdir, readdir, readFile } from 'fs/promises';
 import { join } from 'path';
 import { FossilSummarySchema, FossilSummary } from '../types/cli';
+import { parseJsonSafe } from '@/utils/json';
 
 const program = new Command();
 
@@ -42,11 +43,11 @@ async function updateFossilSummary(): Promise<void> {
             const filePath = join(categoryPath, file);
             try {
               const content = await readFile(filePath, 'utf-8');
-              const data = JSON.parse(content);
+              const data = parseJsonSafe(content, 'cli:fossil-summary:content') as any;
               recentFossils.push({
                 category,
                 filename: file,
-                timestamp: data.timestamp || new Date().toISOString(),
+                timestamp: (data && typeof data === 'object' && 'timestamp' in data) ? data.timestamp : new Date().toISOString(),
               });
             } catch (error) {
               // Skip files that can't be parsed
