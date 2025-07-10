@@ -8,9 +8,9 @@ import {
   createBackup,
   parseChecklistUpdates,
   generateUpdateReport,
-  ChecklistItemUpdate,
-  UpdateResult
 } from "../../../src/utils/checklistUpdater";
+import type { ChecklistItemUpdate, UpdateResult } from '../../../src/types/checklist-updater';
+import { parseJsonSafe } from '@/utils/json';
 
 // Test files
 const testDir = path.join(process.cwd(), 'test-checklist-files');
@@ -199,9 +199,9 @@ describe("Checklist Updater", () => {
       expect(result.success).toBe(true);
       expect(result.updatedCount).toBe(2);
       
-      const updatedData = JSON.parse(result.content || "{}");
-      expect(updatedData.checklist[0].checked).toBe(true);
-      expect(updatedData.checklist[2].checked).toBe(true);
+      const updatedData = parseJsonSafe<{ checklist: { checked: boolean }[] }>(result.content || "{}");
+      expect(updatedData && updatedData.checklist && updatedData.checklist[0]?.checked).toBe(true);
+      expect(updatedData && updatedData.checklist && updatedData.checklist[2]?.checked).toBe(true);
     });
 
     test("handles roadmap format", () => {
