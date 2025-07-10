@@ -11,6 +11,21 @@ import { CreateCommandSchema } from '@/types/schemas';
 import { githubFossilSync } from './githubFossilSyncCore';
 import * as fs from 'fs';
 import type { E2ERoadmap } from '../types';
+import { getCurrentRepoOwner, getCurrentRepoName } from '../utils/cli';
+import { z } from 'zod';
+import { OwnerRepoSchema } from '../types/schemas';
+
+function detectOwnerRepo(options: any = {}): { owner: string; repo: string } {
+  if (options.owner && options.repo) return { owner: options.owner, repo: options.repo };
+  const owner = getCurrentRepoOwner();
+  const repo = getCurrentRepoName();
+  if (owner && repo) return { owner, repo };
+  if (process.env.CI) {
+    return { owner: 'BarreraSlzr', repo: 'automate_workloads' };
+  } else {
+    return { owner: 'emmanuelbarrera', repo: 'automate_workloads' };
+  }
+}
 
 const program = new Command();
 
@@ -34,11 +49,13 @@ program
   .option('--test', 'Run in test mode (simulate actions)')
   .action(async (options) => {
     try {
+      const { owner, repo } = detectOwnerRepo(options);
+      OwnerRepoSchema.parse({ owner, repo });
       // Validate CLI arguments with Zod
-      const validatedArgs = CreateCommandSchema.parse(options);
+      const validatedArgs = CreateCommandSchema.parse({ ...options, owner, repo });
       const result = await githubFossilSync({
-        owner: validatedArgs.owner,
-        repo: validatedArgs.repo,
+        owner,
+        repo,
         roadmapPath: validatedArgs.roadmap,
         createLabels: validatedArgs.createLabels,
         createMilestones: validatedArgs.createMilestones,
@@ -48,7 +65,6 @@ program
         testMode: validatedArgs.test,
         output: validatedArgs.output
       });
-
       if (validatedArgs.test) {
         console.log('Test mode');
         console.log(result.summary);

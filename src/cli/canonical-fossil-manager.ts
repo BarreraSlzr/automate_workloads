@@ -4,25 +4,35 @@ import { z } from 'zod';
 import { program } from 'commander';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { execSync } from 'child_process';
-import { parseCLIArgs } from '../types/cli';
+import { executeCommand } from '@/utils/cli';
 import { 
-  CanonicalFossilParamsSchema,
   ValidationResultSchema,
   PerformanceResultSchema,
-  AnalysisResultSchema,
-  TestResultSchema
+  OwnerRepoSchema
 } from '../types/schemas';
+import { parseJsonSafe } from '@/utils/json';
+
+// PARAMS OBJECT PATTERN: All CLI commands must detect owner/repo at the top level, validate with Zod, and pass as part of a params object to all downstream calls. No loose or positional owner/repo arguments.
+import { getCurrentRepoOwner, getCurrentRepoName } from '../utils/cli';
+
+function detectOwnerRepo(options: any = {}): { owner: string; repo: string } {
+  if (options.owner && options.repo) return { owner: options.owner, repo: options.repo };
+  const owner = getCurrentRepoOwner();
+  const repo = getCurrentRepoName();
+  if (owner && repo) return { owner, repo };
+  if (process.env.CI) {
+    return { owner: 'BarreraSlzr', repo: 'automate_workloads' };
+  } else {
+    return { owner: 'emmanuelbarrera', repo: 'automate_workloads' };
+  }
+}
 
 // =============================================================================
 // SCHEMAS (Using centralized schema registry)
 // =============================================================================
 
-type CanonicalFossilParams = z.infer<typeof CanonicalFossilParamsSchema>;
 type ValidationResult = z.infer<typeof ValidationResultSchema>;
 type PerformanceResult = z.infer<typeof PerformanceResultSchema>;
-type AnalysisResult = z.infer<typeof AnalysisResultSchema>;
-type TestResult = z.infer<typeof TestResultSchema>;
 
 // Schema types are now imported from centralized registry
 
@@ -65,10 +75,10 @@ class CanonicalFossilManager {
     timestamp: string;
   }> {
     try {
-      const commit_hash = execSync('git rev-parse HEAD', { encoding: 'utf8' }).trim();
-      const branch = execSync('git branch --show-current', { encoding: 'utf8' }).trim();
-      const author = execSync('git config user.name', { encoding: 'utf8' }).trim();
-      const email = execSync('git config user.email', { encoding: 'utf8' }).trim();
+      const commit_hash = executeCommand('git rev-parse HEAD').stdout.trim();
+      const branch = executeCommand('git branch --show-current').stdout.trim();
+      const author = executeCommand('git config user.name').stdout.trim();
+      const email = executeCommand('git config user.email').stdout.trim();
       const timestamp = new Date().toISOString();
 
       return { commit_hash, branch, author, email, timestamp };
@@ -91,7 +101,7 @@ class CanonicalFossilManager {
     try {
       if (await fs.access(canonicalPath).then(() => true).catch(() => false)) {
         const content = await fs.readFile(canonicalPath, 'utf8');
-        const data = JSON.parse(content);
+        const data = parseJsonSafe(content);
         
         // Create archive with timestamp for historical tracking
         const archiveTimestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -124,7 +134,7 @@ class CanonicalFossilManager {
     try {
       if (await fs.access(canonicalPath).then(() => true).catch(() => false)) {
         const content = await fs.readFile(canonicalPath, 'utf8');
-        existingData = ValidationResultSchema.parse(JSON.parse(content));
+        existingData = ValidationResultSchema.parse(parseJsonSafe<Record<string, any>>(content));
       }
     } catch (error) {
       console.warn('⚠️  Could not read existing validation data:', error);
@@ -137,13 +147,6 @@ class CanonicalFossilManager {
     const updatedData: ValidationResult = {
       ...data,
       ...gitInfo,
-      metadata: {
-        ...data.metadata,
-        fossilized: true,
-        canonical: true,
-        version: '1.0.0',
-        transversalValue: this.calculateTransversalValue(data),
-      },
     };
 
     // Ensure directory exists
@@ -175,13 +178,6 @@ class CanonicalFossilManager {
     const updatedData: PerformanceResult = {
       ...data,
       ...gitInfo,
-      metadata: {
-        ...data.metadata,
-        fossilized: true,
-        canonical: true,
-        version: '1.0.0',
-        transversalValue: this.calculateTransversalValue(data),
-      },
     };
 
     // Ensure directory exists
@@ -202,7 +198,7 @@ class CanonicalFossilManager {
   /**
    * Update canonical analysis results
    */
-  async updateAnalysisResults(data: AnalysisResult, options: { generateYaml?: boolean } = {}): Promise<string> {
+  async updateAnalysisResults(data: any, options: { generateYaml?: boolean } = {}): Promise<string> {
     const gitInfo = await this.getGitInfo();
     const canonicalPath = path.join(this.fossilsDir, this.getCanonicalFilename('analysis'));
 
@@ -210,11 +206,10 @@ class CanonicalFossilManager {
     await this.archivePreviousVersion(canonicalPath);
 
     // Prepare updated data
-    const updatedData: AnalysisResult = {
+    const updatedData = {
       ...data,
       ...gitInfo,
       metadata: {
-        ...data.metadata,
         fossilized: true,
         canonical: true,
         version: '1.0.0',
@@ -240,7 +235,7 @@ class CanonicalFossilManager {
   /**
    * Update canonical test results
    */
-  async updateTestResults(data: TestResult): Promise<string> {
+  async updateTestResults(data: any): Promise<string> {
     const gitInfo = await this.getGitInfo();
     const canonicalPath = path.join(this.fossilsDir, this.getCanonicalFilename('test'));
 
@@ -248,11 +243,10 @@ class CanonicalFossilManager {
     await this.archivePreviousVersion(canonicalPath);
 
     // Prepare updated data
-    const updatedData: TestResult = {
+    const updatedData = {
       ...data,
       ...gitInfo,
       metadata: {
-        ...data.metadata,
         fossilized: true,
         canonical: true,
         version: '1.0.0',
@@ -286,7 +280,6 @@ class CanonicalFossilManager {
       data: footprint,
       ...gitInfo,
       metadata: {
-        ...options.metadata,
         fossilized: true,
         canonical: true,
         version: '1.0.0',
@@ -486,7 +479,7 @@ class CanonicalFossilManager {
       try {
         if (await fs.access(filePath).then(() => true).catch(() => false)) {
           const content = await fs.readFile(filePath, 'utf8');
-          const data = JSON.parse(content);
+          const data = parseJsonSafe<Record<string, any>>(content);
           
           const fossilType = filename.replace('-results.json', '');
           context.canonical_fossils[fossilType] = {
@@ -548,11 +541,11 @@ class CanonicalFossilManager {
       console.log('🔍 Running git diff analysis for traceability...');
       
       // Get staged changes
-      const stagedDiff = execSync('git diff --cached --name-only', { encoding: 'utf8' }).trim();
+      const stagedDiff = executeCommand('git diff --cached --name-only').stdout.trim();
       const stagedFiles = stagedDiff ? stagedDiff.split('\n') : [];
       
       // Get unstaged changes
-      const unstagedDiff = execSync('git diff --name-only', { encoding: 'utf8' }).trim();
+      const unstagedDiff = executeCommand('git diff --name-only').stdout.trim();
       const unstagedFiles = unstagedDiff ? unstagedDiff.split('\n') : [];
       
       // Filter fossil-related changes
@@ -619,8 +612,9 @@ program
   .option('--yaml-output <path>', 'YAML output path', 'fossils/context/canonical-context.yml')
   .option('--dry-run', 'Dry run mode', false)
   .action(async (options) => {
+    const { owner, repo } = detectOwnerRepo(options);
+    OwnerRepoSchema.parse({ owner, repo });
     const manager = new CanonicalFossilManager();
-    
     // Create sample validation data
     const validationData: ValidationResult = {
       timestamp: new Date().toISOString(),
@@ -640,21 +634,13 @@ program
         passed_steps: 5,
         failed_steps: 0,
         overall_status: 'pass',
-      },
-      metadata: {
-        fossilized: false,
-        canonical: false,
-        version: '1.0.0',
-      },
+      }
     };
-    
     if (!options.dryRun) {
       await manager.updateValidationResults(validationData);
-      
       if (options.generateYaml) {
         await manager.generateYamlContext();
       }
-      
       await manager.runGitDiffAnalysis();
     } else {
       console.log('🔍 Dry run - would update validation results');
@@ -671,8 +657,9 @@ program
   .option('--yaml-output <path>', 'YAML output path', 'fossils/context/canonical-context.yml')
   .option('--dry-run', 'Dry run mode', false)
   .action(async (options) => {
+    const { owner, repo } = detectOwnerRepo(options);
+    OwnerRepoSchema.parse({ owner, repo });
     const manager = new CanonicalFossilManager();
-    
     // Create sample performance data
     const performanceData: PerformanceResult = {
       timestamp: new Date().toISOString(),
@@ -680,33 +667,28 @@ program
       branch: 'unknown',
       author: 'unknown',
       email: 'unknown',
-      metrics: {
-        memory_usage_mb: 45.2,
-        cpu_usage_percent: 12.5,
-        execution_time_ms: 1250,
-        test_duration_ms: 8500,
-      },
-      status: 'pass',
+      performance_data: [
+        {
+          script: 'example-script.sh',
+          execution_time: 1250,
+          memory_usage: 45.2,
+          cpu_usage: 12.5,
+          exit_code: 0,
+          output_summary: 'All tests passed.'
+        }
+      ],
       summary: {
-        total_metrics: 4,
-        passed_metrics: 4,
-        failed_metrics: 0,
-        performance_score: 95.5,
-      },
-      metadata: {
-        fossilized: false,
-        canonical: false,
-        version: '1.0.0',
-      },
+        total_scripts: 1,
+        avg_execution_time: 1250,
+        total_memory_usage: 45.2,
+        performance_status: 'pass'
+      }
     };
-    
     if (!options.dryRun) {
       await manager.updatePerformanceResults(performanceData);
-      
       if (options.generateYaml) {
         await manager.generateYamlContext();
       }
-      
       await manager.runGitDiffAnalysis();
     } else {
       console.log('🔍 Dry run - would update performance results');

@@ -60,8 +60,6 @@ export const ErrorSnapshotLogCLIArgsSchema = BaseCLIArgsSchema.extend({
   tags: z.array(z.string()).default([]),
 });
 
-export type ErrorSnapshotLogCLIArgs = z.infer<typeof ErrorSnapshotLogCLIArgsSchema>;
-
 // ============================================================================
 // CLI COMMAND IMPLEMENTATIONS
 // ============================================================================

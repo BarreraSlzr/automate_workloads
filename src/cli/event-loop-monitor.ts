@@ -15,8 +15,9 @@ import {
   exportMonitoringData, 
   generateMonitoringReport,
   trackOperation,
-  HangingDetectionConfig 
+  HangingDetectionConfigSchema 
 } from '../utils/eventLoopMonitor';
+import type { HangingDetectionConfig } from '../types/event-loop-monitoring';
 import { writeFileSync } from 'fs';
 import { join } from 'path';
 

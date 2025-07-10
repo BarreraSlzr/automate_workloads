@@ -7,6 +7,21 @@
 
 import { GitDiffAnalyzer } from '../utils/gitDiffAnalyzer';
 import { parseCLIArgs, GitDiffAnalysisParamsSchema } from '../types/cli';
+import { getCurrentRepoOwner, getCurrentRepoName } from '../utils/cli';
+import { z } from 'zod';
+import { OwnerRepoSchema } from '../types/schemas';
+
+function detectOwnerRepo(options: any = {}): { owner: string; repo: string } {
+  if (options.owner && options.repo) return { owner: options.owner, repo: options.repo };
+  const owner = getCurrentRepoOwner();
+  const repo = getCurrentRepoName();
+  if (owner && repo) return { owner, repo };
+  if (process.env.CI) {
+    return { owner: 'BarreraSlzr', repo: 'automate_workloads' };
+  } else {
+    return { owner: 'emmanuelbarrera', repo: 'automate_workloads' };
+  }
+}
 
 function showHelp(): void {
   console.log(`
@@ -44,6 +59,8 @@ Examples:
 async function main(): Promise<void> {
   try {
     const options = parseCLIArgs(GitDiffAnalysisParamsSchema, process.argv.slice(2));
+    const { owner, repo } = detectOwnerRepo(options);
+    OwnerRepoSchema.parse({ owner, repo });
     
     // Handle help
     if (options.help || options.h) {
@@ -64,6 +81,8 @@ async function main(): Promise<void> {
       const result = await analyzer.batchAnalyze({
         batchSize: options.batchSize || 50,
         maxConcurrency: 5,
+        owner,
+        repo,
         progressCallback: (processed: number, total: number) => {
           const percent = Math.round((processed / total) * 100);
           process.stdout.write(`\r📊 Progress: ${processed}/${total} (${percent}%)`);
@@ -93,7 +112,9 @@ async function main(): Promise<void> {
         includeStaged: options.includeStaged,
         includeUnstaged: options.includeUnstaged,
         maxFiles: options.maxFiles || 100,
-        analysisDepth: options.analysisDepth || 'medium'
+        analysisDepth: options.analysisDepth || 'medium',
+        owner,
+        repo
       });
       
       console.log('✅ Analysis completed!');
