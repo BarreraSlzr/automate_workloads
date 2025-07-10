@@ -70,7 +70,10 @@ import {
   PerformanceResultSchema,
   TimestampFilterParamsSchema,
   TimestampFilterCLIParamsSchema,
-  GitHubIssuesCLIArgsSchema
+  GitHubIssuesCLIArgsSchema,
+  LLMPredictiveMonitoringConfigSchema,
+  LLMPredictiveMetricsSchema,
+  LLMPredictiveAlertSchema
 } from './schemas';
 
 // PARAMS OBJECT PATTERN
@@ -132,8 +135,12 @@ export function parseCLIArgs<T extends z.ZodSchema>(
   args: string[]
 ): z.infer<T> {
   const parsed: Record<string, unknown> = {};
+  console.log('🔄 Initialized parsed object');
   
   for (let i = 0; i < args.length; i++) {
+    if (i % 10 === 0 || i === args.length - 1) {
+      console.log(`🔄 Processing CLI arg ${i + 1} of ${args.length}`);
+    }
     const arg = args[i];
     
     if (!arg) continue;
@@ -155,6 +162,31 @@ export function parseCLIArgs<T extends z.ZodSchema>(
   }
   
   return schema.parse(parsed);
+}
+
+function processParsed(parsed: Record<string, unknown>) {
+  const keys = Object.keys(parsed);
+  const args = keys.map(key => parsed[key]);
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    if (typeof key !== 'string') continue;
+    if (i % 10 === 0 || i === keys.length - 1) {
+      console.log(`🔄 Processing parsed key ${i + 1} of ${keys.length}`);
+    }
+    const value = parsed[key];
+
+    if (typeof value === 'string' && value.startsWith('--')) {
+      const nextArg = i + 1 < args.length ? args[i + 1] : undefined;
+      if (typeof nextArg === 'string' && !nextArg.startsWith('-')) {
+        parsed[key] = nextArg;
+        i++; // Skip next arg since we used it
+      } else {
+        parsed[key] = true;
+      }
+    } else if (typeof value === 'string' && value.startsWith('-')) {
+      parsed[key] = true;
+    }
+  }
 }
 
 // 8. Type Exports
@@ -279,4 +311,62 @@ export {
   TimestampFilterCLIParamsSchema,
   GitHubIssuesCLIArgsSchema
 };
+
+// Migrated from src/utils/cli.ts
+export interface TestViolationType {
+  name: string;
+  value: number;
+  description: string;
+}
+
+export interface CLIExecuteOptions {
+  /** Whether to capture stderr in the output */
+  captureStderr?: boolean;
+  /** Whether to throw on non-zero exit code */
+  throwOnError?: boolean;
+  /** Working directory for the command */
+  cwd?: string;
+  /** Environment variables to set */
+  env?: Record<string, string>;
+  /** Timeout in milliseconds */
+  timeout?: number;
+}
+
+export interface CLIExecuteResult {
+  /** Command output (stdout) */
+  stdout: string;
+  /** Error output (stderr) */
+  stderr: string;
+  /** Exit code */
+  exitCode: number;
+  /** Whether the command succeeded */
+  success: boolean;
+}
+
+// Migrated from src/services/index.ts
+export type LLMPredictiveMonitoringConfig = z.infer<typeof LLMPredictiveMonitoringConfigSchema>;
+export type LLMPredictiveMetrics = z.infer<typeof LLMPredictiveMetricsSchema>;
+export type LLMPredictiveAlert = z.infer<typeof LLMPredictiveAlertSchema>;
+
+// Migrated from src/services/github.ts
+export interface GitHubOptions extends CLIExecuteOptions {
+  /** Repository owner */
+  owner: string;
+  /** Repository name */
+  repo: string;
+  /** Issue state filter */
+  state?: 'open' | 'closed' | 'all';
+  /** Issue labels filter */
+  labels?: string[];
+  /** Issue assignee filter */
+  assignee?: string;
+  /** Issue milestone */
+  milestone?: string;
+  /** Issue section */
+  section?: string;
+  /** Issue checklist */
+  checklist?: string;
+  /** Issue metadata */
+  metadata?: Record<string, unknown>;
+}
 

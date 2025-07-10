@@ -9,22 +9,18 @@ import { BaseFossil, Status } from './core';
  * GitHub issue information
  */
 export interface GitHubIssue {
-  /** Issue number */
+  id?: number;
   number: number;
-  /** Issue title */
   title: string;
-  /** Issue state (open, closed) */
-  state: 'open' | 'closed';
-  /** Issue body content */
+  state: string;
   body?: string;
-  /** Issue labels */
-  labels: string[];
-  /** Issue assignees */
-  assignees: string[];
-  /** Creation date */
-  created_at: string;
-  /** Last updated date */
-  updated_at: string;
+  labels?: string[];
+  assignees?: string[];
+  milestone?: string;
+  created_at?: string;
+  updated_at?: string;
+  closed_at?: string;
+  [key: string]: any;
 }
 
 /**

@@ -10,7 +10,9 @@
 import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { z } from 'zod';
-import { CanonicalTestFossilManager, type TestAnalysisData } from '../src/utils/canonical-test-fossil-manager';
+import { CanonicalTestFossilManager } from '../src/utils/canonical-test-fossil-manager';
+import type { TestAnalysisData } from '../src/types/test-monitoring';
+import { parseJsonSafe } from '@/utils/json';
 
 // ============================================================================
 // ZOD SCHEMAS (reused from original)
@@ -170,7 +172,7 @@ export class RefactoredAutomatedMonitoringAnalysis {
     
     if (existsSync(testMonitoringFile)) {
       try {
-        const data = JSON.parse(readFileSync(testMonitoringFile, 'utf8'));
+        const data = parseJsonSafe(readFileSync(testMonitoringFile, 'utf8'), 'scripts:automated-monitoring-analysis-refactored:testMonitoringFile') as any[];
         const validated = TestMonitoringDataSchema.parse(data);
         this.testMonitoringData.push(validated);
         console.log(`✅ Loaded test monitoring data with ${validated.snapshots.length} snapshots`);
@@ -189,7 +191,7 @@ export class RefactoredAutomatedMonitoringAnalysis {
     
     if (existsSync(performanceLogFile)) {
       try {
-        const data = JSON.parse(readFileSync(performanceLogFile, 'utf8'));
+        const data = parseJsonSafe(readFileSync(performanceLogFile, 'utf8'), 'scripts:automated-monitoring-analysis-refactored:performanceLogFile') as any[];
         this.performanceLogs = data.map((entry: any) => PerformanceLogEntrySchema.parse(entry));
         console.log(`✅ Loaded ${this.performanceLogs.length} performance log entries`);
       } catch (error) {
@@ -199,7 +201,7 @@ export class RefactoredAutomatedMonitoringAnalysis {
     
     if (existsSync(performanceDataFile)) {
       try {
-        const data = JSON.parse(readFileSync(performanceDataFile, 'utf8'));
+        const data = parseJsonSafe(readFileSync(performanceDataFile, 'utf8'), 'scripts:automated-monitoring-analysis-refactored:performanceDataFile') as any[];
         const validated = PerformanceDataSchema.parse(data);
         this.performanceData.push(validated);
         console.log(`✅ Loaded performance data for ${validated.script}`);

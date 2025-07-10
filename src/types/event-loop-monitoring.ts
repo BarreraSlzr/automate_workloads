@@ -65,4 +65,6 @@ export const HangingDetectionConfigSchema = z.object({
 
 export type CallStackEntry = z.infer<typeof CallStackEntrySchema>;
 export type EventLoopSnapshot = z.infer<typeof EventLoopSnapshotSchema>;
+export const EventLoopSnapshot = EventLoopSnapshotSchema;
+export const CallStackEntry = CallStackEntrySchema;
 export type HangingDetectionConfig = z.infer<typeof HangingDetectionConfigSchema>; 

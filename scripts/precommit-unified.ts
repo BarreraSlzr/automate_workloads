@@ -11,35 +11,66 @@
  * Usage: bun run scripts/precommit-unified.ts
  */
 
-import { execSync } from 'child_process';
+import { executeCommand } from '@/utils/cli';
 
-function runStep(description: string, command: string, options: { optional?: boolean } = {}) {
+// PARAMS OBJECT PATTERN: All scripts must detect owner/repo at the top level, validate with Zod, and pass as part of a params object to all downstream calls. No loose or positional owner/repo arguments.
+import { getCurrentRepoOwner, getCurrentRepoName } from '../src/utils/cli';
+import { z } from 'zod';
+import { OwnerRepoSchema } from '../src/types/schemas';
+
+function detectOwnerRepo(options: any = {}): { owner: string; repo: string } {
+  if (options.owner && options.repo) return { owner: options.owner, repo: options.repo };
+  const owner = getCurrentRepoOwner();
+  const repo = getCurrentRepoName();
+  if (owner && repo) return { owner, repo };
+  if (process.env.CI) {
+    return { owner: 'BarreraSlzr', repo: 'automate_workloads' };
+  } else {
+    return { owner: 'emmanuelbarrera', repo: 'automate_workloads' };
+  }
+}
+
+const { owner, repo } = detectOwnerRepo();
+OwnerRepoSchema.parse({ owner, repo });
+
+async function runStep(params: { description: string, command: string, options?: { optional?: boolean } }) {
+  const { description, command, options = {} } = params;
   console.log(`\n🔹 ${description}`);
   try {
-    execSync(command, { stdio: 'inherit' });
-    console.log(`✅ ${description} succeeded`);
-    return true;
+    const result = await executeCommand(command);
+    if (result.success) {
+      console.log(`✅ ${description} succeeded`);
+      return true;
+    } else {
+      console.error(`❌ ${description} failed: ${result.stderr}`);
+      if (!options.optional) process.exit(1);
+      return false;
+    }
   } catch (e) {
-    console.error(`❌ ${description} failed`);
+    if (e instanceof Error) {
+      console.error(`❌ ${description} failed: ${e.message}`);
+    } else {
+      console.error(`❌ ${description} failed:`, e);
+    }
     if (!options.optional) process.exit(1);
     return false;
   }
 }
 
 // 1. Update evolving footprint
-runStep('Updating evolving footprint', 'bun run footprint:evolving --update true');
+await runStep({ description: 'Updating evolving footprint', command: `bun run footprint:evolving --update true --owner ${owner} --repo ${repo}` });
 
 // 2. TypeScript type check
-runStep('TypeScript type check', 'bun run tsc --noEmit');
+await runStep({ description: 'TypeScript type check', command: 'bun run tsc --noEmit' });
 
 // 3. Schema and pattern validation
-runStep('Schema and pattern validation', 'bun run validate:pre-commit');
+await runStep({ description: 'Schema and pattern validation', command: `bun run validate:pre-commit --owner ${owner} --repo ${repo}` });
 
 // 4. LLM insight generation (optional, skip if not configured)
-runStep('LLM insight generation (optional)', 'bun run scripts/precommit-llm-insight.ts', { optional: true });
+await runStep({ description: 'LLM insight generation (optional)', command: `bun run scripts/precommit-llm-insight.ts --owner ${owner} --repo ${repo}`, options: { optional: true } });
 
 // 5. Commit message validation
-runStep('Commit message validation', 'bun run scripts/commit-message-validator.ts --pre-commit --strict');
+await runStep({ description: 'Commit message validation', command: `bun run scripts/commit-message-validator.ts --pre-commit --strict --owner ${owner} --repo ${repo}` });
 
 console.log('\n🎉 All pre-commit checks passed!');
 process.exit(0); 

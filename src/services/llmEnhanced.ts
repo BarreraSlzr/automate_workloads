@@ -1,26 +1,19 @@
 import { LLMService } from './llm';
 import { LLMInputValidator, validateLLMInput, preprocessLLMInput, analyzeLLMContentQuality } from '../utils/llmInputValidator';
-import { createLLMFossilManager } from '../utils/llmFossilManager';
+import { createLLMFossilManagerFactory } from '../utils/llmFossilManagerFactory';
 import { createHash } from 'crypto';
-import { EnhancedLLMServiceParamsSchema } from '../types/llm';
+import { z } from 'zod';
 import type { 
-  OpenAIChatOptions, 
-  LLMProvider,
-  EnhancedLLMOptions,
   EnhancedLLMResult,
-  EnhancedLLMServiceParams
+  InputValidationResult,
+  InputPreprocessingResult,
+  ContentQualityMetrics,
+  EnhancedLLMServiceParams,
+  OpenAIChatOptions
 } from '../types/llm';
-import type { InputValidationResult, InputPreprocessingResult, ContentQualityMetrics } from '../utils/llmInputValidator';
-import { getCurrentRepoOwner, getCurrentRepoName } from "../utils/cli";
-
-// Re-export types for external use
-export type {
-  OpenAIChatOptions,
-  LLMProvider,
-  EnhancedLLMOptions,
-  EnhancedLLMResult,
-  EnhancedLLMServiceParams
-} from '../types/llm';
+import { OwnerRepoSchema } from '../types/schemas';
+import { EnhancedLLMServiceParamsSchema } from '../types/llm';
+import { getCurrentRepoOwner, getCurrentRepoName } from '@/utils/cli';
 
 /**
  * Enhanced LLM Service with Error Prevention and Fossilization
@@ -40,7 +33,10 @@ export class EnhancedLLMService {
   private enhancedSessionId: string;
 
   constructor(params: Partial<EnhancedLLMServiceParams> = {}) {
-    this.llmService = new LLMService();
+    this.llmService = new LLMService({
+      owner: getCurrentRepoOwner(),
+      repo: getCurrentRepoName(),
+    });
     this.params = { ...EnhancedLLMServiceParamsSchema, ...params };
     this.validator = new LLMInputValidator();
     this.enhancedSessionId = `enhanced-session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -51,7 +47,7 @@ export class EnhancedLLMService {
    */
   async initialize(): Promise<void> {
     if (this.params.enableFossilization) {
-      this.enhancedFossilManager = await createLLMFossilManager(this.params.fossilManagerParams);
+      this.enhancedFossilManager = await createLLMFossilManagerFactory(this.params.fossilManagerParams);
     }
   }
 
@@ -98,9 +94,9 @@ export class EnhancedLLMService {
       // Step 2: Check if input is valid
       if (!validation.isValid) {
         console.error('❌ LLM Input Validation Failed:');
-        validation.errors.forEach(error => console.error(`  - ${error}`));
-        validation.warnings.forEach(warning => console.warn(`  ⚠️  ${warning}`));
-        validation.recommendations.forEach(rec => console.log(`  💡 ${rec}`));
+        validation.errors.forEach((error: string) => console.error(`  - ${error}`));
+        validation.warnings.forEach((warning: string) => console.warn(`  ⚠️  ${warning}`));
+        validation.recommendations.forEach((rec: string) => console.log(`  💡 ${rec}`));
         
         throw new Error(`LLM input validation failed: ${validation.errors.join(', ')}`);
       }
@@ -196,7 +192,7 @@ export class EnhancedLLMService {
   }
 
   /**
-   * Batch validation of multiple inputs
+   * Batch validation of multiple inputs (with progress/logging)
    */
   async validateBatch(inputs: any[]): Promise<{
     valid: any[];
@@ -213,16 +209,25 @@ export class EnhancedLLMService {
     const invalid: any[] = [];
     const allIssues: string[] = [];
     const allRecommendations: string[] = [];
-    
+    let idx = 0;
     for (const input of inputs) {
-      const validation = validateLLMInput(input);
-      
-      if (validation.isValid) {
-        valid.push(input);
-      } else {
+      idx++;
+      if (idx === 1 || idx === inputs.length || idx % 10 === 0) {
+        console.log(`[validateBatch] Progress: ${idx}/${inputs.length}`);
+      }
+      try {
+        const validation = validateLLMInput(input);
+        if (validation.isValid) {
+          valid.push(input);
+        } else {
+          invalid.push(input);
+          allIssues.push(...validation.errors);
+          allRecommendations.push(...validation.recommendations);
+        }
+      } catch (err) {
+        console.error(`[validateBatch] Error validating input at index ${idx - 1}:`, err);
         invalid.push(input);
-        allIssues.push(...validation.errors);
-        allRecommendations.push(...validation.recommendations);
+        allIssues.push('Exception during validation');
       }
     }
     
@@ -447,16 +452,17 @@ export async function callLLMEnhanced(
     valueScore?: number;
     routingPreference?: 'auto' | 'local' | 'cloud';
   },
-  options: Partial<EnhancedLLMServiceParams> = {}
+  options: Partial<EnhancedLLMServiceParams> & { owner: string; repo: string } // require owner/repo
 ): Promise<EnhancedLLMResult> {
+  OwnerRepoSchema.parse(options);
   const defaultParams: Partial<EnhancedLLMServiceParams> = {
     enableValidation: true,
     enablePreprocessing: true,
     enableFossilization: true,
     enableQualityAnalysis: true,
     fossilManagerParams: {
-      owner: getCurrentRepoOwner(),
-      repo: getCurrentRepoName(),
+      owner: options.owner,
+      repo: options.repo,
       fossilStoragePath: 'fossils/llm_insights/',
       enableAutoFossilization: true,
       enableQualityMetrics: true,
@@ -473,7 +479,7 @@ export async function callLLMEnhanced(
  */
 export function analyzeLLMInput(
   input: any,
-  options: Partial<EnhancedLLMServiceParams> = {}
+  options: Partial<EnhancedLLMServiceParams> & { owner: string; repo: string }
 ): {
   validation: InputValidationResult;
   preprocessing: InputPreprocessingResult;
@@ -481,14 +487,15 @@ export function analyzeLLMInput(
   recommendations: string[];
   summary: string;
 } {
+  OwnerRepoSchema.parse(options);
   const defaultParams: Partial<EnhancedLLMServiceParams> = {
     enableValidation: true,
     enablePreprocessing: true,
     enableFossilization: true,
     enableQualityAnalysis: true,
     fossilManagerParams: {
-      owner: getCurrentRepoOwner(),
-      repo: getCurrentRepoName(),
+      owner: options.owner,
+      repo: options.repo,
       fossilStoragePath: 'fossils/llm_insights/',
       enableAutoFossilization: true,
       enableQualityMetrics: true,
