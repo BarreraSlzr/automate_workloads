@@ -9,21 +9,17 @@
  * promoting reuse and reducing code duplication across the codebase.
  */
 
-import { execSync } from 'child_process';
-import { promises as fs } from 'fs';
-import path from 'path';
 import { ContextFossilService } from '../cli/context-fossil';
 import type { ContextEntry } from '../types';
 import { GitHubCLICommands } from './githubCliCommands';
 import { generateContentHash } from './fossilize';
 import { 
-  BaseFossilParamsSchema,
   IssueFossilParamsSchema,
   LabelFossilParamsSchema,
-  MilestoneFossilParamsSchema
+  MilestoneFossilParamsSchema,
+  OwnerRepoSchema
 } from '../types/schemas';
 import {
-  BaseFossilParams,
   IssueFossilParams,
   LabelFossilParams,
   MilestoneFossilParams,
@@ -31,7 +27,7 @@ import {
   FossilResult,
   FossilReport
 } from '../types/fossil';
-
+import { getCurrentRepoOwner, getCurrentRepoName } from '@/utils/cli';
 
 
 // ============================================================================
@@ -331,7 +327,12 @@ export class FossilManager {
       const byStatus: Record<string, number> = {};
       let duplicates = 0;
 
-      for (const fossil of allFossils) {
+      for (let i = 0; i < allFossils.length; i++) {
+        const fossil = allFossils[i];
+        if (!fossil) continue;
+        if (i % 10 === 0 || i === allFossils.length - 1) {
+          console.log(`🔄 Processing fossil ${i + 1} of ${allFossils.length}`);
+        }
         // Count by type
         byType[fossil.type] = (byType[fossil.type] || 0) + 1;
         
@@ -388,7 +389,12 @@ export class FossilManager {
       });
 
       // Check for fossils without required fields
-      for (const fossil of allFossils) {
+      for (let i = 0; i < allFossils.length; i++) {
+        const fossil = allFossils[i];
+        if (!fossil) continue;
+        if (i % 10 === 0 || i === allFossils.length - 1) {
+          console.log(`🔄 Validating fossil ${i + 1} of ${allFossils.length}`);
+        }
         if (!fossil.title) {
           issues.push(`Fossil ${fossil.id} missing title`);
         }
@@ -403,10 +409,15 @@ export class FossilManager {
         titleCounts[fossil.title] = (titleCounts[fossil.title] || 0) + 1;
       }
 
+      let idx = 0;
       for (const [title, count] of Object.entries(titleCounts)) {
         if (count > 1) {
           recommendations.push(`Consider consolidating ${count} fossils with title "${title}"`);
         }
+        if (idx % 10 === 0 || idx === Object.entries(titleCounts).length - 1) {
+          console.log(`🔄 Processed ${idx + 1} of ${Object.entries(titleCounts).length} title counts`);
+        }
+        idx++;
       }
 
       return {
@@ -432,7 +443,9 @@ export class FossilManager {
    * Create a GitHub issue via CLI using centralized GitHubCLICommands
    */
   private async createGitHubIssue(params: IssueFossilParams): Promise<string> {
-    const commands = new GitHubCLICommands(params.owner, params.repo);
+    const owner = getCurrentRepoOwner();
+    const repo = getCurrentRepoName();
+    const commands = new GitHubCLICommands(owner, repo);
     
     const result = await commands.createIssue({
       title: params.title,
@@ -455,7 +468,9 @@ export class FossilManager {
    * Create a GitHub label via CLI using centralized GitHubCLICommands
    */
   private async createGitHubLabel(params: LabelFossilParams): Promise<void> {
-    const commands = new GitHubCLICommands(params.owner, params.repo);
+    const owner = getCurrentRepoOwner();
+    const repo = getCurrentRepoName();
+    const commands = new GitHubCLICommands(owner, repo);
     
     const result = await commands.createLabel({
       name: params.name,
@@ -472,7 +487,9 @@ export class FossilManager {
    * Create a GitHub milestone via API using centralized GitHubCLICommands
    */
   private async createGitHubMilestone(params: MilestoneFossilParams): Promise<string> {
-    const commands = new GitHubCLICommands(params.owner, params.repo);
+    const owner = getCurrentRepoOwner();
+    const repo = getCurrentRepoName();
+    const commands = new GitHubCLICommands(owner, repo);
     
     const result = await commands.createMilestone({
       title: params.title,
@@ -572,6 +589,7 @@ export class FossilManager {
  * Create a fossil manager instance with proper initialization
  */
 export async function createFossilManager(owner: string, repo: string): Promise<FossilManager> {
+  OwnerRepoSchema.parse({ owner, repo });
   const manager = new FossilManager(owner, repo);
   await manager.initialize();
   return manager;
@@ -581,6 +599,7 @@ export async function createFossilManager(owner: string, repo: string): Promise<
  * Convenience function for creating fossil-backed issues
  */
 export async function createFossilIssue(params: IssueFossilParams): Promise<FossilResult> {
+  OwnerRepoSchema.parse({ owner: params.owner, repo: params.repo });
   const manager = await createFossilManager(params.owner, params.repo);
   return manager.createIssue(params);
 }

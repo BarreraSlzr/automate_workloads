@@ -6,7 +6,7 @@
  * and recommendations for commit organization and automation.
  */
 
-import { execSync } from 'child_process';
+import { executeCommand } from '@/utils/cli';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { 
@@ -20,12 +20,16 @@ import {
 import { LLMService } from '../services/llm';
 import { fossilizeLLMInsight } from './fossilize';
 import { LLMInsightFossil } from '../types/llmFossil';
+import { getCurrentRepoOwner, getCurrentRepoName } from '@/utils/cli';
 
 export class GitDiffAnalyzer {
   private llmService: LLMService;
 
   constructor() {
-    this.llmService = new LLMService({ preferLocalLLM: true });
+    this.llmService = new LLMService({
+      owner: getCurrentRepoOwner(),
+      repo: getCurrentRepoName(),
+    });
   }
 
   /**
@@ -86,7 +90,8 @@ export class GitDiffAnalyzer {
     }
     
     try {
-      return execSync(`git diff ${args.join(' ')}`, { encoding: 'utf8' });
+      const result = executeCommand(`git diff ${args.join(' ')}`);
+      return result.stdout;
     } catch (error) {
       console.warn('⚠️ Git diff command failed, using empty diff');
       return '';
@@ -487,8 +492,8 @@ Focus on:
 
   private getRecentCommits(limit: number): string[] {
     try {
-      const output = execSync(`git log --oneline -${limit}`, { encoding: 'utf8' });
-      return output.split('\n')
+      const result = executeCommand(`git log --oneline -${limit}`);
+      return result.stdout.split('\n')
         .filter(line => line.trim())
         .map(line => {
           const parts = line.split(' ');

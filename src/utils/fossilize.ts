@@ -1,4 +1,4 @@
-import type { ContextEntry } from '@/types';
+import type { ContextEntry } from '../types';
 import { ContextEntrySchema } from '@/types/schemas';
 import { createHash } from 'crypto';
 import fs from 'fs/promises';
@@ -96,8 +96,6 @@ export async function writeFossilToFile(entry: ContextEntry, filePath: string) {
     await fs.writeFile(filePath, JSON.stringify(entry, null, 2));
   }
 }
-
-export type { ContextEntry };
 
 const FOSSIL_DIR = path.join(process.cwd(), 'fossils', 'llm_insights');
 

@@ -1,6 +1,7 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { FossilSummary } from '../types/core';
+import { parseJsonSafe } from '@/utils/json';
 
 const FOSSIL_DIR = path.resolve('.context-fossil/entries');
 
@@ -9,7 +10,7 @@ export async function getFossilSummary(): Promise<FossilSummary[]> {
   const fossils: any[] = [];
   for (const file of files) {
     if (!file.endsWith('.json')) continue;
-    const fossil = JSON.parse(await fs.readFile(path.join(FOSSIL_DIR, file), 'utf8'));
+    const fossil = parseJsonSafe(await fs.readFile(path.join(FOSSIL_DIR, file), 'utf8'), 'fossilSummary:file') as any;
     fossils.push(fossil);
   }
   // Filter out test/irrelevant repos

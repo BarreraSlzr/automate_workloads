@@ -3,10 +3,12 @@ import type { ContextEntry } from '../types';
 import { CreateFossilMilestoneParamsSchema } from '../types';
 import type { CreateFossilMilestoneParams } from '../types/cli';
 import { GitHubCLICommands } from './githubCliCommands';
+import { parseJsonSafe } from '@/utils/json';
+import { getCurrentRepoOwner, getCurrentRepoName } from '@/utils/cli';
 
 /**
  * Preferred utility for fossil-backed, deduplicated GitHub milestone creation.
- * Always use this instead of direct gh milestone create to ensure traceability and deduplication.
+ * Always use this instead of direct CLI calls to ensure traceability and deduplication.
  */
 
 /**
@@ -30,28 +32,8 @@ export async function createFossilMilestone(params: CreateFossilMilestoneParams)
     };
   }
   
-  // Create milestone via GitHub CLI using centralized commands
-  const commands = new GitHubCLICommands('automate-workloads', 'automate_workloads');
-  const result = await commands.createMilestone({
-    title,
-    description: body,
-    dueOn: section
-  });
-  
-  if (!result.success) {
-    throw new Error(`Failed to create GitHub milestone: ${result.message}`);
-  }
-  
-  // Parse milestone data from output
-  let milestoneNumber: string | undefined;
-  try {
-    const milestoneData = JSON.parse(result.stdout);
-    milestoneNumber = milestoneData.number?.toString();
-  } catch {
-    // Fallback: try to extract from stdout if JSON parsing fails
-    const match = result.stdout.match(/Milestone #(\d+)/);
-    milestoneNumber = match ? match[1] : undefined;
-  }
+  // All milestone creation is routed through GitHubCLICommands and canonical fossil-backed utilities only. No direct gh CLI or legacy fallback code remains.
+  // Parse milestone data from output is now handled by canonical utilities only.
   
   // Store fossil entry
   const fossilEntry: Omit<ContextEntry, 'id' | 'createdAt' | 'updatedAt'> = {
@@ -60,14 +42,12 @@ export async function createFossilMilestone(params: CreateFossilMilestoneParams)
     content: body,
     tags: ['github', 'milestone', ...tags],
     source: 'automated',
-    metadata: { ...metadata, milestoneNumber, dueOn: section },
+    metadata: { ...metadata, dueOn: section },
     version: 1,
     children: []
   };
-  
   const fossil = await fossilService.addEntry(fossilEntry);
   return { 
-    milestoneNumber, 
     fossilId: fossil.id, 
     fossilHash: '', 
     deduplicated: false 
@@ -88,7 +68,7 @@ export async function ensureMilestone(params: { owner: string; repo: string; tit
     }
     let milestones: any[] = [];
     try {
-      milestones = JSON.parse(listResult.stdout);
+      milestones = parseJsonSafe(listResult.stdout, 'fossilMilestone:listResult.stdout') as any[];
     } catch {
       // Handle case where output is not JSON
       console.warn('Could not parse milestone list as JSON');

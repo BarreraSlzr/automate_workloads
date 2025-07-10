@@ -4,7 +4,7 @@
 // Example: UtilsTree.FossilManager.FossilManager
 
 export { FossilManager, createFossilManager, createFossilIssue, createFossilLabel, createFossilMilestone } from './fossilManager';
-export { LLMFossilManager, createLLMFossilManager } from './llmFossilManager';
+export { LLMFossilManager } from './llmFossilManager';
 export { LLMSnapshotExporter, exportLLMSnapshot } from './llmSnapshotExporter';
 export { generateWorkflowDiagram, generateArchitectureDiagram, generateDependencyDiagram, generateRiskDiagram, generateSequenceDiagram, generateProgressDiagram, generateSystemOverviewDiagram, generateDecisionTreeDiagram, generateVisualIssueBody, generateVisualFossilPublication, shouldIncludeVisuals, extractVisualContext } from './visualDiagramGenerator';
 export { executeCommand, executeCommandJSON, safeParseJSON, isCommandAvailable, executeCommandWithRetry, formatOutput, createServiceResponse, issueExists } from './cli';
@@ -45,12 +45,10 @@ export const UtilsTree = {
   /**
    * LLM: LLM fossilization, snapshotting, and session management utilities.
    * - LLMFossilManager: Main class for LLM fossil management
-   * - createLLMFossilManager: Factory for LLMFossilManager
    * - LLMSnapshotExporter/exportLLMSnapshot: Export LLM fossils for sharing/audit
    */
   LLM: {
     LLMFossilManager: require('./llmFossilManager').LLMFossilManager,
-    createLLMFossilManager: require('./llmFossilManager').createLLMFossilManager,
     LLMSnapshotExporter: require('./llmSnapshotExporter').LLMSnapshotExporter,
     exportLLMSnapshot: require('./llmSnapshotExporter').exportLLMSnapshot,
   },

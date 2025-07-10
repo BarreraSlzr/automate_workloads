@@ -1,5 +1,8 @@
 import { executeCommand } from './cli';
 import { CommandResult, IssueParams, LabelParams, MilestoneParams } from '../types/cli';
+import { createFossilIssue } from './fossilIssue';
+import { createFossilLabel } from './fossilLabel';
+import { createFossilMilestone } from './fossilMilestone';
 
 /**
  * Centralized GitHub CLI command utility for type-safe command construction
@@ -13,24 +16,75 @@ export class GitHubCLICommands {
    * Create a GitHub issue with proper validation and error handling
    */
   async createIssue(params: IssueParams): Promise<CommandResult> {
-    const cmd = this.buildIssueCreateCommand(params);
-    return this.executeCommand(cmd);
+    // Use fossil-backed utility
+    const fossilService = undefined; // Use default or inject as needed
+    const result = await createFossilIssue({
+      fossilService,
+      type: 'action',
+      title: params.title,
+      body: params.body || '',
+      section: 'issues',
+      tags: params.labels || [],
+      metadata: {},
+      parsedFields: {},
+    });
+    return {
+      success: !result.deduplicated,
+      stdout: JSON.stringify(result),
+      stderr: '',
+      exitCode: 0,
+      message: result.deduplicated ? 'Issue already exists (deduplicated)' : 'Issue created via fossil-backed utility',
+    };
   }
   
   /**
    * Create a GitHub label with proper validation and error handling
    */
   async createLabel(params: LabelParams): Promise<CommandResult> {
-    const cmd = this.buildLabelCreateCommand(params);
-    return this.executeCommand(cmd);
+    // Use fossil-backed utility
+    const fossilService = undefined; // Use default or inject as needed
+    const result = await createFossilLabel({
+      fossilService,
+      type: 'action',
+      title: params.name,
+      body: params.description || '',
+      section: 'labels',
+      tags: [],
+      metadata: { color: params.color },
+      parsedFields: {},
+    });
+    return {
+      success: !result.deduplicated,
+      stdout: JSON.stringify(result),
+      stderr: '',
+      exitCode: 0,
+      message: result.deduplicated ? 'Label already exists (deduplicated)' : 'Label created via fossil-backed utility',
+    };
   }
   
   /**
    * Create a GitHub milestone with proper validation and error handling
    */
   async createMilestone(params: MilestoneParams): Promise<CommandResult> {
-    const cmd = this.buildMilestoneCreateCommand(params);
-    return this.executeCommand(cmd);
+    // Use fossil-backed utility
+    const fossilService = undefined; // Use default or inject as needed
+    const result = await createFossilMilestone({
+      fossilService,
+      type: 'action',
+      title: params.title,
+      body: params.description || '',
+      section: params.dueOn || 'general',
+      tags: [],
+      metadata: {},
+      parsedFields: {},
+    });
+    return {
+      success: !result.deduplicated,
+      stdout: JSON.stringify(result),
+      stderr: '',
+      exitCode: 0,
+      message: result.deduplicated ? 'Milestone already exists (deduplicated)' : 'Milestone created via fossil-backed utility',
+    };
   }
   
   /**
@@ -77,54 +131,6 @@ export class GitHubCLICommands {
     }
     
     return this.executeCommand(cmd);
-  }
-  
-  /**
-   * Build issue creation command with proper escaping
-   */
-  private buildIssueCreateCommand(params: IssueParams): string {
-    const { title, body, labels, milestone, assignees } = params;
-    let cmd = `gh issue create --repo ${this.owner}/${this.repo} --title "${this.escapeString(title)}"`;
-    
-    if (body) {
-      cmd += ` --body "${this.escapeString(body)}"`;
-    }
-    
-    if (labels && labels.length > 0) {
-      cmd += ` --label "${labels.map(l => this.escapeString(l)).join(',')}"`;
-    }
-    
-    if (milestone) {
-      cmd += ` --milestone "${this.escapeString(milestone)}"`;
-    }
-    
-    if (assignees && assignees.length > 0) {
-      cmd += ` --assignee "${assignees.map(a => this.escapeString(a)).join(',')}"`;
-    }
-    
-    return cmd;
-  }
-  
-  /**
-   * Build label creation command with proper escaping
-   */
-  private buildLabelCreateCommand(params: LabelParams): string {
-    const { name, description, color } = params;
-    return `gh label create "${this.escapeString(name)}" --repo ${this.owner}/${this.repo} --color "${this.escapeString(color)}" --description "${this.escapeString(description)}"`;
-  }
-  
-  /**
-   * Build milestone creation command with proper escaping
-   */
-  private buildMilestoneCreateCommand(params: MilestoneParams): string {
-    const { title, description, dueOn } = params;
-    let cmd = `gh api repos/${this.owner}/${this.repo}/milestones --method POST --field title="${this.escapeString(title)}" --field description="${this.escapeString(description)}"`;
-    
-    if (dueOn) {
-      cmd += ` --field due_on="${new Date(dueOn).toISOString()}"`;
-    }
-    
-    return cmd;
   }
   
   /**

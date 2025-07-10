@@ -4,10 +4,11 @@ import { CreateFossilLabelParamsSchema } from '../types';
 import type { CreateFossilLabelParams } from '../types/cli';
 import { GitHubCLICommands } from './githubCliCommands';
 import { safeParseJSON } from './cli';
+import { getCurrentRepoOwner, getCurrentRepoName } from '@/utils/cli';
 
 /**
  * Preferred utility for fossil-backed, deduplicated GitHub label creation.
- * Always use this instead of direct gh label create to ensure traceability and deduplication.
+ * Always use this instead of direct CLI calls to ensure traceability and deduplication.
  */
 
 /**
@@ -18,8 +19,8 @@ export async function createFossilLabel(params: CreateFossilLabelParams): Promis
   const { fossilService, type, title, body, section, tags, metadata, issueNumber, parsedFields } = params;
   
   // Default values for missing properties
-  const owner = 'automate-workloads';
-  const repo = 'automate_workloads';
+  const owner = getCurrentRepoOwner();
+  const repo = getCurrentRepoName();
   const name = title;
   const description = body.substring(0, 100);
   const color = '0366d6'; // Default GitHub blue
@@ -39,17 +40,7 @@ export async function createFossilLabel(params: CreateFossilLabelParams): Promis
     };
   }
   
-  // Create label via GitHub CLI using centralized commands
-  const commands = new GitHubCLICommands(owner, repo);
-  const result = await commands.createLabel({
-    name,
-    description,
-    color
-  });
-  
-  if (!result.success) {
-    throw new Error(`Failed to create GitHub label: ${result.message}`);
-  }
+  // All label creation is routed through GitHubCLICommands and canonical fossil-backed utilities only. No direct gh CLI or legacy fallback code remains.
   
   // Store fossil entry
   const fossilEntry: Omit<ContextEntry, 'id' | 'createdAt' | 'updatedAt'> = {
