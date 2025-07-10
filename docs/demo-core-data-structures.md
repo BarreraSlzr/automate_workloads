@@ -27,6 +27,8 @@ graph TD
     style G fill:#fce4ec
 ```
 
+> **Note:** All steps use canonical utilities and are enforced by the validator. Deprecated patterns (direct execSync, JSON.parse, ad-hoc scripts) are blocked.
+
 ## Data Flow Architecture
 ```mermaid
 graph LR
@@ -63,6 +65,8 @@ graph LR
     style I fill:#f3e5f5
 ```
 
+> **Note:** All steps use canonical utilities and are enforced by the validator. Deprecated patterns (direct execSync, JSON.parse, ad-hoc scripts) are blocked.
+
 ## Relationship Mapping
 ```mermaid
 graph TB
@@ -95,6 +99,8 @@ graph TB
     style D fill:#e3f2fd
     style G fill:#e8f5e8
 ```
+
+> **Note:** All steps use canonical utilities and are enforced by the validator. Deprecated patterns (direct execSync, JSON.parse, ad-hoc scripts) are blocked.
 
 ## Task Insights
 
