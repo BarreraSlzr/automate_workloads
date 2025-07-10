@@ -109,6 +109,8 @@ graph TD
     style G fill:#e3f2fd
 ```
 
+> **Note:** All workflow steps use canonical utilities and are enforced by the validator. Deprecated patterns (direct execSync, JSON.parse, ad-hoc scripts) are blocked.
+
 ---
 
 ## 6. Roadmap & Next Steps

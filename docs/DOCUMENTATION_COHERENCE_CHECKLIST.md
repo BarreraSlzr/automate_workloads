@@ -12,6 +12,7 @@ Maintain consistency across all documentation by validating that:
 
 ## ✅ Completed
 
+- [x] **2025-07 Major Refactor:** All deprecated patterns (execSync, JSON.parse, gh issue create, etc.) are now removed from code and documentation. All examples and references use canonical utilities and patterns. The validator enforces this project-wide.
 - [x] **Fossil-backed creation promotion** (API_REFERENCE.md, CLI_COMMAND_INSIGHTS.md, etc.)
 - [x] **Centralized CLI patterns** (GitHubCLICommands, no direct execSync)
 - [x] **Validation patterns** (Zod, params object)

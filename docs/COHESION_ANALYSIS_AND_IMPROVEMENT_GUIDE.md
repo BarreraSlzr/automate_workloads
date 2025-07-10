@@ -422,3 +422,7 @@ bun run analyze:patterns
 2. Monitor cohesion metrics regularly
 3. Update documentation as patterns evolve
 4. Share best practices with the team 
+
+## 🆕 2025-07 Post-Refactor State
+
+The July 2025 refactor eliminated all ad-hoc/legacy logic, reduced utility bloat, and established a single source of truth for all type, schema, and utility patterns. All utilities now use canonical, ML-ready patterns, and the validator enforces strict compliance. See [Canonical Fossil Management Guide](./CANONICAL_FOSSIL_MANAGEMENT_GUIDE.md) for details. 

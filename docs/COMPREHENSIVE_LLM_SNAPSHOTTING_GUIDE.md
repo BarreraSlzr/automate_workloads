@@ -48,6 +48,10 @@ LLM Call → Enhanced Service → Fossilization → Snapshot Export → Audit Tr
 
 ```typescript
 const service = new LLMService({
+  // Required owner/repo parameters (prevents circular dependency)
+  owner: 'BarreraSlzr',
+  repo: 'automate_workloads',
+  
   // Comprehensive tracing options
   enableComprehensiveTracing: true,
   enableFossilization: true,

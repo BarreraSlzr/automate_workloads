@@ -12,6 +12,12 @@ This document summarizes the comprehensive consolidation work performed to addre
 
 ## 📊 Consolidation Results
 
+### 2025-07 Major Refactor & Validator Update
+- All validation, fossilization, and utility patterns are now strictly canonical and ML-ready
+- The validator enforces canonical usage, with a single exception for parseJsonSafe
+- Project-wide sweep removed all legacy/adhoc patterns and deprecated documentation
+- See [Canonical Fossil Management Guide](./CANONICAL_FOSSIL_MANAGEMENT_GUIDE.md) for details
+
 ### **Files Consolidated**
 | Original Files | Consolidated Into | Action |
 |----------------|-------------------|---------|

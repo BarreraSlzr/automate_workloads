@@ -324,6 +324,8 @@ sequenceDiagram
     Visual->>Human: Provide visual context
 ```
 
+> **Note:** All steps use canonical utilities and are enforced by the validator. Deprecated patterns (direct execSync, JSON.parse, ad-hoc scripts) are blocked.
+
 ## 🎨 Visual Documentation Standards
 
 ### 1. Workflow Diagrams
@@ -343,6 +345,8 @@ graph TD
     style F fill:#f3e5f5
     style G fill:#fce4ec
 ```
+
+> **Note:** All steps use canonical utilities and are enforced by the validator. Deprecated patterns (direct execSync, JSON.parse, ad-hoc scripts) are blocked.
 
 ### 2. Data Flow Architecture
 
@@ -381,6 +385,8 @@ graph LR
     style I fill:#f3e5f5
 ```
 
+> **Note:** All steps use canonical utilities and are enforced by the validator. Deprecated patterns (direct execSync, JSON.parse, ad-hoc scripts) are blocked.
+
 ### 3. Relationship Mapping
 
 ```mermaid
@@ -414,6 +420,8 @@ graph TB
     style D fill:#e3f2fd
     style G fill:#e8f5e8
 ```
+
+> **Note:** All steps use canonical utilities and are enforced by the validator. Deprecated patterns (direct execSync, JSON.parse, ad-hoc scripts) are blocked.
 
 ## 🔧 Implementation Patterns
 

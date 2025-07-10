@@ -727,3 +727,13 @@ const result = await llmService.callLLM({
   routingPreference: 'local', // override per-call
 });
 ``` 
+
+## 🦴 LLM Fallback and ML-Ready Auditability
+
+All LLMService integrations must ensure that, if fossilization is unavailable (due to circular dependency, memory leak, or process loop risk), the system:
+- Falls back to a minimal, ML-ready review funnel
+- Logs the fallback event for traceability and audit
+- Returns a canonical fallback response (not just a mock), suitable for downstream ML review and audit
+- Avoids memory leaks, process loops, and circular dependencies
+
+See [API_REFERENCE.md](./API_REFERENCE.md#ml-ready-fallback-funnel-for-llm-calls) for details on the canonical fallback pattern and test philosophy. 
