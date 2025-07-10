@@ -9,19 +9,44 @@
 
 import { Command } from 'commander';
 import { getEnv } from '../core/config';
-import { execSync } from 'child_process';
+import { executeCommand } from '@/utils/cli';
 const fs = await import('fs/promises');
 import { LLMPlanningService } from './llm-plan';
 import { ContextFossilService } from './context-fossil';
 import * as path from 'path';
-import type { GitHubIssue } from '../types/index';
+import type { GitHubIssue } from '../types/github';
 import { createFossilIssue } from '../utils/fossilIssue';
 import { syncTrackerWithGitHub } from '../utils/syncTracker';
 import type { ContextEntry } from '@/types';
 import { RepoConfigSchema, RepoAnalysisSchema } from '@/types/schemas';
 import { GitHubCLICommands } from '../utils/githubCliCommands';
-type RepoConfig = typeof RepoConfigSchema extends { parse: any } ? ReturnType<typeof RepoConfigSchema['parse']> : never;
-type RepoAnalysis = typeof RepoAnalysisSchema extends { parse: any } ? ReturnType<typeof RepoAnalysisSchema['parse']> : never;
+import { parseJsonSafe } from '@/utils/json';
+import { getCurrentRepoOwner, getCurrentRepoName } from '@/utils/cli';
+
+// Minimal inline types for RepoConfig and RepoAnalysis, extended for type safety
+type RepoConfig = {
+  owner: string;
+  repo: string;
+  branch?: string;
+  workflow?: any;
+  options?: any;
+};
+type RepoAnalysis = { repository: any; health: any; workflows: any; automation: any };
+
+// Temporary minimal types for repo, PR, Commit, and workflows until canonical types are defined
+type GitHubRepo = {
+  name: string;
+  owner: { login: string };
+  description?: string;
+  primaryLanguage?: { name: string };
+  stargazerCount?: number;
+  forkCount?: number;
+  updatedAt?: string;
+  defaultBranchRef?: { name: string };
+};
+type PR = { number: string };
+type Commit = { [key: string]: any };
+type WorkflowsResponse = { total_count: number };
 
 // Shared utility to check for test/mock mode
 export function isTestMode(options?: any) {
@@ -44,12 +69,13 @@ async function ensureLabelExists(params: { repo: string; label: string; color?: 
   const { repo, label, color = 'ededed', options } = params;
   if (isTestMode(options)) return; // skip in test/mock mode
   try {
-    const [owner, repoName] = repo.split('/');
-    if (!owner || !repoName) return;
+    // Canonical owner/repo validation using getCurrentRepoOwner and getCurrentRepoName
+    const owner = getCurrentRepoOwner();
+    const repoName = getCurrentRepoName();
     const commands = new GitHubCLICommands(owner, repoName);
     const labelResult = await commands.listLabels();
     if (labelResult.success) {
-      const labels = JSON.parse(labelResult.stdout);
+      const labels = parseJsonSafe(labelResult.stdout, 'cli:repo-orchestrator:labelResult.stdout') as any[];
       if (!labels.some((l: any) => l.name === label)) {
         await commands.createLabel({ name: label, description: 'Auto-created label', color });
       }
@@ -114,9 +140,13 @@ async function fossilizeEntry(entry: {
     const invocation = getInvocation();
     const metadata = { ...(entry.metadata || {}), invocation };
     const command = `bun run context:add --type ${entry.type} --title "${entry.title}" --content "$(cat ${tempFile})" --tags "${entry.tags.join(',')}" --source ${entry.source} --metadata '${JSON.stringify(metadata)}'`;
-    execSync(command, { encoding: 'utf8' });
+    const result = executeCommand(command);
+    if (!result.success) {
+      console.warn('⚠️  Could not fossilize entry:', result.stderr);
+    } else {
+      console.log(`🗿 Fossilized: ${entry.title}`);
+    }
     await fs.unlink(tempFile);
-    console.log(`🗿 Fossilized: ${entry.title}`);
   } catch (error) {
     console.warn('⚠️  Could not fossilize entry:', error);
   }
@@ -159,6 +189,13 @@ class RepoOrchestratorService {
       if (['analyze', 'full'].includes(repoConfig.workflow)) {
         console.log('📊 Step 1: Analyzing repository...');
         const analysis = await this.analyzeRepository(repoConfig);
+        if (Array.isArray(analysis.automation?.opportunities)) {
+          analysis.automation.opportunities.forEach((op: any, idx: number) => {
+            if (idx % 5 === 0 || idx === analysis.automation.opportunities.length - 1) {
+              console.log(`   • Analyzed ${idx + 1} of ${analysis.automation.opportunities.length} automation opportunities`);
+            }
+          });
+        }
         results.steps.push({ step: 'analysis', status: 'completed', data: analysis });
         
         // Fossilize analysis results (unless disabled)
@@ -196,6 +233,13 @@ class RepoOrchestratorService {
       if (['plan', 'full'].includes(repoConfig.workflow)) {
         console.log('🤖 Step 2: LLM-powered planning...');
         const plan = await this.createLLMPlan(repoConfig);
+        if (plan && Array.isArray((plan as any).tasks)) {
+          ((plan as any).tasks).forEach((task: any, idx: number) => {
+            if (idx % 10 === 0 || idx === (plan as any).tasks.length - 1) {
+              console.log(`   • Planned ${idx + 1} of ${(plan as any).tasks.length} tasks`);
+            }
+          });
+        }
         results.steps.push({ step: 'planning', status: 'completed', data: plan });
         // Fossilize plan
         if (repoConfig.options?.fossilize !== false) {
@@ -214,6 +258,27 @@ class RepoOrchestratorService {
       if (['execute', 'full'].includes(repoConfig.workflow)) {
         console.log('🚀 Step 3: Executing workflows...');
         const execution = await this.executeWorkflows(repoConfig);
+        if (execution && Array.isArray((execution as any).createdIssues)) {
+          ((execution as any).createdIssues).forEach((issue: any, idx: number) => {
+            if (idx % 5 === 0 || idx === (execution as any).createdIssues.length - 1) {
+              console.log(`   • Created ${idx + 1} of ${(execution as any).createdIssues.length} issues`);
+            }
+          });
+        }
+        if (execution && Array.isArray((execution as any).createdPRs)) {
+          ((execution as any).createdPRs).forEach((pr: any, idx: number) => {
+            if (idx % 5 === 0 || idx === (execution as any).createdPRs.length - 1) {
+              console.log(`   • Created ${idx + 1} of ${(execution as any).createdPRs.length} PRs`);
+            }
+          });
+        }
+        if (execution && Array.isArray((execution as any).updatedFiles)) {
+          ((execution as any).updatedFiles).forEach((file: any, idx: number) => {
+            if (idx % 10 === 0 || idx === (execution as any).updatedFiles.length - 1) {
+              console.log(`   • Updated ${idx + 1} of ${(execution as any).updatedFiles.length} files`);
+            }
+          });
+        }
         results.steps.push({ step: 'execution', status: 'completed', data: execution });
         // Fossilize execution result
         if (repoConfig.options?.fossilize !== false) {
@@ -232,6 +297,20 @@ class RepoOrchestratorService {
       if (['monitor', 'full'].includes(repoConfig.workflow)) {
         console.log('📈 Step 4: Monitoring and optimization...');
         const monitoring = await this.monitorAndOptimize(repoConfig);
+        if (monitoring && Array.isArray((monitoring as any).alerts)) {
+          ((monitoring as any).alerts).forEach((alert: any, idx: number) => {
+            if (idx % 5 === 0 || idx === (monitoring as any).alerts.length - 1) {
+              console.log(`   • Processed ${idx + 1} of ${(monitoring as any).alerts.length} alerts`);
+            }
+          });
+        }
+        if (monitoring && Array.isArray((monitoring as any).optimizations)) {
+          ((monitoring as any).optimizations).forEach((opt: any, idx: number) => {
+            if (idx % 5 === 0 || idx === (monitoring as any).optimizations.length - 1) {
+              console.log(`   • Generated ${idx + 1} of ${(monitoring as any).optimizations.length} optimizations`);
+            }
+          });
+        }
         results.steps.push({ step: 'monitoring', status: 'completed', data: monitoring });
         // Fossilize monitoring/observation
         if (repoConfig.options?.fossilize !== false) {
@@ -360,7 +439,8 @@ class RepoOrchestratorService {
         throw new Error('Failed to fetch repository information');
       }
       
-      const repo = JSON.parse(repoResult.stdout);
+      // Parse and validate repo object
+      const repo = parseJsonSafe(repoResult.stdout, 'cli:repo-orchestrator:repoResult.stdout') as GitHubRepo;
       
       // Get issues and PRs count separately since they're not available in the main repo view
       let openIssues = 0;
@@ -372,7 +452,8 @@ class RepoOrchestratorService {
         });
         
         if (issuesResult.success) {
-          const issues = JSON.parse(issuesResult.stdout);
+          // Parse and validate issues array
+          const issues = parseJsonSafe(issuesResult.stdout, 'cli:repo-orchestrator:issuesResult.stdout') as GitHubIssue[];
           openIssues = issues.length;
           // Store issues for later use
           (repoConfig as any).openIssuesList = issues;
@@ -388,25 +469,45 @@ class RepoOrchestratorService {
         });
         
         if (prsResult.success) {
-          const prs = JSON.parse(prsResult.stdout);
-          openPRs = prs.length > 0 ? parseInt(prs[0].number) : 0;
+          // Parse and validate PRs array
+          const prs = parseJsonSafe(prsResult.stdout, 'cli:repo-orchestrator:prsResult.stdout') as PR[];
+          openPRs = prs.length > 0 && prs[0] && prs[0].number ? parseInt(prs[0].number) : 0;
         }
       } catch {
         // Ignore PRs fetch error
       }
       
+      // Add type guards for all possibly undefined or unknown properties
+      if (!repo) return {
+        name: '', owner: '', description: '', language: '', stars: 0, forks: 0, openIssues: 0, openPRs: 0, lastCommit: '', defaultBranch: '', issues: []
+      };
+      if (repo && typeof repo === 'object') {
+        const r = repo as { name?: string; owner?: { login?: string }; description?: string; primaryLanguage?: { name?: string }; stargazerCount?: number; forkCount?: number; updatedAt?: string; defaultBranchRef?: { name?: string } };
+        return {
+          name: r.name || '',
+          owner: r.owner?.login || '',
+          description: r.description || '',
+          language: r.primaryLanguage?.name || '',
+          stars: r.stargazerCount || 0,
+          forks: r.forkCount || 0,
+          openIssues,
+          openPRs,
+          lastCommit: r.updatedAt || '',
+          defaultBranch: r.defaultBranchRef?.name || '',
+          issues: (repoConfig as any).openIssuesList || [],
+        };
+      }
       return {
-        name: repo.name,
-        owner: repo.owner.login,
-        description: repo.description,
-        language: repo.primaryLanguage?.name,
-        stars: repo.stargazerCount,
-        forks: repo.forkCount,
-        openIssues,
-        openPRs,
-        lastCommit: repo.updatedAt,
-        defaultBranch: repo.defaultBranchRef.name,
-        issues: (repoConfig as any).openIssuesList || [],
+        name: repoConfig.repo,
+        owner: repoConfig.owner,
+        description: 'Repository information unavailable',
+        language: 'Unknown',
+        stars: 0,
+        forks: 0,
+        openIssues: 0,
+        openPRs: 0,
+        lastCommit: new Date().toISOString(),
+        defaultBranch: repoConfig.branch,
       };
     } catch (error) {
       console.warn('⚠️  Could not fetch repository info, using defaults');
@@ -454,7 +555,8 @@ class RepoOrchestratorService {
       });
       
       if (commitsResult.success) {
-        const commits = JSON.parse(commitsResult.stdout);
+        // Parse and validate commits array
+        const commits = parseJsonSafe(commitsResult.stdout, 'cli:repo-orchestrator:commitsResult.stdout') as Commit[];
         checksPerformed++;
         
         if (commits.length === 0) {
@@ -480,7 +582,8 @@ class RepoOrchestratorService {
       });
       
       if (openIssuesResult.success) {
-        const issuesData = JSON.parse(openIssuesResult.stdout);
+        // Parse and validate issues array
+        const issuesData = parseJsonSafe(openIssuesResult.stdout, 'cli:repo-orchestrator:openIssuesResult.stdout') as GitHubIssue[];
         checksPerformed++;
         
         if (issuesData.length === 0) {
@@ -524,13 +627,17 @@ class RepoOrchestratorService {
       const workflowsResult = await commands.apiCall('actions/workflows');
       
       if (workflowsResult.success) {
-        const workflowsData = JSON.parse(workflowsResult.stdout);
+        // Parse and validate workflows object
+        const workflowsData = parseJsonSafe(workflowsResult.stdout, 'cli:repo-orchestrator:workflowsResult.stdout') as WorkflowsResponse;
         checksPerformed++;
         
-        if (workflowsData.total_count === 0) {
-          issues.push('No CI/CD workflows found');
-          score -= 25;
-          recommendations.push('Add GitHub Actions workflows for automated testing and deployment');
+        const wfData = workflowsData as { total_count?: number };
+        if (wfData && typeof wfData === 'object' && 'total_count' in wfData) {
+          if (wfData.total_count === 0) {
+            issues.push('No CI/CD workflows found');
+            score -= 25;
+            recommendations.push('Add GitHub Actions workflows for automated testing and deployment');
+          }
         }
       } else {
         throw new Error('Could not fetch workflows');
@@ -574,15 +681,17 @@ class RepoOrchestratorService {
       const workflowsResult = await commands.apiCall('actions/workflows');
       
       if (workflowsResult.success) {
-        const data = JSON.parse(workflowsResult.stdout);
+        const data = parseJsonSafe(workflowsResult.stdout, 'cli:repo-orchestrator:workflowsResult.stdout');
         
-        for (const workflow of data.workflows) {
-          workflows.push({
-            name: workflow.name,
-            status: workflow.state === 'active' ? 'active' : 'inactive',
-            lastRun: workflow.updated_at,
-            successRate: 0, // Would need to calculate from runs
-          });
+        if (data && typeof data === 'object' && 'workflows' in data && Array.isArray((data as any).workflows)) {
+          for (const workflow of (data as any).workflows) {
+            workflows.push({
+              name: workflow.name,
+              status: workflow.state === 'active' ? 'active' : 'inactive',
+              lastRun: workflow.updated_at,
+              successRate: 0, // Would need to calculate from runs
+            });
+          }
         }
       }
     } catch (error) {
@@ -650,10 +759,12 @@ class RepoOrchestratorService {
       const workflowsResult = await commands.apiCall('actions/workflows');
       
       if (workflowsResult.success) {
-        const data = JSON.parse(workflowsResult.stdout);
-        data.workflows.forEach((workflow: any) => {
-          currentAutomation.push(workflow.name);
-        });
+        const data = parseJsonSafe(workflowsResult.stdout, 'cli:repo-orchestrator:workflowsResult.stdout');
+        if (data && typeof data === 'object' && 'workflows' in data && Array.isArray((data as any).workflows)) {
+          (data as any).workflows.forEach((workflow: any) => {
+            currentAutomation.push(workflow.name);
+          });
+        }
       }
     } catch (error) {
       // No workflows found
@@ -830,7 +941,7 @@ class RepoOrchestratorService {
         fields: { state: 'open', per_page: '10' }
       });
       if (issuesResult.success) {
-        context.recentIssues = JSON.parse(issuesResult.stdout);
+        context.recentIssues = parseJsonSafe(issuesResult.stdout, 'cli:repo-orchestrator:issuesResult.stdout');
       }
 
       // Get recent PRs
@@ -839,7 +950,7 @@ class RepoOrchestratorService {
         fields: { state: 'open', per_page: '10' }
       });
       if (prsResult.success) {
-        context.recentPRs = JSON.parse(prsResult.stdout);
+        context.recentPRs = parseJsonSafe(prsResult.stdout, 'cli:repo-orchestrator:prsResult.stdout');
       }
 
       // Get recent commits
@@ -848,7 +959,7 @@ class RepoOrchestratorService {
         fields: { per_page: '10' }
       });
       if (commitsResult.success) {
-        context.recentCommits = JSON.parse(commitsResult.stdout);
+        context.recentCommits = parseJsonSafe(commitsResult.stdout, 'cli:repo-orchestrator:commitsResult.stdout');
       }
 
     } catch (error) {
@@ -1013,11 +1124,14 @@ class RepoOrchestratorService {
       });
       
       if (repoResult.success) {
-        const repo = JSON.parse(repoResult.stdout);
-        metrics.stars = repo.stargazer_count;
-        metrics.forks = repo.forks_count;
-        metrics.openIssues = repo.open_issues_count;
-        metrics.lastUpdated = repo.updated_at;
+        const repo = parseJsonSafe(repoResult.stdout, 'cli:repo-orchestrator:repoResult.stdout');
+        if (repo && typeof repo === 'object') {
+          const r = repo as { stargazer_count?: number; forks_count?: number; open_issues_count?: number; updated_at?: string };
+          metrics.stars = r.stargazer_count ?? 0;
+          metrics.forks = r.forks_count ?? 0;
+          metrics.openIssues = r.open_issues_count ?? 0;
+          metrics.lastUpdated = r.updated_at ?? '';
+        }
       }
     } catch (error) {
       console.warn('⚠️  Could not gather metrics:', error);
@@ -1169,10 +1283,12 @@ class RepoOrchestratorService {
       });
       
       if (issuesResult.success) {
-        const issues = JSON.parse(issuesResult.stdout);
-        for (const issue of issues) {
-          if (!issue.labels || issue.labels.length === 0) {
-            addLabelToIssue({ repo, issueNumber: issue.number, label: defaultLabel });
+        const issues = parseJsonSafe(issuesResult.stdout, 'cli:repo-orchestrator:issuesResult.stdout');
+        if (Array.isArray(issues)) {
+          for (const issue of issues) {
+            if (!issue.labels || issue.labels.length === 0) {
+              addLabelToIssue({ repo, issueNumber: issue.number, label: defaultLabel });
+            }
           }
         }
       }
@@ -1199,7 +1315,7 @@ class RepoOrchestratorService {
         });
         
         if (prsResult.success) {
-          prs = JSON.parse(prsResult.stdout);
+          prs = parseJsonSafe(prsResult.stdout, 'cli:repo-orchestrator:prsResult.stdout');
         }
       } catch {
         prs = [];
@@ -1222,11 +1338,15 @@ class RepoOrchestratorService {
       const tempFile = `.temp-fossil-content-${process.pid}.json`;
       await fs.writeFile(tempFile, JSON.stringify(fossilEntry.metadata, null, 2));
       const command = `bun run context:add --type ${fossilEntry.type} --title "${fossilEntry.title}" --content "$(cat ${tempFile})" --tags "${fossilEntry.tags.join(',')}" --source ${fossilEntry.source}`;
-      execSync(command, { encoding: 'utf8' });
+      const result = executeCommand(command);
+      if (!result.success) {
+        console.warn('⚠️  Could not fossilize repository state:', result.stderr);
+      } else {
+        console.log(`🗿 Fossilized repository state for ${repoConfig.owner}/${repoConfig.repo}`);
+        console.log(`  Open Issues: ${issues.length}`);
+        console.log(`  Open PRs: ${prs.length}`);
+      }
       await fs.unlink(tempFile);
-      console.log(`🗿 Fossilized repository state for ${repoConfig.owner}/${repoConfig.repo}`);
-      console.log(`  Open Issues: ${issues.length}`);
-      console.log(`  Open PRs: ${prs.length}`);
     } catch (error) {
       console.error('❌ Error during fossilization:', error);
       throw error;
@@ -1306,7 +1426,7 @@ class RepoOrchestratorService {
       });
       
       if (issuesResult.success) {
-        return JSON.parse(issuesResult.stdout);
+        return parseJsonSafe(issuesResult.stdout, 'cli:repo-orchestrator:issuesResult.stdout');
       } else {
         console.error('Failed to fetch issues from GitHub');
         return [];
@@ -1345,6 +1465,7 @@ program
   .option('--summary', 'Print only a chat/LLM-friendly summary of the latest plan fossil')
   .option('--test', 'Run in test mode (use mock data, skip external calls)')
   .option('--mock', 'Run in mock mode (use fossil/mock data, skip external calls)')
+  .option('--no-fossilize', 'Skip fossilizing analysis results')
   .action(async (owner, repo, options) => {
     let errorOccurred = false;
     try {
@@ -1354,7 +1475,7 @@ program
       let context: Record<string, unknown> = {};
       if (options.context) {
         try {
-          context = JSON.parse(options.context);
+          context = parseJsonSafe(options.context, 'cli:repo-orchestrator:options.context');
         } catch (error) {
           console.error('❌ Invalid JSON context provided');
           process.exit(1);
@@ -1366,13 +1487,12 @@ program
         repo,
         branch: options.branch,
         workflow: options.workflow as any,
-        context,
         options: {
           createIssues: options.createIssues,
           createPRs: options.createPRs,
           autoMerge: options.autoMerge,
           notifications: options.notifications,
-          fossilize: true, // Default to true for orchestrate command
+          fossilize: options.fossilize !== false, // Respect --no-fossilize
           test: options.test === true,
           mock: options.mock === true,
         },

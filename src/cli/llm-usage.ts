@@ -8,8 +8,10 @@
  */
 
 import { Command } from 'commander';
-import { LLMService, LLMOptimizationConfig } from '../services/llm';
+import { LLMService } from '../services/llm';
+import type { LLMOptimizationConfig } from '../types/llm';
 import { UsageReportSchema, OptimizationConfigSchema } from '@/types/schemas';
+import { getCurrentRepoOwner, getCurrentRepoName } from '@/utils/cli';
 
 // For type inference:
 type UsageReportOptions = typeof UsageReportSchema._type;
@@ -36,7 +38,7 @@ program
   .option('-r, --provider <provider>', 'Filter by provider')
   .action(async (options) => {
     try {
-      const llmService = new LLMService();
+      const llmService = new LLMService({ owner: 'BarreraSlzr', repo: 'automate_workloads' });
       const analytics = llmService.getUsageAnalytics();
       
       // Filter by days if specified
@@ -82,7 +84,7 @@ program
   .option('--show', 'Show current configuration')
   .action(async (options) => {
     try {
-      const llmService = new LLMService();
+      const llmService = new LLMService({ owner: 'BarreraSlzr', repo: 'automate_workloads' });
       
       if (options.show) {
         console.log('📋 Current LLM Configuration:');
@@ -104,7 +106,7 @@ program
       if (options.rateLimitDelay) config.rateLimitDelayMs = parseInt(options.rateLimitDelay);
       
       // Create new service with updated config
-      const updatedService = new LLMService(config);
+      const updatedService = new LLMService({ ...config, owner: 'BarreraSlzr', repo: 'automate_workloads' });
       console.log('✅ Configuration updated successfully');
       console.log('New configuration:', JSON.stringify(updatedService['config'], null, 2));
     } catch (error) {
@@ -122,7 +124,7 @@ program
   .option('--days <days>', 'Number of days to analyze', '7')
   .action(async (options) => {
     try {
-      const llmService = new LLMService();
+      const llmService = new LLMService({ owner: 'BarreraSlzr', repo: 'automate_workloads' });
       const analytics = llmService.getUsageAnalytics();
       
       console.log('🔍 Analyzing potentially wasteful LLM calls...\n');
@@ -172,7 +174,7 @@ program
     try {
       console.log('🧪 Testing local LLM availability...\n');
       
-      const llmService = new LLMService({ enableLocalLLM: true });
+      const llmService = new LLMService({ owner: 'BarreraSlzr', repo: 'automate_workloads' });
       
       // Test Ollama availability
       const isOllamaAvailable = await llmService['checkLocalLLMAvailability']('ollama');
@@ -218,7 +220,7 @@ program
   .option('--dry-run', 'Show what would be cleaned without doing it')
   .action(async (options) => {
     try {
-      const llmService = new LLMService();
+      const llmService = new LLMService({ owner: 'BarreraSlzr', repo: 'automate_workloads' });
       const cutoffDate = new Date();
       cutoffDate.setDate(cutoffDate.getDate() - parseInt(options.days));
       
@@ -251,7 +253,7 @@ program
   .option('-o, --output <file>', 'Output file path')
   .action(async (options) => {
     try {
-      const llmService = new LLMService();
+      const llmService = new LLMService({ owner: 'BarreraSlzr', repo: 'automate_workloads' });
       const analytics = llmService.getUsageAnalytics();
       
       let output: string;
@@ -373,7 +375,7 @@ program
   .option('--output <file>', 'Output file for detailed analysis')
   .action(async (options) => {
     try {
-      const llmService = new LLMService();
+      const llmService = new LLMService({ owner: 'BarreraSlzr', repo: 'automate_workloads' });
       const analytics = llmService.getUsageAnalytics();
       
       console.log('🧠 Analyzing LLM call patterns for intelligent routing...\n');
@@ -465,7 +467,9 @@ let routingPreference: 'auto' | 'local' | 'cloud' = 'auto';
 if (opts['prefer-local']) routingPreference = 'local';
 if (opts['prefer-cloud']) routingPreference = 'cloud';
 if (opts['auto']) routingPreference = 'auto';
-const llmService = new LLMService({ enableLocalLLM: true });
+const owner = getCurrentRepoOwner();
+const repo = getCurrentRepoName();
+const llmService = new LLMService({ owner, repo });
 llmService.setRoutingPreference(routingPreference);
 if (localBackend !== 'ollama') {
   // Example: register a stub backend for demonstration

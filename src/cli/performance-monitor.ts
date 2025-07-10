@@ -59,10 +59,12 @@ class PerformanceMonitorCLI {
     let successCount = 0;
     let failureCount = 0;
 
-    for (const scriptPath of scriptPaths) {
+    for (let i = 0; i < scriptPaths.length; i++) {
+      const scriptPath = scriptPaths[i];
+      if (!scriptPath) continue;
+      console.log(`\n🔄 Monitoring script ${i + 1} of ${scriptPaths.length}: ${scriptPath}`);
       try {
-        console.log(`\n📋 Monitoring: ${scriptPath}`);
-        const result = await this.monitor.monitorScript(scriptPath, {
+        const result = await this.monitor.monitorScript(String(scriptPath), {
           captureOutput: this.config.captureOutput ?? true,
           timeout: this.config.timeout,
         });

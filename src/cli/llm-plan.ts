@@ -12,6 +12,8 @@ import { getEnv } from '../core/config';
 import { LLMService } from '../services/llm';
 import { PlanRequestSchema, TaskBreakdownSchema } from '@/types/schemas';
 import type { Task } from '../types/workflow';
+import { parseJsonSafe } from '@/utils/json';
+import { getCurrentRepoOwner, getCurrentRepoName } from '@/utils/cli';
 
 // For type inference:
 type PlanRequest = typeof PlanRequestSchema._type;
@@ -33,10 +35,7 @@ class LLMPlanningService {
     this.config = getEnv();
     this.model = model;
     this.apiKey = apiKey;
-    this.llmService = new LLMService({
-      maxCostPerCall: 0.15, // Higher cost for planning
-      minValueScore: 0.6, // High value for planning tasks
-    });
+    this.llmService = new LLMService({ owner: getCurrentRepoOwner(), repo: getCurrentRepoName() });
   }
 
   /**
@@ -329,12 +328,7 @@ program
       
       let context: Record<string, unknown> = {};
       if (options.context) {
-        try {
-          context = JSON.parse(options.context);
-        } catch (error) {
-          console.error('❌ Invalid JSON context provided');
-          process.exit(1);
-        }
+        context = parseJsonSafe(options.context, 'cli:llm-plan:options.context') as Record<string, any>;
       }
 
       // Select prompt based on --issue-mode flag
@@ -385,24 +379,21 @@ program
       // Read tasks from file
       const fs = await import('fs/promises');
       const tasksData = await fs.readFile(tasksFile, 'utf-8');
-      let tasks = JSON.parse(tasksData);
+      let tasks = parseJsonSafe(tasksData, 'cli:llm-plan:tasksData') as Task[];
       // Support both array of tasks and { tasks: [...] }
       if (Array.isArray(tasks)) {
-        // already correct
-      } else if (tasks && Array.isArray(tasks.tasks)) {
-        tasks = tasks.tasks;
-      } else {
-        throw new Error('Input file must be an array of tasks or an object with a "tasks" array');
+        for (const task of tasks) {
+          // ...
+        }
+      } else if (tasks && typeof tasks === 'object' && 'tasks' in tasks && Array.isArray((tasks as any).tasks)) {
+        for (const task of (tasks as any).tasks) {
+          // ...
+        }
       }
       
       let context: Record<string, unknown> = {};
       if (options.context) {
-        try {
-          context = JSON.parse(options.context);
-        } catch (error) {
-          console.error('❌ Invalid JSON context provided');
-          process.exit(1);
-        }
+        context = parseJsonSafe(options.context, 'cli:llm-plan:options.context') as Record<string, any>;
       }
 
       const prioritizedTasks = await service.prioritizeTasks(tasks, context);

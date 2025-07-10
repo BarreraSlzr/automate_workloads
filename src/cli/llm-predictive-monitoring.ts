@@ -16,6 +16,8 @@ import {
 } from '../types/schemas';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { parseJsonSafe } from '@/utils/json';
+import { getCurrentRepoOwner, getCurrentRepoName } from '@/utils/cli';
 
 const program = new Command();
 
@@ -44,7 +46,7 @@ program
       let config = {};
       if (options.config) {
         const configData = await fs.readFile(options.config, 'utf-8');
-        config = JSON.parse(configData);
+        config = parseJsonSafe(configData, 'cli:llm-predictive-monitoring:configData');
       }
       
       // Validate configuration
@@ -165,7 +167,7 @@ program
       if (options.execute) {
         console.log('\n🚀 Executing LLM call...');
         
-        const llmService = new LLMService();
+        const llmService = new LLMService({ owner: getCurrentRepoOwner(), repo: getCurrentRepoName() });
         const startTime = Date.now();
         
         try {
@@ -436,7 +438,7 @@ program
         if (options.execute && metrics.riskAssessment.overallRisk < 0.8) {
           console.log('🚀 Executing call...');
           
-          const llmService = new LLMService();
+          const llmService = new LLMService({ owner: getCurrentRepoOwner(), repo: getCurrentRepoName() });
           try {
             const result = await llmService.callLLM({
               ...scenario.options,
