@@ -1,6 +1,9 @@
 #!/usr/bin/env bun
 
 import { LLMService } from '../src/services/llm';
+import { createErrorSnapshot } from '../src/utils/errorSnapshotLogUtils';
+import { TypeSchemaValidator } from '../src/utils/typeSchemaValidator';
+import { parseJsonSafe } from '@/utils/json';
 
 /**
  * Test script to verify API key sanitization in LLM snapshots
@@ -12,11 +15,13 @@ async function testApiKeySanitization() {
   try {
     // Create LLM service with fossilization enabled
     const service = new LLMService({
+      owner: 'test-owner',
+      repo: 'test-repo',
       enableComprehensiveTracing: true,
       enableFossilization: true,
       enableConsoleOutput: true,
       enableSnapshotExport: true,
-      fossilStoragePath: 'fossils/llm_insights/',
+      fossilStoragePath: 'fossils/test/',
       memoryOnly: false
     });
 
@@ -61,7 +66,7 @@ async function testApiKeySanitization() {
         
         for (const fossilFile of recentFossils) {
           const fossilContent = await fs.readFile(`${fossilPath}/${fossilFile}`, 'utf8');
-          const fossilData = JSON.parse(fossilContent);
+          const fossilData = parseJsonSafe(fossilContent);
           
           // Check if API key is redacted
           const hasApiKey = fossilContent.includes('sk-proj-test-key-that-should-be-redacted');

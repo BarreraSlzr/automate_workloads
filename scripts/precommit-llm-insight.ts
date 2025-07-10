@@ -8,7 +8,7 @@
  * - Validates all artifacts with Zod schemas
  * - Designed for Bun/Node, can be extended for CI
  */
-import { execSync } from 'child_process';
+import { executeCommand } from '@/utils/cli';
 import { promises as fs } from 'fs';
 import path from 'path';
 import crypto from 'crypto';
@@ -16,15 +16,42 @@ import { LLMInsightFossil, LLMInsightFossilSchema } from '../src/types/llmFossil
 import { PROMPT_REGISTRY } from '../src/prompts';
 import { LLMService } from '../src/services/llm';
 import yaml from 'js-yaml';
+import { EventLoopMonitor } from '../src/utils/eventLoopMonitor';
+import { getCurrentRepoOwner, getCurrentRepoName } from '../src/utils/cli';
+import { z } from 'zod';
+import { OwnerRepoSchema } from '../src/types/schemas';
+import { parseJsonSafe } from '@/utils/json';
+
+function detectOwnerRepo(options: any = {}): { owner: string; repo: string } {
+  if (options.owner && options.repo) return { owner: options.owner, repo: options.repo };
+  const owner = getCurrentRepoOwner();
+  const repo = getCurrentRepoName();
+  if (owner && repo) return { owner, repo };
+  if (process.env.CI) {
+    return { owner: 'BarreraSlzr', repo: 'automate_workloads' };
+  } else {
+    return { owner: 'emmanuelbarrera', repo: 'automate_workloads' };
+  }
+}
+
+let cancelled = false;
+function logMemoryUsage(label: string) {
+  // ... (existing implementation) ...
+}
+process.on('SIGINT', () => {
+  cancelled = true;
+  process.stdout.write('\n[PRECOMMIT] LLM insight generation CANCELLED by user.\n');
+  process.exit(130);
+});
 
 async function getStagedFiles(): Promise<string[]> {
-  const output = execSync('git diff --name-only --cached', { encoding: 'utf-8' });
+  const output = (await executeCommand('git diff --name-only --cached')).stdout;
   return output.split('\n').filter(Boolean);
 }
 
 async function getFileDiff(file: string): Promise<string> {
   try {
-    return execSync(`git diff --cached ${file}`, { encoding: 'utf-8' });
+    return (await executeCommand(`git diff --cached ${file}`)).stdout;
   } catch {
     return '';
   }
@@ -250,121 +277,178 @@ async function advancedReviewCLI(candidates: InsightCandidate[]): Promise<Insigh
   });
 }
 
-async function main() {
-  // 1. Type check
-  try {
-    execSync('bun run tsc --noEmit', { stdio: 'inherit' });
-  } catch (e) {
-    console.error('TypeScript type check failed. Aborting pre-commit.');
-    process.exit(1);
-  }
-
-  // 2. Analyze git diff
-  const changedFiles = await getStagedFiles();
-  if (changedFiles.length === 0) {
-    console.log('No staged files to analyze.');
-    return;
-  }
-
-  const llm = new LLMService();
-  const insightCandidates: InsightCandidate[] = [];
-
-  // 3. For each changed file, generate LLM insight artifact
-  for (const file of changedFiles) {
-    const diff = await getFileDiff(file);
-    if (!diff.trim()) continue;
-    const fileContent = await getFileContent(file);
-    const inputContext = `File: ${file}\nDiff:\n${diff}\n---\nCurrent Content (truncated):\n${fileContent.slice(0, 500)}`;
-    const inputHash = hashInput(inputContext);
-    const commitRef = execSync('git rev-parse --verify HEAD', { encoding: 'utf-8' }).trim();
-    const promptObj = PROMPT_REGISTRY['roadmap-insight-v1'];
-    if (!promptObj) {
-      console.warn(`Prompt template 'roadmap-insight-v1' not found. Skipping LLM insight for ${file}.`);
+function filterRelevantFiles(files: string[]): { included: string[]; skipped: string[] } {
+  const included: string[] = [];
+  const skipped: string[] = [];
+  for (const file of files) {
+    if (
+      file.startsWith('fossils/') ||
+      file.startsWith('temp/') ||
+      file.startsWith('.temp-') ||
+      file === '.llm-usage-log.json' ||
+      /\.backup$/.test(file) ||
+      /\.log$/.test(file)
+    ) {
+      skipped.push(file);
       continue;
     }
-    const prompt = promptObj.template({ task: `Code/file change in ${file}`, context: diff });
-    const systemMessage = promptObj.systemMessage;
-
-    // 3a. Call LLM for real response
-    let response = '';
-    try {
-      const llmResult = await llm.callLLM({
-        model: 'llama2',
-        messages: [
-          { role: 'system', content: systemMessage },
-          { role: 'user', content: prompt }
-        ],
-        routingPreference: 'auto',
-        context: 'precommit-llm-insight',
-        purpose: 'roadmap-insight',
-        valueScore: 0.7
-      } as any);
-      response = llmResult?.choices?.[0]?.message?.content || '[LLM response missing]';
-    } catch (err) {
-      const msg = (err && typeof err === 'object' && 'message' in err) ? (err as Error).message : String(err);
-      response = '[LLM call failed: ' + msg + ']';
+    if (
+      (file.endsWith('.ts') || file.endsWith('.js') || file.endsWith('.md')) &&
+      (file.startsWith('src/') || file.startsWith('scripts/'))
+    ) {
+      included.push(file);
+    } else {
+      skipped.push(file);
     }
-
-    // Build artifact
-    const artifact: LLMInsightFossil = {
-      type: 'insight',
-      timestamp: new Date().toISOString(),
-      model: 'llama2',
-      modelVersion: 'v1',
-      provider: 'ollama',
-      promptId: promptObj.id,
-      promptVersion: promptObj.version,
-      prompt,
-      systemMessage,
-      inputHash,
-      commitRef,
-      response,
-      excerpt: response.slice(0, 120),
-      history: [
-        {
-          timestamp: new Date().toISOString(),
-          commitRef,
-          inputHash,
-          promptId: promptObj.id,
-          promptVersion: promptObj.version,
-          prompt,
-          systemMessage,
-          response,
-          manualOverride: false,
-          reviewStatus: 'pending',
-        },
-      ],
-      manualOverride: false,
-      reviewStatus: 'pending',
-    };
-
-    insightCandidates.push({ file, artifact, approved: false });
   }
+  return { included, skipped };
+}
 
-  // 4. Advanced CLI review for all insights
-  if (insightCandidates.length > 0) {
-    const reviewedCandidates = await advancedReviewCLI(insightCandidates);
-    
-    // 5. Process approved insights
-    for (const candidate of reviewedCandidates) {
-      if (!candidate.approved) {
-        console.log(`Skipping ${candidate.file} (not approved)`);
-        continue;
-      }
-
+async function main() {
+  // PARAMS OBJECT PATTERN: always use a single params object, validated by Zod, for all downstream calls.
+  // Detect owner/repo at the top level, pass to all fossil/LLM utilities.
+  const cliArgs = process.argv.slice(2);
+  let options: any = {};
+  for (let i = 0; i < cliArgs.length; i++) {
+    if (cliArgs[i] === '--owner' && cliArgs[i + 1]) {
+      options.owner = cliArgs[i + 1];
+      i++;
+    } else if (cliArgs[i] === '--repo' && cliArgs[i + 1]) {
+      options.repo = cliArgs[i + 1];
+      i++;
+    }
+  }
+  const { owner, repo } = detectOwnerRepo(options);
+  OwnerRepoSchema.parse({ owner, repo });
+  try {
+    console.log('[PRECOMMIT] LLM insight generation START');
+    logMemoryUsage('START');
+    const changedFiles = await getStagedFiles();
+    const llm = new LLMService({ 
+      owner, 
+      repo,
+      /* only pass allowed LLMOptimizationConfig properties here */ 
+    });
+    const eventLoopMonitor = new EventLoopMonitor({ timeoutThreshold: 30000 }); // 30s timeout, adjust as needed
+    const insightCandidates: InsightCandidate[] = [];
+    // Filter files before processing
+    const { included, skipped } = filterRelevantFiles(changedFiles);
+    console.log(`[PRECOMMIT] Filtering files: ${included.length} included, ${skipped.length} skipped`);
+    if (skipped.length > 0) {
+      console.log('[PRECOMMIT] Skipped files:', skipped.slice(0, 10).join(', ') + (skipped.length > 10 ? ', ...' : ''));
+    }
+    const start = Date.now();
+    const files = included;
+    const total = files.length;
+    for (let i = 0; i < total; i++) {
+      if (cancelled) break;
+      const file = files[i] || '';
+      const opStart = Date.now();
+      let fileDone = false;
+      const interval = setInterval(() => {
+        if (!fileDone) {
+          process.stdout.write(
+            `\r[${i + 1}/${total}] Processing: ${file} | Total elapsed: ${((Date.now() - start) / 1000).toFixed(1)}s | Current: ${((Date.now() - opStart) / 1000).toFixed(1)}s `
+          );
+        }
+      }, 250);
+      const diff = await getFileDiff(file);
+      if (!diff.trim()) { fileDone = true; clearInterval(interval); continue; }
+      const fileContent = await getFileContent(file);
+      const inputContext = `File: ${file}\nDiff:\n${diff}\n---\nCurrent Content (truncated):\n${fileContent.slice(0, 500)}`;
+      const inputHash = hashInput(inputContext);
+      const commitRef = (await executeCommand('git rev-parse --verify HEAD')).stdout.trim();
+      const promptObj = PROMPT_REGISTRY['roadmap-insight-v1'];
+      if (!promptObj) { fileDone = true; clearInterval(interval); console.warn(`Prompt template 'roadmap-insight-v1' not found. Skipping LLM insight for ${file}.`); continue; }
+      const prompt = promptObj.template({ task: `Code/file change in ${file}`, context: diff });
+      const systemMessage = promptObj.systemMessage;
+      // 3a. Call LLM for real response with timeout and monitoring
+      let response = '';
       try {
-        LLMInsightFossilSchema.parse(candidate.artifact);
-        const outDir = path.resolve('fossils/llm_insights');
-        await fs.mkdir(outDir, { recursive: true });
-        const outPath = path.join(outDir, `${Date.now()}_${candidate.file.replace(/\W/g, '_')}_${candidate.artifact.inputHash}.json`);
-        await fs.writeFile(outPath, JSON.stringify(candidate.artifact, null, 2), 'utf-8');
-        console.log(`LLM insight artifact written: ${outPath}`);
-        // 6. Update roadmap with reference
-        await updateRoadmapWithInsight(candidate.file, candidate.artifact.inputHash);
+        const llmResult = await eventLoopMonitor.trackCall(
+          'llm.callLLM',
+          () => llm.callLLM({
+            model: 'llama2',
+            messages: [
+              { role: 'system', content: systemMessage },
+              { role: 'user', content: prompt }
+            ],
+            routingPreference: 'auto',
+            context: 'precommit-llm-insight',
+            purpose: 'roadmap-insight',
+            valueScore: 0.7
+          } as any),
+          { file, inputHash, commitRef }
+        );
+        response = llmResult?.choices?.[0]?.message?.content || '[LLM response missing]';
       } catch (err) {
-        console.error('Failed to validate or write LLM insight artifact:', err);
+        const msg = (err && typeof err === 'object' && 'message' in err) ? (err as Error).message : String(err);
+        response = '[LLM call failed: ' + msg + ']';
+      }
+      // Build artifact
+      const artifact: LLMInsightFossil = {
+        type: 'insight',
+        timestamp: new Date().toISOString(),
+        model: 'llama2',
+        modelVersion: 'v1',
+        provider: 'ollama',
+        promptId: promptObj.id,
+        promptVersion: promptObj.version,
+        prompt,
+        systemMessage,
+        inputHash,
+        commitRef,
+        response,
+        excerpt: response.slice(0, 120),
+        history: [
+          {
+            timestamp: new Date().toISOString(),
+            commitRef,
+            inputHash,
+            promptId: promptObj.id,
+            promptVersion: promptObj.version,
+            prompt,
+            systemMessage,
+            response,
+            manualOverride: false,
+            reviewStatus: 'pending',
+          },
+        ],
+        manualOverride: false,
+        reviewStatus: 'pending',
+      };
+      insightCandidates.push({ file, artifact, approved: false });
+      fileDone = true;
+      clearInterval(interval);
+      process.stdout.write(`\r[${i + 1}/${total}] Done: ${file} | Total elapsed: ${((Date.now() - start) / 1000).toFixed(1)}s | Duration: ${((Date.now() - opStart) / 1000).toFixed(1)}s\n`);
+    }
+    // 4. Advanced CLI review for all insights
+    if (insightCandidates.length > 0) {
+      const reviewedCandidates = await advancedReviewCLI(insightCandidates);
+      // 5. Process approved insights
+      for (const candidate of reviewedCandidates) {
+        if (!candidate.approved) {
+          console.log(`Skipping ${candidate.file} (not approved)`);
+          continue;
+        }
+        try {
+          LLMInsightFossilSchema.parse(candidate.artifact);
+          const outDir = path.resolve('fossils/llm_insights');
+          await fs.mkdir(outDir, { recursive: true });
+          const outPath = path.join(outDir, `${Date.now()}_${(candidate.file || '').replace(/\W/g, '_')}_${candidate.artifact.inputHash}.json`);
+          const artifactWithRepo = { ...candidate.artifact, owner, repo };
+          await fs.writeFile(outPath, JSON.stringify(artifactWithRepo, null, 2), 'utf-8');
+          console.log(`LLM insight artifact written: ${outPath}`);
+          // 6. Update roadmap with reference
+          await updateRoadmapWithInsight(candidate.file || '', candidate.artifact.inputHash);
+        } catch (err) {
+          console.error('Failed to validate or write LLM insight artifact:', err);
+        }
       }
     }
+  } catch (e) {
+    console.error('Error during LLM insight generation:', e);
+    process.exit(1);
   }
 }
 

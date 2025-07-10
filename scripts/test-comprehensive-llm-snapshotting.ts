@@ -5,6 +5,7 @@ import { callLLMEnhanced } from '../src/services/llmEnhanced';
 import { exportLLMSnapshot } from '../src/utils/llmSnapshotExporter';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { parseJsonSafe } from '@/utils/json';
 
 /**
  * Comprehensive test script to verify LLM call snapshotting and tracing
@@ -28,12 +29,14 @@ async function testComprehensiveLLMSnapshotting() {
     console.log('-'.repeat(50));
     
     const baseService = new LLMService({
+      owner: 'test-owner',
+      repo: 'test-repo',
       enableComprehensiveTracing: true,
       enableFossilization: true,
       enableConsoleOutput: true,
       enableSnapshotExport: true,
-      fossilStoragePath: 'fossils/llm_insights/',
-      testMode: false, // Ensure real calls are made
+      fossilStoragePath: 'fossils/test/',
+      testMode: false,
       memoryOnly: false
     });
 
@@ -73,15 +76,10 @@ async function testComprehensiveLLMSnapshotting() {
       valueScore: 0.8,
       routingPreference: 'cloud' // Force cloud to ensure real call
     }, {
+      owner: 'BarreraSlzr',
+      repo: 'automate_workloads',
       enableFossilization: true,
-      fossilManagerParams: {
-        owner: 'automate-workloads',
-        repo: 'automate_workloads',
-        fossilStoragePath: 'fossils/llm_insights/',
-        enableAutoFossilization: true,
-        enableQualityMetrics: true,
-        enableValidationTracking: true
-      }
+      fossilManagerParams: { owner: 'BarreraSlzr', repo: 'automate_workloads', fossilStoragePath: 'fossils/', enableAutoFossilization: true, enableQualityMetrics: true, enableValidationTracking: true }
     });
 
     results.enhancedService.success = enhancedResult.success;
@@ -123,7 +121,7 @@ async function testComprehensiveLLMSnapshotting() {
              // Read one fossil to verify structure
        if (llmFossils.length > 0 && llmFossils[0]) {
          const sampleFossil = await fs.readFile(path.join(fossilPath, llmFossils[0]), 'utf8');
-         const fossilData = JSON.parse(sampleFossil);
+         const fossilData = parseJsonSafe(sampleFossil) as any;
          
          results.traceability.success = !!(
            fossilData.callId && 
@@ -155,7 +153,7 @@ async function testComprehensiveLLMSnapshotting() {
     try {
       const usageLogPath = '.llm-usage-log.json';
       const usageLogContent = await fs.readFile(usageLogPath, 'utf8');
-      const usageLog = JSON.parse(usageLogContent);
+      const usageLog = parseJsonSafe(usageLogContent) as any;
       
       const recentCalls = usageLog.filter((call: any) => 
         call.timestamp && new Date(call.timestamp) > new Date(Date.now() - 300000)

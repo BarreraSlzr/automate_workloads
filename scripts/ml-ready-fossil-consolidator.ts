@@ -15,7 +15,7 @@
 
 import { promises as fs } from 'fs';
 import path from 'path';
-import { execSync } from 'child_process';
+import { executeCommand } from '@/utils/cli';
 import { z } from 'zod';
 import { TimestampFilter } from '../src/utils/timestampFilter';
 import { GitDiffAnalyzer } from '../src/utils/gitDiffAnalyzer';

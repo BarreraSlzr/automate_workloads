@@ -1,9 +1,10 @@
 #!/usr/bin/env bun
 // This file will be moved to scripts/migrations/003-migrate-legacy-issues.ts
-import { execSync } from 'child_process';
+import { executeCommand } from '@/utils/cli';
 import * as fs from 'fs';
-import { extractJsonBlock, checklistToMarkdown, metadataToMarkdown } from '../src/utils/markdownChecklist';
-import { GitHubService } from '../src/services/github';
+import { getCurrentRepoOwner, getCurrentRepoName } from '@/utils/cli';
+import { extractJsonBlock, checklistToMarkdown, metadataToMarkdown } from '@/utils/markdownChecklist';
+import { GitHubService } from '@/services/github';
 
 function parseLegacySections(body: string) {
   const purposeMatch = body.match(/### Purpose\n([\s\S]*?)(\n###|$)/);
@@ -35,7 +36,8 @@ function parseLegacySections(body: string) {
   };
 }
 
-function buildModernBody({ title, purpose, checklist, automationMetadata }: { title: string, purpose: string, checklist: {task: string, checked: boolean}[], automationMetadata: Record<string, any> }) {
+function buildModernBody(params: { title: string, purpose: string, checklist: {task: string, checked: boolean}[], automationMetadata: Record<string, any> }) {
+  const { title, purpose, checklist, automationMetadata } = params;
   return [
     `# [GH] Issue: ${title}`,
     '',
@@ -72,8 +74,8 @@ async function getLLMSuggestions(body: string): Promise<{purpose: string, checkl
 }
 
 async function migrate() {
-  const owner = process.env.GITHUB_OWNER || 'BarreraSlzr';
-  const repo = process.env.GITHUB_REPO || 'automate_workloads';
+  const owner = getCurrentRepoOwner();
+  const repo = getCurrentRepoName();
   const github = new GitHubService(owner, repo);
   const response = await github.getIssues({ state: 'open' });
   if (!response.success || !response.data) {
@@ -101,7 +103,7 @@ async function migrate() {
     });
     const tempFile = `.migrated-issue-body-${issue.number}.md`;
     fs.writeFileSync(tempFile, newBody);
-    execSync(`gh issue edit ${issue.number} --body-file ${tempFile}`);
+    executeCommand(`gh issue edit ${issue.number} --body-file ${tempFile}`);
     fs.unlinkSync(tempFile);
     if (usedLLM) {
       console.log(`🤖 LLM guidance used for issue #${issue.number}: ${issue.title}`);

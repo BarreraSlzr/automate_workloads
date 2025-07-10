@@ -29,7 +29,7 @@ async function testLLMFossilization() {
       purpose: 'fossilization-explanation',
       valueScore: 0.8,
       routingPreference: 'cloud' // Force cloud to ensure real call
-    });
+    }, { owner: 'BarreraSlzr', repo: 'automate_workloads' });
 
     const duration = Date.now() - startTime;
     console.log(`✅ LLM call completed in ${duration}ms`);

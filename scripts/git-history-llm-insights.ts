@@ -14,13 +14,14 @@
  * Roadmap reference: Integrate LLM insights for completed tasks
  */
 
-import { execSync } from 'child_process';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { formatISO, parseISO, subDays } from 'date-fns';
 import { LLMService } from '../src/services/llm';
 import { fossilizeLLMInsight } from '../src/utils/fossilize';
 import { LLMInsightFossil } from '../src/types/llmFossil';
+import { executeCommand } from '@/utils/cli';
+import { parseJsonSafe } from '@/utils/json';
 
 // Types for git history analysis
 interface GitCommit {
@@ -129,7 +130,7 @@ class GitHistoryLLMInsightsExtractor {
   private fossilsDir: string;
 
   constructor() {
-    this.llmService = new LLMService();
+    this.llmService = new LLMService({ owner: 'BarreraSlzr', repo: 'automate_workloads' });
     this.fossilsDir = 'fossils/git_history_insights';
     this.ensureFossilsDir();
   }
@@ -207,7 +208,7 @@ class GitHistoryLLMInsightsExtractor {
       gitCommand += ` --author="${author}"`;
     }
     
-    const output = execSync(gitCommand, { encoding: 'utf8' });
+    const output = (await executeCommand(gitCommand)).stdout;
     const lines = output.trim().split('\n');
     
     const commits: GitCommit[] = [];
@@ -380,11 +381,11 @@ Provide insights in this JSON format:
     try {
       const jsonMatch = response.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
-        const parsed = JSON.parse(jsonMatch[0]);
+        const parsed = parseJsonSafe(jsonMatch[0]) as any;
         return {
-          ...parsed,
-          done: parsed.done ? {
-            ...parsed.done,
+          ...(parsed && typeof parsed === 'object' ? parsed : {}),
+          done: parsed && parsed.done ? {
+            ...(parsed.done && typeof parsed.done === 'object' ? parsed.done : {}),
             completedAt: commit.date
           } : undefined
         };
@@ -561,7 +562,7 @@ Provide insights in this JSON format:
 
   // Utility methods for git operations
   private async getCommitChanges(hash: string): Promise<FileChange[]> {
-    const output = execSync(`git show --name-status --numstat ${hash}`, { encoding: 'utf8' });
+    const output = (await executeCommand(`git show --name-status --numstat ${hash}`)).stdout;
     return this.parseGitDiff(output);
   }
 

@@ -8,9 +8,7 @@ import { executeCommand, safeParseJSON } from "../src/utils/cli";
 import { readFileSync, existsSync } from "fs";
 import { join } from "path";
 import { TypeSchemaValidator } from "../src/utils/typeSchemaValidator";
-import {
-  z,
-  // Core schemas
+import { z, // Core schemas
   BaseCLIArgsSchema,
   FossilCLIArgsSchema,
   GitHubCLIArgsSchema,
@@ -84,6 +82,7 @@ import {
   // Usage and optimization schemas
   UsageReportSchema,
   OptimizationConfigSchema,
+  OwnerRepoSchema,
 } from "../src/types/schemas";
 
 // Satisfy pre-commit validation: import from src/utils/
@@ -92,6 +91,35 @@ import {
 // import * as utils3 from 'src/utils/visualDiagramGenerator';
 // import * as utils4 from '../src/utils/visualDiagramGenerator';
 import * as utils from '../src/utils/visualDiagramGenerator';
+
+// PARAMS OBJECT PATTERN: All scripts must detect owner/repo at the top level, validate with Zod, and pass as part of a params object to all downstream calls. No loose or positional owner/repo arguments.
+import { getCurrentRepoOwner, getCurrentRepoName } from '../src/utils/cli';
+
+function detectOwnerRepo(options: any = {}): { owner: string; repo: string } {
+  if (options.owner && options.repo) return { owner: options.owner, repo: options.repo };
+  const owner = getCurrentRepoOwner();
+  const repo = getCurrentRepoName();
+  if (owner && repo) return { owner, repo };
+  if (process.env.CI) {
+    return { owner: 'BarreraSlzr', repo: 'automate_workloads' };
+  } else {
+    return { owner: 'emmanuelbarrera', repo: 'automate_workloads' };
+  }
+}
+
+const cliArgs = process.argv.slice(2);
+let options: any = {};
+for (let i = 0; i < cliArgs.length; i++) {
+  if (cliArgs[i] === '--owner' && cliArgs[i + 1]) {
+    options.owner = cliArgs[i + 1];
+    i++;
+  } else if (cliArgs[i] === '--repo' && cliArgs[i + 1]) {
+    options.repo = cliArgs[i + 1];
+    i++;
+  }
+}
+const { owner, repo } = detectOwnerRepo(options);
+OwnerRepoSchema.parse({ owner, repo });
 
 // Type and schema validation registry
 const SCHEMA_REGISTRY = {
@@ -223,7 +251,11 @@ console.log("🔧 Validating schemas...");
 let schemaValidationFailed = false;
 
 for (const file of staged) {
-  if (!existsSync(file)) continue;
+  // Skip deleted files - they don't need validation
+  if (!existsSync(file)) {
+    console.log(`⏭️  Skipping deleted file: ${file}`);
+    continue;
+  }
   
   try {
     const content = readFileSync(file, "utf-8");
@@ -331,16 +363,14 @@ let lintFailed = false;
 for (const file of staged) {
   if (!file.endsWith(".ts") && !file.endsWith(".js")) continue;
   const content = readFileSync(file, "utf-8");
-  
   // Skip the validation script itself
   if (file === "scripts/precommit-validate.ts") continue;
-  
   if (content.includes("execSync(") && !file.includes("performance") && !file.includes("cli")) {
     console.error(`❌ execSync usage found in ${file} - should use utility functions from src/utils/cli.ts`);
     lintFailed = true;
   }
-  
-  if (content.includes("JSON.parse(") && !file.includes("performance") && !file.includes("fossil")) {
+  // Only flag JSON.parse if not in src/utils/json.ts or not inside parseJsonSafe
+  if (content.includes("JSON.parse(") && !(file === "src/utils/json.ts" && content.includes("function parseJsonSafe"))) {
     console.error(`❌ JSON.parse usage found in ${file} - should use validated parsing from utilities`);
     lintFailed = true;
   }
