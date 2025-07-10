@@ -107,7 +107,10 @@ export async function createRoadmapInsightsCollection(params: { roadmapPath?: st
   let insightsGenerated = 0;
   
   // Extract insights and collect metadata
-  for (const insight of extractTaskInsights({ tasks: roadmap.tasks || [] })) {
+  for (const [i, insight] of Array.from(extractTaskInsights({ tasks: roadmap.tasks || [] })).entries()) {
+    if (i % 10 === 0 || i === (roadmap.tasks?.length || 0) - 1) {
+      console.log(`🔄 Processing extracted insight ${i + 1} of ${roadmap.tasks?.length || 0}`);
+    }
     insights.push(insight);
     fossilIds.push(insight.metadata.fossilId);
     
@@ -155,24 +158,69 @@ export async function createRoadmapInsightsCollection(params: { roadmapPath?: st
  */
 export function createRoadmapInsightsWebPublication(params: { collection: RoadmapInsightsCollection }): RoadmapInsightsWebPublication {
   const { collection } = params;
-  const completed = collection.insights.filter(i => i.status === 'done');
-  const inProgress = collection.insights.filter(i => i.status === 'in-progress' || i.status === 'in progress');
-  const planned = collection.insights.filter(i => i.status === 'planned' || i.status === 'pending');
+  const completed = collection.insights.filter((i, idx, arr) => {
+    if (idx % 10 === 0 || idx === arr.length - 1) {
+      console.log(`🔄 Processing completed insight ${idx + 1} of ${arr.length}`);
+    }
+    return i.status === 'done';
+  });
+  const inProgress = collection.insights.filter((i, idx, arr) => {
+    if (idx % 10 === 0 || idx === arr.length - 1) {
+      console.log(`🔄 Processing in-progress insight ${idx + 1} of ${arr.length}`);
+    }
+    return i.status === 'in-progress' || i.status === 'in progress';
+  });
+  const planned = collection.insights.filter((i, idx, arr) => {
+    if (idx % 10 === 0 || idx === arr.length - 1) {
+      console.log(`🔄 Processing planned insight ${idx + 1} of ${arr.length}`);
+    }
+    return i.status === 'planned' || i.status === 'pending';
+  });
   
   // Extract key recommendations
   const priority = collection.insights
-    .filter(i => i.llmInsights.recommendations)
-    .map(i => i.llmInsights.recommendations)
+    .filter((i, idx, arr) => {
+      if (idx % 10 === 0 || idx === arr.length - 1) {
+        console.log(`🔄 Processing priority recommendation ${idx + 1} of ${arr.length}`);
+      }
+      return i.llmInsights.recommendations;
+    })
+    .map((i, idx, arr) => {
+      if (idx % 10 === 0 || idx === arr.length - 1) {
+        console.log(`🔄 Mapping priority recommendation ${idx + 1} of ${arr.length}`);
+      }
+      return i.llmInsights.recommendations;
+    })
     .slice(0, 5);
   
   const blockers = collection.insights
-    .filter(i => i.llmInsights.blockers && i.llmInsights.blockers !== 'None reported.')
-    .map(i => i.llmInsights.blockers)
+    .filter((i, idx, arr) => {
+      if (idx % 10 === 0 || idx === arr.length - 1) {
+        console.log(`🔄 Processing blocker ${idx + 1} of ${arr.length}`);
+      }
+      return i.llmInsights.blockers && i.llmInsights.blockers !== 'None reported.';
+    })
+    .map((i, idx, arr) => {
+      if (idx % 10 === 0 || idx === arr.length - 1) {
+        console.log(`🔄 Mapping blocker ${idx + 1} of ${arr.length}`);
+      }
+      return i.llmInsights.blockers;
+    })
     .slice(0, 5);
   
   const opportunities = collection.insights
-    .filter(i => i.llmInsights.impact && i.llmInsights.impact.includes('high'))
-    .map(i => i.taskTitle)
+    .filter((i, idx, arr) => {
+      if (idx % 10 === 0 || idx === arr.length - 1) {
+        console.log(`🔄 Processing opportunity ${idx + 1} of ${arr.length}`);
+      }
+      return i.llmInsights.impact && i.llmInsights.impact.includes('high');
+    })
+    .map((i, idx, arr) => {
+      if (idx % 10 === 0 || idx === arr.length - 1) {
+        console.log(`🔄 Mapping opportunity ${idx + 1} of ${arr.length}`);
+      }
+      return i.taskTitle;
+    })
     .slice(0, 5);
   
   const webPublication: RoadmapInsightsWebPublication = {
@@ -241,7 +289,10 @@ export function generateInsightsMarkdownReport(params: { collection: RoadmapInsi
   // Recent Updates
   if (sections.overview.recentUpdates.length > 0) {
     markdown += `### Recent Completions\n`;
-    sections.overview.recentUpdates.forEach(update => {
+    sections.overview.recentUpdates.forEach((update, idx, arr) => {
+      if (idx % 10 === 0 || idx === arr.length - 1) {
+        console.log(`🔄 Processing recent update ${idx + 1} of ${arr.length}`);
+      }
       markdown += `- ${update}\n`;
     });
     markdown += `\n`;
@@ -250,7 +301,10 @@ export function generateInsightsMarkdownReport(params: { collection: RoadmapInsi
   // Priority Recommendations
   if (sections.recommendations.priority.length > 0) {
     markdown += `## Priority Recommendations\n\n`;
-    sections.recommendations.priority.forEach((rec, index) => {
+    sections.recommendations.priority.forEach((rec, index, arr) => {
+      if (index % 10 === 0 || index === arr.length - 1) {
+        console.log(`🔄 Processing priority recommendation ${index + 1} of ${arr.length}`);
+      }
       markdown += `${index + 1}. ${rec}\n`;
     });
     markdown += `\n`;
@@ -259,7 +313,10 @@ export function generateInsightsMarkdownReport(params: { collection: RoadmapInsi
   // Blockers
   if (sections.recommendations.blockers.length > 0) {
     markdown += `## Current Blockers\n\n`;
-    sections.recommendations.blockers.forEach((blocker, index) => {
+    sections.recommendations.blockers.forEach((blocker, index, arr) => {
+      if (index % 10 === 0 || index === arr.length - 1) {
+        console.log(`🔄 Processing blocker ${index + 1} of ${arr.length}`);
+      }
       markdown += `${index + 1}. ${blocker}\n`;
     });
     markdown += `\n`;
@@ -268,7 +325,10 @@ export function generateInsightsMarkdownReport(params: { collection: RoadmapInsi
   // Completed Tasks with Insights
   if (sections.insights.completed.length > 0) {
     markdown += `## Completed Tasks\n\n`;
-    sections.insights.completed.forEach(task => {
+    sections.insights.completed.forEach((task, index, arr) => {
+      if (index % 10 === 0 || index === arr.length - 1) {
+        console.log(`🔄 Processing completed task ${index + 1} of ${arr.length}`);
+      }
       markdown += `### ${task.taskTitle}\n`;
       markdown += `- **Status**: ${task.status}\n`;
       if (task.milestone) markdown += `- **Milestone**: ${task.milestone}\n`;
@@ -284,7 +344,10 @@ export function generateInsightsMarkdownReport(params: { collection: RoadmapInsi
   // In Progress Tasks
   if (sections.insights.inProgress.length > 0) {
     markdown += `## In Progress Tasks\n\n`;
-    sections.insights.inProgress.forEach(task => {
+    sections.insights.inProgress.forEach((task, index, arr) => {
+      if (index % 10 === 0 || index === arr.length - 1) {
+        console.log(`🔄 Processing in-progress task ${index + 1} of ${arr.length}`);
+      }
       markdown += `### ${task.taskTitle}\n`;
       markdown += `- **Status**: ${task.status}\n`;
       if (task.milestone) markdown += `- **Milestone**: ${task.milestone}\n`;
@@ -300,7 +363,10 @@ export function generateInsightsMarkdownReport(params: { collection: RoadmapInsi
   // Opportunities
   if (sections.recommendations.opportunities.length > 0) {
     markdown += `## High-Impact Opportunities\n\n`;
-    sections.recommendations.opportunities.forEach((opportunity, index) => {
+    sections.recommendations.opportunities.forEach((opportunity, index, arr) => {
+      if (index % 10 === 0 || index === arr.length - 1) {
+        console.log(`🔄 Processing opportunity ${index + 1} of ${arr.length}`);
+      }
       markdown += `${index + 1}. ${opportunity}\n`;
     });
     markdown += `\n`;

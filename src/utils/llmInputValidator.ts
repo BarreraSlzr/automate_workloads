@@ -1,34 +1,11 @@
 import { z } from 'zod';
-import { MessageSchema, LLMInputSchema } from '../types';
+import { LLMInputSchema } from '../types';
 import type { ChatCompletionRequestMessage } from '../types/llm';
+import { InputValidationResult, ContentQualityMetrics } from '../types/llm';
 
 // ============================================================================
 // INPUT VALIDATION FUNCTIONS
 // ============================================================================
-
-export interface InputValidationResult {
-  isValid: boolean;
-  errors: string[];
-  warnings: string[];
-  sanitizedInput: any;
-  recommendations: string[];
-}
-
-export interface InputPreprocessingResult {
-  success: boolean;
-  processedInput: any;
-  changes: string[];
-  warnings: string[];
-  errors: string[];
-}
-
-export interface ContentQualityMetrics {
-  readability: number; // 0-1
-  clarity: number; // 0-1
-  specificity: number; // 0-1
-  completeness: number; // 0-1
-  overall: number; // 0-1
-}
 
 /**
  * Comprehensive LLM Input Validator and Preprocessor
@@ -49,20 +26,26 @@ export class LLMInputValidator {
   /**
    * Comprehensive input validation with detailed feedback
    */
-  validateInput(input: any): InputValidationResult {
+  validateInput(params: { input: any }): InputValidationResult {
+    const { input } = params;
     const result: InputValidationResult = {
       isValid: false,
+      success: false,
       errors: [],
       warnings: [],
       sanitizedInput: null,
-      recommendations: []
+      processedInput: null,
+      recommendations: [],
+      changes: []
     };
 
     try {
       // Basic schema validation
       const validated = LLMInputSchema.parse(input);
       result.sanitizedInput = validated;
+      result.processedInput = validated;
       result.isValid = true;
+      result.success = true;
 
       // Additional content validation
       this.validateContent(validated, result);
@@ -87,51 +70,76 @@ export class LLMInputValidator {
   /**
    * Preprocess and improve input before LLM call
    */
-  preprocessInput(input: any): InputPreprocessingResult {
-    const result: InputPreprocessingResult = {
+  preprocessInput(params: { input: any }): InputValidationResult {
+    const { input } = params;
+    const result: InputValidationResult = {
+      isValid: false,
       success: false,
-      processedInput: null,
-      changes: [],
+      errors: [],
       warnings: [],
-      errors: []
+      sanitizedInput: null,
+      processedInput: null,
+      recommendations: [],
+      changes: []
     };
 
+    let processed = { ...input };
     try {
-      // First validate the input
-      const validation = this.validateInput(input);
+      // Always attempt to auto-correct missing fields before validation
+      if (!processed.messages || !Array.isArray(processed.messages)) processed.messages = [];
+      const hasSystem = processed.messages.some((m: any) => m.role === 'system');
+      if (!hasSystem) {
+        processed.messages = [
+          { role: 'system', content: 'You are an AI assistant.' },
+          ...processed.messages
+        ];
+        result.changes!.push('Added default system message');
+      }
+      // Consolidate multiple system messages
+      const systemMessages = processed.messages.filter((m: any) => m.role === 'system');
+      if (systemMessages.length > 1) {
+        const consolidated = {
+          role: 'system',
+          content: systemMessages.map((m: any) => m.content).join(' ')
+        };
+        processed.messages = [
+          consolidated,
+          ...processed.messages.filter((m: any) => m.role !== 'system')
+        ];
+        result.changes!.push('Consolidated multiple system messages');
+      }
+      // Add context and purpose if missing
+      if (!processed.context) {
+        processed.context = 'general';
+        result.changes!.push('Added default context');
+      }
+      if (!processed.purpose) {
+        processed.purpose = 'assistance';
+        result.changes!.push('Added default purpose');
+      }
+      // Now validate after corrections
+      let validation = this.validateInput(processed);
       if (!validation.isValid) {
         result.errors = validation.errors;
         return result;
       }
-
-      let processed = { ...validation.sanitizedInput };
-
-      // Improve message content
+      // Continue with normal improvement pipeline
       processed.messages = this.improveMessages(processed.messages, result);
-      
-      // Optimize system messages
       processed.messages = this.optimizeSystemMessages(processed.messages, result);
-      
-      // Add context if missing
       processed = this.addMissingContext(processed, result);
-      
-      // Optimize for specific purposes
       processed = this.optimizeForPurpose(processed, result);
-      
-      // Validate final result
       const finalValidation = this.validateInput(processed);
       if (!finalValidation.isValid) {
         result.errors = finalValidation.errors;
         return result;
       }
-
+      result.sanitizedInput = processed;
       result.processedInput = processed;
+      result.isValid = true;
       result.success = true;
-
     } catch (error) {
       result.errors.push(`Preprocessing error: ${error}`);
     }
-
     return result;
   }
 
@@ -148,12 +156,22 @@ export class LLMInputValidator {
     let completeness = 0;
 
     // Analyze user messages
-    for (const msg of userMessages) {
+    for (let i = 0; i < userMessages.length; i++) {
+      if (i % 10 === 0 || i === userMessages.length - 1) {
+        console.log(`🔄 Processing user message ${i + 1} of ${userMessages.length}`);
+      }
+      const msg = userMessages[i];
+      if (!msg) continue;
       const content = msg.content;
       
       // Readability: sentence length, word complexity
       const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 0);
-      const avgSentenceLength = sentences.reduce((sum, s) => sum + s.split(' ').length, 0) / sentences.length;
+      const avgSentenceLength = sentences.reduce((sum, s, j, arr) => {
+        if (j % 10 === 0 || j === arr.length - 1) {
+          console.log(`🔄 Processing sentence ${j + 1} of ${arr.length}`);
+        }
+        return sum + s.split(' ').length;
+      }, 0) / sentences.length;
       readability += Math.min(1, avgSentenceLength / 20); // Optimal: 15-20 words per sentence
       
       // Clarity: specific vs vague language
@@ -198,46 +216,51 @@ export class LLMInputValidator {
   generateRecommendations(messages: ChatCompletionRequestMessage[], quality: ContentQualityMetrics): string[] {
     const recommendations: string[] = [];
     const userMessages = messages.filter(m => m.role === 'user');
+    for (let i = 0; i < userMessages.length; i++) {
+      if (i % 10 === 0 || i === userMessages.length - 1) {
+        console.log(`🔄 Processing user message for recommendation ${i + 1} of ${userMessages.length}`);
+      }
+      const msg = userMessages[i];
 
-    if (quality.readability < 0.6) {
-      recommendations.push('Consider breaking down complex sentences into shorter, clearer statements');
+      if (quality.readability < 0.6) {
+        recommendations.push('Consider breaking down complex sentences into shorter, clearer statements');
+      }
+
+      if (quality.clarity < 0.5) {
+        recommendations.push('Use more specific language and avoid vague terms like "something" or "maybe"');
+      }
+
+      if (quality.specificity < 0.4) {
+        recommendations.push('Include specific technical terms, numbers, or examples to make your request more precise');
+      }
+
+      if (quality.completeness < 0.5) {
+        recommendations.push('Consider adding specific questions or action words to clarify what you want');
+      }
+
+      if (userMessages.length === 0) {
+        recommendations.push('Add a user message to specify what you want the LLM to do');
+      }
+
+      if (userMessages.length > 3) {
+        recommendations.push('Consider consolidating multiple messages into a single, comprehensive request');
+      }
+
+      // Check for common issues
+      const allContent = messages.map(m => m.content).join(' ');
+      
+      if (allContent.includes('TODO') || allContent.includes('FIXME')) {
+        recommendations.push('Remove TODO/FIXME comments from LLM input - they can confuse the model');
+      }
+
+      if (allContent.includes('console.log') || allContent.includes('debugger')) {
+        recommendations.push('Remove debug statements from LLM input for cleaner responses');
+      }
+
+      if (allContent.length > 5000) {
+        recommendations.push('Consider shortening your input - very long prompts can reduce response quality');
+      }
     }
-
-    if (quality.clarity < 0.5) {
-      recommendations.push('Use more specific language and avoid vague terms like "something" or "maybe"');
-    }
-
-    if (quality.specificity < 0.4) {
-      recommendations.push('Include specific technical terms, numbers, or examples to make your request more precise');
-    }
-
-    if (quality.completeness < 0.5) {
-      recommendations.push('Consider adding specific questions or action words to clarify what you want');
-    }
-
-    if (userMessages.length === 0) {
-      recommendations.push('Add a user message to specify what you want the LLM to do');
-    }
-
-    if (userMessages.length > 3) {
-      recommendations.push('Consider consolidating multiple messages into a single, comprehensive request');
-    }
-
-    // Check for common issues
-    const allContent = messages.map(m => m.content).join(' ');
-    
-    if (allContent.includes('TODO') || allContent.includes('FIXME')) {
-      recommendations.push('Remove TODO/FIXME comments from LLM input - they can confuse the model');
-    }
-
-    if (allContent.includes('console.log') || allContent.includes('debugger')) {
-      recommendations.push('Remove debug statements from LLM input for cleaner responses');
-    }
-
-    if (allContent.length > 5000) {
-      recommendations.push('Consider shortening your input - very long prompts can reduce response quality');
-    }
-
     return recommendations;
   }
 
@@ -249,6 +272,9 @@ export class LLMInputValidator {
 
     // Check message content quality
     for (let i = 0; i < messages.length; i++) {
+      if (i % 10 === 0 || i === messages.length - 1) {
+        console.log(`🔄 Processing LLM message ${i + 1} of ${messages.length}`);
+      }
       const msg = messages[i];
       
       if (msg.content.length < this.minContentLength) {
@@ -322,7 +348,12 @@ export class LLMInputValidator {
       /\b[A-Za-z0-9]{32,}\b/g, // API keys, tokens
     ];
 
-    for (const pattern of sensitivePatterns) {
+    for (let i = 0; i < sensitivePatterns.length; i++) {
+      if (i % 10 === 0 || i === sensitivePatterns.length - 1) {
+        console.log(`🔄 Processing sensitive pattern ${i + 1} of ${sensitivePatterns.length}`);
+      }
+      const pattern = sensitivePatterns[i];
+      if (!pattern) continue;
       if (pattern.test(allContent)) {
         result.warnings.push('Potential sensitive data detected - review before sending to LLM');
         break;
@@ -338,8 +369,11 @@ export class LLMInputValidator {
   /**
    * Improve message content for better LLM responses
    */
-  private improveMessages(messages: ChatCompletionRequestMessage[], result: InputPreprocessingResult): ChatCompletionRequestMessage[] {
-    return messages.map((msg, index) => {
+  private improveMessages(messages: ChatCompletionRequestMessage[], result: InputValidationResult): ChatCompletionRequestMessage[] {
+    return messages.map((msg, i, arr) => {
+      if (i % 10 === 0 || i === arr.length - 1) {
+        console.log(`🔄 Processing message for improvement ${i + 1} of ${arr.length}`);
+      }
       let improvedContent = msg.content;
 
       // Clean up common issues
@@ -352,7 +386,7 @@ export class LLMInputValidator {
 
       // Track changes
       if (improvedContent !== msg.content) {
-        result.changes.push(`Improved message ${index + 1} content`);
+        result.changes!.push(`Improved message ${i + 1} content`);
       }
 
       return { ...msg, content: improvedContent };
@@ -389,42 +423,23 @@ export class LLMInputValidator {
   /**
    * Optimize system messages for better guidance
    */
-  private optimizeSystemMessages(messages: ChatCompletionRequestMessage[], result: InputPreprocessingResult): ChatCompletionRequestMessage[] {
-    const systemMessages = messages.filter((m: any) => m.role === 'system');
-    const otherMessages = messages.filter((m: any) => m.role !== 'system');
-
-    if (systemMessages.length === 0) {
-      // Add a default system message
-      const defaultSystem = {
-        role: 'system' as const,
-        content: 'You are a helpful AI assistant. Provide clear, accurate, and actionable responses.'
-      };
-      result.changes.push('Added default system message');
-      return [defaultSystem, ...otherMessages];
-    }
-
-    if (systemMessages.length > 1) {
-      // Consolidate multiple system messages
-      const consolidatedContent = systemMessages.map((m: any) => m.content).join('\n\n');
-      const consolidatedMessage = {
-        role: 'system' as const,
-        content: consolidatedContent
-      };
-      result.changes.push('Consolidated multiple system messages');
-      return [consolidatedMessage, ...otherMessages];
-    }
-
-    return messages;
+  private optimizeSystemMessages(messages: ChatCompletionRequestMessage[], result: InputValidationResult): ChatCompletionRequestMessage[] {
+    return messages.map((msg, i, arr) => {
+      if (i % 10 === 0 || i === arr.length - 1) {
+        console.log(`🔄 Processing system message for optimization ${i + 1} of ${arr.length}`);
+      }
+      return msg;
+    });
   }
 
   /**
    * Add missing context information
    */
-  private addMissingContext(input: any, result: InputPreprocessingResult): any {
+  private addMissingContext(input: any, result: InputValidationResult): any {
     const { context, purpose } = input;
 
     if (!context && !purpose) {
-      result.changes.push('Added default context and purpose');
+      result.changes!.push('Added default context and purpose');
       return {
         ...input,
         context: 'general',
@@ -433,12 +448,12 @@ export class LLMInputValidator {
     }
 
     if (!context) {
-      result.changes.push('Added default context');
+      result.changes!.push('Added default context');
       return { ...input, context: 'general' };
     }
 
     if (!purpose) {
-      result.changes.push('Added default purpose');
+      result.changes!.push('Added default purpose');
       return { ...input, purpose: 'assistance' };
     }
 
@@ -448,7 +463,7 @@ export class LLMInputValidator {
   /**
    * Optimize input for specific purposes
    */
-  private optimizeForPurpose(input: any, result: InputPreprocessingResult): any {
+  private optimizeForPurpose(input: any, result: InputValidationResult): any {
     const { purpose, messages } = input;
 
     if (purpose?.includes('code')) {
@@ -461,7 +476,7 @@ export class LLMInputValidator {
             ...systemMessages[0],
             content: `${systemContent}\n\nYou are also a programming expert. Provide clean, well-documented code with explanations.`
           };
-          result.changes.push('Enhanced system message for code generation');
+          result.changes!.push('Enhanced system message for code generation');
           return {
             ...input,
             messages: messages.map((m: any) => m.role === 'system' ? updatedSystem : m)
@@ -480,7 +495,7 @@ export class LLMInputValidator {
             ...systemMessages[0],
             content: `${systemContent}\n\nProvide thorough analysis with clear insights and actionable recommendations.`
           };
-          result.changes.push('Enhanced system message for analysis');
+          result.changes!.push('Enhanced system message for analysis');
           return {
             ...input,
             messages: messages.map((m: any) => m.role === 'system' ? updatedSystem : m)
@@ -508,15 +523,15 @@ export class LLMInputValidator {
  */
 export function validateLLMInput(input: any): InputValidationResult {
   const validator = new LLMInputValidator();
-  return validator.validateInput(input);
+  return validator.validateInput({ input });
 }
 
 /**
  * Convenience function for quick input preprocessing
  */
-export function preprocessLLMInput(input: any): InputPreprocessingResult {
+export function preprocessLLMInput(input: any): InputValidationResult {
   const validator = new LLMInputValidator();
-  return validator.preprocessInput(input);
+  return validator.preprocessInput({ input });
 }
 
 /**

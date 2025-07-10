@@ -11,6 +11,7 @@ import {
   PerformanceMonitorConfig,
   DEFAULT_PERFORMANCE_CONFIG
 } from '../types/performance';
+import { parseJsonSafe } from '@/utils/json';
 
 // Performance monitoring utility class
 export class PerformanceMonitor {
@@ -33,7 +34,7 @@ export class PerformanceMonitor {
     if (existsSync(this.config.logFile)) {
       try {
         const content = readFileSync(this.config.logFile, 'utf-8');
-        const data = JSON.parse(content);
+        const data = parseJsonSafe(content, 'performanceMonitor:content') as any[];
         this.logs = Array.isArray(data) ? data : [];
       } catch (error) {
         console.warn('Failed to load existing performance logs:', error);
@@ -151,16 +152,43 @@ export class PerformanceMonitor {
     }
 
     const totalExecutions = this.logs.length;
-    const uniqueScripts = new Set(this.logs.map(log => log.script)).size;
-    const executionTimes = this.logs.map(log => log.execution_time);
-    const memoryUsages = this.logs.map(log => log.memory_usage_mb);
-    const exitCodes = this.logs.map(log => log.exit_code);
+    // Add progress logging to all loops and batch operations
+    const uniqueScripts = new Set(this.logs.map((log, i, arr) => {
+      if (i % 10 === 0 || i === arr.length - 1) {
+        console.log(`🔄 Processing log for uniqueScripts ${i + 1} of ${arr.length}`);
+      }
+      return log.script;
+    }));
+
+    const executionTimes = this.logs.map((log, i, arr) => {
+      if (i % 10 === 0 || i === arr.length - 1) {
+        console.log(`🔄 Processing log for executionTimes ${i + 1} of ${arr.length}`);
+      }
+      return log.execution_time;
+    });
+
+    const memoryUsages = this.logs.map((log, i, arr) => {
+      if (i % 10 === 0 || i === arr.length - 1) {
+        console.log(`🔄 Processing log for memoryUsages ${i + 1} of ${arr.length}`);
+      }
+      return log.memory_usage_mb;
+    });
+
+    const exitCodes = this.logs.map((log, i, arr) => {
+      if (i % 10 === 0 || i === arr.length - 1) {
+        console.log(`🔄 Processing log for exitCodes ${i + 1} of ${arr.length}`);
+      }
+      return log.exit_code;
+    });
 
     const successfulExecutions = exitCodes.filter(code => code === 0).length;
     const failedExecutions = totalExecutions - successfulExecutions;
 
     // Calculate script performance breakdown
-    const scriptGroups = this.logs.reduce((acc, log) => {
+    const scriptGroups = this.logs.reduce((acc, log, i, arr) => {
+      if (i % 10 === 0 || i === arr.length - 1) {
+        console.log(`🔄 Processing log for scriptGroups ${i + 1} of ${arr.length}`);
+      }
       if (!acc[log.script]) {
         acc[log.script] = [];
       }
@@ -168,9 +196,17 @@ export class PerformanceMonitor {
       return acc;
     }, {} as Record<string, PerformanceLogEntry[]>);
 
-    const scriptPerformance = Object.entries(scriptGroups).map(([script, logs]) => {
+    const scriptPerformance = Object.entries(scriptGroups).map(([script, logs], i, arr) => {
+      if (i % 10 === 0 || i === arr.length - 1) {
+        console.log(`🔄 Processing script group ${i + 1} of ${arr.length}`);
+      }
       const executions = logs.length;
-      const averageTime = logs.reduce((sum, log) => sum + log.execution_time, 0) / executions;
+      const averageTime = logs.reduce((sum, log, i) => {
+        if (i % 10 === 0 || i === logs.length - 1) {
+          console.log(`🔄 Processing log (reduce) ${i + 1} of ${logs.length}`);
+        }
+        return sum + log.execution_time;
+      }, 0) / executions;
       const successRate = (logs.filter(log => log.exit_code === 0).length / executions) * 100;
 
       return {
@@ -183,7 +219,7 @@ export class PerformanceMonitor {
 
     const summary: PerformanceSummary = {
       total_executions: totalExecutions,
-      scripts: uniqueScripts,
+      scripts: uniqueScripts.size,
       average_execution_time: executionTimes.reduce((sum, time) => sum + time, 0) / totalExecutions,
       fastest_execution: Math.min(...executionTimes),
       slowest_execution: Math.max(...executionTimes),

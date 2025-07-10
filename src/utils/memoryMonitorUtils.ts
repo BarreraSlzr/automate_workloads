@@ -40,6 +40,7 @@ import {
 } from '../types/memory-monitoring';
 
 import { BaseFossil } from '../types/core';
+import { parseJsonSafe } from '@/utils/json';
 
 // ============================================================================
 // CORE MEMORY MONITORING FUNCTIONS
@@ -73,7 +74,10 @@ export async function getSystemMemoryInfo(params: {
         const lines = output.split('\n');
         const stats: Record<string, number> = {};
         
-        lines.forEach(line => {
+        lines.forEach((line, i, arr) => {
+          if (i % 10 === 0 || i === arr.length - 1) {
+            console.log(`🔄 Processing stat key ${i + 1} of ${arr.length}`);
+          }
           const match = line.match(/^(.+?):\s+(\d+)/);
           if (match && match[1] && match[2]) {
             stats[match[1].trim()] = parseInt(match[2]);
@@ -149,7 +153,10 @@ export async function getProcessGroupMemory(params: {
           return;
         }
 
-        const totalKB = output.trim().split('\n').reduce((sum, line) => {
+        const totalKB = output.trim().split('\n').reduce((sum, line, i, arr) => {
+          if (i % 10 === 0 || i === arr.length - 1) {
+            console.log(`🔄 Processing output line ${i + 1} of ${arr.length}`);
+          }
           const kb = parseInt(line.trim()) || 0;
           return sum + kb;
         }, 0);
@@ -203,7 +210,10 @@ export async function getProcessGroupDetails(params: {
         }
 
         const lines = output.trim().split('\n').slice(1); // Skip header
-        const processes: ProcessInfo[] = lines.map(line => {
+        const processes: ProcessInfo[] = lines.map((line, i, arr) => {
+          if (i % 10 === 0 || i === arr.length - 1) {
+            console.log(`🔄 Processing process line ${i + 1} of ${arr.length}`);
+          }
           const [pid, ...rest] = line.trim().split(/\s+/);
           const command = rest.slice(0, -1).join(' ') || '';
           const rssKB = parseInt(rest[rest.length - 1] || '0') || 0;
@@ -371,7 +381,7 @@ export function loadMemoryMonitoringFossil(params: {
   
   try {
     const content = readFileSync(filePath, 'utf-8');
-    const fossil = JSON.parse(content);
+    const fossil = parseJsonSafe(content, 'memoryMonitorUtils:content') as any;
     
     // Validate with schema
     return MemoryMonitoringFossilSchema.parse(fossil);
@@ -394,7 +404,10 @@ export function createMemoryMonitoringSummary(params: CreateMemoryMonitoringSumm
   const peakMemoryMB = Math.max(...maxMemoryValues);
   
   // Find most memory-intensive commands
-  const commandStats = sessions.reduce((acc, session) => {
+  const commandStats = sessions.reduce((acc, session, i, arr) => {
+    if (i % 10 === 0 || i === arr.length - 1) {
+      console.log(`🔄 Processing session for command stats ${i + 1} of ${arr.length}`);
+    }
     const key = session.command;
     if (!acc[key]) {
       acc[key] = { totalMemory: 0, count: 0 };
@@ -405,11 +418,16 @@ export function createMemoryMonitoringSummary(params: CreateMemoryMonitoringSumm
   }, {} as Record<string, { totalMemory: number; count: number }>);
   
   const mostMemoryIntensiveCommands = Object.entries(commandStats)
-    .map(([command, stats]) => ({
-      command,
-      avgMemoryMB: Math.round(stats.totalMemory / stats.count),
-      sessionCount: stats.count
-    }))
+    .map(([command, stats], i, arr) => {
+      if (i % 10 === 0 || i === arr.length - 1) {
+        console.log(`🔄 Processing command stat ${i + 1} of ${arr.length}`);
+      }
+      return ({
+        command,
+        avgMemoryMB: Math.round(stats.totalMemory / stats.count),
+        sessionCount: stats.count
+      });
+    })
     .sort((a, b) => b.avgMemoryMB - a.avgMemoryMB)
     .slice(0, 5);
   

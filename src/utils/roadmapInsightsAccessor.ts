@@ -10,6 +10,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { createHash } from 'crypto';
 import type { RoadmapTaskInsight } from '../types/roadmapInsights';
+import { parseJsonSafe } from '@/utils/json';
 
 const INSIGHTS_COLLECTION_PATH = 'fossils/roadmap_insights_collection.json';
 const INSIGHTS_WEB_PATH = 'fossils/roadmap_insights_web.json';
@@ -35,7 +36,7 @@ export async function loadInsightsCollection(): Promise<{
 }> {
   try {
     const content = await fs.readFile(INSIGHTS_COLLECTION_PATH, 'utf-8');
-    return JSON.parse(content);
+    return parseJsonSafe(content, 'roadmapInsightsAccessor:content') as any;
   } catch (error) {
     console.warn(`Could not load insights collection from ${INSIGHTS_COLLECTION_PATH}:`, error);
     return {

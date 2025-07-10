@@ -1,4 +1,3 @@
-import { z } from 'zod';
 import { createFossilManager } from './fossilManager';
 import { 
   LLMValidationFossil, 
@@ -11,13 +10,12 @@ import {
   LLMErrorPreventionFossilSchema,
   LLMQualityMetricsFossilSchema
 } from '../types/llmFossil';
-import { InputValidationResult, InputPreprocessingResult } from './llmInputValidator';
+import { InputValidationResult, InputPreprocessingResult } from '../types/llm';
 import { executeCommand } from './cli';
 import { ContextFossilService } from '../cli/context-fossil';
 import type { ContextEntry } from '../types';
 import { LLMFossilManagerParamsSchema } from '../types';
 import * as fs from 'fs/promises';
-import * as path from 'path';
 import { LLMFossilManagerParams } from '../types/llm';
 
 export class LLMFossilManager {
@@ -240,7 +238,8 @@ export class LLMFossilManager {
     this.sessionMetrics.warningsGenerated += validation.warnings.length;
     this.sessionMetrics.recommendationsProvided += validation.recommendations.length;
     
-    if (preprocessing?.success) {
+    // Track quality improvements
+    if (preprocessing && preprocessing.changes) {
       this.sessionMetrics.qualityImprovements += preprocessing.changes.length;
     }
     

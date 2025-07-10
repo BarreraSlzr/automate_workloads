@@ -12,6 +12,8 @@ import {
   PerformanceTrackerConfig,
   DEFAULT_TRACKER_CONFIG
 } from '../types/performance';
+import { parseJsonSafe } from '@/utils/json';
+import { executeCommand } from '@/utils/cli';
 
 // Performance tracking utility class
 export class PerformanceTracker {
@@ -35,7 +37,7 @@ export class PerformanceTracker {
     if (existsSync(this.config.granularLogFile)) {
       try {
         const content = readFileSync(this.config.granularLogFile, 'utf-8');
-        const data = JSON.parse(content);
+        const data = parseJsonSafe(content, 'performanceTracker:content') as any[];
         this.granularLogs = Array.isArray(data) ? data : [];
       } catch (error) {
         console.warn('Failed to load existing granular logs:', error);
@@ -50,8 +52,8 @@ export class PerformanceTracker {
 
   private getGitInfo(): { sha: string; branch: string } {
     try {
-      const sha = execSync('git rev-parse HEAD', { encoding: 'utf-8' }).trim();
-      const branch = execSync('git branch --show-current', { encoding: 'utf-8' }).trim();
+      const sha = executeCommand('git rev-parse HEAD').stdout.trim();
+      const branch = executeCommand('git branch --show-current').stdout.trim();
       return { sha, branch };
     } catch (error) {
       return { sha: 'unknown', branch: 'unknown' };
@@ -60,8 +62,8 @@ export class PerformanceTracker {
 
   private getEnvironmentInfo(): Environment {
     try {
-      const nodeVersion = execSync('node --version', { encoding: 'utf-8' }).trim();
-      const bunVersion = execSync('bun --version', { encoding: 'utf-8' }).trim();
+      const nodeVersion = executeCommand('node --version').stdout.trim();
+      const bunVersion = executeCommand('bun --version').stdout.trim();
       const os = process.platform;
       const cpuCores = require('os').cpus().length.toString();
       const memoryTotal = (require('os').totalmem() / 1024 / 1024 / 1024).toFixed(1);
@@ -90,7 +92,7 @@ export class PerformanceTracker {
     try {
       if (process.platform === 'darwin') {
         const subtitleArg = subtitle ? `subtitle "${subtitle}"` : '';
-        execSync(`osascript -e 'display notification "${message}" with title "${title}" ${subtitleArg} sound name "Glass"'`);
+        executeCommand(`osascript -e 'display notification "${message}" with title "${title}" ${subtitleArg} sound name "Glass"'`).success;
       }
     } catch (error) {
       console.warn('Failed to send notification:', error);
@@ -128,15 +130,18 @@ export class PerformanceTracker {
 
     try {
       // Execute script with performance monitoring
-      const result = execSync(`bun run ${scriptPath}`, {
-        encoding: 'utf-8',
+      // Merge and filter env vars to ensure Record<string, string>
+      const mergedEnv = Object.fromEntries(
+        Object.entries({ ...process.env, ...options.env })
+          .filter(([_, v]) => typeof v === 'string')
+      ) as Record<string, string>;
+      const result = executeCommand(`bun run ${scriptPath}`, {
         timeout: options.timeout,
-        env: { ...process.env, ...options.env },
-        stdio: options.captureOutput ? 'pipe' : 'inherit',
+        env: mergedEnv,
       });
 
       if (options.captureOutput) {
-        output = result;
+        output = result.stdout;
       }
 
       executionTime = (Date.now() - startTime) / 1000; // Convert to seconds
@@ -445,9 +450,14 @@ export async function runPerformanceTrackerCLI(args: string[]): Promise<void> {
     case 'logs':
       const logs = tracker.getLogs();
       console.log(`📋 Granular Performance Logs (${logs.length} entries)`);
-      logs.forEach((log, index) => {
-        console.log(`${index + 1}. ${log.script} (${log.git_branch}) - ${log.execution_time.toFixed(2)}s`);
-      });
+      for (let i = 0; i < logs.length; i++) {
+        if (i % 10 === 0 || i === logs.length - 1) {
+          console.log(`🔄 Processing log ${i + 1} of ${logs.length}`);
+        }
+        const log = logs[i];
+        if (!log || !log.script || !log.git_branch || typeof log.execution_time !== 'number') continue;
+        console.log(`${i + 1}. ${log.script} (${log.git_branch}) - ${log.execution_time.toFixed(2)}s`);
+      }
       break;
 
     case 'clean':

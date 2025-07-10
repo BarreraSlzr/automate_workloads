@@ -8,8 +8,7 @@
  */
 
 import { readFileSync, existsSync } from 'fs';
-import { join } from 'path';
-import { z, ZodError, TaskBreakdownSchema } from '@/types/schemas';
+import { z, TaskBreakdownSchema } from '@/types/schemas';
 import {
   ValidationResult,
   ValidationError,
@@ -17,13 +16,8 @@ import {
   ValidationSummary,
   ValidationOptions
 } from '../types/validation';
+import { parseJsonSafe } from '@/utils/json';
 
-// Remove inline validation schemas
-// Use TaskBreakdownSchema and its nested schemas from src/types/schemas.ts
-const TaskSchema = TaskBreakdownSchema.shape.tasks.element;
-const MilestoneSchema = TaskBreakdownSchema.shape.timeline.shape.milestones.element;
-const RiskSchema = TaskBreakdownSchema.shape.risks.element;
-const TimelineSchema = TaskBreakdownSchema.shape.timeline;
 const PlanSchema = TaskBreakdownSchema;
 
 
@@ -59,7 +53,7 @@ export class PlanValidator {
     try {
       // Load and parse generated plan
       const generatedPlan = this.loadPlan(generatedPlanPath);
-      
+
       // Validate basic structure
       const structureValidation = this.validateStructure(generatedPlan);
       errors.push(...structureValidation.errors);
@@ -85,22 +79,17 @@ export class PlanValidator {
       const score = this.calculateScore(errors, warnings, summary);
 
       return {
+        schema: 'Plan',
         isValid: errors.length === 0,
-        score,
         errors,
-        warnings,
-        summary,
       };
     } catch (error) {
       return {
+        schema: 'Plan',
         isValid: false,
-        score: 0,
         errors: [{
-          type: 'structure',
           message: `Failed to load or parse plan: ${error}`,
         }],
-        warnings: [],
-        summary: this.generateEmptySummary(),
       };
     }
   }
@@ -110,7 +99,7 @@ export class PlanValidator {
    */
   private loadPlan(planPath: string): any {
     const content = readFileSync(planPath, 'utf-8');
-    return JSON.parse(content);
+    return parseJsonSafe(content, 'plan-validator:content') as any;
   }
 
   /**
@@ -126,9 +115,7 @@ export class PlanValidator {
       if (error instanceof z.ZodError) {
         error.errors.forEach((err) => {
           errors.push({
-            type: 'structure',
             message: `Invalid structure: ${err.message}`,
-            path: err.path.join('.'),
           });
         });
       }
@@ -147,27 +134,26 @@ export class PlanValidator {
     // Compare task count
     if (generated.tasks.length !== expected.tasks.length) {
       errors.push({
-        type: 'content',
         message: `Task count mismatch: expected ${expected.tasks.length}, got ${generated.tasks.length}`,
-        expected: expected.tasks.length,
-        actual: generated.tasks.length,
+        path: ['tasks', 'length'],
       });
     }
 
     // Compare task titles and tags
     const minTasks = Math.min(generated.tasks.length, expected.tasks.length);
     for (let i = 0; i < minTasks; i++) {
+      if (i % 10 === 0 || i === minTasks - 1) {
+        console.log(`🔄 Processing task ${i + 1} of ${minTasks}`);
+      }
       const genTask = generated.tasks[i];
       const expTask = expected.tasks[i];
 
       // Compare titles (allowing for some variation)
       if (!this.titlesAreSimilar(genTask.title, expTask.title)) {
         warnings.push({
-          type: 'priority_mismatch',
           message: `Task ${i + 1} title differs significantly`,
-          path: `tasks[${i}].title`,
-          expected: expTask.title,
-          actual: genTask.title,
+          path: ['tasks', String(i), 'title'].join("."),
+          type: 'priority_mismatch'
         });
       }
 
@@ -175,18 +161,18 @@ export class PlanValidator {
       const tagComparison = this.compareTags(genTask.tags || [], expTask.tags || []);
       if (tagComparison.missing.length > 0) {
         warnings.push({
-          type: 'missing_tag',
           message: `Task ${i + 1} missing expected tags: ${tagComparison.missing.join(', ')}`,
-          path: `tasks[${i}].tags`,
+          path: ['tasks', String(i), 'tags'].join('.'),
           suggestion: `Add tags: ${tagComparison.missing.join(', ')}`,
+          type: 'missing_tag'
         });
       }
 
       if (tagComparison.unexpected.length > 0) {
         warnings.push({
-          type: 'unexpected_tag',
           message: `Task ${i + 1} has unexpected tags: ${tagComparison.unexpected.join(', ')}`,
-          path: `tasks[${i}].tags`,
+          path: ['tasks', String(i), 'tags'].join('.'),
+          type: 'unexpected_tag'
         });
       }
     }
@@ -216,43 +202,37 @@ export class PlanValidator {
     // Check task count limits
     if (this.options.minTasks && plan.tasks.length < this.options.minTasks) {
       errors.push({
-        type: 'content',
         message: `Too few tasks: ${plan.tasks.length} (minimum: ${this.options.minTasks})`,
-        actual: plan.tasks.length,
-        expected: this.options.minTasks,
+        path: ['tasks', 'length'],
       });
     }
 
     if (this.options.maxTasks && plan.tasks.length > this.options.maxTasks) {
       errors.push({
-        type: 'content',
         message: `Too many tasks: ${plan.tasks.length} (maximum: ${this.options.maxTasks})`,
-        actual: plan.tasks.length,
-        expected: this.options.maxTasks,
+        path: ['tasks', 'length'],
       });
     }
 
     // Check tags per task
     plan.tasks.forEach((task: any, index: number) => {
+      if (index % 10 === 0 || index === plan.tasks.length - 1) {
+        console.log(`🔄 Processing tag (forEach) ${index + 1} of ${plan.tasks.length}`);
+      }
       const tagCount = (task.tags || []).length;
 
       if (this.options.minTagsPerTask && tagCount < this.options.minTagsPerTask) {
         errors.push({
-          type: 'tags',
           message: `Task ${index + 1} has too few tags: ${tagCount} (minimum: ${this.options.minTagsPerTask})`,
-          path: `tasks[${index}].tags`,
-          actual: tagCount,
-          expected: this.options.minTagsPerTask,
+          path: ['tasks', String(index), 'tags'],
         });
       }
 
       if (this.options.maxTagsPerTask && tagCount > this.options.maxTagsPerTask) {
         warnings.push({
-          type: 'unexpected_tag',
           message: `Task ${index + 1} has too many tags: ${tagCount} (maximum: ${this.options.maxTagsPerTask})`,
-          path: `tasks[${index}].tags`,
-          actual: tagCount,
-          expected: this.options.maxTagsPerTask,
+          path: ['tasks', String(index), 'tags'].join('.'),
+          type: 'priority_mismatch'
         });
       }
 
@@ -261,10 +241,8 @@ export class PlanValidator {
         const missingRequired = this.options.requiredTags.filter(tag => !(task.tags || []).includes(tag));
         if (missingRequired.length > 0) {
           errors.push({
-            type: 'tags',
             message: `Task ${index + 1} missing required tags: ${missingRequired.join(', ')}`,
-            path: `tasks[${index}].tags`,
-            expected: missingRequired,
+            path: ['tasks', String(index), 'tags'],
           });
         }
       }
@@ -274,10 +252,10 @@ export class PlanValidator {
         const forbiddenFound = this.options.forbiddenTags.filter(tag => (task.tags || []).includes(tag));
         if (forbiddenFound.length > 0) {
           warnings.push({
-            type: 'unexpected_tag',
             message: `Task ${index + 1} contains forbidden tags: ${forbiddenFound.join(', ')}`,
-            path: `tasks[${index}].tags`,
+            path: ['tasks', String(index), 'tags'].join('.'),
             suggestion: `Remove tags: ${forbiddenFound.join(', ')}`,
+            type: 'missing_tag'
           });
         }
       }
@@ -293,10 +271,10 @@ export class PlanValidator {
     const normalize = (str: string) => str.toLowerCase().replace(/[^a-z0-9]/g, ' ');
     const words1 = normalize(title1).split(/\s+/).filter(Boolean);
     const words2 = normalize(title2).split(/\s+/).filter(Boolean);
-    
+
     const commonWords = words1.filter(word => words2.includes(word));
     const similarity = commonWords.length / Math.max(words1.length, words2.length);
-    
+
     return similarity >= 0.6; // 60% similarity threshold
   }
 
@@ -324,8 +302,9 @@ export class PlanValidator {
     // Compare milestone count
     if (actual.milestones.length !== expected.milestones.length) {
       warnings.push({
-        type: 'timeline_mismatch',
         message: `Milestone count differs: expected ${expected.milestones.length}, got ${actual.milestones.length}`,
+        path: ['timeline', 'milestones', 'length'].join("."),
+        type: "timeline_mismatch"
       });
     }
 
@@ -341,8 +320,9 @@ export class PlanValidator {
     // Compare risk count
     if (actual.length !== expected.length) {
       warnings.push({
-        type: 'timeline_mismatch',
         message: `Risk count differs: expected ${expected.length}, got ${actual.length}`,
+        path: ['risks', 'length'].join("."),
+        type: "priority_mismatch"
       });
     }
 
@@ -352,11 +332,16 @@ export class PlanValidator {
   /**
    * Generate validation summary
    */
-  private generateSummary(plan: any): ValidationSummary {
+  public generateSummary(plan: any): ValidationSummary {
     const tasks = plan.tasks || [];
     const tasksWithTags = tasks.filter((task: any) => task.tags && task.tags.length > 0).length;
-    const totalTags = tasks.reduce((sum: number, task: any) => sum + (task.tags?.length || 0), 0);
-    
+    const totalTags = tasks.reduce((sum: number, task: any, i: number) => {
+      if (i % 10 === 0 || i === tasks.length - 1) {
+        console.log(`🔄 Processing tag (reduce) ${i + 1} of ${tasks.length}`);
+      }
+      return sum + (task.tags?.length || 0);
+    }, 0);
+
     const startDate = new Date(plan.timeline?.startDate || Date.now());
     const endDate = new Date(plan.timeline?.endDate || Date.now());
     const timelineDays = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
@@ -424,46 +409,43 @@ export class PlanValidator {
   /**
    * Print validation report
    */
-  printReport(result: ValidationResult): void {
+  printReport(result: ValidationResult, warnings: ValidationWarning[], summary: ValidationSummary): void {
     console.log('\n📋 Plan Validation Report');
-    console.log('=' .repeat(50));
-    
+    console.log('='.repeat(50));
+
     // Overall status
     const status = result.isValid ? '✅ VALID' : '❌ INVALID';
-    console.log(`Status: ${status} (Score: ${result.score}/100)`);
-    
+    console.log(`Status: ${status} (Score: ${result.errors.length === 0 ? 100 : 0}/100)`);
+
     // Summary
     console.log('\n📊 Summary:');
-    console.log(`  • Total Tasks: ${result.summary.totalTasks}`);
-    console.log(`  • Tasks with Tags: ${result.summary.tasksWithTags}`);
-    console.log(`  • Average Tags per Task: ${result.summary.averageTagsPerTask.toFixed(1)}`);
-    console.log(`  • Timeline: ${result.summary.timelineDays} days`);
-    console.log(`  • Critical Tasks: ${result.summary.criticalTasks}`);
-    console.log(`  • High Priority Tasks: ${result.summary.highPriorityTasks}`);
-    console.log(`  • Risks Identified: ${result.summary.riskCount}`);
-    
+    console.log(`  • Total Tasks: ${summary.totalTasks}`);
+    console.log(`  • Tasks with Tags: ${summary.tasksWithTags}`);
+    console.log(`  • Average Tags per Task: ${summary.averageTagsPerTask.toFixed(1)}`);
+    console.log(`  • Timeline: ${summary.timelineDays} days`);
+    console.log(`  • Critical Tasks: ${summary.criticalTasks}`);
+    console.log(`  • High Priority Tasks: ${summary.highPriorityTasks}`);
+    console.log(`  • Risks Identified: ${summary.riskCount}`);
+
     // Errors
     if (result.errors.length > 0) {
       console.log('\n❌ Errors:');
       result.errors.forEach((error, index) => {
-        console.log(`  ${index + 1}. ${error.type.toUpperCase()}: ${error.message}`);
-        if (error.path) console.log(`     Path: ${error.path}`);
-        if (error.expected && error.actual) {
-          console.log(`     Expected: ${error.expected}, Got: ${error.actual}`);
-        }
+        console.log(`  ${index + 1}. ${error.message}`);
+        if (error.path) console.log(`     Path: ${error.path.join('.')}`);
       });
     }
-    
+
     // Warnings
-    if (result.warnings.length > 0) {
+    if (warnings.length > 0) {
       console.log('\n⚠️  Warnings:');
-      result.warnings.forEach((warning, index) => {
-        console.log(`  ${index + 1}. ${warning.type.toUpperCase()}: ${warning.message}`);
+      warnings.forEach((warning, index) => {
+        console.log(`  ${index + 1}. ${warning.message}`);
         if (warning.path) console.log(`     Path: ${warning.path}`);
         if (warning.suggestion) console.log(`     Suggestion: ${warning.suggestion}`);
       });
     }
-    
-    console.log('\n' + '=' .repeat(50));
+
+    console.log('\n' + '='.repeat(50));
   }
 } 

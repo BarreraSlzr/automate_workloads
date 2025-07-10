@@ -1,8 +1,8 @@
+import type { ChecklistItemUpdate } from '../types/checklist-updater';
+import { parseJsonSafe } from '@/utils/json';
 // Utility to update checklists in Markdown
 // Accepts a Markdown string and a map of checklist item text to checked/unchecked state
 // Returns the updated Markdown with only the relevant checkmarks changed
-
-export type ChecklistUpdate = Record<string, boolean>;
 
 /**
  * Updates checklists in a Markdown string.
@@ -10,14 +10,13 @@ export type ChecklistUpdate = Record<string, boolean>;
  * @param updates An object mapping checklist item text to checked (true) or unchecked (false)
  * @returns The updated Markdown
  */
-export function updateMarkdownChecklist(markdown: string, updates: ChecklistUpdate): string {
+export function updateMarkdownChecklist(params: { body: string; updates: Record<string, boolean> }) {
   // Regex to match checklist items: - [ ] Item or - [x] Item
   const checklistRegex = /^([ \t]*[-*] \[)( |x)(\] )(.*)$/gm;
-
-  return markdown.replace(checklistRegex, (match, prefix, checked, suffix, itemText) => {
+  return params.body.replace(checklistRegex, (match, prefix, checked, suffix, itemText) => {
     const trimmedText = itemText.trim();
-    if (Object.prototype.hasOwnProperty.call(updates, trimmedText)) {
-      const newChecked = updates[trimmedText] ? 'x' : ' ';
+    if (Object.prototype.hasOwnProperty.call(params.updates, trimmedText)) {
+      const newChecked = params.updates[trimmedText] ? 'x' : ' ';
       return `${prefix}${newChecked}${suffix}${itemText}`;
     }
     return match;
@@ -32,7 +31,7 @@ export function extractJsonBlock(markdown: string): any | undefined {
   const match = safeMarkdown.match(/```json\s*([\s\S]*?)\s*```/);
   if (match && typeof match[1] === 'string') {
     try {
-      return JSON.parse(match[1]);
+      return parseJsonSafe(match[1], 'markdownChecklist:match[1]') as any;
     } catch {}
   }
   return undefined;
