@@ -5,6 +5,12 @@ import { z, ZodError } from 'zod';
 export { ZodError };
 export { z };
 
+// Canonical schema for owner/repo validation
+export const OwnerRepoSchema = z.object({
+  owner: z.string().min(1, 'Repository owner is required'),
+  repo: z.string().min(1, 'Repository name is required'),
+});
+
 // ============================================================================
 // FOSSIL MANAGER SCHEMAS (moved from src/utils/fossilManager.ts)
 // ============================================================================

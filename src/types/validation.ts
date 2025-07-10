@@ -2,20 +2,23 @@
 // VALIDATION TYPE DEFINITIONS
 // ============================================================================
 
+export interface TestResult {
+  name: string;
+  passed: boolean;
+  critical: boolean;
+  message: string;
+  details?: any;
+}
+
 export interface ValidationResult {
+  schema: string;
   isValid: boolean;
-  score: number; // 0-100
   errors: ValidationError[];
-  warnings: ValidationWarning[];
-  summary: ValidationSummary;
 }
 
 export interface ValidationError {
-  type: 'structure' | 'content' | 'tags' | 'timeline' | 'risks';
   message: string;
-  path?: string;
-  expected?: any;
-  actual?: any;
+  path?: string[];
 }
 
 export interface ValidationWarning {

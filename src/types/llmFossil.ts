@@ -3,7 +3,8 @@
  * Roadmap reference: Fossilize LLM insights, benchmarks, and model discovery results
  */
 
-import { z } from './schemas';
+import { z } from 'zod';
+import { LLMFossilManagerParamsSchema } from './schemas';
 
 export type LLMFossilType = 'insight' | 'benchmark' | 'discovery';
 
@@ -320,124 +321,86 @@ export function createLLMValidationFossil(params: {
   };
 }
 
-export function createLLMErrorPreventionFossil(params: {
-  commitRef: string;
-  sessionId: string;
-  summary: any;
-  inputs: any[];
-  insights: any[];
-  metadata: any;
-}): LLMErrorPreventionFossil {
-  return {
-    type: 'llm-error-prevention',
-    timestamp: new Date().toISOString(),
-    commitRef: params.commitRef,
-    sessionId: params.sessionId,
-    summary: {
-      totalInputs: params.summary.totalInputs,
-      errorsPrevented: params.summary.errorsPrevented,
-      warningsGenerated: params.summary.warningsGenerated,
-      recommendationsProvided: params.summary.recommendationsProvided,
-      qualityImprovements: params.summary.qualityImprovements,
-      costSavings: params.summary.costSavings,
-      timeSaved: params.summary.timeSaved
-    },
-    inputs: params.inputs.map(input => ({
-      inputHash: input.inputHash,
-      originalInput: input.originalInput,
-      processedInput: input.processedInput,
-      validation: {
-        isValid: input.validation.isValid,
-        errors: input.validation.errors || [],
-        warnings: input.validation.warnings || [],
-        recommendations: input.validation.recommendations || []
-      },
-      qualityAnalysis: input.qualityAnalysis ? {
-        readability: input.qualityAnalysis.readability,
-        clarity: input.qualityAnalysis.clarity,
-        specificity: input.qualityAnalysis.specificity,
-        completeness: input.qualityAnalysis.completeness,
-        overall: input.qualityAnalysis.overall
-      } : undefined,
-      preprocessing: input.preprocessing ? {
-        success: input.preprocessing.success,
-        changes: input.preprocessing.changes || [],
-        warnings: input.preprocessing.warnings || [],
-        errors: input.preprocessing.errors || []
-      } : undefined
-    })),
-    insights: params.insights.map(insight => ({
-      category: insight.category,
-      severity: insight.severity,
-      description: insight.description,
-      recommendation: insight.recommendation,
-      impact: insight.impact
-    })),
-    metadata: {
-      environment: params.metadata.environment,
-      llmProvider: params.metadata.llmProvider,
-      validationMode: params.metadata.validationMode,
-      preprocessingMode: params.metadata.preprocessingMode,
-      totalSessionTime: params.metadata.totalSessionTime,
-      fossilizationTime: Date.now()
-    },
-    fossilId: `llm-error-prevention-${Date.now()}-${params.sessionId}`,
-    status: 'active',
-    tags: ['llm', 'error-prevention', 'validation', 'quality']
-  };
+export function logProgress(params: { type: string; i: number; total: number }) {
+  const { type, i, total } = params;
+  if (i % 10 === 0 || i === total - 1) {
+    console.log(`🔄 Processing ${type} ${i + 1} of ${total}`);
+  }
 }
 
-export function createLLMQualityMetricsFossil(params: {
-  commitRef: string;
-  metrics: any;
-  trends: any;
-  recommendations: any[];
-  metadata: any;
-}): LLMQualityMetricsFossil {
-  return {
-    type: 'llm-quality-metrics',
-    timestamp: new Date().toISOString(),
-    commitRef: params.commitRef,
-    metrics: {
-      averageQuality: params.metrics.averageQuality,
-      qualityDistribution: {
-        excellent: params.metrics.qualityDistribution.excellent,
-        good: params.metrics.qualityDistribution.good,
-        fair: params.metrics.qualityDistribution.fair,
-        poor: params.metrics.qualityDistribution.poor,
-        veryPoor: params.metrics.qualityDistribution.veryPoor
-      },
-      commonIssues: params.metrics.commonIssues.map((issue: any) => ({
-        issue: issue.issue,
-        frequency: issue.frequency,
-        impact: issue.impact
-      })),
-      improvements: params.metrics.improvements.map((improvement: any) => ({
-        category: improvement.category,
-        beforeScore: improvement.beforeScore,
-        afterScore: improvement.afterScore,
-        improvement: improvement.improvement
-      }))
-    },
-    trends: {
-      qualityTrend: params.trends.qualityTrend,
-      errorRateTrend: params.trends.errorRateTrend,
-      costTrend: params.trends.costTrend
-    },
-    recommendations: params.recommendations.map(rec => ({
-      priority: rec.priority,
-      category: rec.category,
-      description: rec.description,
-      expectedImpact: rec.expectedImpact,
-      implementationEffort: rec.implementationEffort
-    })),
-    metadata: {
-      analysisPeriod: params.metadata.analysisPeriod,
-      totalInputs: params.metadata.totalInputs,
-      analysisTime: params.metadata.analysisTime
-    },
-    fossilId: `llm-quality-metrics-${Date.now()}-${params.commitRef}`,
-    status: 'draft',
-    tags: ['llm', 'quality', 'metrics', 'analysis', 'trends']
-  };
+export function logError(params: { context: string; item: any; error: any }) {
+  const { context, item, error } = params;
+  console.error(`❌ [${context}] Error processing item:`, item, '\nError:', error);
+}
+
+export async function createLLMErrorPreventionFossil(params: any): Promise<any> {
+  const errors: any[] = [];
+  for (let i = 0; i < params.entries.length; i++) {
+    logProgress({ type: 'entry', i, total: params.entries.length });
+    try {
+      const entry: any = params.entries[i];
+      throw new Error('Not implemented: placeholder logic in llmFossil.ts must be replaced with real business logic to avoid infinite loops and CPU exhaustion');
+    } catch (err) {
+      logError({ context: 'createLLMErrorPreventionFossil', item: params.entries[i], error: err });
+      errors.push({ index: i, entry: params.entries[i], error: err });
+    }
+  }
+  for (let i = 0; i < params.insights.length; i++) {
+    logProgress({ type: 'insight', i, total: params.insights.length });
+    try {
+      const insight: any = params.insights[i];
+      throw new Error('Not implemented: placeholder logic in llmFossil.ts must be replaced with real business logic to avoid infinite loops and CPU exhaustion');
+    } catch (err) {
+      logError({ context: 'createLLMErrorPreventionFossil', item: params.insights[i], error: err });
+      errors.push({ index: i, insight: params.insights[i], error: err });
+    }
+  }
+  console.log(`📊 [createLLMErrorPreventionFossil] Processed ${params.entries.length} entries, ${params.insights.length} insights, ${errors.length} errors.`);
+  return { success: errors.length === 0, errors };
+}
+
+export async function createLLMQualityMetricsFossil(params: any): Promise<any> {
+  const errors: any[] = [];
+  for (let i = 0; i < params.metrics.length; i++) {
+    logProgress({ type: 'metric', i, total: params.metrics.length });
+    try {
+      const metric: any = params.metrics[i];
+      throw new Error('Not implemented: placeholder logic in llmFossil.ts must be replaced with real business logic to avoid infinite loops and CPU exhaustion');
+    } catch (err) {
+      logError({ context: 'createLLMQualityMetricsFossil', item: params.metrics[i], error: err });
+      errors.push({ index: i, metric: params.metrics[i], error: err });
+    }
+  }
+  for (let i = 0; i < params.recommendations.length; i++) {
+    logProgress({ type: 'recommendation', i, total: params.recommendations.length });
+    try {
+      const rec: any = params.recommendations[i];
+      throw new Error('Not implemented: placeholder logic in llmFossil.ts must be replaced with real business logic to avoid infinite loops and CPU exhaustion');
+    } catch (err) {
+      logError({ context: 'createLLMQualityMetricsFossil', item: params.recommendations[i], error: err });
+      errors.push({ index: i, recommendation: params.recommendations[i], error: err });
+    }
+  }
+  for (let i = 0; i < params.insights.length; i++) {
+    logProgress({ type: 'insight', i, total: params.insights.length });
+    try {
+      const insight: any = params.insights[i];
+      throw new Error('Not implemented: placeholder logic in llmFossil.ts must be replaced with real business logic to avoid infinite loops and CPU exhaustion');
+    } catch (err) {
+      logError({ context: 'createLLMQualityMetricsFossil', item: params.insights[i], error: err });
+      errors.push({ index: i, insight: params.insights[i], error: err });
+    }
+  }
+  for (let i = 0; i < params.entries.length; i++) {
+    logProgress({ type: 'entry', i, total: params.entries.length });
+    try {
+      const entry: any = params.entries[i];
+      throw new Error('Not implemented: placeholder logic in llmFossil.ts must be replaced with real business logic to avoid infinite loops and CPU exhaustion');
+    } catch (err) {
+      logError({ context: 'createLLMQualityMetricsFossil', item: params.entries[i], error: err });
+      errors.push({ index: i, entry: params.entries[i], error: err });
+    }
+  }
+  console.log(`📊 [createLLMQualityMetricsFossil] Processed ${params.metrics.length} metrics, ${params.recommendations.length} recommendations, ${params.insights.length} insights, ${params.entries.length} entries, ${errors.length} errors.`);
+  return { success: errors.length === 0, errors };
 } 

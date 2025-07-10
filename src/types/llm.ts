@@ -172,4 +172,29 @@ export const EnhancedLLMServiceParamsSchema = {
   }
 };
 
-export type EnhancedLLMServiceParams = typeof EnhancedLLMServiceParamsSchema; 
+export type EnhancedLLMServiceParams = typeof EnhancedLLMServiceParamsSchema;
+
+// Canonical LLM Input Validation Types
+export interface ContentQualityMetrics {
+  readability: number;
+  clarity: number;
+  specificity: number;
+  completeness: number;
+  overall: number;
+}
+
+export interface InputValidationResult {
+  isValid: boolean;
+  success: boolean; // Alias for isValid for test compatibility
+  errors: string[];
+  warnings: string[];
+  sanitizedInput: any;
+  processedInput: any; // Alias for sanitizedInput for test compatibility
+  recommendations: string[];
+  changes?: string[];
+}
+
+export type InputPreprocessingResult = InputValidationResult;
+
+// For backward compatibility with validator utility
+export type LLMInputValidatorResult = InputValidationResult; 
