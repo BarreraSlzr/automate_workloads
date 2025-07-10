@@ -1,0 +1,42 @@
+[
+  {
+    "timestamp": "2025-07-10T01:36:49.890Z",
+    "model": "fake-model",
+    "provider": "openai",
+    "inputTokens": 29,
+    "outputTokens": 0,
+    "totalTokens": 29,
+    "cost": 0.00004350000000000001,
+    "duration": 3529,
+    "success": false,
+    "error": "OpenAI API error: 401 {\n    \"error\": {\n        \"message\": \"Incorrect API key provided: fake-key. You can find your API key at https://platform.openai.com/account/api-keys.\",\n        \"type\": \"invalid_request_error\",\n        \"param\": null,\n        \"code\": \"invalid_api_key\"\n    }\n}\n",
+    "context": "goal-decomposition",
+    "purpose": "goal-decomposition",
+    "valueScore": 0.8,
+    "callId": "call-1752111406361-mkwb5l1cu",
+    "inputHash": "4b1bdbb33c0a9cb9",
+    "sessionId": "session-1752111406360-lptm33xy3",
+    "traceData": {
+      "validation": {
+        "isValid": false,
+        "errors": [
+          "OpenAI API error: 401 {\n    \"error\": {\n        \"message\": \"Incorrect API key provided: fake-key. You can find your API key at https://platform.openai.com/account/api-keys.\",\n        \"type\": \"invalid_request_error\",\n        \"param\": null,\n        \"code\": \"invalid_api_key\"\n    }\n}\n"
+        ],
+        "warnings": []
+      },
+      "preprocessing": {
+        "success": false,
+        "changes": [],
+        "improvements": []
+      },
+      "qualityAnalysis": {
+        "overall": 0,
+        "clarity": 0,
+        "specificity": 0,
+        "completeness": 0
+      },
+      "insights": []
+    },
+    "fossilId": "llm-validation-1752111409899-4b1bdbb33c0a9cb9"
+  }
+]
