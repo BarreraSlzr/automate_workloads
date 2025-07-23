@@ -2,67 +2,63 @@
 # CANONICAL SETUP STATUS FOSSIL
 # ============================================================================
 summary:
-  status: done
-  lastUpdated: "2025-07-04T05:34:56Z"
+  status: planned
+  lastUpdated: "2025-07-23T03:46:45Z"
   notes: |-
     This file is updated after each setup step. Statuses: planned, in-progress, done, failed.
     See README.md for troubleshooting and onboarding instructions.
-  llm_available: true
+  llm_available: false
 steps:
   bun:
     status: done
-    version: 1.2.17
-    lastChecked: "2025-07-04T05:34:52Z"
+    version: 1.2.19
+    lastChecked: "2025-07-23T03:46:44Z"
     notes: Bun is installed.
   github_cli:
     status: done
-    version: 2.74.2
-    lastChecked: "2025-07-04T05:34:52Z"
+    version: 2.75.0
+    lastChecked: "2025-07-23T03:46:45Z"
     notes: GitHub CLI is installed.
   ollama:
-    status: done
+    status: failed
     version: ""
-    lastChecked: "2025-07-04T05:34:52Z"
-    notes: Ollama is installed and server running.
+    lastChecked: "2025-07-23T03:46:45Z"
+    notes: Ollama not installed.
   ollama_models:
     llama2:
-      status: done
-      lastChecked: "2025-07-04T05:34:52Z"
-      notes: Code-focused LLM for code generation and completion.
-      version: ""
+      status: planned
+      lastChecked: null
+      notes: llama2 model for local LLM.
     mistral:
-      status: done
-      lastChecked: "2025-07-04T05:34:53Z"
-      notes: Code-focused LLM for code generation and completion.
-      version: ""
+      status: planned
+      lastChecked: null
+      notes: mistral model for local LLM.
     phi3:
-      status: done
-      lastChecked: "2025-07-04T05:34:54Z"
-      notes: Code-focused LLM for code generation and completion.
-      version: ""
+      status: planned
+      lastChecked: null
+      notes: phi3 model for local LLM.
     codellama:
-      status: done
-      lastChecked: "2025-07-04T05:34:55Z"
-      notes: Code-focused LLM for code generation and completion.
-      version: ""
+      status: planned
+      lastChecked: null
+      notes: codellama model for local LLM.
   llm_provider:
-    status: done
-    version: ""
-    lastChecked: "2025-07-04T05:34:52Z"
-    notes: Ollama is available with at least one model.
+    status: planned
+    version: null
+    lastChecked: null
+    notes: LLM provider (local or cloud) availability.
   dependencies:
-    status: done
-    version: ""
-    lastChecked: "2025-07-04T05:34:56Z"
-    notes: Dependencies installed.
+    status: planned
+    version: null
+    lastChecked: null
+    notes: Project dependencies installed via bun.
   env_file:
-    status: done
-    version: ""
-    lastChecked: "2025-07-04T05:34:56Z"
-    notes: .env present.
+    status: planned
+    version: null
+    lastChecked: null
+    notes: .env file present and configured.
   fossil_storage:
-    status: done
-    version: ""
-    lastChecked: "2025-07-04T05:34:56Z"
-    notes: Fossil storage present.
+    status: planned
+    version: null
+    lastChecked: null
+    notes: Fossil storage directory and permissions.
 # Add new steps as needed for onboarding, CI, or additional tools.
