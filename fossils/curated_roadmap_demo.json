@@ -2,10 +2,10 @@
   "type": "curated_fossil",
   "source": "automation",
   "createdBy": "llm+human",
-  "createdAt": "2025-07-04T05:34:50.631Z",
+  "createdAt": "2025-07-23T03:46:43.433Z",
   "kind": "roadmap",
   "tag": "demo",
-  "curatedAt": "2025-07-04T05:34:50.631Z",
+  "curatedAt": "2025-07-23T03:46:43.433Z",
   "inputFile": "fossils/roadmap.yml",
   "outputYml": "",
   "outputJson": "fossils/curated_roadmap_demo.json",
@@ -1361,33 +1361,6 @@
               },
               {
                 "task": "Consolidate or clarify overlapping features as needed",
-                "status": "planned"
-              }
-            ]
-          },
-          {
-            "task": "Documentation Automation & Continuous Improvement",
-            "status": "planned",
-            "context": "Ensure all critical documentation areas (intelligent tagging, LLM integration, local LLM setup, fossil publication workflow) remain up-to-date, actionable, and validated as the codebase evolves. Leverage and reference the rich content in /docs, and automate validation and sync wherever possible.\n",
-            "subtasks": [
-              {
-                "task": "Automate documentation validation in CI (broken links, outdated examples, migration guides)",
-                "status": "planned"
-              },
-              {
-                "task": "Reference and update /docs/API_REFERENCE.md, /docs/COMPLETE_AUTOMATION_ECOSYSTEM.md, /docs/INTELLIGENT_TAGGING_SYSTEM.md, /docs/FOSSIL_PUBLICATION_WORKFLOW.md as features evolve",
-                "status": "planned"
-              },
-              {
-                "task": "Maintain and evolve local LLM setup/troubleshooting documentation",
-                "status": "planned"
-              },
-              {
-                "task": "Keep fossil publication workflow documentation in sync with automation scripts and outputs",
-                "status": "planned"
-              },
-              {
-                "task": "Add regular review of documentation coherence checklist to roadmap review process",
                 "status": "planned"
               }
             ]
