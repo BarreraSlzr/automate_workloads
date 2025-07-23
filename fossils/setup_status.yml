@@ -3,7 +3,7 @@
 # ============================================================================
 summary:
   status: planned
-  lastUpdated: "2025-07-23T03:46:45Z"
+  lastUpdated: "2025-07-23T03:50:30Z"
   notes: |-
     This file is updated after each setup step. Statuses: planned, in-progress, done, failed.
     See README.md for troubleshooting and onboarding instructions.
@@ -12,17 +12,17 @@ steps:
   bun:
     status: done
     version: 1.2.19
-    lastChecked: "2025-07-23T03:46:44Z"
+    lastChecked: "2025-07-23T03:50:30Z"
     notes: Bun is installed.
   github_cli:
     status: done
     version: 2.75.0
-    lastChecked: "2025-07-23T03:46:45Z"
+    lastChecked: "2025-07-23T03:50:30Z"
     notes: GitHub CLI is installed.
   ollama:
     status: failed
     version: ""
-    lastChecked: "2025-07-23T03:46:45Z"
+    lastChecked: "2025-07-23T03:50:30Z"
     notes: Ollama not installed.
   ollama_models:
     llama2:

@@ -106,7 +106,7 @@ export class TimestampFilter {
     }
 
     for (const change of otherChanges) {
-      const file = change.split(':')[0];
+      const file = change.split(':')[0] || 'unknown';
       const current = changesByFile.get(file) || { timestamps: 0, others: 0 };
       current.others++;
       changesByFile.set(file, current);
